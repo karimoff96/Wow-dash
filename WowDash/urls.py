@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from WowDash import authentication_views
+from django.shortcuts import redirect
 from WowDash import blog_views
 from WowDash import chart_views
 from WowDash import components_views
@@ -30,14 +30,20 @@ from WowDash import table_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    
+    # Root URL redirects to login
+    path("", lambda request: redirect('admin_login'), name="root"),
+    
+    # Authentication & User management (accounts app)
+    path("accounts/", include("accounts.urls")),
     path("users/", include("accounts.urls")),
-    # path("services/", include("services.urls")),
-    # path("orders/", include("orders.urls")),
+    
+    # Orders management
+    path("orders/", include("orders.urls")),
+    
     # home routes
-    path("", home_views.index),
     path("index", home_views.index, name="index"),
     path("blankpage", home_views.blankpage, name="blankpage"),
-    path("calendar", home_views.calendar, name="calendar"),
     path("comingsoon", home_views.comingsoon, name="comingsoon"),
     path("email", home_views.email, name="email"),
     path("faqs", home_views.faqs, name="faqs"),
@@ -51,14 +57,7 @@ urlpatterns = [
     path("testimonials", home_views.testimonials, name="testimonials"),
     path("view-details", home_views.viewDetails, name="viewDetails"),
     path("widgets", home_views.widgets, name="widgets"),
-    # authentication routes
-    path(
-        "authentication/forgot-password",
-        authentication_views.forgotPassword,
-        name="forgotPassword",
-    ),
-    path("authentication/signin", authentication_views.signin, name="signin"),
-    path("authentication/signup", authentication_views.signup, name="signup"),
+    
     # blog routes
     path("blog/add-blog", blog_views.addBlog, name="addBlog"),
     path("blog/blog", blog_views.blog, name="blog"),

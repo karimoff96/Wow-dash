@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 def blankpage(request):
     context={
@@ -6,13 +7,6 @@ def blankpage(request):
         "subTitle": "Blank Page",
     }
     return render(request,"blankpage.html", context)
-    
-def calendar(request):
-    context={
-        "title": "Calendar",
-        "subTitle": "Components / Calendar",
-    }
-    return render(request,"calendar.html", context)
 
     
 def comingsoon(request):
@@ -42,7 +36,8 @@ def gallery(request):
         "subTitle": "Gallery",
     }
     return render(request,"gallery.html", context)
-    
+
+@login_required(login_url='admin_login')
 def index(request):
     context={
         "title": "Dashboard",
