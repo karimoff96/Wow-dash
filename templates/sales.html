@@ -1,153 +1,180 @@
 ﻿{% extends './layout/layout.html' %} 
 
 {% block content %}
-<div class="row gy-4 mt-1">
-    <!-- Orders Overview Chart -->
-    <div class="col-12">
-        <div class="card h-100 radius-12 border-0 shadow-sm overflow-hidden">
-            <div class="card-body p-24">
-                <div class="d-flex flex-wrap align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-lg fw-bold text-white mb-1">Orders Overview</h6>
-                        <span class="text-secondary-light text-sm">Track your order performance</span>
+<div class="row gy-4">
+    <!-- Row 1: Quick Stats Cards -->
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-1">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:bag-4-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="sales.totalOrders">Total Orders</span>
+                            <h6 class="fw-semibold" id="totalOrdersCard">{{ yearly_count }}</h6>
+                        </div>
                     </div>
-                    <select class="form-select form-select-sm w-auto bg-base border-0 text-white radius-8 px-16" id="ordersPeriodSelect">
-                        <option value="yearly" selected>Yearly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="today">Today</option>
-                    </select>
                 </div>
-                <div class="d-flex flex-wrap align-items-center gap-3 mt-16">
-                    <h4 class="mb-0 fw-bold text-white" id="ordersRevenue">{{ yearly_revenue|floatformat:0 }} UZS</h4>
-                    <span class="text-sm fw-semibold rounded-pill px-12 py-6 bg-success-focus text-success-main" id="ordersChangeBadge">
-                        <iconify-icon icon="bxs:up-arrow" class="text-xs me-1" id="ordersChangeIcon"></iconify-icon>
-                        <span id="ordersChangeValue">{{ yearly_change }}%</span>
+                <p class="text-sm mb-0">
+                    <span class="bg-success-focus px-1 rounded-2 fw-medium text-success-main text-sm" id="ordersChangeBadge">
+                        <iconify-icon icon="bxs:up-arrow" class="text-xs"></iconify-icon> {{ yearly_change }}%
                     </span>
-                </div>
-                <div class="d-flex flex-wrap align-items-center gap-16 mt-8">
-                    <span class="text-secondary-light text-sm">
-                        <iconify-icon icon="solar:bag-bold" class="text-primary-600 me-1"></iconify-icon>
-                        Orders: <strong class="text-white" id="ordersCount">{{ yearly_count }}</strong>
-                    </span>
-                    <span class="text-secondary-light text-sm" id="ordersDailyAvg">
-                        <iconify-icon icon="solar:chart-2-bold" class="text-success-main me-1"></iconify-icon>
-                        + {{ yearly_daily_avg|floatformat:0 }} UZS/day
-                    </span>
-                </div>
-                <div id="chart" class="pt-28 apexcharts-tooltip-style-1"></div>
+                    <span class="text-secondary-light" data-i18n="sales.vsLastPeriod">vs last period</span>
+                </p>
             </div>
         </div>
     </div>
-    
-    <!-- Orders by Status -->
-    <div class="col-xxl-6 col-lg-6">
-        <div class="card h-100 radius-12 border-0 shadow-sm">
+
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-2">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-success-main flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:wallet-money-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="sales.totalRevenue">Total Revenue</span>
+                            <h6 class="fw-semibold" id="totalRevenueCard">{{ yearly_revenue|floatformat:0 }} <small class="text-xs fw-normal">UZS</small></h6>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0">
+                    <span class="text-secondary-light">+{{ yearly_daily_avg|floatformat:0 }} UZS/<span data-i18n="common.dayAvg">day avg</span></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-3">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-yellow text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:check-circle-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="status.completed">Completed</span>
+                            <h6 class="fw-semibold" id="completedCard">0</h6>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0">
+                    <span class="bg-success-focus px-1 rounded-2 fw-medium text-success-main text-sm" id="completionRateCard">0%</span>
+                    <span class="text-secondary-light" data-i18n="sales.completionRate">completion rate</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-6">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-danger-main text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:close-circle-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="status.cancelled">Cancelled</span>
+                            <h6 class="fw-semibold" id="cancelledCard">0</h6>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0">
+                    <span class="text-secondary-light" data-i18n="sales.ordersCancelled">Orders cancelled</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Overview Chart -->
+    <div class="col-xxl-8">
+        <div class="card h-100 radius-8 border">
             <div class="card-body p-24">
                 <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                    <h6 class="mb-0 fw-bold text-lg text-white">Orders by Status</h6>
-                    <select class="form-select form-select-sm w-auto bg-base border-0 text-white radius-8" id="statusPeriodSelect">
-                        <option value="today">Today</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly" selected>Yearly</option>
+                    <div>
+                        <h6 class="mb-2 fw-bold text-lg" data-i18n="sales.ordersOverview">Orders Overview</h6>
+                        <span class="text-sm fw-medium text-secondary-light" data-i18n="sales.trackPerformance">Track your order performance</span>
+                    </div>
+                    <select class="form-select form-select-sm w-auto bg-base border text-secondary-light radius-8 px-16" id="ordersPeriodSelect">
+                        <option value="yearly" selected data-i18n="common.yearly">Yearly</option>
+                        <option value="monthly" data-i18n="common.monthly">Monthly</option>
+                        <option value="weekly" data-i18n="common.weekly">Weekly</option>
+                        <option value="today" data-i18n="common.today">Today</option>
                     </select>
                 </div>
-                <div id="orderStatusDonutChart" class="mt-16"></div>
-                <ul class="d-flex flex-wrap align-items-center justify-content-center mt-16 gap-3" id="statusLegend"></ul>
+                <div id="ordersChart" class="mt-28 apexcharts-tooltip-style-1"></div>
             </div>
         </div>
     </div>
-    
-    <!-- Order Completion Rate -->
-    <div class="col-xxl-6 col-lg-6">
-        <div class="card h-100 radius-12 border-0 shadow-sm">
+
+    <!-- Orders by Status -->
+    <div class="col-xxl-4">
+        <div class="card h-100 radius-8 border">
             <div class="card-body p-24">
-                <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-16">
-                    <h6 class="mb-0 fw-bold text-lg text-white">Completion Rate</h6>
-                    <select class="form-select form-select-sm w-auto bg-base border-0 text-primary-light radius-8" id="completionPeriodSelect">
-                        <option value="today">Today</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly" selected>Yearly</option>
+                <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
+                    <h6 class="mb-2 fw-bold text-lg" data-i18n="sales.ordersByStatus">Orders by Status</h6>
+                    <select class="form-select form-select-sm w-auto bg-base border text-secondary-light radius-8" id="statusPeriodSelect">
+                        <option value="yearly" selected data-i18n="common.yearly">Yearly</option>
+                        <option value="monthly" data-i18n="common.monthly">Monthly</option>
+                        <option value="weekly" data-i18n="common.weekly">Weekly</option>
+                        <option value="today" data-i18n="common.today">Today</option>
                     </select>
                 </div>
-                <div id="completionRateChart"></div>
-                <div class="mt-20 d-flex flex-column gap-12">
-                    <div class="d-flex align-items-center justify-content-between p-14 radius-10 bg-success-focus border-start border-success-main border-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <iconify-icon icon="solar:check-circle-bold" class="text-success-main text-xl"></iconify-icon>
-                            <span class="text-primary-light text-sm fw-medium">Completed</span>
-                        </div>
-                        <span class="fw-bold text-success-main text-lg" id="completedCount">0</span>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between p-14 radius-10 bg-primary-focus border-start border-primary-600 border-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <iconify-icon icon="solar:hourglass-bold" class="text-primary-600 text-xl"></iconify-icon>
-                            <span class="text-primary-light text-sm fw-medium">In Progress</span>
-                        </div>
-                        <span class="fw-bold text-primary-600 text-lg" id="inProgressCount">0</span>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between p-14 radius-10 bg-danger-focus border-start border-danger-main border-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <iconify-icon icon="solar:close-circle-bold" class="text-danger-main text-xl"></iconify-icon>
-                            <span class="text-primary-light text-sm fw-medium">Cancelled</span>
-                        </div>
-                        <span class="fw-bold text-danger-main text-lg" id="cancelledCount">0</span>
-                    </div>
-                </div>
+                <div id="statusDonutChart" class="mt-16"></div>
+                <div class="mt-16" id="statusLegend"></div>
             </div>
         </div>
     </div>
-    
-    <!-- Recent Orders - Full Width -->
+
+    <!-- Recent Orders Table - Full Width -->
     <div class="col-12">
-        <div class="card radius-12 border-0 shadow-sm">
-            <div class="card-header border-0 bg-transparent">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0">Recent Orders</h5>
-                    <a href="{% url 'ordersList' %}" class="btn btn-outline-primary-600 btn-sm radius-8 px-16">
-                        <iconify-icon icon="solar:eye-outline" class="me-1"></iconify-icon>View All
-                    </a>
-                </div>
+        <div class="card radius-8 border">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h6 class="text-lg fw-semibold mb-0" data-i18n="sales.recentOrders">Recent Orders</h6>
+                <a href="{% url 'ordersList' %}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
+                    <span data-i18n="common.viewAll">View All</span> <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
+                </a>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table basic-table mb-0">
+            <div class="card-body p-24">
+                <div class="table-responsive scroll-sm">
+                    <table class="table bordered-table mb-0">
                         <thead>
                             <tr>
-                                <th scope="col">Customer</th>
-                                <th scope="col">Product</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Status</th>
+                                <th scope="col" data-i18n="table.orderId">Order ID</th>
+                                <th scope="col" data-i18n="table.customer">Customer</th>
+                                <th scope="col" data-i18n="table.product">Product</th>
+                                <th scope="col" data-i18n="table.amount">Amount</th>
+                                <th scope="col" data-i18n="table.date">Date</th>
+                                <th scope="col" data-i18n="table.status">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for order in recent_orders %}
                             <tr>
-                                <td>{{ order.customer }}</td>
-                                <td>
-                                    <span class="text-sm text-secondary-light fw-normal">{{ order.product }}</span>
-                                </td>
-                                <td>{{ order.total_price|floatformat:0 }} UZS</td>
+                                <td><span class="text-primary-600 fw-medium">#{{ order.id }}</span></td>
+                                <td><span class="text-primary-light fw-medium">{{ order.customer }}</span></td>
+                                <td><span class="text-secondary-light">{{ order.product }}</span></td>
+                                <td><span class="fw-medium">{{ order.total_price|floatformat:0 }} UZS</span></td>
+                                <td><span class="text-secondary-light text-sm">{{ order.created_at }}</span></td>
                                 <td>
                                     {% if order.status == 'completed' %}
-                                    <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">{{ order.status_display }}</span>
+                                    <span class="bg-success-focus text-success-main px-16 py-4 rounded-pill fw-medium text-sm" data-i18n="status.completed">{{ order.status_display }}</span>
                                     {% elif order.status == 'cancelled' %}
-                                    <span class="bg-danger-focus text-danger-main px-24 py-4 rounded-pill fw-medium text-sm">{{ order.status_display }}</span>
+                                    <span class="bg-danger-focus text-danger-main px-16 py-4 rounded-pill fw-medium text-sm" data-i18n="status.cancelled">{{ order.status_display }}</span>
                                     {% elif order.status == 'in_progress' %}
-                                    <span class="bg-primary-focus text-primary-main px-24 py-4 rounded-pill fw-medium text-sm">{{ order.status_display }}</span>
-                                    {% elif order.status == 'pending' %}
-                                    <span class="bg-warning-focus text-warning-main px-24 py-4 rounded-pill fw-medium text-sm">{{ order.status_display }}</span>
+                                    <span class="bg-info-focus text-info-main px-16 py-4 rounded-pill fw-medium text-sm" data-i18n="status.inProgress">{{ order.status_display }}</span>
                                     {% else %}
-                                    <span class="bg-info-focus text-info-main px-24 py-4 rounded-pill fw-medium text-sm">{{ order.status_display }}</span>
+                                    <span class="bg-warning-focus text-warning-main px-16 py-4 rounded-pill fw-medium text-sm" data-i18n="status.pending">{{ order.status_display }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
                             {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center text-secondary-light">No recent orders</td>
-                            </tr>
+                            <tr><td colspan="6" class="text-center text-secondary-light py-24" data-i18n="table.noRecentOrders">No recent orders</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -155,73 +182,66 @@
             </div>
         </div>
     </div>
-    
-    <!-- Top Agencies Table -->
-    <div class="col-lg-6">
-        <div class="card h-100 radius-12 border-0 shadow-sm">
-            <div class="card-header border-0 bg-transparent">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0">Top 5 Agencies</h5>
-                    <select class="form-select form-select-sm w-auto" id="agenciesPeriodSelect">
-                        <option value="yearly" selected>Yearly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="today">Today</option>
-                    </select>
-                </div>
+
+    <!-- Top Agencies & Top Customers Side by Side -->
+    <div class="col-xxl-6">
+        <div class="card h-100 radius-8 border">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h6 class="text-lg fw-semibold mb-0" data-i18n="sales.top5Agencies">Top 5 Agencies</h6>
+                <select class="form-select form-select-sm w-auto bg-base border text-secondary-light radius-8" id="agenciesPeriodSelect">
+                    <option value="yearly" selected data-i18n="common.yearly">Yearly</option>
+                    <option value="monthly" data-i18n="common.monthly">Monthly</option>
+                    <option value="weekly" data-i18n="common.weekly">Weekly</option>
+                    <option value="today" data-i18n="common.today">Today</option>
+                </select>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table basic-table mb-0">
+            <div class="card-body p-24">
+                <div class="table-responsive scroll-sm">
+                    <table class="table bordered-table mb-0">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Agency</th>
-                                <th scope="col" class="text-center">Orders</th>
-                                <th scope="col">Total Spent</th>
-                                <th scope="col" class="text-center">Pages</th>
+                                <th scope="col" data-i18n="table.agency">Agency</th>
+                                <th scope="col" class="text-center" data-i18n="table.orders">Orders</th>
+                                <th scope="col" data-i18n="table.revenue">Revenue</th>
                             </tr>
                         </thead>
                         <tbody id="agenciesTableBody"></tbody>
                     </table>
-                    <div id="noAgenciesMessage" class="text-center py-32 d-none">
-                        <span class="text-secondary-light text-sm">No agencies found for this period</span>
+                    <div id="noAgenciesMessage" class="text-center py-24 d-none">
+                        <span class="text-secondary-light text-sm" data-i18n="table.noAgenciesFound">No agencies found</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Top Customers Table -->
-    <div class="col-lg-6">
-        <div class="card h-100 radius-12 border-0 shadow-sm">
-            <div class="card-header border-0 bg-transparent">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0">Top 5 Customers</h5>
-                    <select class="form-select form-select-sm w-auto" id="customersPeriodSelect">
-                        <option value="yearly" selected>Yearly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="today">Today</option>
-                    </select>
-                </div>
+
+    <div class="col-xxl-6">
+        <div class="card h-100 radius-8 border">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h6 class="text-lg fw-semibold mb-0" data-i18n="sales.top5Customers">Top 5 Customers</h6>
+                <select class="form-select form-select-sm w-auto bg-base border text-secondary-light radius-8" id="customersPeriodSelect">
+                    <option value="yearly" selected data-i18n="common.yearly">Yearly</option>
+                    <option value="monthly" data-i18n="common.monthly">Monthly</option>
+                    <option value="weekly" data-i18n="common.weekly">Weekly</option>
+                    <option value="today" data-i18n="common.today">Today</option>
+                </select>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table basic-table mb-0">
+            <div class="card-body p-24">
+                <div class="table-responsive scroll-sm">
+                    <table class="table bordered-table mb-0">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Customer</th>
-                                <th scope="col" class="text-center">Orders</th>
-                                <th scope="col">Total Spent</th>
-                                <th scope="col" class="text-center">Pages</th>
+                                <th scope="col" data-i18n="table.customer">Customer</th>
+                                <th scope="col" class="text-center" data-i18n="table.orders">Orders</th>
+                                <th scope="col" data-i18n="table.revenue">Revenue</th>
                             </tr>
                         </thead>
                         <tbody id="customersTableBody"></tbody>
                     </table>
-                    <div id="noCustomersMessage" class="text-center py-32 d-none">
-                        <span class="text-secondary-light text-sm">No customers found for this period</span>
+                    <div id="noCustomersMessage" class="text-center py-24 d-none">
+                        <span class="text-secondary-light text-sm" data-i18n="table.noCustomersFound">No customers found</span>
                     </div>
                 </div>
             </div>
@@ -232,285 +252,164 @@
 
 {% block script %}
 <script>
-// Data from Django
 const ordersData = {
-    today: {
-        count: {{ today_count }},
-        revenue: {{ today_revenue }},
-        change: {{ today_change }},
-        dailyAvg: {{ today_daily_avg }},
-        chartData: {{ today_chart_data|safe }},
-        chartLabels: {{ today_chart_labels|safe }}
-    },
-    weekly: {
-        count: {{ weekly_count }},
-        revenue: {{ weekly_revenue }},
-        change: {{ weekly_change }},
-        dailyAvg: {{ weekly_daily_avg }},
-        chartData: {{ weekly_chart_data|safe }},
-        chartLabels: {{ weekly_chart_labels|safe }}
-    },
-    monthly: {
-        count: {{ monthly_count }},
-        revenue: {{ monthly_revenue }},
-        change: {{ monthly_change }},
-        dailyAvg: {{ monthly_daily_avg }},
-        chartData: {{ monthly_chart_data|safe }},
-        chartLabels: {{ monthly_chart_labels|safe }}
-    },
-    yearly: {
-        count: {{ yearly_count }},
-        revenue: {{ yearly_revenue }},
-        change: {{ yearly_change }},
-        dailyAvg: {{ yearly_daily_avg }},
-        chartData: {{ yearly_chart_data|safe }},
-        chartLabels: {{ yearly_chart_labels|safe }}
-    }
+    today: { count: {{ today_count }}, revenue: {{ today_revenue }}, change: {{ today_change }}, dailyAvg: {{ today_daily_avg }}, chartData: {{ today_chart_data|safe }}, chartLabels: {{ today_chart_labels|safe }} },
+    weekly: { count: {{ weekly_count }}, revenue: {{ weekly_revenue }}, change: {{ weekly_change }}, dailyAvg: {{ weekly_daily_avg }}, chartData: {{ weekly_chart_data|safe }}, chartLabels: {{ weekly_chart_labels|safe }} },
+    monthly: { count: {{ monthly_count }}, revenue: {{ monthly_revenue }}, change: {{ monthly_change }}, dailyAvg: {{ monthly_daily_avg }}, chartData: {{ monthly_chart_data|safe }}, chartLabels: {{ monthly_chart_labels|safe }} },
+    yearly: { count: {{ yearly_count }}, revenue: {{ yearly_revenue }}, change: {{ yearly_change }}, dailyAvg: {{ yearly_daily_avg }}, chartData: {{ yearly_chart_data|safe }}, chartLabels: {{ yearly_chart_labels|safe }} }
 };
-
 const statusChartData = {{ status_chart_data|safe }};
-
 const topAgenciesData = {{ top_agencies_data|safe }};
-
 const topCustomersData = {{ top_customers_data|safe }};
-
 const completionRatesData = {{ completion_rates|safe }};
 
-// Format number with commas
-function formatNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+function formatNumber(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+function formatShort(num) {
+    num = parseFloat(num) || 0;
+    if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B';
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toFixed(0);
 }
-
-// Get theme-aware colors
 function getThemeColors() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    return {
-        textColor: isDark ? '#9CA3AF' : '#6C757D',
-        gridColor: isDark ? '#374151' : '#E4E7EC',
-        trackColor: isDark ? '#374151' : '#E4E7EC',
-        valueColor: isDark ? '#F9FAFB' : '#1B2559'
-    };
+    return { textColor: isDark ? '#9CA3AF' : '#6C757D', gridColor: isDark ? '#374151' : '#E4E7EC', bgColor: isDark ? '#1F2937' : '#ffffff' };
 }
 
-// ============ ORDERS OVERVIEW CHART ============
-let ordersChart;
-function updateOrdersUI(period) {
+// Update stat cards
+function updateStatCards(period) {
     const data = ordersData[period];
-    
-    document.getElementById('ordersRevenue').textContent = formatNumber(data.revenue) + ' UZS';
-    document.getElementById('ordersCount').textContent = formatNumber(data.count);
-    document.getElementById('ordersChangeValue').textContent = data.change + '%';
-    document.getElementById('ordersDailyAvg').textContent = '+ ' + formatNumber(data.dailyAvg) + ' UZS Per Day';
-    
+    const completion = completionRatesData[period];
+    document.getElementById('totalOrdersCard').textContent = formatNumber(data.count);
+    document.getElementById('totalRevenueCard').innerHTML = formatNumber(data.revenue) + ' <small class="text-xs fw-normal">UZS</small>';
+    document.getElementById('completedCard').textContent = formatNumber(completion.completed);
+    document.getElementById('cancelledCard').textContent = formatNumber(completion.cancelled);
+    document.getElementById('completionRateCard').textContent = completion.rate + '%';
     const badge = document.getElementById('ordersChangeBadge');
-    const icon = document.getElementById('ordersChangeIcon');
-    if (data.change >= 0) {
-        badge.classList.remove('bg-danger-focus', 'text-danger-main');
-        badge.classList.add('bg-success-focus', 'text-success-main');
-        icon.setAttribute('icon', 'bxs:up-arrow');
-    } else {
-        badge.classList.remove('bg-success-focus', 'text-success-main');
-        badge.classList.add('bg-danger-focus', 'text-danger-main');
-        icon.setAttribute('icon', 'bxs:down-arrow');
-    }
-    
-    // Update chart
-    if (ordersChart) {
-        ordersChart.updateOptions({
-            series: [{ name: 'Revenue', data: data.chartData }],
-            xaxis: { categories: data.chartLabels }
-        });
-    }
+    badge.innerHTML = '<iconify-icon icon="bxs:' + (data.change >= 0 ? 'up' : 'down') + '-arrow" class="text-xs"></iconify-icon> ' + data.change + '%';
+    badge.className = data.change >= 0 ? 'bg-success-focus px-1 rounded-2 fw-medium text-success-main text-sm' : 'bg-danger-focus px-1 rounded-2 fw-medium text-danger-main text-sm';
 }
 
+// Orders Chart
+let ordersChart;
 function initOrdersChart() {
-    const initialData = ordersData.yearly;
     const colors = getThemeColors();
-    const options = {
-        series: [{ name: 'Revenue', data: initialData.chartData }],
+    const data = ordersData.yearly;
+    ordersChart = new ApexCharts(document.querySelector("#ordersChart"), {
+        series: [{ name: 'Revenue', data: data.chartData }],
         chart: { type: 'area', height: 264, toolbar: { show: false } },
         colors: ['#487FFF'],
-        fill: {
-            type: 'gradient',
-            gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1, stops: [0, 100] }
-        },
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1 } },
         stroke: { curve: 'smooth', width: 2 },
         dataLabels: { enabled: false },
-        xaxis: {
-            categories: initialData.chartLabels,
-            labels: { style: { colors: colors.textColor, fontSize: '12px' } }
-        },
-        yaxis: {
-            labels: {
-                formatter: function(val) {
-                    if (val >= 1000000) return (val / 1000000).toFixed(1) + 'M';
-                    if (val >= 1000) return (val / 1000).toFixed(0) + 'K';
-                    return val;
-                },
-                style: { colors: colors.textColor, fontSize: '12px' }
-            }
-        },
+        xaxis: { categories: data.chartLabels, labels: { style: { colors: colors.textColor, fontSize: '12px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+        yaxis: { labels: { formatter: val => val >= 1000000 ? (val/1000000).toFixed(1)+'M' : val >= 1000 ? (val/1000).toFixed(0)+'K' : val, style: { colors: colors.textColor, fontSize: '12px' } } },
         grid: { borderColor: colors.gridColor, strokeDashArray: 3 },
-        tooltip: {
-            y: { formatter: function(val) { return formatNumber(val) + ' UZS'; } }
-        }
-    };
-    ordersChart = new ApexCharts(document.querySelector("#chart"), options);
+        tooltip: { y: { formatter: val => formatNumber(val) + ' UZS' } }
+    });
     ordersChart.render();
 }
 
-// ============ ORDER STATUS DONUT CHART ============
+function updateOrdersChart(period) {
+    const data = ordersData[period];
+    ordersChart.updateOptions({ xaxis: { categories: data.chartLabels } });
+    ordersChart.updateSeries([{ name: 'Revenue', data: data.chartData }]);
+}
+
+// Status Donut Chart
 let statusDonutChart;
-function renderStatusChart(period) {
+function updateStatusLegend(period) {
     const data = statusChartData[period];
-    
-    // Update legend
-    const legendHtml = data.labels.map((label, i) => `
-        <li class="d-flex align-items-center gap-2">
-            <span class="w-12-px h-12-px rounded-circle" style="background-color: ${data.colors[i]}"></span>
-            <span class="text-secondary-light text-sm fw-medium">${label}: <strong class="text-primary-light">${data.values[i]}</strong></span>
-        </li>
-    `).join('');
-    document.getElementById('statusLegend').innerHTML = legendHtml;
-    
+    let html = '<div class="d-flex flex-column gap-8">';
+    for (let i = 0; i < data.labels.length; i++) {
+        html += '<div class="d-flex align-items-center justify-content-between">' +
+            '<div class="d-flex align-items-center gap-8">' +
+            '<span class="w-12-px h-12-px rounded-circle" style="background:' + data.colors[i] + '"></span>' +
+            '<span class="text-secondary-light text-sm">' + data.labels[i] + '</span></div>' +
+            '<span class="fw-medium text-primary-light text-sm">' + data.values[i] + '</span></div>';
+    }
+    html += '</div>';
+    document.getElementById('statusLegend').innerHTML = html;
+}
+
+function updateStatusChart(period) {
+    const data = statusChartData[period];
+    updateStatusLegend(period);
+    if (statusDonutChart) {
+        statusDonutChart.updateOptions({ labels: data.labels, colors: data.colors });
+        statusDonutChart.updateSeries(data.values);
+    }
+}
+
+function initStatusDonutChart() {
     const colors = getThemeColors();
-    const options = {
+    const data = statusChartData.yearly;
+    statusDonutChart = new ApexCharts(document.querySelector("#statusDonutChart"), {
         series: data.values,
-        chart: { type: 'donut', height: 250 },
+        chart: { type: 'donut', height: 200 },
         labels: data.labels,
         colors: data.colors,
         legend: { show: false },
         dataLabels: { enabled: false },
-        plotOptions: {
-            pie: {
-                donut: {
-                    size: '70%',
-                    labels: {
-                        show: true,
-                        name: {
-                            show: true,
-                            color: colors.textColor,
-                            fontSize: '14px'
-                        },
-                        value: {
-                            show: true,
-                            color: colors.valueColor,
-                            fontSize: '24px',
-                            fontWeight: 600
-                        },
-                        total: {
-                            show: true,
-                            label: 'Total',
-                            color: colors.textColor,
-                            formatter: function(w) {
-                                return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    };
-    
-    if (statusDonutChart) {
-        statusDonutChart.updateOptions(options);
-    } else {
-        statusDonutChart = new ApexCharts(document.querySelector("#orderStatusDonutChart"), options);
-        statusDonutChart.render();
-    }
+        plotOptions: { pie: { donut: { size: '70%', labels: { show: true, name: { show: true, fontSize: '12px', color: colors.textColor }, value: { show: true, fontSize: '14px', fontWeight: 600, color: colors.textColor, formatter: val => formatShort(val) }, total: { show: true, label: 'Total', color: colors.textColor, formatter: w => w.globals.seriesTotals.reduce((a,b) => a+b, 0) } } } } }
+    });
+    statusDonutChart.render();
+    updateStatusLegend('yearly');
 }
 
-// ============ COMPLETION RATE CHART ============
-let completionRateChart;
-function renderCompletionChart(period) {
-    const data = completionRatesData[period];
-    const colors = getThemeColors();
-    
-    document.getElementById('completedCount').textContent = data.completed;
-    document.getElementById('inProgressCount').textContent = data.in_progress;
-    document.getElementById('cancelledCount').textContent = data.cancelled;
-    
-    const options = {
-        series: [data.rate],
-        chart: { type: 'radialBar', height: 200 },
-        colors: ['#45B369'],
-        plotOptions: {
-            radialBar: {
-                hollow: { size: '60%' },
-                track: { background: colors.trackColor },
-                dataLabels: {
-                    name: { show: true, fontSize: '14px', color: colors.textColor, offsetY: -10 },
-                    value: { show: true, fontSize: '24px', fontWeight: 600, color: colors.valueColor, offsetY: 5 }
-                }
-            }
-        },
-        labels: ['Completion']
-    };
-    
-    if (completionRateChart) {
-        completionRateChart.updateOptions(options);
-    } else {
-        completionRateChart = new ApexCharts(document.querySelector("#completionRateChart"), options);
-        completionRateChart.render();
-    }
-}
-
-// ============ TOP USERS TABLES ============
-function renderTopUsersTable(users, tableBodyId, noDataId) {
-    const tbody = document.getElementById(tableBodyId);
-    const noDataMsg = document.getElementById(noDataId);
-    
-    if (users.length === 0) {
+// Top Tables
+function updateAgenciesTable(period) {
+    const agencies = topAgenciesData[period] || [];
+    const tbody = document.getElementById('agenciesTableBody');
+    const empty = document.getElementById('noAgenciesMessage');
+    if (!agencies || agencies.length === 0) {
         tbody.innerHTML = '';
-        noDataMsg.classList.remove('d-none');
+        empty.classList.remove('d-none');
         return;
     }
-    
-    noDataMsg.classList.add('d-none');
-    tbody.innerHTML = users.map((user, index) => `
-        <tr>
-            <td>${index + 1}</td>
-            <td>
-                <h6 class="text-md mb-0 fw-normal">${user.name}</h6>
-                <span class="text-sm text-secondary-light fw-normal">${user.username !== '-' ? '@' + user.username : user.phone}</span>
-            </td>
-            <td class="text-center">
-                <span class="bg-primary-focus text-primary-main px-24 py-4 rounded-pill fw-medium text-sm">${user.order_count}</span>
-            </td>
-            <td>${formatNumber(user.total_spent)} UZS</td>
-            <td class="text-center">${formatNumber(user.total_pages)}</td>
-        </tr>
-    `).join('');
+    empty.classList.add('d-none');
+    tbody.innerHTML = agencies.map((a, i) => 
+        '<tr><td class="text-primary-600 fw-medium">' + (i+1) + '</td>' +
+        '<td><span class="text-primary-light fw-medium">' + a.name + '</span></td>' +
+        '<td class="text-center"><span class="bg-info-focus text-info-main px-12 py-4 rounded-pill fw-medium text-sm">' + a.order_count + '</span></td>' +
+        '<td class="fw-medium">' + formatNumber(a.total_spent) + ' UZS</td></tr>'
+    ).join('');
 }
 
-// ============ EVENT LISTENERS ============
-document.getElementById('ordersPeriodSelect').addEventListener('change', function() {
-    updateOrdersUI(this.value);
-});
+function updateCustomersTable(period) {
+    const customers = topCustomersData[period] || [];
+    const tbody = document.getElementById('customersTableBody');
+    const empty = document.getElementById('noCustomersMessage');
+    if (!customers || customers.length === 0) {
+        tbody.innerHTML = '';
+        empty.classList.remove('d-none');
+        return;
+    }
+    empty.classList.add('d-none');
+    tbody.innerHTML = customers.map((c, i) => 
+        '<tr><td class="text-primary-600 fw-medium">' + (i+1) + '</td>' +
+        '<td><span class="text-primary-light fw-medium">' + c.name + '</span></td>' +
+        '<td class="text-center"><span class="bg-success-focus text-success-main px-12 py-4 rounded-pill fw-medium text-sm">' + c.order_count + '</span></td>' +
+        '<td class="fw-medium">' + formatNumber(c.total_spent) + ' UZS</td></tr>'
+    ).join('');
+}
 
-document.getElementById('statusPeriodSelect').addEventListener('change', function() {
-    renderStatusChart(this.value);
-});
-
-document.getElementById('completionPeriodSelect').addEventListener('change', function() {
-    renderCompletionChart(this.value);
-});
-
-document.getElementById('agenciesPeriodSelect').addEventListener('change', function() {
-    renderTopUsersTable(topAgenciesData[this.value], 'agenciesTableBody', 'noAgenciesMessage');
-});
-
-document.getElementById('customersPeriodSelect').addEventListener('change', function() {
-    renderTopUsersTable(topCustomersData[this.value], 'customersTableBody', 'noCustomersMessage');
-});
-
-// ============ INITIALIZE ============
 document.addEventListener('DOMContentLoaded', function() {
     initOrdersChart();
-    renderStatusChart('yearly');
-    renderCompletionChart('yearly');
-    renderTopUsersTable(topAgenciesData.yearly, 'agenciesTableBody', 'noAgenciesMessage');
-    renderTopUsersTable(topCustomersData.yearly, 'customersTableBody', 'noCustomersMessage');
+    initStatusDonutChart();
+    updateStatCards('yearly');
+    updateAgenciesTable('yearly');
+    updateCustomersTable('yearly');
+    
+    document.getElementById('ordersPeriodSelect').addEventListener('change', function(e) {
+        const period = e.target.value;
+        updateStatCards(period);
+        updateOrdersChart(period);
+    });
+    
+    document.getElementById('statusPeriodSelect').addEventListener('change', e => updateStatusChart(e.target.value));
+    document.getElementById('agenciesPeriodSelect').addEventListener('change', e => updateAgenciesTable(e.target.value));
+    document.getElementById('customersPeriodSelect').addEventListener('change', e => updateCustomersTable(e.target.value));
 });
 </script>
 {% endblock script %}

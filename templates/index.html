@@ -15,7 +15,7 @@
                                     <iconify-icon icon="solar:bag-4-bold" class="icon"></iconify-icon>
                                 </span>
                                 <div>
-                                    <span class="mb-2 fw-medium text-secondary-light text-sm">Today's Orders</span>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="dashboard.todaysOrders">Today's Orders</span>
                                     <h6 class="fw-semibold">{{ today_count }}</h6>
                                 </div>
                             </div>
@@ -27,7 +27,7 @@
                             {% else %}
                             <span class="bg-danger-focus px-1 rounded-2 fw-medium text-danger-main text-sm">{{ order_change }}</span>
                             {% endif %}
-                            vs yesterday
+                            <span data-i18n="dashboard.vsYesterday">vs yesterday</span>
                         </p>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                                     <iconify-icon icon="solar:wallet-money-bold" class="icon"></iconify-icon>
                                 </span>
                                 <div>
-                                    <span class="mb-2 fw-medium text-secondary-light text-sm">Today's Revenue</span>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="dashboard.todaysRevenue">Today's Revenue</span>
                                     <h6 class="fw-semibold">{{ today_revenue|floatformat:0 }} <small class="text-xs fw-normal">UZS</small></h6>
                                 </div>
                             </div>
@@ -55,7 +55,7 @@
                             {% else %}
                             <span class="bg-danger-focus px-1 rounded-2 fw-medium text-danger-main text-sm">{{ revenue_change|floatformat:0 }}</span>
                             {% endif %}
-                            vs yesterday
+                            <span data-i18n="dashboard.vsYesterday">vs yesterday</span>
                         </p>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                                     <iconify-icon icon="solar:chart-2-bold" class="icon"></iconify-icon>
                                 </span>
                                 <div>
-                                    <span class="mb-2 fw-medium text-secondary-light text-sm">Completion Rate</span>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="dashboard.completionRate">Completion Rate</span>
                                     <h6 class="fw-semibold">{{ completion_rate }}%</h6>
                                 </div>
                             </div>
@@ -79,7 +79,7 @@
                         </div>
                         <p class="text-sm mb-0">
                             <span class="bg-success-focus px-1 rounded-2 fw-medium text-success-main text-sm">{{ completed_today }}</span>
-                            completed today
+                            <span data-i18n="dashboard.completedToday">completed today</span>
                         </p>
                     </div>
                 </div>
@@ -95,14 +95,14 @@
                                     <iconify-icon icon="solar:clock-circle-bold" class="icon"></iconify-icon>
                                 </span>
                                 <div>
-                                    <span class="mb-2 fw-medium text-secondary-light text-sm">Pending Orders</span>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="dashboard.pendingOrders">Pending Orders</span>
                                     <h6 class="fw-semibold">{{ pending_orders }}</h6>
                                 </div>
                             </div>
                         </div>
                         <p class="text-sm mb-0">
                             <span class="bg-warning-focus px-1 rounded-2 fw-medium text-warning-main text-sm">
-                                <iconify-icon icon="solar:bell-bold" class="icon"></iconify-icon> Requires attention
+                                <iconify-icon icon="solar:bell-bold" class="icon"></iconify-icon> <span data-i18n="dashboard.requiresAttention">Requires attention</span>
                             </span>
                         </p>
                     </div>
@@ -119,13 +119,13 @@
                                     <iconify-icon icon="solar:hourglass-bold" class="icon"></iconify-icon>
                                 </span>
                                 <div>
-                                    <span class="mb-2 fw-medium text-secondary-light text-sm">In Progress</span>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="dashboard.inProgress">In Progress</span>
                                     <h6 class="fw-semibold">{{ in_progress_today }}</h6>
                                 </div>
                             </div>
                         </div>
                         <p class="text-sm mb-0">
-                            <span class="text-secondary-light">Processing now</span>
+                            <span class="text-secondary-light" data-i18n="dashboard.processingNow">Processing now</span>
                         </p>
                     </div>
                 </div>
@@ -141,16 +141,16 @@
                                     <iconify-icon icon="solar:close-circle-bold" class="icon"></iconify-icon>
                                 </span>
                                 <div>
-                                    <span class="mb-2 fw-medium text-secondary-light text-sm">Cancelled</span>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="dashboard.cancelled">Cancelled</span>
                                     <h6 class="fw-semibold">{{ cancelled_today }}</h6>
                                 </div>
                             </div>
                         </div>
                         <p class="text-sm mb-0">
                             {% if cancelled_week > 0 %}
-                            <span class="bg-danger-focus px-1 rounded-2 fw-medium text-danger-main text-sm">{{ cancelled_week }} this week</span>
+                            <span class="bg-danger-focus px-1 rounded-2 fw-medium text-danger-main text-sm">{{ cancelled_week }} <span data-i18n="dashboard.thisWeek">this week</span></span>
                             {% else %}
-                            <span class="text-secondary-light">None this week</span>
+                            <span class="text-secondary-light" data-i18n="dashboard.noneThisWeek">None this week</span>
                             {% endif %}
                         </p>
                     </div>
@@ -165,12 +165,12 @@
             <div class="card-body p-24">
                 <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
                     <div>
-                        <h6 class="mb-2 fw-bold text-lg">Weekly Revenue</h6>
-                        <span class="text-sm fw-medium text-secondary-light">Last 7 days</span>
+                        <h6 class="mb-2 fw-bold text-lg" data-i18n="dashboard.weeklyRevenue">Weekly Revenue</h6>
+                        <span class="text-sm fw-medium text-secondary-light" data-i18n="dashboard.last7Days">Last 7 days</span>
                     </div>
                     <div class="text-end">
                         <h6 class="mb-2 fw-bold text-lg">{{ monthly_revenue|floatformat:0 }} <small class="text-xs fw-normal">UZS</small></h6>
-                        <span class="bg-success-focus ps-12 pe-12 pt-2 pb-2 rounded-2 fw-medium text-success-main text-sm">Monthly</span>
+                        <span class="bg-success-focus ps-12 pe-12 pt-2 pb-2 rounded-2 fw-medium text-success-main text-sm" data-i18n="dashboard.monthly">Monthly</span>
                     </div>
                 </div>
                 <div id="revenueChart" class="mt-28"></div>
@@ -183,9 +183,9 @@
         <div class="card h-100 radius-8 border-0">
             <div class="card-body p-24">
                 <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                    <h6 class="mb-2 fw-bold text-lg">Today's Status</h6>
+                    <h6 class="mb-2 fw-bold text-lg" data-i18n="dashboard.todaysStatus">Today's Status</h6>
                     <a href="{% url 'sales' %}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                        View Details
+                        <span data-i18n="common.viewDetails">View Details</span>
                         <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
                     </a>
                 </div>
@@ -196,7 +196,7 @@
                             <span class="text-xxl line-height-1 d-flex align-content-center flex-shrink-0 text-success-main">
                                 <iconify-icon icon="solar:check-circle-bold" class="icon"></iconify-icon>
                             </span>
-                            <span class="text-primary-light fw-medium text-sm ps-12">Completed</span>
+                            <span class="text-primary-light fw-medium text-sm ps-12" data-i18n="status.completed">Completed</span>
                         </div>
                         <div class="d-flex align-items-center gap-2 w-100">
                             <div class="w-100 max-w-66 ms-auto">
@@ -213,7 +213,7 @@
                             <span class="text-xxl line-height-1 d-flex align-content-center flex-shrink-0 text-info-main">
                                 <iconify-icon icon="solar:hourglass-bold" class="icon"></iconify-icon>
                             </span>
-                            <span class="text-primary-light fw-medium text-sm ps-12">In Progress</span>
+                            <span class="text-primary-light fw-medium text-sm ps-12" data-i18n="status.inProgress">In Progress</span>
                         </div>
                         <div class="d-flex align-items-center gap-2 w-100">
                             <div class="w-100 max-w-66 ms-auto">
@@ -230,7 +230,7 @@
                             <span class="text-xxl line-height-1 d-flex align-content-center flex-shrink-0 text-warning-main">
                                 <iconify-icon icon="solar:clock-circle-bold" class="icon"></iconify-icon>
                             </span>
-                            <span class="text-primary-light fw-medium text-sm ps-12">Pending</span>
+                            <span class="text-primary-light fw-medium text-sm ps-12" data-i18n="status.pending">Pending</span>
                         </div>
                         <div class="d-flex align-items-center gap-2 w-100">
                             <div class="w-100 max-w-66 ms-auto">
@@ -247,7 +247,7 @@
                             <span class="text-xxl line-height-1 d-flex align-content-center flex-shrink-0 text-danger-main">
                                 <iconify-icon icon="solar:close-circle-bold" class="icon"></iconify-icon>
                             </span>
-                            <span class="text-primary-light fw-medium text-sm ps-12">Cancelled</span>
+                            <span class="text-primary-light fw-medium text-sm ps-12" data-i18n="status.cancelled">Cancelled</span>
                         </div>
                         <div class="d-flex align-items-center gap-2 w-100">
                             <div class="w-100 max-w-66 ms-auto">
@@ -268,9 +268,9 @@
         <div class="card h-100 radius-8 border-0 overflow-hidden">
             <div class="card-body p-24">
                 <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                    <h6 class="mb-2 fw-bold text-lg">User Overview</h6>
+                    <h6 class="mb-2 fw-bold text-lg" data-i18n="dashboard.userOverview">User Overview</h6>
                     <a href="{% url 'usersList' %}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                        View All
+                        <span data-i18n="common.viewAll">View All</span>
                         <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
                     </a>
                 </div>
@@ -279,15 +279,15 @@
                     <ul class="flex-shrink-0">
                         <li class="d-flex align-items-center gap-2 mb-28">
                             <span class="w-12-px h-12-px rounded-circle bg-primary-600"></span>
-                            <span class="text-secondary-light text-sm fw-medium">Total: {{ total_users }}</span>
+                            <span class="text-secondary-light text-sm fw-medium"><span data-i18n="dashboard.total">Total</span>: {{ total_users }}</span>
                         </li>
                         <li class="d-flex align-items-center gap-2 mb-28">
                             <span class="w-12-px h-12-px rounded-circle bg-success-main"></span>
-                            <span class="text-secondary-light text-sm fw-medium">Agencies: {{ total_agencies }}</span>
+                            <span class="text-secondary-light text-sm fw-medium"><span data-i18n="dashboard.agencies">Agencies</span>: {{ total_agencies }}</span>
                         </li>
                         <li class="d-flex align-items-center gap-2">
                             <span class="w-12-px h-12-px rounded-circle bg-warning-main"></span>
-                            <span class="text-secondary-light text-sm fw-medium">Customers</span>
+                            <span class="text-secondary-light text-sm fw-medium" data-i18n="dashboard.customers">Customers</span>
                         </li>
                     </ul>
                     <div id="userDonutChart" class="flex-grow-1 apexcharts-tooltip-z-none title-style circle-none"></div>
@@ -300,9 +300,9 @@
     <div class="col-xxl-4">
         <div class="card h-100">
             <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-                <h6 class="text-lg fw-semibold mb-0">Recent Orders</h6>
+                <h6 class="text-lg fw-semibold mb-0" data-i18n="dashboard.recentOrders">Recent Orders</h6>
                 <a href="{% url 'ordersList' %}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
-                    View All
+                    <span data-i18n="common.viewAll">View All</span>
                     <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
                 </a>
             </div>
@@ -311,9 +311,9 @@
                     <table class="table bordered-table mb-0">
                         <thead>
                             <tr>
-                                <th scope="col">Customer</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Status</th>
+                                <th scope="col" data-i18n="table.customer">Customer</th>
+                                <th scope="col" data-i18n="table.amount">Amount</th>
+                                <th scope="col" data-i18n="table.status">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -328,19 +328,19 @@
                                 <td>{{ order.total_price|floatformat:0 }} UZS</td>
                                 <td>
                                     {% if order.status == 'completed' %}
-                                    <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">{{ order.status_display }}</span>
+                                    <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm" data-i18n="status.completed">{{ order.status_display }}</span>
                                     {% elif order.status == 'cancelled' %}
-                                    <span class="bg-danger-focus text-danger-main px-24 py-4 rounded-pill fw-medium text-sm">{{ order.status_display }}</span>
+                                    <span class="bg-danger-focus text-danger-main px-24 py-4 rounded-pill fw-medium text-sm" data-i18n="status.cancelled">{{ order.status_display }}</span>
                                     {% elif order.status == 'in_progress' %}
-                                    <span class="bg-info-focus text-info-main px-24 py-4 rounded-pill fw-medium text-sm">{{ order.status_display }}</span>
+                                    <span class="bg-info-focus text-info-main px-24 py-4 rounded-pill fw-medium text-sm" data-i18n="status.inProgress">{{ order.status_display }}</span>
                                     {% else %}
-                                    <span class="bg-warning-focus text-warning-main px-24 py-4 rounded-pill fw-medium text-sm">{{ order.status_display }}</span>
+                                    <span class="bg-warning-focus text-warning-main px-24 py-4 rounded-pill fw-medium text-sm" data-i18n="status.pending">{{ order.status_display }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="3" class="text-center text-secondary-light">No recent orders</td>
+                                <td colspan="3" class="text-center text-secondary-light" data-i18n="table.noRecentOrders">No recent orders</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -355,7 +355,7 @@
         <div class="card h-100 radius-8 border-0">
             <div class="card-body p-24">
                 <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
-                    <h6 class="mb-0 fw-bold text-lg">Quick Actions</h6>
+                    <h6 class="mb-0 fw-bold text-lg" data-i18n="dashboard.quickActions">Quick Actions</h6>
                 </div>
 
                 <div class="d-flex justify-content-center flex-wrap gap-3">
@@ -364,7 +364,7 @@
                             <iconify-icon icon="solar:bag-4-bold" class="icon"></iconify-icon>
                         </span>
                         <div>
-                            <span class="text-secondary-light text-sm fw-medium">Orders</span>
+                            <span class="text-secondary-light text-sm fw-medium" data-i18n="sidebar.orders">Orders</span>
                             <h6 class="text-md fw-semibold mb-0">{{ total_orders }}</h6>
                         </div>
                     </a>
@@ -374,8 +374,8 @@
                             <iconify-icon icon="solar:chart-bold" class="icon"></iconify-icon>
                         </span>
                         <div>
-                            <span class="text-secondary-light text-sm fw-medium">Sales</span>
-                            <h6 class="text-md fw-semibold mb-0">Analytics</h6>
+                            <span class="text-secondary-light text-sm fw-medium" data-i18n="sidebar.sales">Sales</span>
+                            <h6 class="text-md fw-semibold mb-0" data-i18n="common.analytics">Analytics</h6>
                         </div>
                     </a>
 
@@ -384,7 +384,7 @@
                             <iconify-icon icon="solar:wallet-money-bold" class="icon"></iconify-icon>
                         </span>
                         <div>
-                            <span class="text-secondary-light text-sm fw-medium">Finance</span>
+                            <span class="text-secondary-light text-sm fw-medium" data-i18n="sidebar.finance">Finance</span>
                             <h6 class="text-md fw-semibold mb-0">{{ total_revenue|floatformat:0 }}</h6>
                         </div>
                     </a>
@@ -394,18 +394,18 @@
                             <iconify-icon icon="solar:users-group-rounded-bold" class="icon"></iconify-icon>
                         </span>
                         <div>
-                            <span class="text-secondary-light text-sm fw-medium">Users</span>
+                            <span class="text-secondary-light text-sm fw-medium" data-i18n="sidebar.users">Users</span>
                             <h6 class="text-md fw-semibold mb-0">{{ total_users }}</h6>
                         </div>
                     </a>
 
-                    <a href="{% url 'productList' %}" class="d-inline-flex align-items-center gap-2 p-2 radius-8 border pe-36 br-hover-primary group-item text-decoration-none">
+                    <a href="{% url 'productList' %}" class="d-inline-flex align-items-centers gap-2 p-2 radius-8 border pe-36 br-hover-primary group-item text-decoration-none">
                         <span class="bg-neutral-100 w-44-px h-44-px text-xxl radius-8 d-flex justify-content-center align-items-center text-secondary-light group-hover:bg-primary-600 group-hover:text-white">
                             <iconify-icon icon="solar:box-bold" class="icon"></iconify-icon>
                         </span>
                         <div>
-                            <span class="text-secondary-light text-sm fw-medium">Products</span>
-                            <h6 class="text-md fw-semibold mb-0">Manage</h6>
+                            <span class="text-secondary-light text-sm fw-medium" data-i18n="sidebar.products">Products</span>
+                            <h6 class="text-md fw-semibold mb-0" data-i18n="common.manage">Manage</h6>
                         </div>
                     </a>
                 </div>

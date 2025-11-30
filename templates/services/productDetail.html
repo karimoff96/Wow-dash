@@ -8,17 +8,17 @@
         <div class="card h-100 p-0 radius-12">
             <div class="card-header border-bottom bg-base py-16 px-24">
                 <div class="d-flex align-items-center justify-content-between">
-                    <h6 class="mb-0">Product Details</h6>
+                    <h6 class="mb-0" data-i18n="detail.productDetails">Product Details</h6>
                     <div class="dropdown">
                         <button type="button" class="btn btn-outline-secondary-600 btn-sm radius-8 dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
                             <iconify-icon icon="solar:settings-linear" class="me-4"></iconify-icon>
-                            Actions
+                            <span data-i18n="detail.actions">Actions</span>
                         </button>
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item d-flex align-items-center" href="{% url 'editProduct' product.id %}">
                                     <iconify-icon icon="lucide:edit" class="me-8 text-warning-600"></iconify-icon>
-                                    Edit Product
+                                    <span data-i18n="detail.editProduct">Edit Product</span>
                                 </a>
                             </li>
                             <li>
@@ -26,7 +26,7 @@
                                     {% csrf_token %}
                                     <button type="submit" class="dropdown-item d-flex align-items-center text-danger-600" onclick="return confirm('Are you sure you want to delete this product?')">
                                         <iconify-icon icon="mingcute:delete-2-line" class="me-8"></iconify-icon>
-                                        Delete Product
+                                        <span data-i18n="detail.deleteProduct">Delete Product</span>
                                     </button>
                                 </form>
                             </li>
@@ -45,54 +45,54 @@
                     
                     <!-- Status Badge -->
                     {% if product.is_active %}
-                    <span class="bg-success-focus text-success-600 px-24 py-6 radius-8 fw-semibold text-sm">Active</span>
+                    <span class="bg-success-focus text-success-600 px-24 py-6 radius-8 fw-semibold text-sm" data-i18n="common.active">Active</span>
                     {% else %}
-                    <span class="bg-danger-focus text-danger-600 px-24 py-6 radius-8 fw-semibold text-sm">Inactive</span>
+                    <span class="bg-danger-focus text-danger-600 px-24 py-6 radius-8 fw-semibold text-sm" data-i18n="common.inactive">Inactive</span>
                     {% endif %}
                 </div>
                 
                 <hr class="my-24">
                 
                 <!-- Product Info -->
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between px-0 py-12 border-bottom">
-                        <span class="text-secondary-light">Category</span>
+                <ul class="list-group list-group-flush bg-transparent">
+                    <li class="list-group-item bg-transparent d-flex justify-content-between px-0 py-12 border-bottom">
+                        <span class="text-secondary-light" data-i18n="table.category">Category</span>
                         <span class="fw-medium">
                             <a href="{% url 'categoryDetail' product.category.id %}" class="text-primary-600 hover-text-decoration-underline">
                                 {{ product.category.name }}
                             </a>
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between px-0 py-12 border-bottom">
-                        <span class="text-secondary-light">Pricing Type</span>
+                    <li class="list-group-item bg-transparent d-flex justify-content-between px-0 py-12 border-bottom">
+                        <span class="text-secondary-light" data-i18n="detail.pricingType">Pricing Type</span>
                         <span class="fw-medium">
                             {% if product.category.charging == 'dynamic' %}
-                            <span class="badge bg-info-focus text-info-600">Dynamic</span>
+                            <span class="badge bg-info-focus text-info-600" data-i18n="detail.dynamic">Dynamic</span>
                             {% else %}
-                            <span class="badge bg-secondary-focus text-secondary-600">Static</span>
+                            <span class="badge bg-secondary-focus text-secondary-600" data-i18n="detail.static">Static</span>
                             {% endif %}
                         </span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between px-0 py-12 border-bottom">
-                        <span class="text-secondary-light">Minimum Pages</span>
-                        <span class="fw-medium">{{ product.min_pages|default:"N/A" }}</span>
+                    <li class="list-group-item bg-transparent d-flex justify-content-between px-0 py-12 border-bottom">
+                        <span class="text-secondary-light" data-i18n="detail.minimumPages">Minimum Pages</span>
+                        <span class="fw-medium text-secondary-light">{{ product.min_pages|default:"N/A" }}</span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-between px-0 py-12">
-                        <span class="text-secondary-light">Estimated Days</span>
-                        <span class="fw-medium">{{ product.estimated_days|default:"N/A" }} days</span>
+                    <li class="list-group-item bg-transparent d-flex justify-content-between px-0 py-12">
+                        <span class="text-secondary-light" data-i18n="detail.estimatedDays">Estimated Days</span>
+                        <span class="fw-medium text-secondary-light">{{ product.estimated_days|default:"N/A" }} <span data-i18n="detail.days">days</span></span>
                     </li>
                 </ul>
                 
                 {% if product.description %}
                 <hr class="my-24">
-                <h6 class="text-md mb-12">Description</h6>
+                <h6 class="text-md mb-12" data-i18n="form.description">Description</h6>
                 <p class="text-secondary-light text-sm">{{ product.description }}</p>
                 {% endif %}
                 
                 <div class="mt-24">
                     <a href="{% url 'productList' %}" class="btn btn-outline-primary-600 radius-8 w-100 d-flex align-items-center justify-content-center">
                         <iconify-icon icon="ep:back" class="me-8"></iconify-icon>
-                        Back to Products
+                        <span data-i18n="detail.backToProducts">Back to Products</span>
                     </a>
                 </div>
             </div>
@@ -108,7 +108,7 @@
                     <div class="card-header border-bottom bg-base py-16 px-24">
                         <h6 class="mb-0 d-flex align-items-center">
                             <iconify-icon icon="solar:user-linear" class="me-8 text-info-600"></iconify-icon>
-                            Regular User Pricing
+                            <span data-i18n="detail.regularUserPricing">Regular User Pricing</span>
                         </h6>
                     </div>
                     <div class="card-body p-24">
@@ -116,8 +116,8 @@
                             <div class="col-12">
                                 <div class="bg-neutral-100 radius-8 p-16">
                                     <div class="d-flex justify-content-between align-items-center mb-8">
-                                        <span class="text-secondary-light text-sm">First Page</span>
-                                        <span class="badge bg-primary-focus text-primary-600">Main</span>
+                                        <span class="text-secondary-light text-sm" data-i18n="detail.firstPage">First Page</span>
+                                        <span class="badge bg-primary-focus text-primary-600" data-i18n="detail.main">Main</span>
                                     </div>
                                     <h4 class="mb-0 text-primary-600">{{ product.ordinary_first_page_price|floatformat:0 }} <small class="text-secondary-light text-sm">UZS</small></h4>
                                 </div>
@@ -125,9 +125,9 @@
                             <div class="col-12">
                                 <div class="bg-neutral-100 radius-8 p-16">
                                     <div class="d-flex justify-content-between align-items-center mb-8">
-                                        <span class="text-secondary-light text-sm">Other Pages</span>
+                                        <span class="text-secondary-light text-sm" data-i18n="detail.otherPages">Other Pages</span>
                                         {% if product.category.charging == 'dynamic' %}
-                                        <span class="badge bg-info-focus text-info-600">Per Page</span>
+                                        <span class="badge bg-info-focus text-info-600" data-i18n="detail.perPage">Per Page</span>
                                         {% endif %}
                                     </div>
                                     <h4 class="mb-0 text-info-600">{{ product.ordinary_other_page_price|floatformat:0|default:"N/A" }} <small class="text-secondary-light text-sm">UZS</small></h4>
@@ -136,8 +136,8 @@
                             <div class="col-12">
                                 <div class="bg-neutral-100 radius-8 p-16">
                                     <div class="d-flex justify-content-between align-items-center mb-8">
-                                        <span class="text-secondary-light text-sm">Copy Price</span>
-                                        <span class="badge bg-secondary-focus text-secondary-600">Percentage</span>
+                                        <span class="text-secondary-light text-sm" data-i18n="detail.copyPrice">Copy Price</span>
+                                        <span class="badge bg-secondary-focus text-secondary-600" data-i18n="detail.percentage">Percentage</span>
                                     </div>
                                     <h4 class="mb-0 text-secondary-600">{{ product.user_copy_price_percentage|floatformat:0|default:"0" }}%</h4>
                                 </div>
@@ -153,7 +153,7 @@
                     <div class="card-header border-bottom bg-base py-16 px-24">
                         <h6 class="mb-0 d-flex align-items-center">
                             <iconify-icon icon="mdi:office-building-outline" class="me-8 text-success-600"></iconify-icon>
-                            Agency Pricing
+                            <span data-i18n="detail.agencyPricing">Agency Pricing</span>
                         </h6>
                     </div>
                     <div class="card-body p-24">
@@ -161,8 +161,8 @@
                             <div class="col-12">
                                 <div class="bg-neutral-100 radius-8 p-16">
                                     <div class="d-flex justify-content-between align-items-center mb-8">
-                                        <span class="text-secondary-light text-sm">First Page</span>
-                                        <span class="badge bg-success-focus text-success-600">Main</span>
+                                        <span class="text-secondary-light text-sm" data-i18n="detail.firstPage">First Page</span>
+                                        <span class="badge bg-success-focus text-success-600" data-i18n="detail.main">Main</span>
                                     </div>
                                     <h4 class="mb-0 text-success-600">{{ product.agency_first_page_price|floatformat:0 }} <small class="text-secondary-light text-sm">UZS</small></h4>
                                 </div>
@@ -170,9 +170,9 @@
                             <div class="col-12">
                                 <div class="bg-neutral-100 radius-8 p-16">
                                     <div class="d-flex justify-content-between align-items-center mb-8">
-                                        <span class="text-secondary-light text-sm">Other Pages</span>
+                                        <span class="text-secondary-light text-sm" data-i18n="detail.otherPages">Other Pages</span>
                                         {% if product.category.charging == 'dynamic' %}
-                                        <span class="badge bg-info-focus text-info-600">Per Page</span>
+                                        <span class="badge bg-info-focus text-info-600" data-i18n="detail.perPage">Per Page</span>
                                         {% endif %}
                                     </div>
                                     <h4 class="mb-0 text-info-600">{{ product.agency_other_page_price|floatformat:0|default:"N/A" }} <small class="text-secondary-light text-sm">UZS</small></h4>
@@ -181,8 +181,8 @@
                             <div class="col-12">
                                 <div class="bg-neutral-100 radius-8 p-16">
                                     <div class="d-flex justify-content-between align-items-center mb-8">
-                                        <span class="text-secondary-light text-sm">Copy Price</span>
-                                        <span class="badge bg-secondary-focus text-secondary-600">Percentage</span>
+                                        <span class="text-secondary-light text-sm" data-i18n="detail.copyPrice">Copy Price</span>
+                                        <span class="badge bg-secondary-focus text-secondary-600" data-i18n="detail.percentage">Percentage</span>
                                     </div>
                                     <h4 class="mb-0 text-secondary-600">{{ product.agency_copy_price_percentage|floatformat:0|default:"0" }}%</h4>
                                 </div>
@@ -198,7 +198,7 @@
                     <div class="card-header border-bottom bg-base py-16 px-24">
                         <h6 class="mb-0 d-flex align-items-center">
                             <iconify-icon icon="material-symbols:compare-arrows" class="me-8 text-warning-600"></iconify-icon>
-                            Price Comparison
+                            <span data-i18n="detail.priceComparison">Price Comparison</span>
                         </h6>
                     </div>
                     <div class="card-body p-24">
@@ -206,15 +206,15 @@
                             <table class="table basic-table mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Price Type</th>
-                                        <th class="text-center">Regular User</th>
-                                        <th class="text-center">Agency</th>
-                                        <th class="text-center">Difference</th>
+                                        <th data-i18n="detail.priceType">Price Type</th>
+                                        <th class="text-center" data-i18n="detail.regularUser">Regular User</th>
+                                        <th class="text-center" data-i18n="table.agency">Agency</th>
+                                        <th class="text-center" data-i18n="detail.difference">Difference</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="fw-medium">First Page</td>
+                                        <td class="fw-medium" data-i18n="detail.firstPage">First Page</td>
                                         <td class="text-center">{{ product.ordinary_first_page_price|floatformat:0 }} UZS</td>
                                         <td class="text-center">{{ product.agency_first_page_price|floatformat:0 }} UZS</td>
                                         <td class="text-center">
@@ -222,39 +222,39 @@
                                             {% if product.agency_first_page_price < product.ordinary_first_page_price %}
                                             <span class="text-success-600">
                                                 <iconify-icon icon="mdi:arrow-down"></iconify-icon>
-                                                Agency saves {{ product.ordinary_first_page_price|floatformat:0 }}
+                                                <span data-i18n="detail.agencySaves">Agency saves</span> {{ product.ordinary_first_page_price|floatformat:0 }}
                                             </span>
                                             {% else %}
-                                            <span class="text-secondary-light">Same price</span>
+                                            <span class="text-secondary-light" data-i18n="detail.samePrice">Same price</span>
                                             {% endif %}
                                         </td>
                                     </tr>
                                     {% if product.category.charging == 'dynamic' %}
                                     <tr>
-                                        <td class="fw-medium">Other Pages</td>
+                                        <td class="fw-medium" data-i18n="detail.otherPages">Other Pages</td>
                                         <td class="text-center">{{ product.ordinary_other_page_price|floatformat:0|default:"0" }} UZS</td>
                                         <td class="text-center">{{ product.agency_other_page_price|floatformat:0|default:"0" }} UZS</td>
                                         <td class="text-center">
                                             {% if product.agency_other_page_price < product.ordinary_other_page_price %}
                                             <span class="text-success-600">
                                                 <iconify-icon icon="mdi:arrow-down"></iconify-icon>
-                                                Agency discount
+                                                <span data-i18n="detail.agencyDiscount">Agency discount</span>
                                             </span>
                                             {% else %}
-                                            <span class="text-secondary-light">Same price</span>
+                                            <span class="text-secondary-light" data-i18n="detail.samePrice">Same price</span>
                                             {% endif %}
                                         </td>
                                     </tr>
                                     {% endif %}
                                     <tr>
-                                        <td class="fw-medium">Copy Price %</td>
+                                        <td class="fw-medium"><span data-i18n="detail.copyPrice">Copy Price</span> %</td>
                                         <td class="text-center">{{ product.user_copy_price_percentage|floatformat:0|default:"0" }}%</td>
                                         <td class="text-center">{{ product.agency_copy_price_percentage|floatformat:0|default:"0" }}%</td>
                                         <td class="text-center">
                                             {% if product.agency_copy_price_percentage < product.user_copy_price_percentage %}
-                                            <span class="text-success-600">Agency advantage</span>
+                                            <span class="text-success-600" data-i18n="detail.agencyAdvantage">Agency advantage</span>
                                             {% else %}
-                                            <span class="text-secondary-light">Equal</span>
+                                            <span class="text-secondary-light" data-i18n="detail.equal">Equal</span>
                                             {% endif %}
                                         </td>
                                     </tr>

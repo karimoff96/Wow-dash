@@ -5,7 +5,7 @@
 <div class="card h-100 p-0 radius-12">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div class="d-flex align-items-center flex-wrap gap-3">
-            <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
+            <span class="text-md fw-medium text-secondary-light mb-0" data-i18n="common.show">Show</span>
             <form method="get" class="d-flex align-items-center gap-3">
                 <select name="per_page" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
                     <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
@@ -14,17 +14,17 @@
                     <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
                 </select>
                 <div class="navbar-search">
-                    <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search" value="{{ search_query }}">
+                    <input type="text" class="bg-base h-40-px w-auto" name="search" data-i18n-placeholder="common.search" placeholder="Search" value="{{ search_query }}">
                     <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                 </div>
                 <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
-                    <option value="">All Status</option>
+                    <option value="" data-i18n="common.allStatus">All Status</option>
                     {% for value, label in status_choices %}
                     <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
                 <select name="payment" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
-                    <option value="">All Payments</option>
+                    <option value="" data-i18n="common.allPayments">All Payments</option>
                     {% for value, label in payment_choices %}
                     <option value="{{ value }}" {% if payment_filter == value %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
@@ -42,18 +42,18 @@
                                 <div class="form-check style-check d-flex align-items-center">
                                     <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAll">
                                 </div>
-                                Order ID
+                                <span data-i18n="table.orderId">Order ID</span>
                             </div>
                         </th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Pages</th>
-                        <th scope="col">Copies</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Payment</th>
-                        <th scope="col" class="text-center">Status</th>
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col" data-i18n="table.date">Date</th>
+                        <th scope="col" data-i18n="table.customer">Customer</th>
+                        <th scope="col" data-i18n="table.product">Product</th>
+                        <th scope="col" data-i18n="table.pages">Pages</th>
+                        <th scope="col" data-i18n="table.copies">Copies</th>
+                        <th scope="col" data-i18n="table.total">Total</th>
+                        <th scope="col" data-i18n="table.payment">Payment</th>
+                        <th scope="col" class="text-center" data-i18n="table.status">Status</th>
+                        <th scope="col" class="text-center" data-i18n="table.action">Action</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -5,7 +5,7 @@
 <div class="card h-100 p-0 radius-12">
     <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
         <div class="d-flex align-items-center flex-wrap gap-3">
-            <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
+            <span class="text-md fw-medium text-secondary-light mb-0" data-i18n="common.show">Show</span>
             <form method="get" class="d-flex align-items-center gap-3">
                 <select name="per_page" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
                     <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
@@ -13,19 +13,19 @@
                     <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
                 </select>
                 <div class="navbar-search">
-                    <input type="text" class="bg-base h-40-px w-auto" name="search" placeholder="Search" value="{{ search_query }}">
+                    <input type="text" class="bg-base h-40-px w-auto" name="search" data-i18n-placeholder="common.search" placeholder="Search" value="{{ search_query }}">
                     <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                 </div>
                 <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
-                    <option value="">All Status</option>
-                    <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
-                    <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+                    <option value="" data-i18n="common.allStatus">All Status</option>
+                    <option value="active" {% if status_filter == 'active' %}selected{% endif %} data-i18n="common.active">Active</option>
+                    <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %} data-i18n="common.inactive">Inactive</option>
                 </select>
             </form>
         </div>
         <a href="{% url 'addCategory' %}" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
             <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
-            Add Category
+            <span data-i18n="common.addCategory">Add Category</span>
         </a>
     </div>
     <div class="card-body p-24">
@@ -34,12 +34,12 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Charging Type</th>
-                        <th scope="col">Languages</th>
-                        <th scope="col">Products</th>
-                        <th scope="col" class="text-center">Status</th>
-                        <th scope="col" class="text-center">Action</th>
+                        <th scope="col" data-i18n="table.name">Name</th>
+                        <th scope="col" data-i18n="table.chargingType">Charging Type</th>
+                        <th scope="col" data-i18n="table.languages">Languages</th>
+                        <th scope="col" data-i18n="table.products">Products</th>
+                        <th scope="col" class="text-center" data-i18n="table.status">Status</th>
+                        <th scope="col" class="text-center" data-i18n="table.action">Action</th>
                     </tr>
                 </thead>
                 <tbody>

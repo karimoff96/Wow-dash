@@ -8,11 +8,11 @@
         <div class="card h-100 radius-16 overflow-hidden">
             <div class="card-header bg-base border-bottom py-16 px-24">
                 <div class="d-flex align-items-center justify-content-between">
-                    <h6 class="mb-0">Category Details</h6>
+                    <h6 class="mb-0" data-i18n="detail.categoryDetails">Category Details</h6>
                     {% if category.is_active %}
-                        <span class="bg-success-focus text-success-600 px-16 py-4 radius-4 fw-medium text-sm">Active</span>
+                        <span class="bg-success-focus text-success-600 px-16 py-4 radius-4 fw-medium text-sm" data-i18n="common.active">Active</span>
                     {% else %}
-                        <span class="bg-neutral-200 text-neutral-600 px-16 py-4 radius-4 fw-medium text-sm">Inactive</span>
+                        <span class="bg-neutral-200 text-neutral-600 px-16 py-4 radius-4 fw-medium text-sm" data-i18n="common.inactive">Inactive</span>
                     {% endif %}
                 </div>
             </div>
@@ -23,9 +23,9 @@
                     </div>
                     <h5 class="mb-4">{{ category.name }}</h5>
                     {% if category.charging == 'static' %}
-                        <span class="badge bg-info-focus text-info-600">Static Price</span>
+                        <span class="badge bg-info-focus text-info-600" data-i18n="detail.staticPrice">Static Price</span>
                     {% else %}
-                        <span class="badge bg-warning-focus text-warning-600">Per Page Pricing</span>
+                        <span class="badge bg-warning-focus text-warning-600" data-i18n="detail.perPagePricing">Per Page Pricing</span>
                     {% endif %}
                 </div>
 
@@ -33,39 +33,39 @@
                     <ul class="list-unstyled">
                         {% if category.description %}
                         <li class="mb-16">
-                            <span class="text-sm text-secondary-light d-block mb-4">Description</span>
+                            <span class="text-sm text-secondary-light d-block mb-4" data-i18n="form.description">Description</span>
                             <span class="text-md">{{ category.description }}</span>
                         </li>
                         {% endif %}
                         <li class="mb-16">
-                            <span class="text-sm text-secondary-light d-block mb-4">Languages</span>
+                            <span class="text-sm text-secondary-light d-block mb-4" data-i18n="form.languages">Languages</span>
                             <div>
                                 {% for lang in category.languages.all %}
                                     <span class="badge bg-neutral-200 text-neutral-600 me-4 mb-4">{{ lang.name }}</span>
                                 {% empty %}
-                                    <span class="text-muted">No languages assigned</span>
+                                    <span class="text-muted" data-i18n="detail.noLanguagesAssigned">No languages assigned</span>
                                 {% endfor %}
                             </div>
                         </li>
                         <li class="mb-16">
-                            <span class="text-sm text-secondary-light d-block mb-4">Created At</span>
+                            <span class="text-sm text-secondary-light d-block mb-4" data-i18n="detail.createdAt">Created At</span>
                             <span class="text-md">{{ category.created_at|date:"d M Y, H:i" }}</span>
                         </li>
                         <li>
-                            <span class="text-sm text-secondary-light d-block mb-4">Last Updated</span>
+                            <span class="text-sm text-secondary-light d-block mb-4" data-i18n="detail.lastUpdated">Last Updated</span>
                             <span class="text-md">{{ category.updated_at|date:"d M Y, H:i" }}</span>
                         </li>
                     </ul>
                 </div>
 
                 <div class="d-flex gap-8 mt-24">
-                    <a href="{% url 'categoryList' %}" class="btn btn-outline-secondary-600 radius-8 px-20 py-11 flex-grow-1 d-flex align-items-center justify-content-center">
+                    <a href="{% url 'categoryList' %}" class="btn btn-secondary radius-8 px-20 py-11 flex-grow-1 d-flex align-items-center justify-content-center">
                         <iconify-icon icon="ep:back" class="me-4"></iconify-icon>
-                        Back
+                        <span data-i18n="detail.back">Back</span>
                     </a>
                     <a href="{% url 'editCategory' category.id %}" class="btn btn-primary radius-8 px-20 py-11 flex-grow-1 d-flex align-items-center justify-content-center">
                         <iconify-icon icon="lucide:edit" class="me-4"></iconify-icon>
-                        Edit
+                        <span data-i18n="detail.edit">Edit</span>
                     </a>
                 </div>
             </div>
@@ -78,11 +78,11 @@
             <div class="card-header bg-base border-bottom py-16 px-24 d-flex align-items-center justify-content-between">
                 <h6 class="mb-0 d-flex align-items-center">
                     <iconify-icon icon="solar:box-linear" class="me-8 text-warning-600"></iconify-icon>
-                    Products ({{ product_count }})
+                    <span data-i18n="detail.products">Products</span> ({{ product_count }})
                 </h6>
                 <a href="{% url 'addProduct' %}?category={{ category.id }}" class="btn btn-sm btn-primary radius-8 d-flex align-items-center">
                     <iconify-icon icon="ic:baseline-plus" class="me-4"></iconify-icon>
-                    Add Product
+                    <span data-i18n="detail.addProduct">Add Product</span>
                 </a>
             </div>
             <div class="card-body p-0">
@@ -91,11 +91,11 @@
                     <table class="table bordered-table sm-table mb-0">
                         <thead>
                             <tr>
-                                <th scope="col">Product</th>
-                                <th scope="col">Regular Price</th>
-                                <th scope="col">Agency Price</th>
-                                <th scope="col">Status</th>
-                                <th scope="col" class="text-center">Action</th>
+                                <th scope="col" data-i18n="table.product">Product</th>
+                                <th scope="col" data-i18n="detail.regularPrice">Regular Price</th>
+                                <th scope="col" data-i18n="detail.agencyPrice">Agency Price</th>
+                                <th scope="col" data-i18n="table.status">Status</th>
+                                <th scope="col" class="text-center" data-i18n="table.action">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -112,9 +112,9 @@
                                 </td>
                                 <td>
                                     {% if product.is_active %}
-                                        <span class="badge bg-success-focus text-success-600">Active</span>
+                                        <span class="badge bg-success-focus text-success-600" data-i18n="common.active">Active</span>
                                     {% else %}
-                                        <span class="badge bg-neutral-200 text-neutral-600">Inactive</span>
+                                        <span class="badge bg-neutral-200 text-neutral-600" data-i18n="common.inactive">Inactive</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
@@ -135,10 +135,10 @@
                 {% else %}
                 <div class="text-center py-40">
                     <iconify-icon icon="solar:box-linear" class="text-4xl text-secondary-light mb-8"></iconify-icon>
-                    <p class="text-secondary-light mb-16">No products in this category</p>
+                    <p class="text-secondary-light mb-16" data-i18n="detail.noProductsInCategory">No products in this category</p>
                     <a href="{% url 'addProduct' %}?category={{ category.id }}" class="btn btn-sm btn-primary radius-8 d-inline-flex align-items-center">
                         <iconify-icon icon="ic:baseline-plus" class="me-4"></iconify-icon>
-                        Add First Product
+                        <span data-i18n="detail.addFirstProduct">Add First Product</span>
                     </a>
                 </div>
                 {% endif %}

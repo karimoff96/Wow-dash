@@ -14,48 +14,48 @@
             <li>
                 <a href="{% url 'dashboard' %}">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
-                    <span>Dashboard</span>
+                    <span data-i18n="sidebar.dashboard">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="{% url 'usersList' %}">
                     <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
-                    <span>Users</span>
+                    <span data-i18n="sidebar.users">Users</span>
                 </a>
             </li>
              <li>
                 <a href="{% url 'ordersList' %}">
                     <iconify-icon icon="fa-solid:box-open" class="menu-icon"></iconify-icon>
-                    <span>Orders</span>
+                    <span data-i18n="sidebar.orders">Orders</span>
                 </a>
             </li>
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="ri-star-line" class="menu-icon"></iconify-icon>
-                    <span>Services</span>
+                    <span data-i18n="sidebar.services">Services</span>
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                        <a href="{% url 'categoryList' %}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Categories</a>
+                        <a href="{% url 'categoryList' %}"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> <span data-i18n="sidebar.categories">Categories</span></a>
                     </li>
                     <li>
-                        <a href="{% url 'productList' %}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> Products</a>
+                        <a href="{% url 'productList' %}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> <span data-i18n="sidebar.products">Products</span></a>
                     </li>
                 </ul>
             </li>
             <li>
                 <a href="{% url 'sales' %}">
                     <iconify-icon icon="hugeicons:money-send-square" class="menu-icon"></iconify-icon>
-                    <span>Sales</span>
+                    <span data-i18n="sidebar.sales">Sales</span>
                 </a>
             </li>
             <li>
                 <a href="{% url 'finance' %}">
                     <iconify-icon icon="solar:chart-2-bold-duotone" class="menu-icon"></iconify-icon>
-                    <span>Finance</span>
+                    <span data-i18n="sidebar.finance">Finance</span>
                 </a>
             </li>
-            <li class="sidebar-menu-group-title">UI Elements</li>
+            <li class="sidebar-menu-group-title" data-i18n="sidebar.uiElements">UI Elements</li>
 
             <li class="dropdown">
                 <a href="javascript:void(0)">

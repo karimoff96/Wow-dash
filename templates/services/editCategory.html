@@ -7,11 +7,11 @@
         <div class="d-flex align-items-center justify-content-between">
             <h6 class="mb-0 d-flex align-items-center">
                 <iconify-icon icon="lucide:edit" class="me-8 text-success-600"></iconify-icon>
-                Edit Category: {{ category.name }}
+                <span data-i18n="form.editCategory">Edit Category</span>: {{ category.name }}
             </h6>
             <a href="{% url 'categoryList' %}" class="btn btn-outline-secondary-600 radius-8 px-20 py-9 d-flex align-items-center">
                 <iconify-icon icon="ep:back" class="me-4"></iconify-icon>
-                Back to List
+                <span data-i18n="form.backToList">Back to List</span>
             </a>
         </div>
     </div>
@@ -23,34 +23,34 @@
                     
                     <div class="mb-20">
                         <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">
-                            Category Name <span class="text-danger-600">*</span>
+                            <span data-i18n="form.categoryName">Category Name</span> <span class="text-danger-600">*</span>
                         </label>
                         <input type="text" class="form-control radius-8" id="name" name="name" 
-                               placeholder="Enter category name" value="{{ category.name }}" required>
+                               data-i18n-placeholder="form.enterCategoryName" placeholder="Enter category name" value="{{ category.name }}" required>
                     </div>
                     
                     <div class="mb-20">
-                        <label for="description" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                        <label for="description" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.description">
                             Description
                         </label>
                         <textarea class="form-control radius-8" id="description" name="description" 
-                                  rows="3" placeholder="Enter description">{{ category.description|default:'' }}</textarea>
+                                  rows="3" data-i18n-placeholder="form.enterDescription" placeholder="Enter description">{{ category.description|default:'' }}</textarea>
                     </div>
                     
                     <div class="mb-20">
                         <label for="charging" class="form-label fw-semibold text-primary-light text-sm mb-8">
-                            Charging Type <span class="text-danger-600">*</span>
+                            <span data-i18n="form.chargingType">Charging Type</span> <span class="text-danger-600">*</span>
                         </label>
                         <select class="form-control radius-8 form-select" id="charging" name="charging">
                             {% for value, label in charge_types %}
                             <option value="{{ value }}" {% if category.charging == value %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
                         </select>
-                        <small class="text-secondary-light">Static = Fixed price, Dynamic = Price per page</small>
+                        <small class="text-secondary-light" data-i18n="form.chargingTypeHint">Static = Fixed price, Dynamic = Price per page</small>
                     </div>
                     
                     <div class="mb-20">
-                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.languages">
                             Languages
                         </label>
                         <div class="d-flex flex-wrap gap-3">
@@ -73,8 +73,8 @@
                             <label for="is_active" class="position-absolute w-100 h-100 start-0 top-0 cursor-pointer"></label>
                             <div class="d-flex align-items-center gap-3 justify-content-between">
                                 <div>
-                                    <span class="form-check-label line-height-1 fw-medium text-secondary-light">Active Status</span>
-                                    <small class="d-block text-secondary-light mt-4">Category will be available for products</small>
+                                    <span class="form-check-label line-height-1 fw-medium text-secondary-light" data-i18n="form.activeStatus">Active Status</span>
+                                    <small class="d-block text-secondary-light mt-4" data-i18n="form.categoryAvailable">Category will be available for products</small>
                                 </div>
                                 <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" 
                                        {% if category.is_active %}checked{% endif %}>
@@ -83,12 +83,12 @@
                     </div>
                     
                     <div class="d-flex align-items-center justify-content-center gap-3 mt-24">
-                        <a href="{% url 'categoryList' %}" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-40 py-11 radius-8">
+                        <a href="{% url 'categoryList' %}" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-40 py-11 radius-8" data-i18n="common.cancel">
                             Cancel
                         </a>
                         <button type="submit" class="btn btn-primary border border-primary-600 text-md px-40 py-12 radius-8 d-flex align-items-center">
                             <iconify-icon icon="mdi:content-save" class="me-8"></iconify-icon>
-                            Update Category
+                            <span data-i18n="form.updateCategory">Update Category</span>
                         </button>
                     </div>
                 </form>

@@ -19,7 +19,6 @@ from django.urls import path, include
 from django.shortcuts import redirect
 from WowDash import chart_views
 from WowDash import components_views
-from WowDash import dashboard_views
 from WowDash import home_views
 from WowDash import roleAndAccess_views
 from WowDash import settings_views
@@ -82,9 +81,6 @@ urlpatterns = [
     path("components/upload", components_views.upload, name="upload"),
     path("components/videos", components_views.videos, name="videos"),
    
-    # dashboard routes
-    path("dashboard/index2", dashboard_views.index2, name="index2"),
-
     # role and access routes
     path("role-access/assign-role", roleAndAccess_views.assignRole, name="assignRole"),
     path("role-access/role-access", roleAndAccess_views.roleAccess, name="roleAccess"),

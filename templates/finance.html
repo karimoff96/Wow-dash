@@ -1,264 +1,227 @@
 {% extends './layout/layout.html' %} 
 
 {% block content %}
-<div class="row gy-4 mt-1">
-    <!-- Revenue Overview Cards -->
-    <div class="col-12">
-        <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
-            <div>
-                <h6 class="text-lg mb-1 fw-bold text-white">Revenue Overview</h6>
-                <span class="text-secondary-light text-sm">Track your financial performance</span>
-            </div>
-            <select class="form-select form-select-sm w-auto bg-base border-0 text-primary-light radius-8 px-16" id="revenuePeriodSelect">
-                <option value="yearly" selected>Yearly</option>
-                <option value="monthly">Monthly</option>
-                <option value="weekly">Weekly</option>
-                <option value="today">Today</option>
-            </select>
-        </div>
-    </div>
-    
-    <!-- Total Revenue Card -->
+<div class="row gy-4">
+    <!-- Row 1: Quick Stats Cards -->
     <div class="col-xxl-3 col-sm-6">
-        <div class="card radius-12 border-0 shadow-sm bg-gradient-start-1 h-100 overflow-hidden">
-            <div class="card-body p-20">
-                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                    <div>
-                        <p class="fw-medium text-secondary-light mb-1 text-sm">Total Revenue</p>
-                        <h5 class="mb-0 fw-bold text-primary-light" id="totalRevenue">{{ yearly_stats.revenue|floatformat:0 }} UZS</h5>
-                    </div>
-                    <div class="w-56-px h-56-px bg-cyan rounded-circle d-flex justify-content-center align-items-center shadow-sm">
-                        <iconify-icon icon="solar:wallet-money-bold" class="text-white text-2xl"></iconify-icon>
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-1">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:wallet-money-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="finance.totalRevenue">Total Revenue</span>
+                            <h6 class="fw-semibold" id="totalRevenue">{{ yearly_stats.revenue|floatformat:0 }} <small class="text-xs fw-normal">UZS</small></h6>
+                        </div>
                     </div>
                 </div>
-                <p class="fw-medium text-sm mt-12 mb-0 d-flex align-items-center gap-2">
-                    <span class="d-inline-flex align-items-center gap-1 px-8 py-2 radius-4 {% if monthly_revenue_change >= 0 %}bg-success-focus text-success-main{% else %}bg-danger-focus text-danger-main{% endif %}">
-                        <iconify-icon icon="bxs:{% if monthly_revenue_change >= 0 %}up{% else %}down{% endif %}-arrow" class="text-xs"></iconify-icon> 
-                        {{ monthly_revenue_change }}%
-                    </span>
-                    <span class="text-secondary-light">vs last month</span>
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Orders Count Card -->
-    <div class="col-xxl-3 col-sm-6">
-        <div class="card radius-12 border-0 shadow-sm bg-gradient-start-2 h-100 overflow-hidden">
-            <div class="card-body p-20">
-                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                    <div>
-                        <p class="fw-medium text-secondary-light mb-1 text-sm">Total Orders</p>
-                        <h5 class="mb-0 fw-bold text-primary-light" id="totalOrders">{{ yearly_stats.count }}</h5>
-                    </div>
-                    <div class="w-56-px h-56-px bg-purple rounded-circle d-flex justify-content-center align-items-center shadow-sm">
-                        <iconify-icon icon="solar:bag-4-bold" class="text-white text-2xl"></iconify-icon>
-                    </div>
-                </div>
-                <p class="fw-medium text-sm text-secondary-light mt-12 mb-0">
-                    <iconify-icon icon="solar:document-text-bold" class="text-purple me-1"></iconify-icon>
-                    <span id="totalPages" class="text-primary-light fw-semibold">{{ yearly_stats.pages }}</span> pages processed
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Average Order Value Card -->
-    <div class="col-xxl-3 col-sm-6">
-        <div class="card radius-12 border-0 shadow-sm bg-gradient-start-3 h-100 overflow-hidden">
-            <div class="card-body p-20">
-                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                    <div>
-                        <p class="fw-medium text-secondary-light mb-1 text-sm">Avg Order Value</p>
-                        <h5 class="mb-0 fw-bold text-primary-light" id="avgOrderValue">{{ yearly_stats.avg_order_value|floatformat:0 }} UZS</h5>
-                    </div>
-                    <div class="w-56-px h-56-px bg-info rounded-circle d-flex justify-content-center align-items-center shadow-sm">
-                        <iconify-icon icon="solar:chart-2-bold" class="text-white text-2xl"></iconify-icon>
-                    </div>
-                </div>
-                <p class="fw-medium text-sm text-secondary-light mt-12 mb-0">
-                    <iconify-icon icon="solar:calculator-bold" class="text-info me-1"></iconify-icon>
-                    Per order average
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Pending Payments Card -->
-    <div class="col-xxl-3 col-sm-6">
-        <div class="card radius-12 border-0 shadow-sm bg-gradient-start-4 h-100 overflow-hidden">
-            <div class="card-body p-20">
-                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                    <div>
-                        <p class="fw-medium text-secondary-light mb-1 text-sm">Pending Payments</p>
-                        <h5 class="mb-0 fw-bold text-primary-light">{{ pending_payments_total|floatformat:0 }} UZS</h5>
-                    </div>
-                    <div class="w-56-px h-56-px bg-warning-main rounded-circle d-flex justify-content-center align-items-center shadow-sm">
-                        <iconify-icon icon="solar:clock-circle-bold" class="text-white text-2xl"></iconify-icon>
-                    </div>
-                </div>
-                <p class="fw-medium text-sm text-secondary-light mt-12 mb-0">
-                    <iconify-icon icon="solar:hourglass-bold" class="text-warning-main me-1"></iconify-icon>
-                    <span class="text-primary-light fw-semibold">{{ pending_payments_count }}</span> orders awaiting
+                <p class="text-sm mb-0">
+                    {% if monthly_revenue_change >= 0 %}
+                    <span class="bg-success-focus px-1 rounded-2 fw-medium text-success-main text-sm">+{{ monthly_revenue_change }}%</span>
+                    {% else %}
+                    <span class="bg-danger-focus px-1 rounded-2 fw-medium text-danger-main text-sm">{{ monthly_revenue_change }}%</span>
+                    {% endif %}
+                    <span class="text-secondary-light" data-i18n="finance.vsLastMonth">vs last month</span>
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- Monthly Revenue Chart -->
-    <div class="col-xxl-8 col-lg-7">
-        <div class="card h-100 radius-12 border-0 shadow-sm">
-            <div class="card-body p-24">
-                <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                    <h6 class="mb-0 fw-bold text-lg text-white">Revenue Trend</h6>
-                    <span class="text-sm fw-medium text-secondary-light px-12 py-6 bg-base radius-8">
-                        <iconify-icon icon="solar:calendar-bold" class="text-primary-600 me-1"></iconify-icon>Last 12 months
-                    </span>
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-2">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-success-main flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:bag-4-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="sales.totalOrders">Total Orders</span>
+                            <h6 class="fw-semibold" id="totalOrders">{{ yearly_stats.count }}</h6>
+                        </div>
+                    </div>
                 </div>
-                <div id="revenueChart" class="pt-20 apexcharts-tooltip-style-1"></div>
+                <p class="text-sm mb-0"><span class="text-secondary-light"><span id="totalPages" class="fw-semibold text-primary-light">{{ yearly_stats.pages }}</span> <span data-i18n="finance.pages">pages</span></span></p>
             </div>
         </div>
     </div>
-    
-    <!-- Payment Methods Breakdown -->
-    <div class="col-xxl-4 col-lg-5">
-        <div class="card h-100 radius-12 border-0 shadow-sm">
+
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-3">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-yellow text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:chart-2-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="finance.avgOrderValue">Avg Order Value</span>
+                            <h6 class="fw-semibold" id="avgOrderValue">{{ yearly_stats.avg_order_value|floatformat:0 }} <small class="text-xs fw-normal">UZS</small></h6>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0"><span class="text-secondary-light" data-i18n="finance.perOrderAverage">Per order average</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-4">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-warning-main text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:clock-circle-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="finance.pendingPayments">Pending Payments</span>
+                            <h6 class="fw-semibold">{{ pending_payments_total|floatformat:0 }} <small class="text-xs fw-normal">UZS</small></h6>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0"><span class="bg-warning-focus px-1 rounded-2 fw-medium text-warning-main text-sm">{{ pending_payments_count }}</span> <span class="text-secondary-light" data-i18n="finance.awaiting">awaiting</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Trend Chart -->
+    <div class="col-xxl-8">
+        <div class="card h-100 radius-8 border">
             <div class="card-body p-24">
-                <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
-                    <h6 class="mb-0 fw-bold text-lg text-white">Payment Methods</h6>
-                    <select class="form-select form-select-sm w-auto bg-base border-0 text-primary-light radius-8" id="paymentPeriodSelect">
-                        <option value="today">Today</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly" selected>Yearly</option>
+                <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
+                    <div>
+                        <h6 class="mb-2 fw-bold text-lg" data-i18n="finance.revenueTrend">Revenue Trend</h6>
+                        <span class="text-sm fw-medium text-secondary-light" data-i18n="finance.last12Months">Last 12 months</span>
+                    </div>
+                </div>
+                <div id="revenueChart" class="mt-28"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="col-xxl-4">
+        <div class="card h-100 radius-8 border">
+            <div class="card-body p-24">
+                <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
+                    <h6 class="mb-2 fw-bold text-lg" data-i18n="finance.paymentMethods">Payment Methods</h6>
+                    <select class="form-select form-select-sm w-auto bg-base border text-secondary-light radius-8" id="paymentPeriodSelect">
+                        <option value="yearly" selected data-i18n="common.yearly">Yearly</option>
+                        <option value="monthly" data-i18n="common.monthly">Monthly</option>
+                        <option value="weekly" data-i18n="common.weekly">Weekly</option>
+                        <option value="today" data-i18n="common.today">Today</option>
                     </select>
                 </div>
-                <div id="paymentDonutChart"></div>
+                <div id="paymentDonutChart" class="mt-16"></div>
                 <div class="mt-20 d-flex flex-column gap-12">
-                    <div class="d-flex align-items-center justify-content-between p-14 radius-10 bg-success-focus border-start border-success-main border-3">
+                    <div class="d-flex align-items-center justify-content-between p-12 radius-8 bg-success-focus">
                         <div class="d-flex align-items-center gap-2">
                             <iconify-icon icon="solar:cash-out-bold" class="text-success-main text-xl"></iconify-icon>
-                            <span class="text-primary-light text-sm fw-medium">Cash</span>
+                            <span class="text-primary-light text-sm fw-medium" data-i18n="finance.cash">Cash</span>
                         </div>
                         <div class="text-end">
-                            <span class="fw-bold text-success-main" id="cashRevenue">{{ payment_breakdown.yearly.cash.revenue|floatformat:0 }} UZS</span>
-                            <span class="text-secondary-light text-xs d-block" id="cashCount">({{ payment_breakdown.yearly.cash.count }} orders)</span>
+                            <span class="fw-bold text-success-main" id="cashRevenue">0 UZS</span>
+                            <span class="text-secondary-light text-xs d-block" id="cashCount">(0 <span data-i18n="sidebar.orders">orders</span>)</span>
                         </div>
                     </div>
-                    <div class="d-flex align-items-center justify-content-between p-14 radius-10 bg-primary-focus border-start border-primary-600 border-3">
+                    <div class="d-flex align-items-center justify-content-between p-12 radius-8 bg-primary-focus">
                         <div class="d-flex align-items-center gap-2">
                             <iconify-icon icon="solar:card-bold" class="text-primary-600 text-xl"></iconify-icon>
-                            <span class="text-primary-light text-sm fw-medium">Card</span>
+                            <span class="text-primary-light text-sm fw-medium" data-i18n="finance.card">Card</span>
                         </div>
                         <div class="text-end">
-                            <span class="fw-bold text-primary-600" id="cardRevenue">{{ payment_breakdown.yearly.card.revenue|floatformat:0 }} UZS</span>
-                            <span class="text-secondary-light text-xs d-block" id="cardCount">({{ payment_breakdown.yearly.card.count }} orders)</span>
+                            <span class="fw-bold text-primary-600" id="cardRevenue">0 UZS</span>
+                            <span class="text-secondary-light text-xs d-block" id="cardCount">(0 <span data-i18n="sidebar.orders">orders</span>)</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- User Type Revenue (Agencies vs Customers) -->
-    <div class="col-xxl-4 col-lg-6">
-        <div class="card h-100 radius-12 border-0 shadow-sm">
-            <div class="card-body p-24">
-                <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between mb-20">
-                    <h6 class="mb-0 fw-bold text-lg text-white">Revenue by User Type</h6>
-                    <select class="form-select form-select-sm w-auto bg-base border-0 text-primary-light radius-8" id="userTypePeriodSelect">
-                        <option value="today">Today</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly" selected>Yearly</option>
-                    </select>
-                </div>
-                <div id="userTypeDonutChart"></div>
-                <div class="mt-20 d-flex flex-column gap-12">
-                    <div class="d-flex align-items-center justify-content-between p-14 radius-10 bg-purple-focus border-start border-purple border-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <iconify-icon icon="solar:buildings-2-bold" class="text-purple text-xl"></iconify-icon>
-                            <span class="text-primary-light text-sm fw-medium">Agencies</span>
-                        </div>
-                        <div class="text-end">
-                            <span class="fw-bold text-purple" id="agencyRevenue">{{ user_type_revenue.yearly.agency.revenue|floatformat:0 }} UZS</span>
-                            <span class="text-secondary-light text-xs d-block" id="agencyCount">({{ user_type_revenue.yearly.agency.count }} orders)</span>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between p-14 radius-10 bg-info-focus border-start border-info border-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <iconify-icon icon="solar:user-bold" class="text-info text-xl"></iconify-icon>
-                            <span class="text-primary-light text-sm fw-medium">Regular Customers</span>
-                        </div>
-                        <div class="text-end">
-                            <span class="fw-bold text-info" id="regularRevenue">{{ user_type_revenue.yearly.regular.revenue|floatformat:0 }} UZS</span>
-                            <span class="text-secondary-light text-xs d-block" id="regularCount">({{ user_type_revenue.yearly.regular.count }} orders)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- AOV Trend Chart -->
-    <div class="col-xxl-4 col-lg-6">
-        <div class="card h-100 radius-12 border-0 shadow-sm">
+
+    <!-- Revenue by User Type -->
+    <div class="col-xxl-4">
+        <div class="card h-100 radius-8 border">
             <div class="card-body p-24">
                 <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
-                    <h6 class="mb-0 fw-bold text-lg text-white">Avg Order Value Trend</h6>
-                    <span class="text-sm fw-medium text-secondary-light px-12 py-6 bg-base radius-8">
-                        <iconify-icon icon="solar:calendar-bold" class="text-success-main me-1"></iconify-icon>Last 7 days
-                    </span>
+                    <h6 class="mb-2 fw-bold text-lg" data-i18n="finance.revenueByUserType">Revenue by User Type</h6>
+                    <select class="form-select form-select-sm w-auto bg-base border text-secondary-light radius-8" id="userTypePeriodSelect">
+                        <option value="yearly" selected data-i18n="common.yearly">Yearly</option>
+                        <option value="monthly" data-i18n="common.monthly">Monthly</option>
+                        <option value="weekly" data-i18n="common.weekly">Weekly</option>
+                        <option value="today" data-i18n="common.today">Today</option>
+                    </select>
                 </div>
-                <div id="aovChart" class="pt-20 apexcharts-tooltip-style-1"></div>
+                <div id="userTypeDonutChart" class="mt-16"></div>
+                <div class="mt-20 d-flex flex-column gap-12">
+                    <div class="d-flex align-items-center justify-content-between p-12 radius-8 bg-info-focus">
+                        <div class="d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:buildings-2-bold" class="text-info-main text-xl"></iconify-icon>
+                            <span class="text-primary-light text-sm fw-medium" data-i18n="dashboard.agencies">Agencies</span>
+                        </div>
+                        <div class="text-end">
+                            <span class="fw-bold text-info-main" id="agencyRevenue">0 UZS</span>
+                            <span class="text-secondary-light text-xs d-block" id="agencyCount">(0 <span data-i18n="sidebar.orders">orders</span>)</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between p-12 radius-8 bg-warning-focus">
+                        <div class="d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:user-bold" class="text-warning-main text-xl"></iconify-icon>
+                            <span class="text-primary-light text-sm fw-medium" data-i18n="finance.regularCustomers">Regular Customers</span>
+                        </div>
+                        <div class="text-end">
+                            <span class="fw-bold text-warning-main" id="regularRevenue">0 UZS</span>
+                            <span class="text-secondary-light text-xs d-block" id="regularCount">(0 <span data-i18n="sidebar.orders">orders</span>)</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    
-    <!-- Top Revenue Products -->
-    <div class="col-xxl-4 col-lg-6">
-        <div class="card h-100 radius-12 border-0 shadow-sm">
-            <div class="card-header border-0 bg-transparent">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0">Top Products by Revenue</h5>
-                    <select class="form-select form-select-sm w-auto" id="productPeriodSelect">
-                        <option value="today">Today</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly" selected>Yearly</option>
-                    </select>
+
+    <!-- AOV Trend Chart -->
+    <div class="col-xxl-4">
+        <div class="card h-100 radius-8 border">
+            <div class="card-body p-24">
+                <div class="d-flex align-items-center flex-wrap gap-2 justify-content-between">
+                    <h6 class="mb-2 fw-bold text-lg" data-i18n="finance.avgOrderValueTrend">Avg Order Value Trend</h6>
+                    <span class="text-sm fw-medium text-secondary-light px-12 py-4 bg-base radius-8" data-i18n="finance.last7Days">Last 7 days</span>
                 </div>
+                <div id="aovChart" class="mt-20"></div>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table basic-table mb-0" id="topProductsTable">
+        </div>
+    </div>
+
+    <!-- Top Products by Revenue -->
+    <div class="col-xxl-4">
+        <div class="card h-100 radius-8 border">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h6 class="text-lg fw-semibold mb-0" data-i18n="finance.topProducts">Top Products</h6>
+                <select class="form-select form-select-sm w-auto bg-base border text-secondary-light radius-8" id="productPeriodSelect">
+                    <option value="yearly" selected data-i18n="common.yearly">Yearly</option>
+                    <option value="monthly" data-i18n="common.monthly">Monthly</option>
+                    <option value="weekly" data-i18n="common.weekly">Weekly</option>
+                    <option value="today" data-i18n="common.today">Today</option>
+                </select>
+            </div>
+            <div class="card-body p-24">
+                <div class="table-responsive scroll-sm">
+                    <table class="table bordered-table mb-0">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Product</th>
-                                <th scope="col" class="text-center">Orders</th>
-                                <th scope="col">Revenue</th>
+                                <th scope="col" data-i18n="table.product">Product</th>
+                                <th scope="col" class="text-center" data-i18n="table.orders">Orders</th>
+                                <th scope="col" data-i18n="table.revenue">Revenue</th>
                             </tr>
                         </thead>
-                        <tbody id="topProductsBody">
-                            {% for product in product_revenue.yearly %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>
-                                    <h6 class="text-md mb-0 fw-normal">{{ product.name }}</h6>
-                                </td>
-                                <td class="text-center">
-                                    <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">{{ product.count }}</span>
-                                </td>
-                                <td>{{ product.revenue|floatformat:0 }} UZS</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center text-secondary-light">No product data available</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
+                        <tbody id="topProductsBody"></tbody>
                     </table>
+                    <div id="noProductsMessage" class="text-center py-24 d-none">
+                        <span class="text-secondary-light text-sm" data-i18n="table.noProductsFound">No products found</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -268,375 +231,141 @@
 
 {% block script %}
 <script>
-// Revenue Overview Stats Data
-const revenueStatsData = {
-    today: {
-        revenue: {{ today_stats.revenue|floatformat:0|default:0 }},
-        count: {{ today_stats.count|default:0 }},
-        pages: {{ today_stats.pages|default:0 }},
-        avgOrderValue: {{ today_stats.avg_order_value|floatformat:0|default:0 }}
-    },
-    weekly: {
-        revenue: {{ weekly_stats.revenue|floatformat:0|default:0 }},
-        count: {{ weekly_stats.count|default:0 }},
-        pages: {{ weekly_stats.pages|default:0 }},
-        avgOrderValue: {{ weekly_stats.avg_order_value|floatformat:0|default:0 }}
-    },
-    monthly: {
-        revenue: {{ monthly_stats.revenue|floatformat:0|default:0 }},
-        count: {{ monthly_stats.count|default:0 }},
-        pages: {{ monthly_stats.pages|default:0 }},
-        avgOrderValue: {{ monthly_stats.avg_order_value|floatformat:0|default:0 }}
-    },
-    yearly: {
-        revenue: {{ yearly_stats.revenue|floatformat:0|default:0 }},
-        count: {{ yearly_stats.count|default:0 }},
-        pages: {{ yearly_stats.pages|default:0 }},
-        avgOrderValue: {{ yearly_stats.avg_order_value|floatformat:0|default:0 }}
-    }
-};
-
-// Payment Breakdown Data
 const paymentBreakdownData = {{ payment_breakdown|safe }};
-
-// User Type Revenue Data
 const userTypeRevenueData = {{ user_type_revenue|safe }};
-
-// Product Revenue Data
 const productRevenueData = {{ product_revenue|safe }};
-
-// Chart Data
 const monthlyRevenueChart = {{ monthly_revenue_chart|safe }};
 const monthlyRevenueLabels = {{ monthly_revenue_labels|safe }};
 const aovTrendData = {{ aov_trend_data|safe }};
 const aovTrendLabels = {{ aov_trend_labels|safe }};
 
-// Format number with commas
-function formatNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+function formatNumber(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+function formatShort(num) {
+    num = parseFloat(num) || 0;
+    if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B';
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toFixed(0);
 }
-
-// Get theme-aware colors
 function getThemeColors() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    return {
-        textColor: isDark ? '#9CA3AF' : '#6C757D',
-        gridColor: isDark ? '#374151' : '#E4E7EC',
-        trackColor: isDark ? '#374151' : '#E4E7EC',
-        valueColor: isDark ? '#F9FAFB' : '#1B2559'
-    };
+    return { textColor: isDark ? '#9CA3AF' : '#6C757D', gridColor: isDark ? '#374151' : '#E4E7EC', bgColor: isDark ? '#1F2937' : '#ffffff' };
 }
 
-// Update Revenue Overview Cards
-function updateRevenueOverview(period) {
-    const stats = revenueStatsData[period];
-    document.getElementById('totalRevenue').textContent = formatNumber(stats.revenue) + ' UZS';
-    document.getElementById('totalOrders').textContent = formatNumber(stats.count);
-    document.getElementById('totalPages').textContent = formatNumber(stats.pages);
-    document.getElementById('avgOrderValue').textContent = formatNumber(stats.avgOrderValue) + ' UZS';
-}
-
-// Payment Methods Donut Chart
-let paymentDonutChart;
-function renderPaymentChart(period) {
-    const data = paymentBreakdownData[period];
-    const cashRevenue = data.cash.revenue;
-    const cardRevenue = data.card.revenue;
-    
-    // Update legend
-    document.getElementById('cashRevenue').textContent = formatNumber(cashRevenue) + ' UZS';
-    document.getElementById('cashCount').textContent = `(${data.cash.count} orders)`;
-    document.getElementById('cardRevenue').textContent = formatNumber(cardRevenue) + ' UZS';
-    document.getElementById('cardCount').textContent = `(${data.card.count} orders)`;
-    
+// Revenue Chart
+function initRevenueChart() {
     const colors = getThemeColors();
-    const options = {
-        series: [cashRevenue, cardRevenue],
-        chart: {
-            type: 'donut',
-            height: 250
-        },
+    new ApexCharts(document.querySelector("#revenueChart"), {
+        series: [{ name: 'Revenue', data: monthlyRevenueChart }],
+        chart: { type: 'area', height: 250, toolbar: { show: false } },
+        colors: ['#487FFF'],
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1 } },
+        stroke: { curve: 'smooth', width: 2 },
+        dataLabels: { enabled: false },
+        xaxis: { categories: monthlyRevenueLabels, labels: { style: { colors: colors.textColor, fontSize: '12px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+        yaxis: { labels: { formatter: val => val >= 1000000 ? (val/1000000).toFixed(1)+'M' : val >= 1000 ? (val/1000).toFixed(0)+'K' : val, style: { colors: colors.textColor, fontSize: '12px' } } },
+        grid: { borderColor: colors.gridColor, strokeDashArray: 3 },
+        tooltip: { y: { formatter: val => formatNumber(val) + ' UZS' } }
+    }).render();
+}
+
+// Payment Donut Chart
+let paymentDonutChart;
+function updatePaymentChart(period) {
+    const data = paymentBreakdownData[period];
+    document.getElementById('cashRevenue').textContent = formatNumber(data.cash.revenue) + ' UZS';
+    document.getElementById('cashCount').textContent = '(' + data.cash.count + ' orders)';
+    document.getElementById('cardRevenue').textContent = formatNumber(data.card.revenue) + ' UZS';
+    document.getElementById('cardCount').textContent = '(' + data.card.count + ' orders)';
+    if (paymentDonutChart) paymentDonutChart.updateSeries([data.cash.revenue, data.card.revenue]);
+}
+function initPaymentDonutChart() {
+    const colors = getThemeColors();
+    const data = paymentBreakdownData.yearly;
+    paymentDonutChart = new ApexCharts(document.querySelector("#paymentDonutChart"), {
+        series: [data.cash.revenue, data.card.revenue],
+        chart: { type: 'donut', height: 180 },
         labels: ['Cash', 'Card'],
         colors: ['#45B369', '#487FFF'],
         legend: { show: false },
         dataLabels: { enabled: false },
-        plotOptions: {
-            pie: {
-                donut: {
-                    size: '70%',
-                    labels: {
-                        show: true,
-                        name: {
-                            show: true,
-                            color: colors.textColor,
-                            fontSize: '14px'
-                        },
-                        value: {
-                            show: true,
-                            color: colors.valueColor,
-                            fontSize: '20px',
-                            fontWeight: 600
-                        },
-                        total: {
-                            show: true,
-                            label: 'Total',
-                            color: colors.textColor,
-                            formatter: function(w) {
-                                const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                                return formatNumber(total) + ' UZS';
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    };
-    
-    if (paymentDonutChart) {
-        paymentDonutChart.updateOptions(options);
-    } else {
-        paymentDonutChart = new ApexCharts(document.querySelector("#paymentDonutChart"), options);
-        paymentDonutChart.render();
-    }
+        plotOptions: { pie: { donut: { size: '70%', labels: { show: true, name: { show: true, fontSize: '12px', color: colors.textColor }, value: { show: true, fontSize: '14px', fontWeight: 600, color: colors.textColor, formatter: val => formatShort(val) }, total: { show: true, label: 'Total', color: colors.textColor, formatter: w => formatShort(w.globals.seriesTotals.reduce((a,b) => a+b, 0)) } } } } }
+    });
+    paymentDonutChart.render();
+    updatePaymentChart('yearly');
 }
 
 // User Type Donut Chart
 let userTypeDonutChart;
-function renderUserTypeChart(period) {
+function updateUserTypeChart(period) {
     const data = userTypeRevenueData[period];
-    const agencyRevenue = data.agency.revenue;
-    const regularRevenue = data.regular.revenue;
-    
-    // Update legend
-    document.getElementById('agencyRevenue').textContent = formatNumber(agencyRevenue) + ' UZS';
-    document.getElementById('agencyCount').textContent = `(${data.agency.count} orders)`;
-    document.getElementById('regularRevenue').textContent = formatNumber(regularRevenue) + ' UZS';
-    document.getElementById('regularCount').textContent = `(${data.regular.count} orders)`;
-    
+    document.getElementById('agencyRevenue').textContent = formatNumber(data.agency.revenue) + ' UZS';
+    document.getElementById('agencyCount').textContent = '(' + data.agency.count + ' orders)';
+    document.getElementById('regularRevenue').textContent = formatNumber(data.regular.revenue) + ' UZS';
+    document.getElementById('regularCount').textContent = '(' + data.regular.count + ' orders)';
+    if (userTypeDonutChart) userTypeDonutChart.updateSeries([data.agency.revenue, data.regular.revenue]);
+}
+function initUserTypeDonutChart() {
     const colors = getThemeColors();
-    const options = {
-        series: [agencyRevenue, regularRevenue],
-        chart: {
-            type: 'donut',
-            height: 250
-        },
-        labels: ['Agencies', 'Regular Customers'],
-        colors: ['#6F42C1', '#17A2B8'],
+    const data = userTypeRevenueData.yearly;
+    userTypeDonutChart = new ApexCharts(document.querySelector("#userTypeDonutChart"), {
+        series: [data.agency.revenue, data.regular.revenue],
+        chart: { type: 'donut', height: 180 },
+        labels: ['Agencies', 'Regular'],
+        colors: ['#06B6D4', '#F59E0B'],
         legend: { show: false },
         dataLabels: { enabled: false },
-        plotOptions: {
-            pie: {
-                donut: {
-                    size: '70%',
-                    labels: {
-                        show: true,
-                        name: {
-                            show: true,
-                            color: colors.textColor,
-                            fontSize: '14px'
-                        },
-                        value: {
-                            show: true,
-                            color: colors.valueColor,
-                            fontSize: '20px',
-                            fontWeight: 600
-                        },
-                        total: {
-                            show: true,
-                            label: 'Total',
-                            color: colors.textColor,
-                            formatter: function(w) {
-                                const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                                return formatNumber(total) + ' UZS';
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    };
-    
-    if (userTypeDonutChart) {
-        userTypeDonutChart.updateOptions(options);
-    } else {
-        userTypeDonutChart = new ApexCharts(document.querySelector("#userTypeDonutChart"), options);
-        userTypeDonutChart.render();
-    }
+        plotOptions: { pie: { donut: { size: '70%', labels: { show: true, name: { show: true, fontSize: '12px', color: colors.textColor }, value: { show: true, fontSize: '14px', fontWeight: 600, color: colors.textColor, formatter: val => formatShort(val) }, total: { show: true, label: 'Total', color: colors.textColor, formatter: w => formatShort(w.globals.seriesTotals.reduce((a,b) => a+b, 0)) } } } } }
+    });
+    userTypeDonutChart.render();
+    updateUserTypeChart('yearly');
 }
 
-// Revenue Trend Bar Chart
-function renderRevenueChart() {
+// AOV Chart
+function initAovChart() {
     const colors = getThemeColors();
-    const options = {
-        series: [{
-            name: 'Revenue',
-            data: monthlyRevenueChart
-        }],
-        chart: {
-            type: 'bar',
-            height: 300,
-            toolbar: { show: false }
-        },
+    new ApexCharts(document.querySelector("#aovChart"), {
+        series: [{ name: 'AOV', data: aovTrendData }],
+        chart: { type: 'bar', height: 200, toolbar: { show: false } },
         colors: ['#487FFF'],
-        plotOptions: {
-            bar: {
-                borderRadius: 4,
-                columnWidth: '50%'
-            }
-        },
+        plotOptions: { bar: { borderRadius: 4, columnWidth: '50%' } },
         dataLabels: { enabled: false },
-        xaxis: {
-            categories: monthlyRevenueLabels,
-            labels: {
-                style: {
-                    colors: colors.textColor,
-                    fontSize: '12px'
-                }
-            }
-        },
-        yaxis: {
-            labels: {
-                formatter: function(val) {
-                    if (val >= 1000000) return (val / 1000000).toFixed(1) + 'M';
-                    if (val >= 1000) return (val / 1000).toFixed(0) + 'K';
-                    return val;
-                },
-                style: {
-                    colors: colors.textColor,
-                    fontSize: '12px'
-                }
-            }
-        },
-        grid: {
-            borderColor: colors.gridColor,
-            strokeDashArray: 3
-        },
-        tooltip: {
-            y: {
-                formatter: function(val) {
-                    return formatNumber(val) + ' UZS';
-                }
-            }
-        }
-    };
-    
-    const chart = new ApexCharts(document.querySelector("#revenueChart"), options);
-    chart.render();
+        xaxis: { categories: aovTrendLabels, labels: { style: { colors: colors.textColor, fontSize: '11px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+        yaxis: { labels: { formatter: val => val >= 1000 ? (val/1000).toFixed(0)+'K' : val, style: { colors: colors.textColor, fontSize: '11px' } } },
+        grid: { borderColor: colors.gridColor, strokeDashArray: 3 },
+        tooltip: { y: { formatter: val => formatNumber(val) + ' UZS' } }
+    }).render();
 }
 
-// AOV Trend Line Chart
-function renderAovChart() {
-    const colors = getThemeColors();
-    const options = {
-        series: [{
-            name: 'Avg Order Value',
-            data: aovTrendData
-        }],
-        chart: {
-            type: 'area',
-            height: 250,
-            toolbar: { show: false },
-            sparkline: { enabled: false }
-        },
-        colors: ['#45B369'],
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shadeIntensity: 1,
-                opacityFrom: 0.4,
-                opacityTo: 0.1,
-                stops: [0, 100]
-            }
-        },
-        stroke: {
-            curve: 'smooth',
-            width: 2
-        },
-        dataLabels: { enabled: false },
-        xaxis: {
-            categories: aovTrendLabels,
-            labels: {
-                style: {
-                    colors: colors.textColor,
-                    fontSize: '12px'
-                }
-            }
-        },
-        yaxis: {
-            labels: {
-                formatter: function(val) {
-                    return formatNumber(val);
-                },
-                style: {
-                    colors: colors.textColor,
-                    fontSize: '12px'
-                }
-            }
-        },
-        grid: {
-            borderColor: colors.gridColor,
-            strokeDashArray: 3
-        },
-        tooltip: {
-            y: {
-                formatter: function(val) {
-                    return formatNumber(val) + ' UZS';
-                }
-            }
-        }
-    };
-    
-    const chart = new ApexCharts(document.querySelector("#aovChart"), options);
-    chart.render();
-}
-
-// Update Products Table
+// Top Products Table
 function updateProductsTable(period) {
-    const products = productRevenueData[period];
+    const products = productRevenueData[period] || [];
     const tbody = document.getElementById('topProductsBody');
-    
-    if (products.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-secondary-light">No product data available</td></tr>`;
+    const empty = document.getElementById('noProductsMessage');
+    if (!products || products.length === 0) {
+        tbody.innerHTML = '';
+        empty.classList.remove('d-none');
         return;
     }
-    
-    tbody.innerHTML = products.map((product, index) => `
-        <tr>
-            <td>${index + 1}</td>
-            <td>
-                <h6 class="text-md mb-0 fw-normal">${product.name}</h6>
-            </td>
-            <td class="text-center">
-                <span class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">${product.count}</span>
-            </td>
-            <td>${formatNumber(product.revenue)} UZS</td>
-        </tr>
-    `).join('');
+    empty.classList.add('d-none');
+    tbody.innerHTML = products.map((p, i) => 
+        '<tr><td class="text-secondary-light">' + (i+1) + '</td>' +
+        '<td><span class="text-primary-light fw-medium">' + p.name + '</span></td>' +
+        '<td class="text-center"><span class="bg-success-focus text-success-main px-12 py-4 rounded-pill fw-medium text-sm">' + p.count + '</span></td>' +
+        '<td class="text-secondary-light">' + formatNumber(p.revenue) + ' UZS</td></tr>'
+    ).join('');
 }
 
-// Event Listeners
-document.getElementById('revenuePeriodSelect').addEventListener('change', function() {
-    updateRevenueOverview(this.value);
-});
-
-document.getElementById('paymentPeriodSelect').addEventListener('change', function() {
-    renderPaymentChart(this.value);
-});
-
-document.getElementById('userTypePeriodSelect').addEventListener('change', function() {
-    renderUserTypeChart(this.value);
-});
-
-document.getElementById('productPeriodSelect').addEventListener('change', function() {
-    updateProductsTable(this.value);
-});
-
-// Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    renderRevenueChart();
-    renderPaymentChart('yearly');
-    renderUserTypeChart('yearly');
-    renderAovChart();
+    initRevenueChart();
+    initPaymentDonutChart();
+    initUserTypeDonutChart();
+    initAovChart();
+    updateProductsTable('yearly');
+    
+    document.getElementById('paymentPeriodSelect').addEventListener('change', e => updatePaymentChart(e.target.value));
+    document.getElementById('userTypePeriodSelect').addEventListener('change', e => updateUserTypeChart(e.target.value));
+    document.getElementById('productPeriodSelect').addEventListener('change', e => updateProductsTable(e.target.value));
 });
 </script>
 {% endblock script %}

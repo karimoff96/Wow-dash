@@ -8,16 +8,16 @@
         <div class="card h-100 radius-16 overflow-hidden">
             <div class="card-header bg-base border-bottom py-16 px-24">
                 <div class="d-flex align-items-center justify-content-between">
-                    <h6 class="mb-0">User Information</h6>
+                    <h6 class="mb-0" data-i18n="detail.userInformation">User Information</h6>
                     <div class="d-flex align-items-center gap-2">
                         <a href="{% url 'editUser' bot_user.id %}" class="btn btn-sm btn-outline-warning-600 radius-8 px-12 py-6 d-flex align-items-center">
                             <iconify-icon icon="lucide:edit" class="me-4"></iconify-icon>
-                            Edit
+                            <span data-i18n="detail.edit">Edit</span>
                         </a>
                         {% if bot_user.is_active %}
-                            <span class="bg-success-focus text-success-600 px-16 py-4 radius-4 fw-medium text-sm">Active</span>
+                            <span class="bg-success-focus text-success-600 px-16 py-4 radius-4 fw-medium text-sm" data-i18n="common.active">Active</span>
                         {% else %}
-                            <span class="bg-neutral-200 text-neutral-600 px-16 py-4 radius-4 fw-medium text-sm">Inactive</span>
+                            <span class="bg-neutral-200 text-neutral-600 px-16 py-4 radius-4 fw-medium text-sm" data-i18n="common.inactive">Inactive</span>
                         {% endif %}
                     </div>
                 </div>
@@ -35,21 +35,21 @@
                         <div class="mt-8">
                             <span class="badge bg-warning-focus text-warning-600 px-12 py-6 radius-4 d-inline-flex align-items-center">
                                 <iconify-icon icon="mdi:office-building" class="me-4"></iconify-icon>
-                                Agency Account
+                                <span data-i18n="detail.agencyAccount">Agency Account</span>
                             </span>
                         </div>
                     {% endif %}
                 </div>
 
                 <div class="border-top pt-24">
-                    <h6 class="text-md mb-16">Personal Details</h6>
+                    <h6 class="text-md mb-16" data-i18n="detail.personalDetails">Personal Details</h6>
                     <ul class="list-unstyled">
                         <li class="d-flex align-items-center gap-8 mb-16">
                             <div class="w-40-px h-40-px rounded-circle bg-primary-50 d-flex align-items-center justify-content-center flex-shrink-0">
                                 <iconify-icon icon="solar:user-linear" class="text-primary-600 text-xl"></iconify-icon>
                             </div>
                             <div class="flex-grow-1">
-                                <span class="text-sm text-secondary-light d-block">Full Name</span>
+                                <span class="text-sm text-secondary-light d-block" data-i18n="form.fullName">Full Name</span>
                                 <span class="text-md fw-medium">{{ bot_user.name }}</span>
                             </div>
                         </li>
@@ -58,7 +58,7 @@
                                 <iconify-icon icon="ic:outline-telegram" class="text-info-600 text-xl"></iconify-icon>
                             </div>
                             <div class="flex-grow-1">
-                                <span class="text-sm text-secondary-light d-block">Telegram ID</span>
+                                <span class="text-sm text-secondary-light d-block" data-i18n="detail.telegramId">Telegram ID</span>
                                 <span class="text-md fw-medium">{{ bot_user.user_id|default:"-" }}</span>
                             </div>
                         </li>
@@ -67,7 +67,7 @@
                                 <iconify-icon icon="solar:phone-linear" class="text-success-600 text-xl"></iconify-icon>
                             </div>
                             <div class="flex-grow-1">
-                                <span class="text-sm text-secondary-light d-block">Phone Number</span>
+                                <span class="text-sm text-secondary-light d-block" data-i18n="form.phoneNumber">Phone Number</span>
                                 <span class="text-md fw-medium">{{ bot_user.phone }}</span>
                             </div>
                         </li>
@@ -76,7 +76,7 @@
                                 <iconify-icon icon="solar:global-linear" class="text-warning-600 text-xl"></iconify-icon>
                             </div>
                             <div class="flex-grow-1">
-                                <span class="text-sm text-secondary-light d-block">Language</span>
+                                <span class="text-sm text-secondary-light d-block" data-i18n="form.language">Language</span>
                                 <span class="text-md fw-medium">
                                     {% if bot_user.language == 'uz' %}
                                         🇺🇿 Uzbek
@@ -95,7 +95,7 @@
                                 <iconify-icon icon="solar:calendar-linear" class="text-danger-600 text-xl"></iconify-icon>
                             </div>
                             <div class="flex-grow-1">
-                                <span class="text-sm text-secondary-light d-block">Joined Date</span>
+                                <span class="text-sm text-secondary-light d-block" data-i18n="detail.joinedDate">Joined Date</span>
                                 <span class="text-md fw-medium">{{ bot_user.created_at|date:"d M Y, H:i" }}</span>
                             </div>
                         </li>
@@ -105,7 +105,7 @@
                                 <iconify-icon icon="mdi:office-building-outline" class="text-purple-600 text-xl"></iconify-icon>
                             </div>
                             <div class="flex-grow-1">
-                                <span class="text-sm text-secondary-light d-block">Referred By Agency</span>
+                                <span class="text-sm text-secondary-light d-block" data-i18n="detail.referredByAgency">Referred By Agency</span>
                                 <a href="{% url 'viewProfile' %}?id={{ bot_user.agency.id }}" class="text-md fw-medium text-primary-600">
                                     {{ bot_user.agency.name }}
                                 </a>
@@ -117,7 +117,7 @@
 
                 {% if bot_user.is_agency and bot_user.agency_link %}
                 <div class="border-top pt-24 mt-8">
-                    <h6 class="text-md mb-16">Agency Invite Link</h6>
+                    <h6 class="text-md mb-16" data-i18n="detail.agencyInviteLink">Agency Invite Link</h6>
                     <div class="bg-neutral-50 p-12 radius-8">
                         <div class="d-flex align-items-center gap-8">
                             <input type="text" class="form-control form-control-sm bg-base" id="agencyLink" value="{{ bot_user.agency_link }}" readonly>
@@ -128,12 +128,12 @@
                         {% if bot_user.is_used %}
                             <span class="text-sm text-danger-600 mt-8 d-flex align-items-center">
                                 <iconify-icon icon="mdi:check-circle" class="me-4"></iconify-icon>
-                                This link has been used
+                                <span data-i18n="detail.linkUsed">This link has been used</span>
                             </span>
                         {% else %}
                             <span class="text-sm text-success-600 mt-8 d-flex align-items-center">
                                 <iconify-icon icon="mdi:link" class="me-4"></iconify-icon>
-                                Link is active
+                                <span data-i18n="detail.linkActive">Link is active</span>
                             </span>
                         {% endif %}
                     </div>
@@ -143,7 +143,7 @@
                 <div class="d-flex gap-8 mt-24">
                     <a href="{% url 'usersList' %}" class="btn btn-outline-secondary-600 radius-8 px-20 py-11 flex-grow-1 d-flex align-items-center justify-content-center">
                         <iconify-icon icon="ep:back" class="me-4"></iconify-icon>
-                        Back to List
+                        <span data-i18n="form.backToList">Back to List</span>
                     </a>
                 </div>
             </div>
@@ -162,7 +162,7 @@
                                 <iconify-icon icon="solar:bag-4-linear" class="text-primary-600 text-2xl"></iconify-icon>
                             </div>
                             <div>
-                                <span class="text-secondary-light text-sm d-block mb-4">Total Orders</span>
+                                <span class="text-secondary-light text-sm d-block mb-4" data-i18n="detail.totalOrders">Total Orders</span>
                                 <h4 class="mb-0">{{ total_orders }}</h4>
                             </div>
                         </div>
@@ -177,7 +177,7 @@
                                 <iconify-icon icon="solar:check-circle-linear" class="text-success-600 text-2xl"></iconify-icon>
                             </div>
                             <div>
-                                <span class="text-secondary-light text-sm d-block mb-4">Completed</span>
+                                <span class="text-secondary-light text-sm d-block mb-4" data-i18n="status.completed">Completed</span>
                                 <h4 class="mb-0">{{ completed_orders }}</h4>
                             </div>
                         </div>
@@ -192,7 +192,7 @@
                                 <iconify-icon icon="solar:clock-circle-linear" class="text-warning-600 text-2xl"></iconify-icon>
                             </div>
                             <div>
-                                <span class="text-secondary-light text-sm d-block mb-4">In Progress</span>
+                                <span class="text-secondary-light text-sm d-block mb-4" data-i18n="detail.inProgress">In Progress</span>
                                 <h4 class="mb-0">{{ pending_orders }}</h4>
                             </div>
                         </div>
@@ -204,10 +204,10 @@
         <!-- Recent Orders -->
         <div class="card radius-16">
             <div class="card-header bg-base border-bottom py-16 px-24 d-flex align-items-center justify-content-between">
-                <h6 class="mb-0">Recent Orders</h6>
+                <h6 class="mb-0" data-i18n="detail.recentOrders">Recent Orders</h6>
                 {% if total_orders > 0 %}
                 <a href="{% url 'ordersList' %}?search={{ bot_user.name }}" class="text-primary-600 text-sm fw-medium">
-                    View All <iconify-icon icon="ep:arrow-right" class="ms-4"></iconify-icon>
+                    <span data-i18n="detail.viewAll">View All</span> <iconify-icon icon="ep:arrow-right" class="ms-4"></iconify-icon>
                 </a>
                 {% endif %}
             </div>
@@ -217,12 +217,12 @@
                     <table class="table bordered-table sm-table mb-0">
                         <thead>
                             <tr>
-                                <th scope="col">Order ID</th>
-                                <th scope="col">Product</th>
-                                <th scope="col">Pages</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Date</th>
-                                <th scope="col" class="text-center">Action</th>
+                                <th scope="col" data-i18n="table.orderId">Order ID</th>
+                                <th scope="col" data-i18n="table.product">Product</th>
+                                <th scope="col" data-i18n="common.pages">Pages</th>
+                                <th scope="col" data-i18n="table.status">Status</th>
+                                <th scope="col" data-i18n="table.date">Date</th>
+                                <th scope="col" class="text-center" data-i18n="table.action">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -235,21 +235,21 @@
                                 <td>{{ order.total_pages }}</td>
                                 <td>
                                     {% if order.status == 'pending' %}
-                                        <span class="badge bg-warning-focus text-warning-600">Pending</span>
+                                        <span class="badge bg-warning-focus text-warning-600" data-i18n="status.pending">Pending</span>
                                     {% elif order.status == 'payment_pending' %}
-                                        <span class="badge bg-info-focus text-info-600">Payment Pending</span>
+                                        <span class="badge bg-info-focus text-info-600" data-i18n="status.paymentPending">Payment Pending</span>
                                     {% elif order.status == 'payment_received' %}
-                                        <span class="badge bg-primary-focus text-primary-600">Payment Received</span>
+                                        <span class="badge bg-primary-focus text-primary-600" data-i18n="status.paymentReceived">Payment Received</span>
                                     {% elif order.status == 'payment_confirmed' %}
-                                        <span class="badge bg-success-focus text-success-600">Payment Confirmed</span>
+                                        <span class="badge bg-success-focus text-success-600" data-i18n="status.paymentConfirmed">Payment Confirmed</span>
                                     {% elif order.status == 'in_progress' %}
-                                        <span class="badge bg-info-focus text-info-600">In Progress</span>
+                                        <span class="badge bg-info-focus text-info-600" data-i18n="status.inProgress">In Progress</span>
                                     {% elif order.status == 'ready' %}
-                                        <span class="badge bg-primary-focus text-primary-600">Ready</span>
+                                        <span class="badge bg-primary-focus text-primary-600" data-i18n="status.ready">Ready</span>
                                     {% elif order.status == 'completed' %}
-                                        <span class="badge bg-success-focus text-success-600">Completed</span>
+                                        <span class="badge bg-success-focus text-success-600" data-i18n="status.completed">Completed</span>
                                     {% elif order.status == 'cancelled' %}
-                                        <span class="badge bg-danger-focus text-danger-600">Cancelled</span>
+                                        <span class="badge bg-danger-focus text-danger-600" data-i18n="status.cancelled">Cancelled</span>
                                     {% else %}
                                         <span class="badge bg-neutral-200 text-neutral-600">{{ order.status }}</span>
                                     {% endif %}
@@ -268,7 +268,7 @@
                 {% else %}
                 <div class="text-center py-40">
                     <iconify-icon icon="solar:bag-cross-linear" class="text-4xl text-secondary-light mb-8"></iconify-icon>
-                    <p class="text-secondary-light mb-0">No orders found for this user</p>
+                    <p class="text-secondary-light mb-0" data-i18n="detail.noOrdersFound">No orders found for this user</p>
                 </div>
                 {% endif %}
             </div>
@@ -280,11 +280,11 @@
             <div class="card-header bg-base border-bottom py-16 px-24 d-flex align-items-center justify-content-between">
                 <h6 class="mb-0 d-flex align-items-center">
                     <iconify-icon icon="mdi:account-group" class="me-8 text-warning-600"></iconify-icon>
-                    Referred Users ({{ agency_users_count }})
+                    <span data-i18n="detail.referredUsers">Referred Users</span> ({{ agency_users_count }})
                 </h6>
                 {% if agency_users_count > 5 %}
                 <a href="{% url 'usersList' %}?status=agency" class="text-primary-600 text-sm fw-medium d-flex align-items-center">
-                    View All <iconify-icon icon="ep:arrow-right" class="ms-4"></iconify-icon>
+                    <span data-i18n="detail.viewAll">View All</span> <iconify-icon icon="ep:arrow-right" class="ms-4"></iconify-icon>
                 </a>
                 {% endif %}
             </div>
@@ -293,11 +293,11 @@
                     <table class="table bordered-table sm-table mb-0">
                         <thead>
                             <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Phone</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Joined</th>
-                                <th scope="col" class="text-center">Action</th>
+                                <th scope="col" data-i18n="table.name">Name</th>
+                                <th scope="col" data-i18n="detail.phone">Phone</th>
+                                <th scope="col" data-i18n="table.status">Status</th>
+                                <th scope="col" data-i18n="detail.joinedDate">Joined</th>
+                                <th scope="col" class="text-center" data-i18n="table.action">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -314,9 +314,9 @@
                                 <td>{{ agency_user.phone }}</td>
                                 <td>
                                     {% if agency_user.is_active %}
-                                        <span class="badge bg-success-focus text-success-600">Active</span>
+                                        <span class="badge bg-success-focus text-success-600" data-i18n="common.active">Active</span>
                                     {% else %}
-                                        <span class="badge bg-neutral-200 text-neutral-600">Inactive</span>
+                                        <span class="badge bg-neutral-200 text-neutral-600" data-i18n="common.inactive">Inactive</span>
                                     {% endif %}
                                 </td>
                                 <td>{{ agency_user.created_at|date:"d M Y" }}</td>

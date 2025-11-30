@@ -7,11 +7,11 @@
         <div class="d-flex align-items-center justify-content-between">
             <h6 class="mb-0 d-flex align-items-center">
                 <iconify-icon icon="mdi:account-plus" class="me-8 text-primary-600"></iconify-icon>
-                Add New Telegram User
+                <span data-i18n="form.addNewUser">Add New Telegram User</span>
             </h6>
             <a href="{% url 'usersList' %}" class="btn btn-outline-secondary-600 radius-8 px-20 py-9 d-flex align-items-center">
                 <iconify-icon icon="ep:back" class="me-4"></iconify-icon>
-                Back to List
+                <span data-i18n="form.backToList">Back to List</span>
             </a>
         </div>
     </div>
@@ -25,19 +25,19 @@
                     <div class="mb-24">
                         <h6 class="text-md fw-semibold text-primary-light mb-16 d-flex align-items-center">
                             <iconify-icon icon="solar:user-linear" class="me-8"></iconify-icon>
-                            Basic Information
+                            <span data-i18n="form.basicInformation">Basic Information</span>
                         </h6>
                         <div class="row">
                             <div class="col-md-6 mb-20">
                                 <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">
-                                    Full Name <span class="text-danger-600">*</span>
+                                    <span data-i18n="form.fullName">Full Name</span> <span class="text-danger-600">*</span>
                                 </label>
                                 <input type="text" class="form-control radius-8" id="name" name="name" 
-                                       placeholder="Enter full name" required>
+                                       data-i18n-placeholder="form.enterFullName" placeholder="Enter full name" required>
                             </div>
                             <div class="col-md-6 mb-20">
                                 <label for="phone" class="form-label fw-semibold text-primary-light text-sm mb-8">
-                                    Phone Number <span class="text-danger-600">*</span>
+                                    <span data-i18n="form.phoneNumber">Phone Number</span> <span class="text-danger-600">*</span>
                                 </label>
                                 <input type="tel" class="form-control radius-8" id="phone" name="phone" 
                                        placeholder="+998 90 123 45 67" required>
@@ -49,11 +49,11 @@
                     <div class="mb-24">
                         <h6 class="text-md fw-semibold text-primary-light mb-16 d-flex align-items-center">
                             <iconify-icon icon="ic:outline-telegram" class="me-8"></iconify-icon>
-                            Telegram Information
+                            <span data-i18n="form.telegramInfo">Telegram Information</span>
                         </h6>
                         <div class="row">
                             <div class="col-md-6 mb-20">
-                                <label for="username" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <label for="username" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.username">
                                     Username
                                 </label>
                                 <div class="input-group">
@@ -61,15 +61,15 @@
                                     <input type="text" class="form-control radius-8" id="username" name="username" 
                                            placeholder="telegram_username">
                                 </div>
-                                <small class="text-secondary-light">Optional - Telegram username without @</small>
+                                <small class="text-secondary-light" data-i18n="form.usernameHint">Optional - Telegram username without @</small>
                             </div>
                             <div class="col-md-6 mb-20">
-                                <label for="user_id" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <label for="user_id" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.telegramUserId">
                                     Telegram User ID
                                 </label>
                                 <input type="number" class="form-control radius-8" id="user_id" name="user_id" 
                                        placeholder="123456789">
-                                <small class="text-secondary-light">Optional - Numeric Telegram ID</small>
+                                <small class="text-secondary-light" data-i18n="form.telegramUserIdHint">Optional - Numeric Telegram ID</small>
                             </div>
                         </div>
                     </div>
@@ -78,12 +78,12 @@
                     <div class="mb-24">
                         <h6 class="text-md fw-semibold text-primary-light mb-16 d-flex align-items-center">
                             <iconify-icon icon="solar:settings-linear" class="me-8"></iconify-icon>
-                            Settings
+                            <span data-i18n="form.settings">Settings</span>
                         </h6>
                         <div class="row">
                             <div class="col-md-6 mb-20">
                                 <label for="language" class="form-label fw-semibold text-primary-light text-sm mb-8">
-                                    Language <span class="text-danger-600">*</span>
+                                    <span data-i18n="form.language">Language</span> <span class="text-danger-600">*</span>
                                 </label>
                                 <select class="form-control radius-8 form-select" id="language" name="language">
                                     {% for code, name in languages %}
@@ -94,16 +94,16 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-20">
-                                <label for="agency" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <label for="agency" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.agency">
                                     Agency
                                 </label>
                                 <select class="form-control radius-8 form-select" id="agency" name="agency">
-                                    <option value="">No Agency (Direct User)</option>
+                                    <option value="" data-i18n="form.noAgency">No Agency (Direct User)</option>
                                     {% for agency in agencies %}
                                     <option value="{{ agency.id }}">{{ agency.name }}</option>
                                     {% endfor %}
                                 </select>
-                                <small class="text-secondary-light">Select if user was referred by an agency</small>
+                                <small class="text-secondary-light" data-i18n="form.agencyHint">Select if user was referred by an agency</small>
                             </div>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                     <div class="mb-24">
                         <h6 class="text-md fw-semibold text-primary-light mb-16 d-flex align-items-center">
                             <iconify-icon icon="solar:shield-check-linear" class="me-8"></iconify-icon>
-                            Status & Permissions
+                            <span data-i18n="form.statusPermissions">Status & Permissions</span>
                         </h6>
                         <div class="row">
                             <div class="col-md-6 mb-20">
@@ -120,8 +120,8 @@
                                     <label for="is_active" class="position-absolute w-100 h-100 start-0 top-0 cursor-pointer"></label>
                                     <div class="d-flex align-items-center gap-3 justify-content-between">
                                         <div>
-                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Active Status</span>
-                                            <small class="d-block text-secondary-light mt-4">User can access the bot</small>
+                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light" data-i18n="form.activeStatus">Active Status</span>
+                                            <small class="d-block text-secondary-light mt-4" data-i18n="form.userCanAccessBot">User can access the bot</small>
                                         </div>
                                         <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" checked>
                                     </div>
@@ -132,8 +132,8 @@
                                     <label for="is_agency" class="position-absolute w-100 h-100 start-0 top-0 cursor-pointer"></label>
                                     <div class="d-flex align-items-center gap-3 justify-content-between">
                                         <div>
-                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light">Agency Account</span>
-                                            <small class="d-block text-secondary-light mt-4">Can refer other users</small>
+                                            <span class="form-check-label line-height-1 fw-medium text-secondary-light" data-i18n="form.agencyAccount">Agency Account</span>
+                                            <small class="d-block text-secondary-light mt-4" data-i18n="form.canReferUsers">Can refer other users</small>
                                         </div>
                                         <input class="form-check-input" type="checkbox" role="switch" id="is_agency" name="is_agency">
                                     </div>
@@ -144,12 +144,12 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex align-items-center justify-content-center gap-3 mt-24">
-                        <a href="{% url 'usersList' %}" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-40 py-11 radius-8">
+                        <a href="{% url 'usersList' %}" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-40 py-11 radius-8" data-i18n="common.cancel">
                             Cancel
                         </a>
                         <button type="submit" class="btn btn-primary border border-primary-600 text-md px-40 py-12 radius-8 d-flex align-items-center">
                             <iconify-icon icon="mdi:content-save" class="me-8"></iconify-icon>
-                            Create User
+                            <span data-i18n="form.createUser">Create User</span>
                         </button>
                     </div>
                 </form>
