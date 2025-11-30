@@ -106,7 +106,7 @@
                             </div>
                             <div class="flex-grow-1">
                                 <span class="text-sm text-secondary-light d-block" data-i18n="detail.referredByAgency">Referred By Agency</span>
-                                <a href="{% url 'viewProfile' %}?id={{ bot_user.agency.id }}" class="text-md fw-medium text-primary-600">
+                                <a href="{% url 'userDetail' %}?id={{ bot_user.agency.id }}" class="text-md fw-medium text-primary-600">
                                     {{ bot_user.agency.name }}
                                 </a>
                             </div>
@@ -321,7 +321,7 @@
                                 </td>
                                 <td>{{ agency_user.created_at|date:"d M Y" }}</td>
                                 <td class="text-center">
-                                    <a href="{% url 'viewProfile' %}?id={{ agency_user.id }}" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-36-px h-36-px d-inline-flex justify-content-center align-items-center rounded-circle">
+                                    <a href="{% url 'userDetail' %}?id={{ agency_user.id }}" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-36-px h-36-px d-inline-flex justify-content-center align-items-center rounded-circle">
                                         <iconify-icon icon="majesticons:eye-line" class="icon text-lg"></iconify-icon>
                                     </a>
                                 </td>

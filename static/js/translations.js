@@ -1608,6 +1608,183 @@ const translations = {
         uz: 'Hammasini ko\'rish',
         ru: 'Показать все',
         en: 'View All'
+    },
+
+    // ========== PROFILE PAGE ==========
+    'profile.title': {
+        uz: 'Profil',
+        ru: 'Профиль',
+        en: 'Profile'
+    },
+    'profile.personalInfo': {
+        uz: 'Shaxsiy ma\'lumotlar',
+        ru: 'Личная информация',
+        en: 'Personal Info'
+    },
+    'profile.editProfile': {
+        uz: 'Profilni tahrirlash',
+        ru: 'Редактировать профиль',
+        en: 'Edit Profile'
+    },
+    'profile.changePassword': {
+        uz: 'Parolni o\'zgartirish',
+        ru: 'Изменить пароль',
+        en: 'Change Password'
+    },
+    'profile.notificationSettings': {
+        uz: 'Bildirishnoma sozlamalari',
+        ru: 'Настройки уведомлений',
+        en: 'Notification Settings'
+    },
+    'profile.profileImage': {
+        uz: 'Profil rasmi',
+        ru: 'Фото профиля',
+        en: 'Profile Image'
+    },
+    'profile.email': {
+        uz: 'Elektron pochta',
+        ru: 'Электронная почта',
+        en: 'Email'
+    },
+    'profile.phone': {
+        uz: 'Telefon',
+        ru: 'Телефон',
+        en: 'Phone'
+    },
+    'profile.department': {
+        uz: 'Bo\'lim',
+        ru: 'Отдел',
+        en: 'Department'
+    },
+    'profile.designation': {
+        uz: 'Lavozim',
+        ru: 'Должность',
+        en: 'Designation'
+    },
+    'profile.bio': {
+        uz: 'Biografiya',
+        ru: 'Биография',
+        en: 'Bio'
+    },
+    'profile.save': {
+        uz: 'Saqlash',
+        ru: 'Сохранить',
+        en: 'Save'
+    },
+    'profile.newPassword': {
+        uz: 'Yangi parol',
+        ru: 'Новый пароль',
+        en: 'New Password'
+    },
+    'profile.confirmPassword': {
+        uz: 'Parolni tasdiqlash',
+        ru: 'Подтвердите пароль',
+        en: 'Confirm Password'
+    },
+    'profile.currentPassword': {
+        uz: 'Joriy parol',
+        ru: 'Текущий пароль',
+        en: 'Current Password'
+    },
+    'profile.companyNews': {
+        uz: 'Kompaniya yangiliklari',
+        ru: 'Новости компании',
+        en: 'Company News'
+    },
+    'profile.pushNotification': {
+        uz: 'Push bildirishnomalar',
+        ru: 'Push-уведомления',
+        en: 'Push Notification'
+    },
+    'profile.weeklyNewsLetters': {
+        uz: 'Haftalik yangiliklar',
+        ru: 'Еженедельные рассылки',
+        en: 'Weekly News Letters'
+    },
+    'profile.meetupsNearYou': {
+        uz: 'Yaqiningizda uchrashuvlar',
+        ru: 'Встречи рядом с вами',
+        en: 'Meetups Near you'
+    },
+    'profile.ordersNotifications': {
+        uz: 'Buyurtmalar bildirishnomalari',
+        ru: 'Уведомления о заказах',
+        en: 'Orders Notifications'
+    },
+    'profile.enterFullName': {
+        uz: 'To\'liq ismni kiriting',
+        ru: 'Введите полное имя',
+        en: 'Enter Full Name'
+    },
+    'profile.enterEmail': {
+        uz: 'Email manzilni kiriting',
+        ru: 'Введите email адрес',
+        en: 'Enter email address'
+    },
+    'profile.enterPhone': {
+        uz: 'Telefon raqamini kiriting',
+        ru: 'Введите номер телефона',
+        en: 'Enter phone number'
+    },
+    'profile.writeDescription': {
+        uz: 'Tavsif yozing...',
+        ru: 'Напишите описание...',
+        en: 'Write description...'
+    },
+    'profile.enterNewPassword': {
+        uz: 'Yangi parolni kiriting',
+        ru: 'Введите новый пароль',
+        en: 'Enter New Password'
+    },
+    'profile.confirmNewPassword': {
+        uz: 'Yangi parolni tasdiqlang',
+        ru: 'Подтвердите новый пароль',
+        en: 'Confirm New Password'
+    },
+    'profile.admin': {
+        uz: 'Administrator',
+        ru: 'Администратор',
+        en: 'Admin'
+    },
+    'profile.superAdmin': {
+        uz: 'Super Admin',
+        ru: 'Супер Админ',
+        en: 'Super Admin'
+    },
+    'profile.staff': {
+        uz: 'Xodim',
+        ru: 'Сотрудник',
+        en: 'Staff'
+    },
+    'profile.username': {
+        uz: 'Foydalanuvchi nomi',
+        ru: 'Имя пользователя',
+        en: 'Username'
+    },
+    'profile.dateJoined': {
+        uz: 'Ro\'yxatdan o\'tgan sana',
+        ru: 'Дата регистрации',
+        en: 'Date Joined'
+    },
+    'profile.lastLogin': {
+        uz: 'Oxirgi kirish',
+        ru: 'Последний вход',
+        en: 'Last Login'
+    },
+    'profile.lastName': {
+        uz: 'Familiya',
+        ru: 'Фамилия',
+        en: 'Last Name'
+    },
+    'profile.enterLastName': {
+        uz: 'Familiyani kiriting',
+        ru: 'Введите фамилию',
+        en: 'Enter Last Name'
+    },
+    'profile.enterCurrentPassword': {
+        uz: 'Joriy parolni kiriting',
+        ru: 'Введите текущий пароль',
+        en: 'Enter Current Password'
     }
 };
 

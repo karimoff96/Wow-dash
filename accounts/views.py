@@ -312,8 +312,8 @@ def editUser(request, user_id):
 
 
 @login_required(login_url='admin_login')
-def viewProfile(request):
-    """View user profile details"""
+def userDetail(request):
+    """View BotUser (Telegram user) profile details"""
     from orders.models import Order
     from django.shortcuts import get_object_or_404
     
@@ -347,3 +347,92 @@ def viewProfile(request):
         "agency_users_count": BotUser.objects.filter(agency=user).count() if user.is_agency else 0,
     }
     return render(request, "users/userDetail.html", context)
+
+
+# ============ Admin Profile Views ============
+
+@login_required(login_url='admin_login')
+def viewProfile(request):
+    """View admin profile page"""
+    context = {
+        "title": "My Profile",
+        "subTitle": "Profile",
+    }
+    return render(request, "users/viewProfile.html", context)
+
+
+@login_required(login_url='admin_login')
+def updateProfile(request):
+    """Update admin profile"""
+    if request.method == 'POST':
+        user = request.user
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        email = request.POST.get('email', '').strip()
+        
+        # Validation
+        if not first_name:
+            messages.error(request, 'First name is required.')
+            return redirect('viewProfile')
+        
+        if not email:
+            messages.error(request, 'Email is required.')
+            return redirect('viewProfile')
+        
+        # Check if email is already used by another user
+        if User.objects.filter(email=email).exclude(pk=user.pk).exists():
+            messages.error(request, 'This email is already in use.')
+            return redirect('viewProfile')
+        
+        try:
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.save()
+            messages.success(request, 'Profile updated successfully.')
+        except Exception as e:
+            messages.error(request, f'Error updating profile: {str(e)}')
+    
+    return redirect('viewProfile')
+
+
+@login_required(login_url='admin_login')
+def changePassword(request):
+    """Change admin password"""
+    if request.method == 'POST':
+        user = request.user
+        current_password = request.POST.get('current_password', '')
+        new_password = request.POST.get('new_password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+        
+        # Validation
+        if not current_password:
+            messages.error(request, 'Current password is required.')
+            return redirect('viewProfile')
+        
+        if not user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+            return redirect('viewProfile')
+        
+        if not new_password:
+            messages.error(request, 'New password is required.')
+            return redirect('viewProfile')
+        
+        if len(new_password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+            return redirect('viewProfile')
+        
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('viewProfile')
+        
+        try:
+            user.set_password(new_password)
+            user.save()
+            # Re-login the user with new password
+            login(request, user)
+            messages.success(request, 'Password changed successfully.')
+        except Exception as e:
+            messages.error(request, f'Error changing password: {str(e)}')
+    
+    return redirect('viewProfile')

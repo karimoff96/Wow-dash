@@ -12,7 +12,10 @@ from .views import (
     addUser, 
     editUser,
     usersList, 
-    viewProfile
+    userDetail,
+    viewProfile,
+    updateProfile,
+    changePassword
 )
 
 urlpatterns = [
@@ -22,9 +25,14 @@ urlpatterns = [
     path("forgot-password/", forgot_password, name="forgot_password"),
     path("reset-password/<uidb64>/<token>/", reset_password, name="reset_password"),
     
-    # User management URLs
+    # User management URLs (BotUsers)
     path("", usersList, name="usersList"),
     path("add-user/", addUser, name="addUser"),
     path("edit-user/<int:user_id>/", editUser, name="editUser"),
-    path("view-profile/", viewProfile, name="viewProfile"),
+    path("user-detail/", userDetail, name="userDetail"),
+    
+    # Admin profile URLs
+    path("profile/", viewProfile, name="viewProfile"),
+    path("profile/update/", updateProfile, name="updateProfile"),
+    path("profile/change-password/", changePassword, name="changePassword"),
 ]
