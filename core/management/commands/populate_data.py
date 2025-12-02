@@ -514,7 +514,6 @@ class Command(BaseCommand):
         customers = list(BotUser.objects.all())
         # Filter by role name since is_staff_role is a property, not a field
         staff_members = list(AdminUser.objects.filter(role__name="staff"))
-        languages = list(Language.objects.all())
 
         if not customers or not staff_members:
             self.stdout.write(
@@ -611,11 +610,15 @@ class Command(BaseCommand):
                 minute = random.randint(0, 59)
                 created_at = order_date.replace(hour=hour, minute=minute)
 
+                # Get language from product's category languages (to pass validation)
+                category_languages = list(product.category.languages.all())
+                order_language = random.choice(category_languages) if category_languages else None
+
                 order = Order.objects.create(
                     branch=branch,
                     bot_user=customer,
                     product=product,
-                    language=random.choice(languages) if languages else None,
+                    language=order_language,
                     total_pages=pages,
                     status=status,
                     payment_type=random.choice(["cash", "card"]),
