@@ -413,6 +413,7 @@ def updateProfile(request):
         first_name = request.POST.get("first_name", "").strip()
         last_name = request.POST.get("last_name", "").strip()
         email = request.POST.get("email", "").strip()
+        phone = request.POST.get("phone", "").strip()
         avatar = request.FILES.get("avatar")
 
         # Validation
@@ -431,10 +432,19 @@ def updateProfile(request):
             user.email = email
             user.save()
 
-            # Update avatar if provided and user has admin_profile
-            if avatar and hasattr(user, "admin_profile"):
-                user.admin_profile.avatar = avatar
-                user.admin_profile.save()
+            # Update admin_profile fields (avatar and phone)
+            # Create AdminUser if it doesn't exist (for superusers, role can be null)
+            from organizations.models import AdminUser
+            
+            admin_profile, created = AdminUser.objects.get_or_create(
+                user=user,
+                defaults={'is_active': True}
+            )
+            
+            if avatar:
+                admin_profile.avatar = avatar
+            admin_profile.phone = phone
+            admin_profile.save()
 
             messages.success(request, "Profile updated successfully.")
             return redirect("dashboard")

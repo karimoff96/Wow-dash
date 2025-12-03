@@ -7,7 +7,7 @@
             <img src="/static/images/user-grid/user-grid-bg1.png" alt="" class="w-100 object-fit-cover">
             <div class="pb-24 ms-16 mb-24 me-16  mt--100">
                 <div class="text-center border border-top-0 border-start-0 border-end-0">
-                    {% if user.admin_profile.avatar %}
+                    {% if user.admin_profile and user.admin_profile.avatar %}
                     <img src="{{ user.admin_profile.avatar.url }}" alt="" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
                     {% else %}
                     <img src="/static/images/user.png" alt="" class="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover">
@@ -30,25 +30,31 @@
                             <span class="w-30 text-md fw-semibold text-primary-light" data-i18n="profile.email">Email</span>
                             <span class="w-70 text-secondary-light fw-medium">: {{ user.email|default:"-" }}</span>
                         </li>
+                        {% if user.admin_profile %}
+                        <li class="d-flex align-items-center gap-1 mb-12">
+                            <span class="w-30 text-md fw-semibold text-primary-light" data-i18n="profile.phone">Phone</span>
+                            <span class="w-70 text-secondary-light fw-medium">: {{ user.admin_profile.phone|default:"-" }}</span>
+                        </li>
+                        {% endif %}
                         <li class="d-flex align-items-center gap-1 mb-12">
                             <span class="w-30 text-md fw-semibold text-primary-light" data-i18n="profile.role">Role</span>
                             <span class="w-70 text-secondary-light fw-medium">:
                                 {% if user.is_superuser %}
                                     <span class="badge bg-danger-focus text-danger-600 px-8 py-4 radius-4">Super Admin</span>
-                                {% elif user.admin_profile %}
+                                {% elif user.admin_profile and user.admin_profile.role %}
                                     <span class="badge bg-primary-focus text-primary-600 px-8 py-4 radius-4">{{ user.admin_profile.role }}</span>
                                 {% else %}
                                     <span class="badge bg-neutral-200 text-neutral-600 px-8 py-4 radius-4">User</span>
                                 {% endif %}
                             </span>
                         </li>
-                        {% if user.admin_profile.center %}
+                        {% if user.admin_profile and user.admin_profile.center %}
                         <li class="d-flex align-items-center gap-1 mb-12">
                             <span class="w-30 text-md fw-semibold text-primary-light" data-i18n="profile.center">Center</span>
                             <span class="w-70 text-secondary-light fw-medium">: {{ user.admin_profile.center.name }}</span>
                         </li>
                         {% endif %}
-                        {% if user.admin_profile.branch %}
+                        {% if user.admin_profile and user.admin_profile.branch %}
                         <li class="d-flex align-items-center gap-1 mb-12">
                             <span class="w-30 text-md fw-semibold text-primary-light" data-i18n="profile.branch">Branch</span>
                             <span class="w-70 text-secondary-light fw-medium">: {{ user.admin_profile.branch.name }}</span>
@@ -98,7 +104,7 @@
                                         </label>
                                     </div>
                                     <div class="avatar-preview">
-                                        <div id="imagePreview" style="background-image: url('{% if user.admin_profile.avatar %}{{ user.admin_profile.avatar.url }}{% else %}/static/images/user.png{% endif %}');">
+                                        <div id="imagePreview" style="background-image: url('{% if user.admin_profile and user.admin_profile.avatar %}{{ user.admin_profile.avatar.url }}{% else %}/static/images/user.png{% endif %}');">
                                         </div>
                                     </div>
                                 </div>
@@ -130,6 +136,21 @@
                                         </label>
                                         <input type="email" class="form-control radius-8" id="email" name="email" 
                                                value="{{ user.email }}" data-i18n-placeholder="profile.enterEmail" placeholder="Enter email address (optional)">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="mb-20">
+                                        <label for="phone" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                            <span data-i18n="profile.phone">Phone</span>
+                                        </label>
+                                        <input type="tel" class="form-control radius-8" id="phone" name="phone" 
+                                               value="{% if user.admin_profile %}{{ user.admin_profile.phone|default:'' }}{% endif %}" 
+                                               data-i18n-placeholder="profile.enterPhone" 
+                                               placeholder="+998901234567"
+                                               pattern="^\+?[0-9]{10,15}$"
+                                               maxlength="13"
+                                               title="Enter a valid phone number (e.g., +998901234567)">
+                                        <small class="text-secondary-light">Format: +998901234567</small>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -273,5 +294,39 @@
     // Call the function
     initializePasswordToggle('.toggle-password');
     // ========================= Password Show Hide Js End ===========================
+
+    // ========================= Phone Number Validation Start ===========================
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            // Remove any character that isn't a digit or + (only at start)
+            let value = e.target.value;
+            // Allow + only at the beginning
+            let cleaned = value.replace(/[^\d+]/g, '');
+            // Ensure + is only at position 0
+            if (cleaned.indexOf('+') > 0) {
+                cleaned = cleaned.replace(/\+/g, '');
+            }
+            // Remove extra + signs (keep only first one)
+            const parts = cleaned.split('+');
+            if (parts.length > 2) {
+                cleaned = '+' + parts.slice(1).join('');
+            }
+            e.target.value = cleaned;
+        });
+        
+        phoneInput.addEventListener('keypress', function(e) {
+            // Allow: digits, +, backspace, delete, tab, escape, enter
+            const char = String.fromCharCode(e.which);
+            if (!/[\d+]/.test(char) && e.which !== 8 && e.which !== 46) {
+                e.preventDefault();
+            }
+            // Don't allow + if not at position 0 or if already has +
+            if (char === '+' && (this.selectionStart !== 0 || this.value.includes('+'))) {
+                e.preventDefault();
+            }
+        });
+    }
+    // ========================= Phone Number Validation End ===========================
 </script>
 {% endblock %}

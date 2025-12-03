@@ -49,7 +49,8 @@ class RBACMiddleware:
         request.admin_profile = admin_profile
         
         if admin_profile:
-            request.user_role = admin_profile.role.name
+            # Handle case where role might be None (for superusers with admin_profile)
+            request.user_role = admin_profile.role.name if admin_profile.role else None
             request.is_owner = admin_profile.is_owner
             request.is_manager = admin_profile.is_manager
             request.is_staff_member = admin_profile.is_staff_role

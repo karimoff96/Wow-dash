@@ -456,7 +456,9 @@ class AdminUser(models.Model):
         verbose_name=_("User"),
     )
     role = models.ForeignKey(
-        Role, on_delete=models.PROTECT, related_name="users", verbose_name=_("Role")
+        Role, on_delete=models.PROTECT, related_name="users", verbose_name=_("Role"),
+        null=True, blank=True,
+        help_text=_("Role is optional for superusers"),
     )
     center = models.ForeignKey(
         TranslationCenter,
@@ -496,7 +498,8 @@ class AdminUser(models.Model):
         ordering = ["user__first_name", "user__last_name"]
 
     def __str__(self):
-        return f"{self.user.get_full_name() or self.user.username} ({self.role})"
+        role_name = self.role.name if self.role else "Superuser"
+        return f"{self.user.get_full_name() or self.user.username} ({role_name})"
 
     def clean(self):
         """Validate model data - enforce single owner per center"""
@@ -575,18 +578,20 @@ class AdminUser(models.Model):
 
     @property
     def is_owner(self):
-        return self.role.name == Role.OWNER
+        return self.role and self.role.name == Role.OWNER
 
     @property
     def is_manager(self):
-        return self.role.name == Role.MANAGER
+        return self.role and self.role.name == Role.MANAGER
 
     @property
     def is_staff_role(self):
-        return self.role.name == Role.STAFF
+        return self.role and self.role.name == Role.STAFF
 
     def has_permission(self, permission):
         """Check if user has a specific permission"""
+        if not self.role:
+            return False
         return getattr(self.role, permission, False)
 
     def get_accessible_branches(self):
