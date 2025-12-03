@@ -1,0 +1,166 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row gy-4">
+    <div class="col-lg-8">
+        <div class="card radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h6 class="text-lg fw-semibold mb-0">
+                    <iconify-icon icon="mdi:eye" class="me-2"></iconify-icon>
+                    Preview Broadcast
+                </h6>
+                <a href="{% url 'marketing_detail' post.id %}" class="btn btn-outline-secondary btn-sm">
+                    <iconify-icon icon="ep:back" class="me-1"></iconify-icon> Back
+                </a>
+            </div>
+            <div class="card-body p-24">
+                <!-- Message Preview -->
+                <h6 class="text-md fw-semibold mb-12">Message Preview</h6>
+                <div class="bg-neutral-100 radius-12 p-20 mb-24">
+                    <!-- Simulate Telegram message bubble -->
+                    <div class="d-flex gap-3">
+                        <div class="w-40-px h-40-px rounded-circle bg-primary-600 d-flex align-items-center justify-content-center flex-shrink-0">
+                            <iconify-icon icon="mdi:robot" class="text-white"></iconify-icon>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="bg-white radius-8 p-16 shadow-sm" style="max-width: 400px;">
+                                {% if post.media_file %}
+                                <div class="mb-12">
+                                    {% if post.content_type == 'photo' %}
+                                    <div class="bg-neutral-200 radius-8 p-20 text-center">
+                                        <iconify-icon icon="mdi:image" class="text-secondary-light" style="font-size: 48px;"></iconify-icon>
+                                        <p class="text-sm text-secondary-light mb-0">Image: {{ post.media_file.name|slice:"-30:" }}</p>
+                                    </div>
+                                    {% elif post.content_type == 'video' %}
+                                    <div class="bg-neutral-200 radius-8 p-20 text-center">
+                                        <iconify-icon icon="mdi:video" class="text-secondary-light" style="font-size: 48px;"></iconify-icon>
+                                        <p class="text-sm text-secondary-light mb-0">Video: {{ post.media_file.name|slice:"-30:" }}</p>
+                                    </div>
+                                    {% else %}
+                                    <div class="bg-neutral-200 radius-8 p-12 d-flex align-items-center gap-2">
+                                        <iconify-icon icon="mdi:file-document" class="text-primary-600" style="font-size: 32px;"></iconify-icon>
+                                        <span class="text-sm">{{ post.media_file.name|slice:"-30:" }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                                <div class="message-content">
+                                    {{ post.content|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sample Recipients -->
+                <h6 class="text-md fw-semibold mb-12">Sample Recipients (first 10)</h6>
+                <div class="table-responsive mb-24">
+                    <table class="table bordered-table sm-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Type</th>
+                                <th>Branch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in preview_recipients %}
+                            <tr>
+                                <td>{{ user.display_name }}</td>
+                                <td>{{ user.phone|default:"-" }}</td>
+                                <td>
+                                    {% if user.is_agency %}
+                                    <span class="badge bg-cyan-100 text-cyan">B2B</span>
+                                    {% else %}
+                                    <span class="badge bg-success-100 text-success-600">B2C</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.branch.name|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-secondary-light">No recipients found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Summary -->
+                <div class="bg-primary-50 radius-12 p-20">
+                    <div class="row g-3">
+                        <div class="col-md-4 text-center">
+                            <iconify-icon icon="mdi:account-group" class="text-primary-600 mb-8" style="font-size: 32px;"></iconify-icon>
+                            <h4 class="fw-bold text-primary-600 mb-0">{{ total_recipients }}</h4>
+                            <small class="text-secondary-light">Total Recipients</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <iconify-icon icon="mdi:clock-outline" class="text-primary-600 mb-8" style="font-size: 32px;"></iconify-icon>
+                            <h4 class="fw-bold text-primary-600 mb-0">{{ estimated_duration }}</h4>
+                            <small class="text-secondary-light">Estimated Duration</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <iconify-icon icon="mdi:target" class="text-primary-600 mb-8" style="font-size: 32px;"></iconify-icon>
+                            <h4 class="fw-bold text-primary-600 mb-0">{{ post.get_target_scope_display }}</h4>
+                            <small class="text-secondary-light">Target Scope</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirm Sidebar -->
+    <div class="col-lg-4">
+        <div class="card radius-12 sticky-top" style="top: 100px;">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <h6 class="text-md fw-semibold mb-0">Confirm & Send</h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="alert alert-warning mb-20">
+                    <iconify-icon icon="mdi:alert" class="me-2"></iconify-icon>
+                    <strong>Warning:</strong> This action cannot be undone. Messages will be sent immediately to all recipients.
+                </div>
+                
+                <div class="mb-16">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="confirmCheck" onchange="toggleSendButton()">
+                        <label class="form-check-label" for="confirmCheck">
+                            I confirm that I want to send this broadcast to <strong>{{ total_recipients }}</strong> recipients.
+                        </label>
+                    </div>
+                </div>
+                
+                <form method="post" action="{% url 'marketing_send' post.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success w-100" id="sendButton" disabled>
+                        <iconify-icon icon="mdi:send" class="me-2"></iconify-icon>
+                        Send Broadcast Now
+                    </button>
+                </form>
+                
+                <hr class="my-20">
+                
+                <a href="{% url 'marketing_edit' post.id %}" class="btn btn-outline-secondary w-100 mb-12">
+                    <iconify-icon icon="mdi:pencil" class="me-2"></iconify-icon>
+                    Edit Post
+                </a>
+                <a href="{% url 'marketing_detail' post.id %}" class="btn btn-outline-primary w-100">
+                    <iconify-icon icon="ep:back" class="me-2"></iconify-icon>
+                    Back to Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleSendButton() {
+    const checkbox = document.getElementById('confirmCheck');
+    const button = document.getElementById('sendButton');
+    button.disabled = !checkbox.checked;
+}
+</script>
+{% endblock content %}

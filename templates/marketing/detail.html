@@ -1,0 +1,360 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row gy-4">
+    <div class="col-lg-8">
+        <!-- Post Details Card -->
+        <div class="card radius-12 mb-24">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h6 class="text-lg fw-semibold mb-0">
+                    <iconify-icon icon="mdi:bullhorn" class="me-2"></iconify-icon>
+                    {{ post.title }}
+                </h6>
+                <div class="d-flex gap-2">
+                    {% if post.status == 'draft' or post.status == 'scheduled' %}
+                    {% if permissions.can_create %}
+                    <a href="{% url 'marketing_edit' post.id %}" class="btn btn-outline-primary btn-sm">
+                        <iconify-icon icon="mdi:pencil" class="me-1"></iconify-icon> Edit
+                    </a>
+                    {% endif %}
+                    {% endif %}
+                    <a href="{% url 'marketing_list' %}" class="btn btn-outline-secondary btn-sm">
+                        <iconify-icon icon="ep:back" class="me-1"></iconify-icon> Back
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-24">
+                <!-- Status Badge -->
+                <div class="d-flex align-items-center gap-3 mb-20">
+                    <span class="fw-medium">Status:</span>
+                    {% if post.status == 'draft' %}
+                    <span class="badge bg-secondary-focus text-secondary-main px-12 py-6">
+                        <iconify-icon icon="mdi:file-document-outline" class="me-1"></iconify-icon> Draft
+                    </span>
+                    {% elif post.status == 'scheduled' %}
+                    <span class="badge bg-info-focus text-info-main px-12 py-6">
+                        <iconify-icon icon="mdi:clock-outline" class="me-1"></iconify-icon> 
+                        Scheduled for {{ post.scheduled_at|date:"d M Y H:i" }}
+                    </span>
+                    {% elif post.status == 'sending' %}
+                    <span class="badge bg-warning-focus text-warning-main px-12 py-6">
+                        <iconify-icon icon="mdi:loading" class="me-1 animate-spin"></iconify-icon> Sending...
+                    </span>
+                    {% elif post.status == 'sent' %}
+                    <span class="badge bg-success-focus text-success-main px-12 py-6">
+                        <iconify-icon icon="mdi:check-circle" class="me-1"></iconify-icon> Sent
+                    </span>
+                    {% elif post.status == 'paused' %}
+                    <span class="badge bg-warning-focus text-warning-main px-12 py-6">
+                        <iconify-icon icon="mdi:pause-circle" class="me-1"></iconify-icon> Paused
+                    </span>
+                    {% elif post.status == 'failed' %}
+                    <span class="badge bg-danger-focus text-danger-main px-12 py-6">
+                        <iconify-icon icon="mdi:alert-circle" class="me-1"></iconify-icon> Failed
+                    </span>
+                    {% elif post.status == 'cancelled' %}
+                    <span class="badge bg-secondary-focus text-secondary-main px-12 py-6">
+                        <iconify-icon icon="mdi:close-circle" class="me-1"></iconify-icon> Cancelled
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <!-- Target Info -->
+                <div class="mb-20">
+                    <h6 class="text-sm fw-semibold mb-8">Target Audience</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% if post.target_scope == 'all' %}
+                        <span class="badge bg-danger-100 text-danger-600 px-12 py-6">
+                            <iconify-icon icon="mdi:earth" class="me-1"></iconify-icon> Platform-wide
+                        </span>
+                        {% elif post.target_scope == 'center' %}
+                        <span class="badge bg-primary-100 text-primary-600 px-12 py-6">
+                            <iconify-icon icon="mdi:office-building" class="me-1"></iconify-icon> 
+                            {{ post.target_center.name|default:"All Centers" }}
+                        </span>
+                        {% elif post.target_scope == 'branch' %}
+                        <span class="badge bg-info-100 text-info-600 px-12 py-6">
+                            <iconify-icon icon="mdi:store" class="me-1"></iconify-icon> 
+                            {{ post.target_branch.name|default:"N/A" }}
+                        </span>
+                        {% endif %}
+                        
+                        {% if post.include_b2c %}
+                        <span class="badge bg-success-100 text-success-600 px-12 py-6">
+                            <iconify-icon icon="mdi:account" class="me-1"></iconify-icon> B2C
+                        </span>
+                        {% endif %}
+                        {% if post.include_b2b %}
+                        <span class="badge bg-cyan-100 text-cyan px-12 py-6">
+                            <iconify-icon icon="mdi:domain" class="me-1"></iconify-icon> B2B
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Message Content -->
+                <div class="mb-20">
+                    <h6 class="text-sm fw-semibold mb-8">Message Content</h6>
+                    <div class="bg-neutral-100 radius-8 p-16">
+                        {{ post.content|safe }}
+                    </div>
+                    {% if post.media_file %}
+                    <div class="mt-12">
+                        <span class="badge bg-secondary-100 text-secondary-600">
+                            <iconify-icon icon="{% if post.content_type == 'photo' %}mdi:image{% elif post.content_type == 'video' %}mdi:video{% else %}mdi:file{% endif %}" class="me-1"></iconify-icon>
+                            {{ post.get_content_type_display }}: {{ post.media_file.name|slice:"-30:" }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Action Buttons -->
+                {% if post.is_sendable %}
+                {% with can_send=permissions.can_platform_wide or post.target_scope == 'center' and permissions.can_center_wide or post.target_scope == 'branch' and permissions.can_branch %}
+                {% if can_send %}
+                <div class="d-flex gap-3 mt-24">
+                    <a href="{% url 'marketing_preview' post.id %}" class="btn btn-outline-primary">
+                        <iconify-icon icon="mdi:eye" class="me-2"></iconify-icon>
+                        Preview & Confirm
+                    </a>
+                    <form method="post" action="{% url 'marketing_send' post.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success" 
+                                onclick="return confirm('Are you sure you want to send this broadcast to {{ post.total_recipients }} recipients?')">
+                            <iconify-icon icon="mdi:send" class="me-2"></iconify-icon>
+                            Send Now
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="alert alert-info mt-24">
+                    <iconify-icon icon="mdi:information" class="me-2"></iconify-icon>
+                    You don't have permission to send this broadcast.
+                </div>
+                {% endif %}
+                {% endwith %}
+                {% endif %}
+                
+                {% if post.status == 'sending' %}
+                <div class="d-flex gap-3 mt-24">
+                    <form method="post" action="{% url 'marketing_pause' post.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning">
+                            <iconify-icon icon="mdi:pause" class="me-2"></iconify-icon>
+                            Pause
+                        </button>
+                    </form>
+                    <form method="post" action="{% url 'marketing_cancel' post.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Cancel this broadcast?')">
+                            <iconify-icon icon="mdi:close" class="me-2"></iconify-icon>
+                            Cancel
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+                
+                {% if post.status == 'paused' %}
+                <div class="d-flex gap-3 mt-24">
+                    <form method="post" action="{% url 'marketing_send' post.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">
+                            <iconify-icon icon="mdi:play" class="me-2"></iconify-icon>
+                            Resume
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+                
+                <!-- Error Display -->
+                {% if post.last_error %}
+                <div class="alert alert-danger mt-20">
+                    <h6 class="text-danger mb-8">
+                        <iconify-icon icon="mdi:alert-circle" class="me-2"></iconify-icon>
+                        Errors
+                    </h6>
+                    <pre class="text-sm mb-0" style="white-space: pre-wrap;">{{ post.last_error }}</pre>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Recipients Table -->
+        {% if recent_recipients %}
+        <div class="card radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <h6 class="text-md fw-semibold mb-0">Recent Recipients</h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table bordered-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Status</th>
+                                <th>Retries</th>
+                                <th>Sent At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for recipient in recent_recipients %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="w-32-px h-32-px rounded-circle bg-primary-100 d-flex align-items-center justify-content-center">
+                                            <span class="text-primary-600 text-sm">{{ recipient.bot_user.name|slice:":1"|upper }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm fw-medium">{{ recipient.bot_user.display_name }}</span>
+                                            {% if recipient.bot_user.phone %}
+                                            <br><small class="text-secondary-light">{{ recipient.bot_user.phone }}</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if recipient.status == 'pending' %}
+                                    <span class="badge bg-secondary-focus text-secondary-main">Pending</span>
+                                    {% elif recipient.status == 'sent' %}
+                                    <span class="badge bg-info-focus text-info-main">Sent</span>
+                                    {% elif recipient.status == 'delivered' %}
+                                    <span class="badge bg-success-focus text-success-main">Delivered</span>
+                                    {% elif recipient.status == 'failed' %}
+                                    <span class="badge bg-danger-focus text-danger-main" title="{{ recipient.error_message }}">Failed</span>
+                                    {% elif recipient.status == 'blocked' %}
+                                    <span class="badge bg-warning-focus text-warning-main">Blocked</span>
+                                    {% elif recipient.status == 'skipped' %}
+                                    <span class="badge bg-secondary-focus text-secondary-main">Skipped</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ recipient.retry_count }}</td>
+                                <td>
+                                    {% if recipient.sent_at %}
+                                    {{ recipient.sent_at|date:"d M Y H:i" }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Stats Sidebar -->
+    <div class="col-lg-4">
+        {% if permissions.can_view_stats %}
+        <!-- Delivery Stats -->
+        <div class="card radius-12 mb-24">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <h6 class="text-md fw-semibold mb-0">Delivery Statistics</h6>
+            </div>
+            <div class="card-body p-24">
+                <!-- Total Recipients -->
+                <div class="d-flex justify-content-between align-items-center mb-16">
+                    <span class="text-secondary-light">Total Recipients</span>
+                    <span class="fw-bold text-lg">{{ post.total_recipients }}</span>
+                </div>
+                
+                <!-- Progress Bar -->
+                {% if post.sent_count > 0 %}
+                <div class="mb-16">
+                    <div class="d-flex justify-content-between text-sm mb-8">
+                        <span>Delivery Progress</span>
+                        <span>{{ post.delivery_percentage }}%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: {{ post.delivery_percentage }}%"></div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Stats Grid -->
+                <div class="row g-3 mt-16">
+                    <div class="col-6">
+                        <div class="bg-success-50 radius-8 p-12 text-center">
+                            <iconify-icon icon="mdi:check-circle" class="text-success-600 text-xl mb-4"></iconify-icon>
+                            <h5 class="fw-bold text-success-600 mb-0">{{ recipient_stats.delivered }}</h5>
+                            <small class="text-secondary-light">Delivered</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-danger-50 radius-8 p-12 text-center">
+                            <iconify-icon icon="mdi:alert-circle" class="text-danger-600 text-xl mb-4"></iconify-icon>
+                            <h5 class="fw-bold text-danger-600 mb-0">{{ recipient_stats.failed }}</h5>
+                            <small class="text-secondary-light">Failed</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-warning-50 radius-8 p-12 text-center">
+                            <iconify-icon icon="mdi:account-off" class="text-warning-600 text-xl mb-4"></iconify-icon>
+                            <h5 class="fw-bold text-warning-600 mb-0">{{ recipient_stats.blocked }}</h5>
+                            <small class="text-secondary-light">Blocked</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-secondary-50 radius-8 p-12 text-center">
+                            <iconify-icon icon="mdi:clock-outline" class="text-secondary-600 text-xl mb-4"></iconify-icon>
+                            <h5 class="fw-bold text-secondary-600 mb-0">{{ recipient_stats.pending }}</h5>
+                            <small class="text-secondary-light">Pending</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Post Info -->
+        <div class="card radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <h6 class="text-md fw-semibold mb-0">Post Information</h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm d-block">Created By</span>
+                    <span class="fw-medium">{{ post.created_by.get_full_name|default:post.created_by.username }}</span>
+                </div>
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm d-block">Created At</span>
+                    <span class="fw-medium">{{ post.created_at|date:"d M Y H:i" }}</span>
+                </div>
+                {% if post.sent_at %}
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm d-block">Sent At</span>
+                    <span class="fw-medium">{{ post.sent_at|date:"d M Y H:i" }}</span>
+                </div>
+                {% endif %}
+                {% if post.completed_at %}
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm d-block">Completed At</span>
+                    <span class="fw-medium">{{ post.completed_at|date:"d M Y H:i" }}</span>
+                </div>
+                {% endif %}
+                <div>
+                    <span class="text-secondary-light text-sm d-block">Content Type</span>
+                    <span class="fw-medium">{{ post.get_content_type_display }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Delete Button -->
+        {% if post.status == 'draft' or post.status == 'cancelled' %}
+        <div class="mt-24">
+            <form method="post" action="{% url 'marketing_delete' post.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger w-100" 
+                        onclick="return confirm('Are you sure you want to delete this post?')">
+                    <iconify-icon icon="mdi:delete" class="me-2"></iconify-icon>
+                    Delete Post
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

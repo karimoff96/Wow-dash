@@ -52,6 +52,11 @@ def rbac_context(request):
         'can_manage_products': False,
         'can_manage_customers': False,
         'can_view_customer_details': False,
+        # Marketing & Broadcasts
+        'can_create_marketing_posts': False,
+        'can_send_branch_broadcasts': False,
+        'can_send_center_broadcasts': False,
+        'can_view_broadcast_stats': False,
     }
     
     context = {
@@ -88,13 +93,17 @@ def rbac_context(request):
         role = admin_profile.role
         # Build permissions dict from role fields
         permissions = {}
-        for perm_name in all_permissions.keys():
-            permissions[perm_name] = getattr(role, perm_name, False)
+        if role:
+            for perm_name in all_permissions.keys():
+                permissions[perm_name] = getattr(role, perm_name, False)
+        else:
+            # No role assigned - no permissions
+            permissions = all_permissions.copy()
         
         context.update({
             'admin_profile': admin_profile,
-            'user_role': role.name,
-            'user_role_display': role.get_name_display(),
+            'user_role': role.name if role else None,
+            'user_role_display': role.get_name_display() if role else 'No Role',
             'is_owner': admin_profile.is_owner,
             'is_manager': admin_profile.is_manager,
             'is_staff_member': admin_profile.is_staff_role,

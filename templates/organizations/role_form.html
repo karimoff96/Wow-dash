@@ -408,6 +408,52 @@
                                     <div class="perm-hint text-secondary-light">View customer info</div>
                                 </div>
                             </div>
+                            
+                            <!-- Marketing & Broadcasts -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="permission-card border border-secondary-100">
+                                    <h6 class="text-sm fw-semibold text-secondary-main permission-section-header">
+                                        <iconify-icon icon="mdi:bullhorn"></iconify-icon>
+                                        <span>Marketing & Broadcasts</span>
+                                    </h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="can_create_marketing_posts" id="can_create_marketing_posts"
+                                               {% if role.can_create_marketing_posts %}checked{% endif %}>
+                                        <label class="form-check-label" for="can_create_marketing_posts">
+                                            Create Marketing Posts
+                                        </label>
+                                    </div>
+                                    <div class="perm-hint text-secondary-light">Create and edit broadcast posts</div>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="can_send_branch_broadcasts" id="can_send_branch_broadcasts"
+                                               {% if role.can_send_branch_broadcasts %}checked{% endif %}>
+                                        <label class="form-check-label" for="can_send_branch_broadcasts">
+                                            Send Branch Broadcasts
+                                        </label>
+                                    </div>
+                                    <div class="perm-hint text-secondary-light">Send to own branch customers</div>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="can_send_center_broadcasts" id="can_send_center_broadcasts"
+                                               {% if role.can_send_center_broadcasts %}checked{% endif %}>
+                                        <label class="form-check-label text-warning-600" for="can_send_center_broadcasts">
+                                            <iconify-icon icon="lucide:alert-triangle" class="me-1"></iconify-icon>
+                                            Send Center-wide Broadcasts
+                                        </label>
+                                    </div>
+                                    <div class="perm-hint text-secondary-light">Send to ALL branches in center</div>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="can_view_broadcast_stats" id="can_view_broadcast_stats"
+                                               {% if role.can_view_broadcast_stats %}checked{% endif %}>
+                                        <label class="form-check-label" for="can_view_broadcast_stats">
+                                            View Broadcast Stats
+                                        </label>
+                                    </div>
+                                    <div class="perm-hint text-secondary-light">View delivery statistics</div>
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Quick Permission Templates -->
@@ -523,7 +569,9 @@ const allPermissions = [
     // Reports
     'can_view_reports', 'can_view_analytics', 'can_export_data',
     // Products & Customers
-    'can_manage_products', 'can_manage_customers', 'can_view_customer_details'
+    'can_manage_products', 'can_manage_customers', 'can_view_customer_details',
+    // Marketing & Broadcasts
+    'can_create_marketing_posts', 'can_send_branch_broadcasts', 'can_send_center_broadcasts', 'can_view_broadcast_stats'
 ];
 
 // Order-related permissions (excluding the master permission)
@@ -543,7 +591,8 @@ const templates = {
         'can_cancel_orders': true, 'can_manage_orders': true,
         'can_receive_payments': true, 'can_view_financial_reports': true, 'can_apply_discounts': true, 'can_refund_orders': true,
         'can_view_reports': true, 'can_view_analytics': true, 'can_export_data': true,
-        'can_manage_products': true, 'can_manage_customers': true, 'can_view_customer_details': true
+        'can_manage_products': true, 'can_manage_customers': true, 'can_view_customer_details': true,
+        'can_create_marketing_posts': true, 'can_send_branch_broadcasts': true, 'can_send_center_broadcasts': true, 'can_view_broadcast_stats': true
     },
     'manager': {
         'can_manage_center': false, 'can_manage_branches': false,
@@ -553,7 +602,8 @@ const templates = {
         'can_cancel_orders': true, 'can_manage_orders': true,
         'can_receive_payments': true, 'can_view_financial_reports': true, 'can_apply_discounts': true, 'can_refund_orders': false,
         'can_view_reports': true, 'can_view_analytics': true, 'can_export_data': false,
-        'can_manage_products': false, 'can_manage_customers': true, 'can_view_customer_details': true
+        'can_manage_products': false, 'can_manage_customers': true, 'can_view_customer_details': true,
+        'can_create_marketing_posts': true, 'can_send_branch_broadcasts': true, 'can_send_center_broadcasts': false, 'can_view_broadcast_stats': true
     },
     'staff': {
         'can_manage_center': false, 'can_manage_branches': false,
@@ -563,7 +613,8 @@ const templates = {
         'can_cancel_orders': false, 'can_manage_orders': false,
         'can_receive_payments': true, 'can_view_financial_reports': false, 'can_apply_discounts': false, 'can_refund_orders': false,
         'can_view_reports': false, 'can_view_analytics': false, 'can_export_data': false,
-        'can_manage_products': false, 'can_manage_customers': false, 'can_view_customer_details': true
+        'can_manage_products': false, 'can_manage_customers': false, 'can_view_customer_details': true,
+        'can_create_marketing_posts': false, 'can_send_branch_broadcasts': false, 'can_send_center_broadcasts': false, 'can_view_broadcast_stats': false
     },
     'none': {}  // All false
 };

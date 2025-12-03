@@ -166,6 +166,16 @@
             {% endif %}
             {% endif %}
             
+            <!-- Marketing & Broadcasts - Permission-based -->
+            {% if permissions.can_create_marketing_posts or permissions.can_send_branch_broadcasts or permissions.can_send_center_broadcasts or permissions.can_view_broadcast_stats or user.is_superuser or is_owner %}
+            <li>
+                <a href="{% url 'marketing_list' %}">
+                    <iconify-icon icon="mdi:bullhorn" class="menu-icon"></iconify-icon>
+                    <span data-i18n="sidebar.marketing">Marketing</span>
+                </a>
+            </li>
+            {% endif %}
+            
             <li class="sidebar-menu-group-title" data-i18n="sidebar.uiElements">UI Elements</li>
 
             <li class="dropdown">

@@ -198,6 +198,12 @@ class Role(models.Model):
     can_manage_products = models.BooleanField(_("Can manage products"), default=False)
     can_manage_customers = models.BooleanField(_("Can manage customers"), default=False)
     can_view_customer_details = models.BooleanField(_("Can view customer details"), default=False)
+    
+    # Permissions - Marketing & Broadcasts
+    can_create_marketing_posts = models.BooleanField(_("Can create marketing posts"), default=False)
+    can_send_branch_broadcasts = models.BooleanField(_("Can send branch broadcasts"), default=False)
+    can_send_center_broadcasts = models.BooleanField(_("Can send center-wide broadcasts"), default=False)
+    can_view_broadcast_stats = models.BooleanField(_("Can view broadcast statistics"), default=False)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True, null=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True, null=True)
@@ -257,6 +263,11 @@ class Role(models.Model):
             "can_manage_products",
             "can_manage_customers",
             "can_view_customer_details",
+            # Marketing & Broadcasts
+            "can_create_marketing_posts",
+            "can_send_branch_broadcasts",
+            "can_send_center_broadcasts",
+            "can_view_broadcast_stats",
         ]
 
     @classmethod
@@ -315,6 +326,17 @@ class Role(models.Model):
                 "color": "danger",
                 "permissions": ["can_manage_products", "can_manage_customers", "can_view_customer_details"],
             },
+            "marketing": {
+                "title": _("Marketing & Broadcasts"),
+                "icon": "fa-bullhorn",
+                "color": "secondary",
+                "permissions": [
+                    "can_create_marketing_posts",
+                    "can_send_branch_broadcasts",
+                    "can_send_center_broadcasts",
+                    "can_view_broadcast_stats",
+                ],
+            },
         }
 
     @classmethod
@@ -351,6 +373,11 @@ class Role(models.Model):
             "can_manage_products": _("Manage Products & Services"),
             "can_manage_customers": _("Manage Customers"),
             "can_view_customer_details": _("View Customer Details"),
+            # Marketing & Broadcasts
+            "can_create_marketing_posts": _("Create Marketing Posts"),
+            "can_send_branch_broadcasts": _("Send Branch Broadcasts"),
+            "can_send_center_broadcasts": _("Send Center-wide Broadcasts"),
+            "can_view_broadcast_stats": _("View Broadcast Statistics"),
         }
     
     @classmethod
@@ -387,6 +414,11 @@ class Role(models.Model):
             "can_manage_products": _("Add, edit, and remove services and products"),
             "can_manage_customers": _("Add, edit customer records and contact information"),
             "can_view_customer_details": _("View customer information and history"),
+            # Marketing & Broadcasts
+            "can_create_marketing_posts": _("Create and edit marketing posts and announcements"),
+            "can_send_branch_broadcasts": _("Send broadcast messages to all customers in their branch"),
+            "can_send_center_broadcasts": _("Send broadcast messages to all customers across the entire center"),
+            "can_view_broadcast_stats": _("View broadcast delivery statistics and analytics"),
         }
 
     @classmethod
@@ -424,6 +456,11 @@ class Role(models.Model):
                 "can_manage_products": True,
                 "can_manage_customers": True,
                 "can_view_customer_details": True,
+                # Marketing & Broadcasts
+                "can_create_marketing_posts": True,
+                "can_send_branch_broadcasts": True,
+                "can_send_center_broadcasts": True,
+                "can_view_broadcast_stats": True,
             },
             cls.MANAGER: {
                 # Organization
@@ -456,6 +493,11 @@ class Role(models.Model):
                 "can_manage_products": False,
                 "can_manage_customers": True,
                 "can_view_customer_details": True,
+                # Marketing & Broadcasts
+                "can_create_marketing_posts": True,
+                "can_send_branch_broadcasts": True,
+                "can_send_center_broadcasts": False,
+                "can_view_broadcast_stats": True,
             },
             cls.STAFF: {
                 # Organization
@@ -488,6 +530,11 @@ class Role(models.Model):
                 "can_manage_products": False,
                 "can_manage_customers": False,
                 "can_view_customer_details": True,
+                # Marketing & Broadcasts
+                "can_create_marketing_posts": False,
+                "can_send_branch_broadcasts": False,
+                "can_send_center_broadcasts": False,
+                "can_view_broadcast_stats": False,
             },
         }
         return defaults.get(role_name, {})

@@ -1,0 +1,150 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row gy-4">
+    <div class="col-lg-8">
+        <div class="card h-100 p-0 radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h6 class="text-lg fw-semibold mb-0">
+                    <iconify-icon icon="mdi:pencil" class="me-2"></iconify-icon>
+                    Edit Marketing Post
+                </h6>
+                <a href="{% url 'marketing_detail' post.id %}" class="btn btn-outline-secondary btn-sm">
+                    <iconify-icon icon="ep:back" class="me-1"></iconify-icon> Back
+                </a>
+            </div>
+            <div class="card-body p-24">
+                <form method="post" action="{% url 'marketing_edit' post.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Title -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Title *</label>
+                        <input type="text" name="title" class="form-control radius-8" 
+                               value="{{ post.title }}" required>
+                    </div>
+                    
+                    <!-- Content Type -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Content Type</label>
+                        <select name="content_type" class="form-select radius-8" id="contentType" onchange="toggleMediaUpload()">
+                            {% for value, label in content_type_choices %}
+                            <option value="{{ value }}" {% if post.content_type == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Current Media File -->
+                    {% if post.media_file %}
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Current Media</label>
+                        <div class="bg-neutral-100 radius-8 p-12">
+                            <iconify-icon icon="mdi:file" class="me-2"></iconify-icon>
+                            {{ post.media_file.name|slice:"-40:" }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Media File -->
+                    <div class="mb-20" id="mediaUploadSection" {% if post.content_type == 'text' %}style="display: none;"{% endif %}>
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                            {% if post.media_file %}Replace{% else %}Upload{% endif %} Media File
+                        </label>
+                        <input type="file" name="media_file" class="form-control radius-8" 
+                               accept="image/*,video/*,.pdf,.doc,.docx">
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Message Content *</label>
+                        <textarea name="content" class="form-control radius-8" rows="6" required>{{ post.content }}</textarea>
+                        <small class="text-secondary-light">Supports HTML: &lt;b&gt;, &lt;i&gt;, &lt;a&gt;, &lt;code&gt;</small>
+                    </div>
+                    
+                    <hr class="my-24">
+                    
+                    <!-- Customer Type Filters -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Customer Types</label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="include_b2c" id="includeB2C" 
+                                       {% if post.include_b2c %}checked{% endif %}>
+                                <label class="form-check-label" for="includeB2C">B2C (Individual)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="include_b2b" id="includeB2B" 
+                                       {% if post.include_b2b %}checked{% endif %}>
+                                <label class="form-check-label" for="includeB2B">B2B (Agency)</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Scheduling -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Schedule (Optional)</label>
+                        <input type="datetime-local" name="scheduled_at" class="form-control radius-8" 
+                               value="{% if post.scheduled_at %}{{ post.scheduled_at|date:'Y-m-d' }}T{{ post.scheduled_at|time:'H:i' }}{% endif %}">
+                    </div>
+                    
+                    <!-- Submit -->
+                    <div class="d-flex justify-content-end gap-3 mt-32">
+                        <a href="{% url 'marketing_detail' post.id %}" class="btn btn-outline-secondary px-24">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-24">
+                            <iconify-icon icon="mdi:content-save" class="me-2"></iconify-icon>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Info Sidebar -->
+    <div class="col-lg-4">
+        <div class="card radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <h6 class="text-md fw-semibold mb-0">Target Info</h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm d-block">Scope</span>
+                    <span class="fw-medium">{{ post.get_target_scope_display }}</span>
+                </div>
+                {% if post.target_center %}
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm d-block">Center</span>
+                    <span class="fw-medium">{{ post.target_center.name }}</span>
+                </div>
+                {% endif %}
+                {% if post.target_branch %}
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm d-block">Branch</span>
+                    <span class="fw-medium">{{ post.target_branch.name }}</span>
+                </div>
+                {% endif %}
+                <div class="alert alert-info mt-16 mb-0">
+                    <small>
+                        <iconify-icon icon="mdi:information" class="me-1"></iconify-icon>
+                        Target scope cannot be changed after creation.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleMediaUpload() {
+    const contentType = document.getElementById('contentType').value;
+    const mediaSection = document.getElementById('mediaUploadSection');
+    
+    if (contentType === 'text') {
+        mediaSection.style.display = 'none';
+    } else {
+        mediaSection.style.display = 'block';
+    }
+}
+</script>
+{% endblock content %}

@@ -1,0 +1,266 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row gy-4">
+    <div class="col-lg-8">
+        <div class="card h-100 p-0 radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h6 class="text-lg fw-semibold mb-0">
+                    <iconify-icon icon="mdi:bullhorn" class="me-2"></iconify-icon>
+                    Create Marketing Post
+                </h6>
+                <a href="{% url 'marketing_list' %}" class="btn btn-outline-secondary btn-sm">
+                    <iconify-icon icon="ep:back" class="me-1"></iconify-icon> Back
+                </a>
+            </div>
+            <div class="card-body p-24">
+                <form method="post" action="{% url 'marketing_create' %}" enctype="multipart/form-data" id="createForm">
+                    {% csrf_token %}
+                    
+                    <!-- Title -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Title *</label>
+                        <input type="text" name="title" class="form-control radius-8" 
+                               placeholder="Internal title for this post" required>
+                        <small class="text-secondary-light">For internal reference only, not sent to users</small>
+                    </div>
+                    
+                    <!-- Content Type -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Content Type</label>
+                        <select name="content_type" class="form-select radius-8" id="contentType" onchange="toggleMediaUpload()">
+                            {% for value, label in content_type_choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Media File -->
+                    <div class="mb-20" id="mediaUploadSection" style="display: none;">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Media File</label>
+                        <input type="file" name="media_file" class="form-control radius-8" 
+                               accept="image/*,video/*,.pdf,.doc,.docx">
+                        <small class="text-secondary-light">Upload image, video, or document to send with message</small>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Message Content *</label>
+                        <textarea name="content" class="form-control radius-8" rows="6" 
+                                  placeholder="Write your message here. You can use HTML: <b>bold</b>, <i>italic</i>, <a href='url'>link</a>" required></textarea>
+                        <small class="text-secondary-light">Supports HTML formatting: &lt;b&gt;, &lt;i&gt;, &lt;a&gt;, &lt;code&gt;</small>
+                    </div>
+                    
+                    <hr class="my-24">
+                    
+                    <!-- Target Scope -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Target Audience *</label>
+                        <select name="target_scope" class="form-select radius-8" id="targetScope" onchange="updateTargetOptions()">
+                            {% for value, label in scope_choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Center Selection (for center/branch scope) -->
+                    <div class="mb-20" id="centerSection" style="display: none;">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Select Center</label>
+                        <select name="target_center" class="form-select radius-8" id="targetCenter" onchange="loadBranches()">
+                            <option value="">-- Select Center --</option>
+                            {% for center in permissions.centers %}
+                            <option value="{{ center.id }}">{{ center.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Branch Selection (for branch scope) -->
+                    <div class="mb-20" id="branchSection" style="display: none;">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Select Branch</label>
+                        <select name="target_branch" class="form-select radius-8" id="targetBranch">
+                            <option value="">-- Select Branch --</option>
+                            {% for branch in permissions.branches %}
+                            <option value="{{ branch.id }}" data-center="{{ branch.center_id }}">{{ branch.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Customer Type Filters -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Customer Types</label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="include_b2c" id="includeB2C" checked onchange="updateRecipientCount()">
+                                <label class="form-check-label" for="includeB2C">
+                                    <iconify-icon icon="mdi:account" class="me-1"></iconify-icon>
+                                    B2C (Individual)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="include_b2b" id="includeB2B" checked onchange="updateRecipientCount()">
+                                <label class="form-check-label" for="includeB2B">
+                                    <iconify-icon icon="mdi:domain" class="me-1"></iconify-icon>
+                                    B2B (Agency)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-24">
+                    
+                    <!-- Scheduling -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">Schedule (Optional)</label>
+                        <input type="datetime-local" name="scheduled_at" class="form-control radius-8" id="scheduledAt">
+                        <small class="text-secondary-light">Leave empty to save as draft and send manually</small>
+                    </div>
+                    
+                    <!-- Submit -->
+                    <div class="d-flex justify-content-between align-items-center mt-32">
+                        <div id="recipientCount" class="text-secondary-light">
+                            <iconify-icon icon="mdi:account-group" class="me-1"></iconify-icon>
+                            Estimated recipients: <span id="countValue">-</span>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <a href="{% url 'marketing_list' %}" class="btn btn-outline-secondary px-24">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-24">
+                                <iconify-icon icon="mdi:content-save" class="me-2"></iconify-icon>
+                                Save Post
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Preview Sidebar -->
+    <div class="col-lg-4">
+        <div class="card radius-12 sticky-top" style="top: 100px;">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <h6 class="text-md fw-semibold mb-0">
+                    <iconify-icon icon="mdi:eye" class="me-2"></iconify-icon>
+                    Message Preview
+                </h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="bg-neutral-100 radius-8 p-16" id="messagePreview">
+                    <p class="text-secondary-light text-sm mb-0">Start typing to see preview...</p>
+                </div>
+                
+                <div class="mt-16">
+                    <h6 class="text-sm fw-semibold mb-8">HTML Formatting Tips:</h6>
+                    <ul class="text-sm text-secondary-light ps-16">
+                        <li><code>&lt;b&gt;bold&lt;/b&gt;</code></li>
+                        <li><code>&lt;i&gt;italic&lt;/i&gt;</code></li>
+                        <li><code>&lt;a href="url"&gt;link&lt;/a&gt;</code></li>
+                        <li><code>&lt;code&gt;code&lt;/code&gt;</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Toggle media upload based on content type
+function toggleMediaUpload() {
+    const contentType = document.getElementById('contentType').value;
+    const mediaSection = document.getElementById('mediaUploadSection');
+    
+    if (contentType === 'text') {
+        mediaSection.style.display = 'none';
+    } else {
+        mediaSection.style.display = 'block';
+    }
+}
+
+// Update target options based on scope
+function updateTargetOptions() {
+    const scope = document.getElementById('targetScope').value;
+    const centerSection = document.getElementById('centerSection');
+    const branchSection = document.getElementById('branchSection');
+    
+    if (scope === 'all') {
+        centerSection.style.display = 'none';
+        branchSection.style.display = 'none';
+    } else if (scope === 'center') {
+        centerSection.style.display = 'block';
+        branchSection.style.display = 'none';
+    } else if (scope === 'branch') {
+        centerSection.style.display = 'block';
+        branchSection.style.display = 'block';
+    }
+    
+    updateRecipientCount();
+}
+
+// Load branches for selected center
+function loadBranches() {
+    const centerId = document.getElementById('targetCenter').value;
+    const branchSelect = document.getElementById('targetBranch');
+    const scope = document.getElementById('targetScope').value;
+    
+    if (scope === 'branch' && centerId) {
+        // Filter branch options by center
+        const options = branchSelect.querySelectorAll('option');
+        options.forEach(opt => {
+            if (opt.value === '') {
+                opt.style.display = 'block';
+            } else if (opt.dataset.center === centerId) {
+                opt.style.display = 'block';
+            } else {
+                opt.style.display = 'none';
+            }
+        });
+    }
+    
+    updateRecipientCount();
+}
+
+// Update recipient count estimate
+function updateRecipientCount() {
+    const scope = document.getElementById('targetScope').value;
+    const centerId = document.getElementById('targetCenter').value;
+    const branchId = document.getElementById('targetBranch').value;
+    const includeB2C = document.getElementById('includeB2C').checked;
+    const includeB2B = document.getElementById('includeB2B').checked;
+    
+    const params = new URLSearchParams({
+        scope: scope,
+        center_id: centerId || '',
+        branch_id: branchId || '',
+        include_b2c: includeB2C,
+        include_b2b: includeB2B
+    });
+    
+    fetch(`{% url 'api_recipient_count' %}?${params}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('countValue').textContent = data.count.toLocaleString();
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching recipient count:', err);
+        });
+}
+
+// Update preview as user types
+document.addEventListener('DOMContentLoaded', function() {
+    const contentInput = document.querySelector('textarea[name="content"]');
+    const previewDiv = document.getElementById('messagePreview');
+    
+    contentInput.addEventListener('input', function() {
+        const content = this.value || '<p class="text-secondary-light text-sm mb-0">Start typing to see preview...</p>';
+        previewDiv.innerHTML = content;
+    });
+    
+    // Initial setup
+    toggleMediaUpload();
+    updateTargetOptions();
+    updateRecipientCount();
+});
+</script>
+{% endblock content %}

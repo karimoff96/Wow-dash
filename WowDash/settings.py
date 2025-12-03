@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "services",
     "bot",
     "orders",
+    "marketing",
 ]
 
 MIDDLEWARE = [

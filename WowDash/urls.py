@@ -36,6 +36,8 @@ urlpatterns = [
     path("orders/", include("orders.urls")),
     # Services management (categories & products)
     path("services/", include("services.urls")),
+    # Marketing & Broadcasts
+    path("marketing/", include("marketing.urls")),
     # home routes
     path("index", home_views.index, name="index"),
     path("email", home_views.email, name="email"),

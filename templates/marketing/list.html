@@ -1,0 +1,197 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+    <h6 class="fw-semibold mb-0">Marketing Posts</h6>
+    <div class="d-flex align-items-center gap-3">
+        <!-- Filters -->
+        <select class="form-select form-select-sm w-auto" id="statusFilter" onchange="applyFilters()">
+            <option value="">All Status</option>
+            {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select class="form-select form-select-sm w-auto" id="scopeFilter" onchange="applyFilters()">
+            <option value="">All Scopes</option>
+            {% for value, label in scope_choices %}
+            <option value="{{ value }}" {% if current_scope == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        {% if permissions.can_create %}
+        <a href="{% url 'marketing_create' %}" class="btn btn-primary btn-sm d-flex align-items-center gap-2">
+            <iconify-icon icon="ic:round-plus" class="icon text-xl line-height-1"></iconify-icon>
+            Create Post
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card basic-data-table">
+    <div class="card-body">
+        {% if posts %}
+        <div class="table-responsive">
+            <table class="table bordered-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Scope</th>
+                        <th>Status</th>
+                        <th>Recipients</th>
+                        <th>Delivery</th>
+                        <th>Created</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'marketing_detail' post.id %}" class="fw-medium text-primary-600">
+                                {{ post.title|truncatechars:40 }}
+                            </a>
+                            {% if post.content_type != 'text' %}
+                            <span class="badge bg-secondary-focus text-secondary-main ms-2">
+                                <iconify-icon icon="{% if post.content_type == 'photo' %}mdi:image{% elif post.content_type == 'video' %}mdi:video{% else %}mdi:file{% endif %}"></iconify-icon>
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.target_scope == 'all' %}
+                            <span class="badge bg-danger-focus text-danger-main">Platform-wide</span>
+                            {% elif post.target_scope == 'center' %}
+                            <span class="badge bg-primary-focus text-primary-main">{{ post.target_center.name|default:"Center" }}</span>
+                            {% elif post.target_scope == 'branch' %}
+                            <span class="badge bg-info-focus text-info-main">{{ post.target_branch.name|default:"Branch" }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary-focus text-secondary-main">Custom</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if post.status == 'draft' %}
+                            <span class="badge bg-secondary-focus text-secondary-main">Draft</span>
+                            {% elif post.status == 'scheduled' %}
+                            <span class="badge bg-info-focus text-info-main">
+                                <iconify-icon icon="mdi:clock-outline" class="me-1"></iconify-icon>
+                                Scheduled
+                            </span>
+                            {% elif post.status == 'sending' %}
+                            <span class="badge bg-warning-focus text-warning-main">
+                                <iconify-icon icon="mdi:loading" class="me-1 animate-spin"></iconify-icon>
+                                Sending
+                            </span>
+                            {% elif post.status == 'sent' %}
+                            <span class="badge bg-success-focus text-success-main">Sent</span>
+                            {% elif post.status == 'paused' %}
+                            <span class="badge bg-warning-focus text-warning-main">Paused</span>
+                            {% elif post.status == 'failed' %}
+                            <span class="badge bg-danger-focus text-danger-main">Failed</span>
+                            {% elif post.status == 'cancelled' %}
+                            <span class="badge bg-secondary-focus text-secondary-main">Cancelled</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="text-secondary-light">{{ post.total_recipients }}</span>
+                        </td>
+                        <td>
+                            {% if post.sent_count > 0 %}
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress w-80-px" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: {{ post.delivery_percentage }}%"></div>
+                                </div>
+                                <span class="text-sm text-secondary-light">{{ post.delivery_percentage }}%</span>
+                            </div>
+                            {% else %}
+                            <span class="text-secondary-light">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="text-sm text-secondary-light">{{ post.created_at|date:"d M Y" }}</span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                <a href="{% url 'marketing_detail' post.id %}" 
+                                   class="w-32-px h-32-px bg-primary-light text-primary-600 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                   title="View Details">
+                                    <iconify-icon icon="iconamoon:eye-light"></iconify-icon>
+                                </a>
+                                {% if post.status == 'draft' or post.status == 'scheduled' %}
+                                <a href="{% url 'marketing_edit' post.id %}" 
+                                   class="w-32-px h-32-px bg-success-focus text-success-main rounded-circle d-inline-flex align-items-center justify-content-center"
+                                   title="Edit">
+                                    <iconify-icon icon="lucide:edit"></iconify-icon>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if posts.has_other_pages %}
+        <div class="d-flex justify-content-center mt-24">
+            <nav aria-label="Page navigation">
+                <ul class="pagination mb-0">
+                    {% if posts.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ posts.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_scope %}&scope={{ current_scope }}{% endif %}">Previous</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in posts.paginator.page_range %}
+                    <li class="page-item {% if posts.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_scope %}&scope={{ current_scope }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if posts.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ posts.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_scope %}&scope={{ current_scope }}{% endif %}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-32">
+            <iconify-icon icon="mdi:bullhorn-outline" class="text-secondary-light mb-16" style="font-size: 64px;"></iconify-icon>
+            <h6 class="text-secondary-light mb-8">No Marketing Posts Yet</h6>
+            <p class="text-secondary-light mb-16">Create your first broadcast to reach your customers.</p>
+            <a href="{% url 'marketing_create' %}" class="btn btn-primary">
+                <iconify-icon icon="ic:round-plus" class="me-2"></iconify-icon>
+                Create Post
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function applyFilters() {
+    const status = document.getElementById('statusFilter').value;
+    const scope = document.getElementById('scopeFilter').value;
+    
+    let url = new URL(window.location.href);
+    url.searchParams.delete('page');
+    
+    if (status) {
+        url.searchParams.set('status', status);
+    } else {
+        url.searchParams.delete('status');
+    }
+    
+    if (scope) {
+        url.searchParams.set('scope', scope);
+    } else {
+        url.searchParams.delete('scope');
+    }
+    
+    window.location.href = url.toString();
+}
+</script>
+{% endblock content %}
