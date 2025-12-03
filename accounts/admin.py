@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.utils.html import format_html
-from accounts.models import BotUser
+from accounts.models import BotUser, AdditionalInfo
 
 
 admin.site.unregister(Group)
@@ -153,3 +153,68 @@ class BotUserAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request)
+
+
+@admin.register(AdditionalInfo)
+class AdditionalInfoAdmin(admin.ModelAdmin):
+    """Admin for AdditionalInfo - branch-specific settings"""
+    
+    list_display = (
+        '__str__',
+        'branch',
+        'bank_card',
+        'support_phone',
+        'updated_at',
+    )
+    list_filter = ('branch__center', 'branch')
+    search_fields = ('branch__name', 'bank_card', 'holder_name', 'support_phone')
+    autocomplete_fields = ['branch']
+    
+    fieldsets = (
+        (
+            "Branch",
+            {
+                "fields": ("branch",),
+                "description": "Leave empty for global/default settings that apply when branch doesn't have its own."
+            }
+        ),
+        (
+            "Payment Information",
+            {
+                "fields": ("bank_card", "holder_name"),
+            }
+        ),
+        (
+            "Help Text",
+            {
+                "fields": ("help_text",),  # modeltranslation will add _uz, _ru, _en
+                "classes": ("collapse",),
+            }
+        ),
+        (
+            "Description",
+            {
+                "fields": ("description",),
+                "classes": ("collapse",),
+            }
+        ),
+        (
+            "About Us",
+            {
+                "fields": ("about_us",),
+                "classes": ("collapse",),
+            }
+        ),
+        (
+            "Working Hours",
+            {
+                "fields": ("working_hours",),
+            }
+        ),
+        (
+            "Contact Information",
+            {
+                "fields": ("support_phone", "support_telegram"),
+            }
+        ),
+    )

@@ -294,7 +294,7 @@ def get_text(key, language="uz"):
 
 
 def create_or_update_user(
-    user_id, username=None, language=None, name=None, phone=None, agency_token=None
+    user_id, username=None, language=None, name=None, phone=None, agency_token=None, branch=None
 ):
     """
     Create or update telegram user in database
@@ -306,6 +306,7 @@ def create_or_update_user(
         name: User's full name
         phone: User's phone number
         agency_token: Optional agency token if coming from an invite link
+        branch: Optional Branch instance to associate user with
     """
     from accounts.models import BotUser
     from uuid import UUID
@@ -348,6 +349,8 @@ def create_or_update_user(
             user.phone = phone or ""
             user.is_active = False
             user.step = 0
+            if branch:
+                user.branch = branch
         else:
             if language and user.language != language:
                 user.language = language
@@ -359,6 +362,8 @@ def create_or_update_user(
                 user.username = username
             if user_id is not None and user.user_id != user_id:
                 user.user_id = user_id
+            if branch and user.branch != branch:
+                user.branch = branch
 
         user.save()
         return user

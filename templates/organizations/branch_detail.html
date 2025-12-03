@@ -39,6 +39,10 @@
                 <span class="{% if branch.is_active %}bg-success-focus text-success-main{% else %}bg-danger-focus text-danger-main{% endif %} px-16 py-8 radius-8 text-sm fw-medium">
                     {% if branch.is_active %}Active{% else %}Inactive{% endif %}
                 </span>
+                <a href="{% url 'branch_settings' branch.id %}" class="btn btn-outline-info-600 btn-sm px-16 py-8 radius-8 d-inline-flex align-items-center">
+                    <iconify-icon icon="fluent:settings-20-filled" class="me-4"></iconify-icon>
+                    Bot Settings
+                </a>
                 <a href="{% url 'branch_edit' branch.id %}" class="btn btn-outline-primary-600 btn-sm px-16 py-8 radius-8 d-inline-flex align-items-center">
                     <iconify-icon icon="fluent:edit-20-filled" class="me-4"></iconify-icon>
                     Edit

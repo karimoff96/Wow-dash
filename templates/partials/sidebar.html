@@ -50,7 +50,8 @@
             </li>
             {% else %}
             {% has_any_perm 'can_view_staff,can_manage_staff' as can_staff_section %}
-            {% if is_manager or can_staff_section %}
+            {% has_any_perm 'can_view_branch_settings,can_manage_branch_settings' as can_settings_section %}
+            {% if is_manager or can_staff_section or can_settings_section %}
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="mdi:domain" class="menu-icon"></iconify-icon>
@@ -63,6 +64,11 @@
                     {% if can_staff_section %}
                     <li>
                         <a href="{% url 'staff_list' %}"><i class="ri-circle-fill circle-icon text-success-main w-auto"></i> <span data-i18n="sidebar.staff">Staff</span></a>
+                    </li>
+                    {% endif %}
+                    {% if can_settings_section %}
+                    <li>
+                        <a href="{% url 'branch_list' %}"><i class="ri-circle-fill circle-icon text-warning-main w-auto"></i> <span data-i18n="sidebar.branchSettings">Bot Settings</span></a>
                     </li>
                     {% endif %}
                 </ul>

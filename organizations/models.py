@@ -204,6 +204,12 @@ class Role(models.Model):
     can_send_branch_broadcasts = models.BooleanField(_("Can send branch broadcasts"), default=False)
     can_send_center_broadcasts = models.BooleanField(_("Can send center-wide broadcasts"), default=False)
     can_view_broadcast_stats = models.BooleanField(_("Can view broadcast statistics"), default=False)
+    
+    # Permissions - Branch Settings (Additional Info)
+    can_manage_branch_settings = models.BooleanField(_("Can manage branch settings"), default=False,
+        help_text=_("Can edit branch payment info, help texts, about us, working hours"))
+    can_view_branch_settings = models.BooleanField(_("Can view branch settings"), default=False,
+        help_text=_("Can view branch settings without editing"))
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True, null=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True, null=True)
@@ -268,6 +274,9 @@ class Role(models.Model):
             "can_send_branch_broadcasts",
             "can_send_center_broadcasts",
             "can_view_broadcast_stats",
+            # Branch Settings
+            "can_manage_branch_settings",
+            "can_view_branch_settings",
         ]
 
     @classmethod
@@ -337,6 +346,15 @@ class Role(models.Model):
                     "can_view_broadcast_stats",
                 ],
             },
+            "branch_settings": {
+                "title": _("Branch Settings"),
+                "icon": "fa-cog",
+                "color": "cyan",
+                "permissions": [
+                    "can_manage_branch_settings",
+                    "can_view_branch_settings",
+                ],
+            },
         }
 
     @classmethod
@@ -378,6 +396,9 @@ class Role(models.Model):
             "can_send_branch_broadcasts": _("Send Branch Broadcasts"),
             "can_send_center_broadcasts": _("Send Center-wide Broadcasts"),
             "can_view_broadcast_stats": _("View Broadcast Statistics"),
+            # Branch Settings
+            "can_manage_branch_settings": _("Manage Branch Settings"),
+            "can_view_branch_settings": _("View Branch Settings"),
         }
     
     @classmethod
@@ -419,6 +440,9 @@ class Role(models.Model):
             "can_send_branch_broadcasts": _("Send broadcast messages to all customers in their branch"),
             "can_send_center_broadcasts": _("Send broadcast messages to all customers across the entire center"),
             "can_view_broadcast_stats": _("View broadcast delivery statistics and analytics"),
+            # Branch Settings
+            "can_manage_branch_settings": _("Edit branch payment info, help texts, about us, and working hours"),
+            "can_view_branch_settings": _("View branch settings without the ability to edit"),
         }
 
     @classmethod
@@ -461,6 +485,9 @@ class Role(models.Model):
                 "can_send_branch_broadcasts": True,
                 "can_send_center_broadcasts": True,
                 "can_view_broadcast_stats": True,
+                # Branch Settings
+                "can_manage_branch_settings": True,
+                "can_view_branch_settings": True,
             },
             cls.MANAGER: {
                 # Organization
@@ -498,6 +525,9 @@ class Role(models.Model):
                 "can_send_branch_broadcasts": True,
                 "can_send_center_broadcasts": False,
                 "can_view_broadcast_stats": True,
+                # Branch Settings
+                "can_manage_branch_settings": True,
+                "can_view_branch_settings": True,
             },
             cls.STAFF: {
                 # Organization
@@ -535,6 +565,9 @@ class Role(models.Model):
                 "can_send_branch_broadcasts": False,
                 "can_send_center_broadcasts": False,
                 "can_view_broadcast_stats": False,
+                # Branch Settings
+                "can_manage_branch_settings": False,
+                "can_view_branch_settings": True,
             },
         }
         return defaults.get(role_name, {})

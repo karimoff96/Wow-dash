@@ -151,6 +151,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MODELTRANSLATION_DEFAULT_LANGUAGE = "uz"
 MODELTRANSLATION_LANGUAGES = ("uz", "ru", "en")
 MODELTRANSLATION_TRANSLATION_FILES = (
+    "accounts.translations",
     "core.translations",
     "services.translations",
 )

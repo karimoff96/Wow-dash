@@ -15,6 +15,10 @@ urlpatterns = [
     path('branches/<int:branch_id>/', views.branch_detail, name='branch_detail'),
     path('branches/<int:branch_id>/edit/', views.branch_edit, name='branch_edit'),
     
+    # Branch Settings (Additional Info)
+    path('branches/<int:branch_id>/settings/', views.branch_settings, name='branch_settings'),
+    path('branches/<int:branch_id>/settings/edit/', views.branch_settings_edit, name='branch_settings_edit'),
+    
     # Staff
     path('staff/', views.staff_list, name='staff_list'),
     path('staff/create/', views.staff_create, name='staff_create'),

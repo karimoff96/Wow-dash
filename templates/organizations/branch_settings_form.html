@@ -1,0 +1,291 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+
+{% block content %}
+<form method="POST" class="row gy-4">
+    {% csrf_token %}
+    
+    <!-- Header -->
+    <div class="col-12">
+        <div class="card radius-12">
+            <div class="card-body p-24">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-16">
+                    <div class="d-flex align-items-center gap-16">
+                        <div class="w-64-px h-64-px rounded-12 bg-primary-100 d-flex justify-content-center align-items-center flex-shrink-0">
+                            <iconify-icon icon="fluent:settings-20-filled" class="text-primary-600 text-3xl"></iconify-icon>
+                        </div>
+                        <div>
+                            <h4 class="text-xl fw-semibold mb-4">Edit Branch Settings</h4>
+                            <p class="text-secondary-light mb-0">
+                                <iconify-icon icon="fluent:building-20-filled" class="text-primary-600"></iconify-icon>
+                                {{ branch.name }} - {{ branch.center.name }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-8">
+                        <a href="{% url 'branch_settings' branch.id %}" class="btn btn-outline-secondary radius-8 px-20 py-11">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary-600 radius-8 px-20 py-11">
+                            <iconify-icon icon="fluent:save-20-filled" class="me-8"></iconify-icon>
+                            Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Information -->
+    <div class="col-xxl-6 col-lg-6">
+        <div class="card radius-12 h-100">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-success-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:payment-20-filled" class="text-success-600 text-xl"></iconify-icon>
+                </div>
+                <h6 class="mb-0 fw-semibold">Payment Information</h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="row gy-3">
+                    <div class="col-12">
+                        <label for="bank_card" class="form-label fw-medium text-secondary-light">
+                            Bank Card Number
+                            <span class="text-secondary-light">(shown in bot for card payments)</span>
+                        </label>
+                        <input type="text" class="form-control radius-8" id="bank_card" name="bank_card"
+                               value="{{ info.bank_card|default:'' }}"
+                               placeholder="8600 1234 5678 9012">
+                    </div>
+                    <div class="col-12">
+                        <label for="holder_name" class="form-label fw-medium text-secondary-light">
+                            Card Holder Name
+                        </label>
+                        <input type="text" class="form-control radius-8" id="holder_name" name="holder_name"
+                               value="{{ info.holder_name|default:'' }}"
+                               placeholder="JOHN DOE">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="col-xxl-6 col-lg-6">
+        <div class="card radius-12 h-100">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-info-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:call-20-filled" class="text-info-600 text-xl"></iconify-icon>
+                </div>
+                <h6 class="mb-0 fw-semibold">Contact Information</h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="row gy-3">
+                    <div class="col-12">
+                        <label for="support_phone" class="form-label fw-medium text-secondary-light">
+                            Support Phone
+                        </label>
+                        <input type="text" class="form-control radius-8" id="support_phone" name="support_phone"
+                               value="{{ info.support_phone|default:'' }}"
+                               placeholder="+998 90 123 45 67">
+                    </div>
+                    <div class="col-12">
+                        <label for="support_telegram" class="form-label fw-medium text-secondary-light">
+                            Support Telegram
+                        </label>
+                        <input type="text" class="form-control radius-8" id="support_telegram" name="support_telegram"
+                               value="{{ info.support_telegram|default:'' }}"
+                               placeholder="@support_username">
+                    </div>
+                    <div class="col-12">
+                        <label for="working_hours" class="form-label fw-medium text-secondary-light">
+                            Working Hours (Default)
+                        </label>
+                        <input type="text" class="form-control radius-8" id="working_hours" name="working_hours"
+                               value="{{ info.working_hours|default:'' }}"
+                               placeholder="Mon-Fri: 9:00-18:00, Sat: 10:00-15:00">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Working Hours (Translated) -->
+    <div class="col-12">
+        <div class="card radius-12">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-warning-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:clock-20-filled" class="text-warning-600 text-xl"></iconify-icon>
+                </div>
+                <h6 class="mb-0 fw-semibold">Working Hours (Translated)</h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="row gy-3">
+                    <div class="col-md-4">
+                        <label for="working_hours_uz" class="form-label fw-medium text-secondary-light">
+                            🇺🇿 Uzbek
+                        </label>
+                        <input type="text" class="form-control radius-8" id="working_hours_uz" name="working_hours_uz"
+                               value="{{ info.working_hours_uz|default:'' }}"
+                               placeholder="Dush-Jum: 9:00-18:00, Shanba: 10:00-15:00">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="working_hours_ru" class="form-label fw-medium text-secondary-light">
+                            🇷🇺 Russian
+                        </label>
+                        <input type="text" class="form-control radius-8" id="working_hours_ru" name="working_hours_ru"
+                               value="{{ info.working_hours_ru|default:'' }}"
+                               placeholder="Пн-Пт: 9:00-18:00, Сб: 10:00-15:00">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="working_hours_en" class="form-label fw-medium text-secondary-light">
+                            🇬🇧 English
+                        </label>
+                        <input type="text" class="form-control radius-8" id="working_hours_en" name="working_hours_en"
+                               value="{{ info.working_hours_en|default:'' }}"
+                               placeholder="Mon-Fri: 9:00-18:00, Sat: 10:00-15:00">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Text (Translated) -->
+    <div class="col-12">
+        <div class="card radius-12">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-primary-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:question-circle-20-filled" class="text-primary-600 text-xl"></iconify-icon>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-semibold">Help Text</h6>
+                    <small class="text-secondary-light">Shown when user clicks Help button in bot</small>
+                </div>
+            </div>
+            <div class="card-body p-24">
+                <ul class="nav nav-tabs border-0 mb-16" id="helpTextTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active px-16 py-8" id="help-uz-tab" data-bs-toggle="tab" data-bs-target="#help-uz" type="button" role="tab">🇺🇿 Uzbek</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-16 py-8" id="help-ru-tab" data-bs-toggle="tab" data-bs-target="#help-ru" type="button" role="tab">🇷🇺 Russian</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-16 py-8" id="help-en-tab" data-bs-toggle="tab" data-bs-target="#help-en" type="button" role="tab">🇬🇧 English</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="helpTextTabContent">
+                    <div class="tab-pane fade show active" id="help-uz" role="tabpanel">
+                        <textarea class="form-control radius-8" name="help_text_uz" rows="5"
+                                  placeholder="Yordam matni o'zbek tilida...">{{ info.help_text_uz|default:'' }}</textarea>
+                    </div>
+                    <div class="tab-pane fade" id="help-ru" role="tabpanel">
+                        <textarea class="form-control radius-8" name="help_text_ru" rows="5"
+                                  placeholder="Текст помощи на русском языке...">{{ info.help_text_ru|default:'' }}</textarea>
+                    </div>
+                    <div class="tab-pane fade" id="help-en" role="tabpanel">
+                        <textarea class="form-control radius-8" name="help_text_en" rows="5"
+                                  placeholder="Help text in English...">{{ info.help_text_en|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Us (Translated) -->
+    <div class="col-12">
+        <div class="card radius-12">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-info-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:info-20-filled" class="text-info-600 text-xl"></iconify-icon>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-semibold">About Us</h6>
+                    <small class="text-secondary-light">Shown when user clicks About Us button in bot</small>
+                </div>
+            </div>
+            <div class="card-body p-24">
+                <ul class="nav nav-tabs border-0 mb-16" id="aboutUsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active px-16 py-8" id="about-uz-tab" data-bs-toggle="tab" data-bs-target="#about-uz" type="button" role="tab">🇺🇿 Uzbek</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-16 py-8" id="about-ru-tab" data-bs-toggle="tab" data-bs-target="#about-ru" type="button" role="tab">🇷🇺 Russian</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-16 py-8" id="about-en-tab" data-bs-toggle="tab" data-bs-target="#about-en" type="button" role="tab">🇬🇧 English</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="aboutUsTabContent">
+                    <div class="tab-pane fade show active" id="about-uz" role="tabpanel">
+                        <textarea class="form-control radius-8" name="about_us_uz" rows="5"
+                                  placeholder="Biz haqimizda o'zbek tilida...">{{ info.about_us_uz|default:'' }}</textarea>
+                    </div>
+                    <div class="tab-pane fade" id="about-ru" role="tabpanel">
+                        <textarea class="form-control radius-8" name="about_us_ru" rows="5"
+                                  placeholder="О нас на русском языке...">{{ info.about_us_ru|default:'' }}</textarea>
+                    </div>
+                    <div class="tab-pane fade" id="about-en" role="tabpanel">
+                        <textarea class="form-control radius-8" name="about_us_en" rows="5"
+                                  placeholder="About us in English...">{{ info.about_us_en|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description (Translated) -->
+    <div class="col-12">
+        <div class="card radius-12">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-cyan-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:document-text-20-filled" class="text-cyan-600 text-xl"></iconify-icon>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-semibold">Description</h6>
+                    <small class="text-secondary-light">General description for bot messages</small>
+                </div>
+            </div>
+            <div class="card-body p-24">
+                <ul class="nav nav-tabs border-0 mb-16" id="descriptionTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active px-16 py-8" id="desc-uz-tab" data-bs-toggle="tab" data-bs-target="#desc-uz" type="button" role="tab">🇺🇿 Uzbek</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-16 py-8" id="desc-ru-tab" data-bs-toggle="tab" data-bs-target="#desc-ru" type="button" role="tab">🇷🇺 Russian</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-16 py-8" id="desc-en-tab" data-bs-toggle="tab" data-bs-target="#desc-en" type="button" role="tab">🇬🇧 English</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="descriptionTabContent">
+                    <div class="tab-pane fade show active" id="desc-uz" role="tabpanel">
+                        <textarea class="form-control radius-8" name="description_uz" rows="5"
+                                  placeholder="Tavsif o'zbek tilida...">{{ info.description_uz|default:'' }}</textarea>
+                    </div>
+                    <div class="tab-pane fade" id="desc-ru" role="tabpanel">
+                        <textarea class="form-control radius-8" name="description_ru" rows="5"
+                                  placeholder="Описание на русском языке...">{{ info.description_ru|default:'' }}</textarea>
+                    </div>
+                    <div class="tab-pane fade" id="desc-en" role="tabpanel">
+                        <textarea class="form-control radius-8" name="description_en" rows="5"
+                                  placeholder="Description in English...">{{ info.description_en|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Buttons -->
+    <div class="col-12">
+        <div class="d-flex justify-content-end gap-8">
+            <a href="{% url 'branch_settings' branch.id %}" class="btn btn-outline-secondary radius-8 px-20 py-11">
+                Cancel
+            </a>
+            <button type="submit" class="btn btn-primary-600 radius-8 px-20 py-11">
+                <iconify-icon icon="fluent:save-20-filled" class="me-8"></iconify-icon>
+                Save Settings
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}

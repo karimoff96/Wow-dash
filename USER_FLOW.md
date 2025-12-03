@@ -16,6 +16,15 @@
                              │
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
+│                  Choose proper branch                           │
+│           here bot has to show all this center related branches 
+│ in an ethical way that for user it should be easy and understandable
+what branch is where located, you can create a button of branches or something creative, 
+branch, name and brach address/location
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
 │                   REGISTRATION                                  │
 │              - Enter name                                       │
 │              - Share phone number                               │
@@ -66,7 +75,7 @@
 │                                                                 │
 │  📊 Additional charge will be calculated based on copies        │
 │                                                                 │
-│  🔢 Enter number of copies (0-99):                             │
+│  🔢 Select number of copies or enter the amount (0-99):         │
 │                                                                 │
 │           [0️⃣] [1️⃣] [2️⃣]                                       │
 │           [3️⃣] [4️⃣] [5️⃣]                                       │
@@ -99,7 +108,7 @@
 │                                                                 │
 │  📋 Order Summary                                               │
 │                                                                 │
-│  📄 Order number: #123                                          │
+│  📄 Order number: #123                                        │
 │  📎 Total files: 2                                              │
 │  📄 Total pages: 5                                              │
 │  🏢 User type: Regular User                                     │

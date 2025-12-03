@@ -1,0 +1,250 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+{% load permission_tags %}
+
+{% block content %}
+<!-- Branch Settings Header -->
+<div class="card radius-12 mb-24">
+    <div class="card-body p-24">
+        <div class="d-flex align-items-start justify-content-between flex-wrap gap-16">
+            <div class="d-flex align-items-center gap-16">
+                <div class="w-80-px h-80-px rounded-12 bg-primary-100 d-flex justify-content-center align-items-center flex-shrink-0">
+                    <iconify-icon icon="fluent:settings-20-filled" class="text-primary-600 text-4xl"></iconify-icon>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center gap-8 mb-4">
+                        <h4 class="text-xl fw-semibold mb-0">{{ branch.name }}</h4>
+                        {% if branch.is_main %}
+                        <span class="badge bg-warning-focus text-warning-600">Main Branch</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex align-items-center gap-8 text-secondary-light">
+                        <iconify-icon icon="fluent:building-20-filled" class="text-lg text-primary-600"></iconify-icon>
+                        <a href="{% url 'center_detail' branch.center.id %}" class="text-primary-600">{{ branch.center.name }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-8">
+                <a href="{% url 'branch_detail' branch.id %}" class="btn btn-outline-secondary btn-sm px-16 py-8 radius-8 d-inline-flex align-items-center">
+                    <iconify-icon icon="fluent:arrow-left-20-filled" class="me-4"></iconify-icon>
+                    Back to Branch
+                </a>
+                {% if can_edit %}
+                <a href="{% url 'branch_settings_edit' branch.id %}" class="btn btn-primary-600 btn-sm px-16 py-8 radius-8 d-inline-flex align-items-center">
+                    <iconify-icon icon="fluent:edit-20-filled" class="me-4"></iconify-icon>
+                    Edit Settings
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row gy-4">
+    <!-- Payment Information -->
+    <div class="col-xxl-6 col-lg-6">
+        <div class="card radius-12 h-100">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-success-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:payment-20-filled" class="text-success-600 text-xl"></iconify-icon>
+                </div>
+                <h6 class="mb-0 fw-semibold">Payment Information</h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="row gy-3">
+                    <div class="col-12">
+                        <label class="form-label fw-medium text-secondary-light mb-4">Bank Card Number</label>
+                        <div class="d-flex align-items-center gap-8">
+                            <iconify-icon icon="fluent:card-ui-20-filled" class="text-primary-600 text-xl"></iconify-icon>
+                            <span class="text-lg fw-medium {% if info.bank_card %}text-success-600{% else %}text-neutral-500{% endif %}">
+                                {% if info.bank_card %}{{ info.bank_card }}{% else %}Not set{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-medium text-secondary-light mb-4">Card Holder Name</label>
+                        <div class="d-flex align-items-center gap-8">
+                            <iconify-icon icon="fluent:person-20-filled" class="text-info-600 text-xl"></iconify-icon>
+                            <span class="{% if info.holder_name %}{% else %}text-neutral-500{% endif %}">
+                                {% if info.holder_name %}{{ info.holder_name }}{% else %}Not set{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="col-xxl-6 col-lg-6">
+        <div class="card radius-12 h-100">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-info-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:call-20-filled" class="text-info-600 text-xl"></iconify-icon>
+                </div>
+                <h6 class="mb-0 fw-semibold">Contact Information</h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="row gy-3">
+                    <div class="col-12">
+                        <label class="form-label fw-medium text-secondary-light mb-4">Support Phone</label>
+                        <div class="d-flex align-items-center gap-8">
+                            <iconify-icon icon="fluent:phone-20-filled" class="text-success-600 text-xl"></iconify-icon>
+                            <span class="{% if info.support_phone %}{% else %}text-neutral-500{% endif %}">
+                                {% if info.support_phone %}{{ info.support_phone }}{% else %}Not set{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-medium text-secondary-light mb-4">Support Telegram</label>
+                        <div class="d-flex align-items-center gap-8">
+                            <iconify-icon icon="mdi:telegram" class="text-info-600 text-xl"></iconify-icon>
+                            <span class="{% if info.support_telegram %}{% else %}text-neutral-500{% endif %}">
+                                {% if info.support_telegram %}{{ info.support_telegram }}{% else %}Not set{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-medium text-secondary-light mb-4">Working Hours</label>
+                        <div class="d-flex align-items-center gap-8">
+                            <iconify-icon icon="fluent:clock-20-filled" class="text-warning-600 text-xl"></iconify-icon>
+                            <span class="{% if info.working_hours %}{% else %}text-neutral-500{% endif %}">
+                                {% if info.working_hours %}{{ info.working_hours }}{% else %}Not set{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Text -->
+    <div class="col-xxl-6 col-lg-6">
+        <div class="card radius-12 h-100">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-warning-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:question-circle-20-filled" class="text-warning-600 text-xl"></iconify-icon>
+                </div>
+                <h6 class="mb-0 fw-semibold">Help Text (Bot)</h6>
+            </div>
+            <div class="card-body p-24">
+                <!-- Language Tabs -->
+                <ul class="nav nav-tabs border-0 mb-16" id="helpTextTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active px-12 py-8" id="help-uz-tab" data-bs-toggle="tab" data-bs-target="#help-uz" type="button" role="tab">🇺🇿 Uzbek</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-12 py-8" id="help-ru-tab" data-bs-toggle="tab" data-bs-target="#help-ru" type="button" role="tab">🇷🇺 Russian</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-12 py-8" id="help-en-tab" data-bs-toggle="tab" data-bs-target="#help-en" type="button" role="tab">🇬🇧 English</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="helpTextTabContent">
+                    <div class="tab-pane fade show active" id="help-uz" role="tabpanel">
+                        <p class="mb-0 {% if info.help_text_uz %}{% else %}text-neutral-500{% endif %}">
+                            {% if info.help_text_uz %}{{ info.help_text_uz|linebreaks }}{% else %}Not set{% endif %}
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="help-ru" role="tabpanel">
+                        <p class="mb-0 {% if info.help_text_ru %}{% else %}text-neutral-500{% endif %}">
+                            {% if info.help_text_ru %}{{ info.help_text_ru|linebreaks }}{% else %}Not set{% endif %}
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="help-en" role="tabpanel">
+                        <p class="mb-0 {% if info.help_text_en %}{% else %}text-neutral-500{% endif %}">
+                            {% if info.help_text_en %}{{ info.help_text_en|linebreaks }}{% else %}Not set{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Us -->
+    <div class="col-xxl-6 col-lg-6">
+        <div class="card radius-12 h-100">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-primary-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:info-20-filled" class="text-primary-600 text-xl"></iconify-icon>
+                </div>
+                <h6 class="mb-0 fw-semibold">About Us (Bot)</h6>
+            </div>
+            <div class="card-body p-24">
+                <!-- Language Tabs -->
+                <ul class="nav nav-tabs border-0 mb-16" id="aboutUsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active px-12 py-8" id="about-uz-tab" data-bs-toggle="tab" data-bs-target="#about-uz" type="button" role="tab">🇺🇿 Uzbek</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-12 py-8" id="about-ru-tab" data-bs-toggle="tab" data-bs-target="#about-ru" type="button" role="tab">🇷🇺 Russian</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-12 py-8" id="about-en-tab" data-bs-toggle="tab" data-bs-target="#about-en" type="button" role="tab">🇬🇧 English</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="aboutUsTabContent">
+                    <div class="tab-pane fade show active" id="about-uz" role="tabpanel">
+                        <p class="mb-0 {% if info.about_us_uz %}{% else %}text-neutral-500{% endif %}">
+                            {% if info.about_us_uz %}{{ info.about_us_uz|linebreaks }}{% else %}Not set{% endif %}
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="about-ru" role="tabpanel">
+                        <p class="mb-0 {% if info.about_us_ru %}{% else %}text-neutral-500{% endif %}">
+                            {% if info.about_us_ru %}{{ info.about_us_ru|linebreaks }}{% else %}Not set{% endif %}
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="about-en" role="tabpanel">
+                        <p class="mb-0 {% if info.about_us_en %}{% else %}text-neutral-500{% endif %}">
+                            {% if info.about_us_en %}{{ info.about_us_en|linebreaks }}{% else %}Not set{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="col-12">
+        <div class="card radius-12">
+            <div class="card-header py-16 px-24 bg-base d-flex align-items-center gap-12">
+                <div class="w-40-px h-40-px bg-cyan-100 rounded-8 d-flex justify-content-center align-items-center">
+                    <iconify-icon icon="fluent:document-text-20-filled" class="text-cyan-600 text-xl"></iconify-icon>
+                </div>
+                <h6 class="mb-0 fw-semibold">Description (Bot)</h6>
+            </div>
+            <div class="card-body p-24">
+                <!-- Language Tabs -->
+                <ul class="nav nav-tabs border-0 mb-16" id="descriptionTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active px-12 py-8" id="desc-uz-tab" data-bs-toggle="tab" data-bs-target="#desc-uz" type="button" role="tab">🇺🇿 Uzbek</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-12 py-8" id="desc-ru-tab" data-bs-toggle="tab" data-bs-target="#desc-ru" type="button" role="tab">🇷🇺 Russian</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-12 py-8" id="desc-en-tab" data-bs-toggle="tab" data-bs-target="#desc-en" type="button" role="tab">🇬🇧 English</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="descriptionTabContent">
+                    <div class="tab-pane fade show active" id="desc-uz" role="tabpanel">
+                        <p class="mb-0 {% if info.description_uz %}{% else %}text-neutral-500{% endif %}">
+                            {% if info.description_uz %}{{ info.description_uz|linebreaks }}{% else %}Not set{% endif %}
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="desc-ru" role="tabpanel">
+                        <p class="mb-0 {% if info.description_ru %}{% else %}text-neutral-500{% endif %}">
+                            {% if info.description_ru %}{{ info.description_ru|linebreaks }}{% else %}Not set{% endif %}
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="desc-en" role="tabpanel">
+                        <p class="mb-0 {% if info.description_en %}{% else %}text-neutral-500{% endif %}">
+                            {% if info.description_en %}{{ info.description_en|linebreaks }}{% else %}Not set{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

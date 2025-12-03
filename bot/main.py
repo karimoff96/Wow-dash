@@ -47,8 +47,12 @@ session = requests.Session()
 session.mount("https://", NoSSLAdapter())
 apihelper.SESSION = session
 
-# Initialize bot after setting up the session
-bot = telebot.TeleBot(os.getenv("BOT_TOKEN"), parse_mode="HTML")
+# Initialize bot with a PLACEHOLDER token for handler registration only.
+# This template bot is NEVER used for actual polling - it only serves as a 
+# container for handler definitions that get copied to center-specific bots.
+# Multi-tenant bots are created separately with actual tokens from the database.
+_TEMPLATE_TOKEN = "0000000000:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+bot = telebot.TeleBot(_TEMPLATE_TOKEN, parse_mode="HTML", threaded=False)
 
 # Admin user IDs (add your admin user IDs here)
 ADMINS = []  # Example: [123456789, 987654321]
@@ -60,7 +64,7 @@ def get_translated_field(obj, field_name, language):
     For modeltranslation, fields are stored as field_uz, field_ru, field_en
 
     Args:
-        obj: Model instance (MainService or DocumentType)
+        obj: Model instance (MainService or Product)
         field_name: Base field name ('name' or 'description')
         language: User's language ('uz', 'ru', 'en')
 
@@ -100,20 +104,21 @@ ALLOWED_EXTENSIONS = {
     ".heic",
 }
 STEP_LANGUAGE_SELECTED = 1
-STEP_REGISTRATION_STARTED = 2
-STEP_NAME_REQUESTED = 3
-STEP_PHONE_REQUESTED = 4
-STEP_REGISTERED = 5
-STEP_EDITING_PROFILE = 6
-STEP_EDITING_NAME = 7
-STEP_EDITING_PHONE = 8
-STEP_SELECTING_SERVICE = 9
-STEP_SELECTING_DOCUMENT = 10
-STEP_SELECTING_COPY_NUMBER = 11
-STEP_UPLOADING_FILES = 12
-STEP_PAYMENT_METHOD = 13
-STEP_AWAITING_PAYMENT = 14
-STEP_UPLOADING_RECEIPT = 15
+STEP_BRANCH_SELECTION = 2  # NEW: After language, before registration
+STEP_REGISTRATION_STARTED = 3
+STEP_NAME_REQUESTED = 4
+STEP_PHONE_REQUESTED = 5
+STEP_REGISTERED = 6
+STEP_EDITING_PROFILE = 7
+STEP_EDITING_NAME = 8
+STEP_EDITING_PHONE = 9
+STEP_SELECTING_SERVICE = 10
+STEP_SELECTING_DOCUMENT = 11
+STEP_SELECTING_COPY_NUMBER = 12
+STEP_UPLOADING_FILES = 13
+STEP_PAYMENT_METHOD = 14
+STEP_AWAITING_PAYMENT = 15
+STEP_UPLOADING_RECEIPT = 16
 
 
 def is_valid_file_format(file_name):
@@ -206,9 +211,9 @@ def send_order_status_notification(order, old_status, new_status):
         price = f"{order.total_price:,.0f}"
         days = order.product.estimated_days
 
-        # Get additional info for address and phone
-        additional_info = AdditionalInfo.objects.first()
-        phone = additional_info.bank_card if additional_info else "N/A"
+        # Get additional info for address and phone (use user's branch with fallback)
+        additional_info = AdditionalInfo.get_for_user(user)
+        phone = additional_info.support_phone if additional_info and additional_info.support_phone else (additional_info.bank_card if additional_info else "N/A")
         address = "Translation Center"  # You can add address field to AdditionalInfo if needed
 
         # Replace placeholders
@@ -610,25 +615,265 @@ def send_message(chat_id, text, reply_markup=None, parse_mode="HTML"):
         )
 
 
+def send_branch_location(chat_id, branch, language):
+    """
+    Send branch location to user with pickup information.
+    Extracts coordinates from location_url if possible, otherwise sends URL link.
+    """
+    try:
+        if not branch:
+            return False
+        
+        # Prepare location message based on language
+        if language == "uz":
+            location_text = "📍 <b>Buyurtmangizni olish manzili:</b>\n\n"
+            location_text += f"🏢 <b>{branch.name}</b>\n"
+            if branch.address:
+                location_text += f"📍 Manzil: {branch.address}\n"
+            if branch.phone:
+                location_text += f"📞 Telefon: {branch.phone}\n"
+            location_text += "\n✅ Buyurtmangiz tayyor bo'lganda sizga xabar beramiz.\n"
+            location_text += "📦 Shu manzildan olib ketishingiz mumkin bo'ladi."
+        elif language == "ru":
+            location_text = "📍 <b>Адрес для получения заказа:</b>\n\n"
+            location_text += f"🏢 <b>{branch.name}</b>\n"
+            if branch.address:
+                location_text += f"📍 Адрес: {branch.address}\n"
+            if branch.phone:
+                location_text += f"📞 Телефон: {branch.phone}\n"
+            location_text += "\n✅ Когда ваш заказ будет готов, мы вас уведомим.\n"
+            location_text += "📦 Вы сможете забрать его по этому адресу."
+        else:  # English
+            location_text = "📍 <b>Pickup location:</b>\n\n"
+            location_text += f"🏢 <b>{branch.name}</b>\n"
+            if branch.address:
+                location_text += f"📍 Address: {branch.address}\n"
+            if branch.phone:
+                location_text += f"📞 Phone: {branch.phone}\n"
+            location_text += "\n✅ We will notify you when your order is ready.\n"
+            location_text += "📦 You can pick it up from this location."
+        
+        # Send location message
+        bot.send_message(chat_id=chat_id, text=location_text, parse_mode="HTML")
+        
+        # Try to extract coordinates from location_url and send map location
+        if branch.location_url:
+            coords = extract_coordinates_from_url(branch.location_url)
+            if coords:
+                try:
+                    bot.send_location(
+                        chat_id=chat_id,
+                        latitude=coords['lat'],
+                        longitude=coords['lng']
+                    )
+                except Exception as e:
+                    print(f"[WARNING] Failed to send location coordinates: {e}")
+                    # Send URL as fallback
+                    bot.send_message(chat_id=chat_id, text=f"🗺️ {branch.location_url}")
+            else:
+                # No coordinates extracted, send URL
+                bot.send_message(chat_id=chat_id, text=f"🗺️ {branch.location_url}")
+        
+        return True
+    except Exception as e:
+        print(f"[ERROR] Failed to send branch location: {e}")
+        return False
+
+
+def extract_coordinates_from_url(url):
+    """
+    Extract latitude and longitude from Google Maps or Yandex Maps URL.
+    Returns dict with 'lat' and 'lng' keys, or None if extraction fails.
+    
+    Supports:
+    - Google Maps: https://maps.google.com/?q=41.311081,69.240562
+    - Google Maps: https://www.google.com/maps/@41.311081,69.240562,15z
+    - Google Maps: https://goo.gl/maps/... (short URLs - returns None, just use URL)
+    - Yandex Maps: https://yandex.com/maps/?ll=69.240562,41.311081
+    - Yandex Maps: https://yandex.uz/maps/-/...
+    """
+    import re
+    
+    if not url:
+        return None
+    
+    try:
+        # Google Maps patterns
+        # Pattern 1: ?q=lat,lng or @lat,lng
+        google_pattern1 = r'[?&@]q?=?(-?\d+\.?\d*),(-?\d+\.?\d*)'
+        match = re.search(google_pattern1, url)
+        if match:
+            lat, lng = float(match.group(1)), float(match.group(2))
+            if -90 <= lat <= 90 and -180 <= lng <= 180:
+                return {'lat': lat, 'lng': lng}
+        
+        # Pattern 2: @lat,lng,zoom
+        google_pattern2 = r'@(-?\d+\.?\d*),(-?\d+\.?\d*),\d+z'
+        match = re.search(google_pattern2, url)
+        if match:
+            lat, lng = float(match.group(1)), float(match.group(2))
+            if -90 <= lat <= 90 and -180 <= lng <= 180:
+                return {'lat': lat, 'lng': lng}
+        
+        # Pattern 3: /place/.../@lat,lng
+        google_pattern3 = r'/place/[^/]+/@(-?\d+\.?\d*),(-?\d+\.?\d*)'
+        match = re.search(google_pattern3, url)
+        if match:
+            lat, lng = float(match.group(1)), float(match.group(2))
+            if -90 <= lat <= 90 and -180 <= lng <= 180:
+                return {'lat': lat, 'lng': lng}
+        
+        # Yandex Maps patterns
+        # Pattern: ll=lng,lat (note: Yandex uses lng,lat order)
+        yandex_pattern = r'll=(-?\d+\.?\d*),(-?\d+\.?\d*)'
+        match = re.search(yandex_pattern, url)
+        if match:
+            lng, lat = float(match.group(1)), float(match.group(2))
+            if -90 <= lat <= 90 and -180 <= lng <= 180:
+                return {'lat': lat, 'lng': lng}
+        
+        # Pattern: pt=lng,lat
+        yandex_pattern2 = r'pt=(-?\d+\.?\d*),(-?\d+\.?\d*)'
+        match = re.search(yandex_pattern2, url)
+        if match:
+            lng, lat = float(match.group(1)), float(match.group(2))
+            if -90 <= lat <= 90 and -180 <= lng <= 180:
+                return {'lat': lat, 'lng': lng}
+        
+        return None
+    except Exception as e:
+        print(f"[WARNING] Failed to extract coordinates from URL: {e}")
+        return None
+
+
+def get_current_center():
+    """
+    Get the TranslationCenter associated with the current bot token.
+    This is essential for multi-tenant support.
+    """
+    try:
+        from organizations.models import TranslationCenter
+        center = TranslationCenter.objects.filter(bot_token=bot.token).first()
+        return center
+    except Exception as e:
+        print(f"[ERROR] Failed to get current center: {e}")
+        return None
+
+
+def get_center_branches(center=None):
+    """
+    Get all active branches for a center.
+    If no center provided, uses the current bot's center.
+    """
+    if center is None:
+        center = get_current_center()
+    
+    if center is None:
+        return []
+    
+    try:
+        from organizations.models import Branch
+        return list(Branch.objects.filter(center=center, is_active=True))
+    except Exception as e:
+        print(f"[ERROR] Failed to get branches: {e}")
+        return []
+
+
+def show_branch_selection(message, language):
+    """
+    Show branch selection after language selection.
+    User must select a branch before registration.
+    """
+    user_id = message.from_user.id
+    update_user_step(user_id, STEP_BRANCH_SELECTION)
+    
+    center = get_current_center()
+    if not center:
+        send_message(message.chat.id, "❌ Configuration error. Please contact support.")
+        return
+    
+    branches = get_center_branches(center)
+    
+    if not branches:
+        send_message(message.chat.id, "❌ No branches available. Please contact support.")
+        return
+    
+    # If only one branch, auto-select it
+    if len(branches) == 1:
+        branch = branches[0]
+        # Save branch to user
+        from accounts.models import BotUser
+        try:
+            user = BotUser.objects.get(user_id=user_id)
+            user.branch = branch
+            user.save()
+        except BotUser.DoesNotExist:
+            create_or_update_user(user_id=user_id, branch=branch)
+        
+        # Skip branch selection, go to registration
+        start_registration(message, language)
+        return
+    
+    # Multiple branches - show selection
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    
+    # Build branch selection message
+    if language == "uz":
+        header = "📍 <b>Filialni tanlang</b>\n\nQuyidagi filiallardan birini tanlang:"
+    elif language == "ru":
+        header = "📍 <b>Выберите филиал</b>\n\nВыберите один из филиалов ниже:"
+    else:
+        header = "📍 <b>Select Branch</b>\n\nPlease select one of the branches below:"
+    
+    for branch in branches:
+        # Format branch button text with name and address
+        branch_name = branch.name
+        branch_address = branch.address or ""
+        
+        if branch_address:
+            button_text = f"📍 {branch_name}"
+        else:
+            button_text = f"📍 {branch_name}"
+        
+        markup.add(types.InlineKeyboardButton(
+            text=button_text,
+            callback_data=f"select_branch_{branch.id}"
+        ))
+    
+    # Add back button
+    back_text = get_text("back_to_menu", language)
+    markup.add(types.InlineKeyboardButton(text=f"🔙 {back_text}", callback_data="back_to_language"))
+    
+    # Build detailed branch info message
+    branch_info = header + "\n\n"
+    for branch in branches:
+        branch_info += f"🏢 <b>{branch.name}</b>\n"
+        if branch.address:
+            branch_info += f"   📍 {branch.address}\n"
+        if branch.phone:
+            branch_info += f"   📞 {branch.phone}\n"
+        branch_info += "\n"
+    
+    send_message(message.chat.id, branch_info, reply_markup=markup)
+
+
 def ensure_additional_info_exists():
     """Check if AdditionalInfo record exists in database - only create if missing"""
     try:
         from accounts.models import AdditionalInfo
 
         if not AdditionalInfo.objects.exists():
-            # Only create if no record exists
+            # Only create a global default if no record exists
             AdditionalInfo.objects.create(
+                branch=None,  # Global/default settings
                 bank_card=None,
                 holder_name="",
-                help_text="",
                 help_text_uz="📞 Savollaringiz bo'lsa, admin bilan bog'laning\n🌐 Til o'zgartirish: /start\n📋 Buyurtma berish: Hizmatdan foydalanish",
                 help_text_ru="📞 Если у вас есть вопросы, свяжитесь с администратором\n🌐 Сменить язык: /start\n📋 Сделать заказ: Воспользоваться услугой",
                 help_text_en="📞 If you have questions, contact administrator\n🌐 Change language: /start\n📋 Place order: Use Service",
-                description="",
                 description_uz="📞 Savollaringiz bo'lsa, admin bilan bog'laning\n🌐 Kompaniyamiz haqida ko'proq ma'lumot tez kunda qo'shiladi!",
                 description_ru="📞 Если у вас есть вопросы, свяжитесь с администратором\n🌐 Информация о нашей компании будет добавлена в ближайшее время!",
                 description_en="📞 If you have questions, contact administrator\n🌐 Information about our company will be added soon!",
-                about_us="",
                 about_us_uz="📞 Savollaringiz bo'lsa, admin bilan bog'laning\n🌐 Kompaniyamiz haqida ko'proq ma'lumot tez kunda qo'shiladi!",
                 about_us_ru="📞 Если у вас есть вопросы, свяжитесь с администратором\n🌐 Информация о нашей компании будет добавлена в ближайшее время!",
                 about_us_en="📞 If you have questions, contact administrator\n🌐 Information about our company will be added soon!",
@@ -882,7 +1127,89 @@ def handle_language_selection(message):
     )
     send_message(message.chat.id, language_selected_text)
 
-    ask_name(message, language)
+    # Go directly to registration (ask name first)
+    start_registration(message, language)
+
+
+# Handler for branch selection callback
+@bot.callback_query_handler(func=lambda call: call.data.startswith("select_branch_"))
+def handle_branch_selection(call):
+    user_id = call.from_user.id
+    language = get_user_language(user_id)
+    
+    try:
+        branch_id = int(call.data.split("_")[2])
+        from organizations.models import Branch
+        from accounts.models import BotUser
+        
+        branch = Branch.objects.get(id=branch_id)
+        
+        # Update user with selected branch and complete registration
+        try:
+            user = BotUser.objects.get(user_id=user_id)
+            user.branch = branch
+            user.is_active = True
+            user.step = STEP_REGISTERED
+            user.save()
+        except BotUser.DoesNotExist:
+            user = create_or_update_user(user_id=user_id, branch=branch)
+            if user:
+                user.is_active = True
+                user.step = STEP_REGISTERED
+                user.save()
+        
+        # Delete the branch selection message
+        try:
+            bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+        except:
+            pass
+        
+        # Confirm branch selection
+        if language == "uz":
+            confirm_text = f"✅ Siz <b>{branch.name}</b> filialini tanladingiz."
+        elif language == "ru":
+            confirm_text = f"✅ Вы выбрали филиал <b>{branch.name}</b>."
+        else:
+            confirm_text = f"✅ You selected <b>{branch.name}</b> branch."
+        
+        send_message(call.message.chat.id, confirm_text)
+        
+        # Show registration complete message
+        complete_text = get_text("registration_complete", language)
+        send_message(call.message.chat.id, complete_text)
+        
+        # Create a message-like object with correct from_user and show main menu
+        class MessageWrapper:
+            def __init__(self, chat, from_user):
+                self.chat = chat
+                self.from_user = from_user
+        
+        wrapped_message = MessageWrapper(call.message.chat, call.from_user)
+        show_main_menu(wrapped_message, language)
+        
+    except Branch.DoesNotExist:
+        bot.answer_callback_query(call.id, "Branch not found")
+    except Exception as e:
+        print(f"[ERROR] Branch selection error: {e}")
+        bot.answer_callback_query(call.id, "Error occurred")
+
+
+# Handler for back to language from branch selection
+@bot.callback_query_handler(func=lambda call: call.data == "back_to_language")
+def handle_back_to_language(call):
+    try:
+        bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+    except:
+        pass
+    
+    # Create a message-like object with correct from_user
+    class MessageWrapper:
+        def __init__(self, chat, from_user):
+            self.chat = chat
+            self.from_user = from_user
+    
+    wrapped_message = MessageWrapper(call.message.chat, call.from_user)
+    show_language_selection(wrapped_message)
 
 
 def ask_name(message, language):
@@ -977,17 +1304,28 @@ def handle_contact(message):
         if user:
             current_step = get_user_step(user_id)
             if current_step == STEP_PHONE_REQUESTED:
-                user.is_active = True
-                user.step = STEP_REGISTERED
-                user.save()
-
                 contact_text = get_text("phone_received", language).format(phone=phone)
                 send_message(message.chat.id, contact_text)
 
-                complete_text = get_text("registration_complete", language)
-                send_message(message.chat.id, complete_text)
-
-                show_main_menu(message, language)
+                # Check if user already has a branch selected
+                from accounts.models import BotUser
+                try:
+                    bot_user = BotUser.objects.get(user_id=user_id)
+                    if bot_user.branch:
+                        # User already has a branch, complete registration
+                        bot_user.is_active = True
+                        bot_user.step = STEP_REGISTERED
+                        bot_user.save()
+                        
+                        complete_text = get_text("registration_complete", language)
+                        send_message(message.chat.id, complete_text)
+                        show_main_menu(message, language)
+                    else:
+                        # No branch yet, show branch selection
+                        show_branch_selection(message, language)
+                except BotUser.DoesNotExist:
+                    # No user found, show branch selection
+                    show_branch_selection(message, language)
             elif current_step == STEP_EDITING_PHONE:
                 send_message(
                     message.chat.id,
@@ -1054,13 +1392,17 @@ def show_main_menu(message, language):
     ]
 )
 def handle_main_menu(message):
-    from accounts.models import AdditionalInfo
+    from accounts.models import AdditionalInfo, BotUser
 
     user_id = message.from_user.id
     language = get_user_language(user_id)
 
-    # Get AdditionalInfo object
-    additional_info = AdditionalInfo.objects.first()
+    # Get AdditionalInfo for user's branch (with fallback)
+    try:
+        user = BotUser.objects.get(user_id=user_id)
+        additional_info = AdditionalInfo.get_for_user(user)
+    except BotUser.DoesNotExist:
+        additional_info = AdditionalInfo.get_for_branch(None)
 
     if (
         "Hizmatdan foydalanish" in message.text
@@ -1086,23 +1428,25 @@ def handle_main_menu(message):
         or "О нас" in message.text
         or "About Us" in message.text
     ):
-        # Get about us text based on language
+        # Get about us text based on language using translated field
+        about_content = additional_info.get_translated_field('about_us', language) if additional_info else ""
+        
         if language == "uz":
             about_text = "ℹ️ <b>Biz haqimizda</b>\n\n"
-            if additional_info and additional_info.about_us_uz:
-                about_text += additional_info.about_us_uz
+            if about_content:
+                about_text += about_content
             else:
                 about_text += "📞 Savollaringiz bo'lsa, admin bilan bog'laning\n🌐 Kompaniyamiz haqida ko'proq ma'lumot tez kunda qo'shiladi!"
         elif language == "ru":
             about_text = "ℹ️ <b>О нас</b>\n\n"
-            if additional_info and additional_info.about_us_ru:
-                about_text += additional_info.about_us_ru
+            if about_content:
+                about_text += about_content
             else:
                 about_text += "📞 Если у вас есть вопросы, свяжитесь с администратором\n🌐 Информация о нашей компании будет добавлена в ближайшее время!"
         else:  # English
             about_text = "ℹ️ <b>About Us</b>\n\n"
-            if additional_info and additional_info.about_us_en:
-                about_text += additional_info.about_us_en
+            if about_content:
+                about_text += about_content
             else:
                 about_text += "📞 If you have questions, contact administrator\n🌐 Information about our company will be added soon!"
 
@@ -1110,23 +1454,25 @@ def handle_main_menu(message):
         show_main_menu(message, language)
 
     elif "Yordam" in message.text or "Помощь" in message.text or "Help" in message.text:
-        # Get help text based on language
+        # Get help text based on language using translated field
+        help_content = additional_info.get_translated_field('help_text', language) if additional_info else ""
+        
         if language == "uz":
             help_text = "❓ <b>Yordam</b>\n\n"
-            if additional_info and additional_info.help_text_uz:
-                help_text += additional_info.help_text_uz
+            if help_content:
+                help_text += help_content
             else:
                 help_text += "📞 Savollaringiz bo'lsa, admin bilan bog'laning\n🌐 Til o'zgartirish: /start\n📋 Buyurtma berish: Hizmatdan foydalanish"
         elif language == "ru":
             help_text = "❓ <b>Помощь</b>\n\n"
-            if additional_info and additional_info.help_text_ru:
-                help_text += additional_info.help_text_ru
+            if help_content:
+                help_text += help_content
             else:
                 help_text += "📞 Если у вас есть вопросы, свяжитесь с администратором\n🌐 Сменить язык: /start\n📋 Сделать заказ: Воспользоваться услугой"
         else:  # English
             help_text = "❓ <b>Help</b>\n\n"
-            if additional_info and additional_info.help_text_en:
-                help_text += additional_info.help_text_en
+            if help_content:
+                help_text += help_content
             else:
                 help_text += "📞 If you have questions, contact administrator\n🌐 Change language: /start\n📋 Place order: Use Service"
 
@@ -1396,10 +1742,13 @@ def show_profile(message, language):
             print(f"[DEBUG] Created new user: {user_id}")
 
         # Create profile text
+        branch_name = user.branch.name if user.branch else "—"
+        
         if language == "uz":
             profile_text = "👤 <b>Sizning profilingiz:</b>\n\n"
             profile_text += f"👤 Ism: {user.name}\n"
             profile_text += f"📞 Telefon: {user.phone}\n"
+            profile_text += f"🏢 Filial: {branch_name}\n"
             profile_text += f"""🌍 Til: {"O'zbek" if user.language == 'uz' else 'Русский' if user.language == 'ru' else 'English'}\n"""
             profile_text += f"📊 Holat: {'Faol' if user.is_active else 'Faol emas'}\n"
             profile_text += f"📅 Qo'shilgan: {timezone.localtime(user.created_at).strftime('%d.%m.%Y')}\n\n"
@@ -1408,6 +1757,7 @@ def show_profile(message, language):
             profile_text = "👤 <b>Ваш профиль:</b>\n\n"
             profile_text += f"👤 Имя: {user.name}\n"
             profile_text += f"📞 Телефон: {user.phone}\n"
+            profile_text += f"🏢 Филиал: {branch_name}\n"
             profile_text += f"🌍 Язык: {'Узбекский' if user.language == 'uz' else 'Русский' if user.language == 'ru' else 'Английский'}\n"
             profile_text += (
                 f"📊 Статус: {'Активен' if user.is_active else 'Не активен'}\n"
@@ -1418,7 +1768,8 @@ def show_profile(message, language):
             profile_text = "👤 <b>Your Profile:</b>\n\n"
             profile_text += f"👤 Name: {user.name}\n"
             profile_text += f"📞 Phone: {user.phone}\n"
-            profile_text += f"🌍 Language: {'Uzbek' if user.language == 'uz' else 'Russian' if user.language == 'ru' else 'English'}\n"
+            profile_text += f"� Branch: {branch_name}\n"
+            profile_text += f"�🌍 Language: {'Uzbek' if user.language == 'uz' else 'Russian' if user.language == 'ru' else 'English'}\n"
             profile_text += f"📊 Status: {'Active' if user.is_active else 'Inactive'}\n"
             profile_text += f"📅 Joined: {timezone.localtime(user.created_at).strftime('%d.%m.%Y')}\n\n"
             profile_text += (
@@ -1433,6 +1784,10 @@ def show_profile(message, language):
         edit_phone_button = types.InlineKeyboardButton(
             text=get_text("edit_phone", language), callback_data="edit_phone"
         )
+        edit_branch_button = types.InlineKeyboardButton(
+            text="🏢 " + ("Filialni o'zgartirish" if language == "uz" else "Сменить филиал" if language == "ru" else "Change Branch"), 
+            callback_data="edit_branch"
+        )
         edit_language_button = types.InlineKeyboardButton(
             text=get_text("edit_language", language), callback_data="edit_language"
         )
@@ -1441,7 +1796,7 @@ def show_profile(message, language):
         )
 
         markup.add(edit_name_button, edit_phone_button)
-        markup.add(edit_language_button)
+        markup.add(edit_branch_button, edit_language_button)
         markup.add(back_button)
 
         send_message(
@@ -1524,6 +1879,135 @@ def handle_edit_phone_request(call):
     bot.send_message(
         call.message.chat.id, get_text("enter_new_phone", language), reply_markup=markup
     )
+
+
+@bot.callback_query_handler(func=lambda call: call.data == "edit_branch")
+def handle_edit_branch_request(call):
+    """Show branch selection for changing preferred branch"""
+    user_id = call.from_user.id
+    language = get_user_language(user_id)
+    
+    center = get_current_center()
+    if not center:
+        bot.answer_callback_query(call.id, "Configuration error")
+        return
+    
+    branches = get_center_branches(center)
+    
+    if not branches:
+        bot.answer_callback_query(call.id, "No branches available")
+        return
+    
+    # Build branch selection message
+    if language == "uz":
+        header = "🏢 <b>Filialni tanlang</b>\n\nQuyidagi filiallardan birini tanlang:"
+    elif language == "ru":
+        header = "🏢 <b>Выберите филиал</b>\n\nВыберите один из филиалов ниже:"
+    else:
+        header = "🏢 <b>Select Branch</b>\n\nPlease select one of the branches below:"
+    
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    
+    # Get current user's branch
+    from accounts.models import BotUser
+    current_branch_id = None
+    try:
+        user = BotUser.objects.get(user_id=user_id)
+        if user.branch:
+            current_branch_id = user.branch.id
+    except:
+        pass
+    
+    for branch in branches:
+        # Mark current branch with checkmark
+        if branch.id == current_branch_id:
+            button_text = f"✅ {branch.name}"
+        else:
+            button_text = f"📍 {branch.name}"
+        
+        markup.add(types.InlineKeyboardButton(
+            text=button_text,
+            callback_data=f"change_branch_{branch.id}"
+        ))
+    
+    # Add back button
+    back_text = "🔙 " + ("Orqaga" if language == "uz" else "Назад" if language == "ru" else "Back")
+    markup.add(types.InlineKeyboardButton(text=back_text, callback_data="back_to_profile"))
+    
+    # Build detailed branch info
+    branch_info = header + "\n\n"
+    for branch in branches:
+        if branch.id == current_branch_id:
+            branch_info += f"✅ <b>{branch.name}</b> (joriy)\n" if language == "uz" else f"✅ <b>{branch.name}</b> (текущий)\n" if language == "ru" else f"✅ <b>{branch.name}</b> (current)\n"
+        else:
+            branch_info += f"🏢 <b>{branch.name}</b>\n"
+        if branch.address:
+            branch_info += f"   📍 {branch.address}\n"
+        branch_info += "\n"
+    
+    try:
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text=branch_info,
+            reply_markup=markup,
+            parse_mode="HTML"
+        )
+    except:
+        send_message(call.message.chat.id, branch_info, reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("change_branch_"))
+def handle_change_branch(call):
+    """Handle branch change from profile"""
+    user_id = call.from_user.id
+    language = get_user_language(user_id)
+    
+    try:
+        branch_id = int(call.data.split("_")[2])
+        from organizations.models import Branch
+        from accounts.models import BotUser
+        
+        branch = Branch.objects.get(id=branch_id)
+        
+        # Update user's branch
+        user = BotUser.objects.get(user_id=user_id)
+        user.branch = branch
+        user.save()
+        
+        # Confirm change
+        if language == "uz":
+            confirm_text = f"✅ Filial <b>{branch.name}</b> ga o'zgartirildi."
+        elif language == "ru":
+            confirm_text = f"✅ Филиал изменен на <b>{branch.name}</b>."
+        else:
+            confirm_text = f"✅ Branch changed to <b>{branch.name}</b>."
+        
+        bot.answer_callback_query(call.id, confirm_text.replace("<b>", "").replace("</b>", ""))
+        
+        # Show updated profile
+        class MessageWrapper:
+            def __init__(self, chat, from_user):
+                self.chat = chat
+                self.from_user = from_user
+        
+        wrapped_message = MessageWrapper(call.message.chat, call.from_user)
+        
+        # Delete old message
+        try:
+            bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+        except:
+            pass
+        
+        show_profile(wrapped_message, language)
+        
+    except Branch.DoesNotExist:
+        bot.answer_callback_query(call.id, "Branch not found")
+    except BotUser.DoesNotExist:
+        bot.answer_callback_query(call.id, "User not found")
+    except Exception as e:
+        print(f"[ERROR] Change branch error: {e}")
+        bot.answer_callback_query(call.id, "Error occurred")
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "edit_language")
@@ -1738,11 +2222,27 @@ def handle_profile_language_update(call):
 def show_categorys(message, language):
     user_id = message.from_user.id
     update_user_step(user_id, STEP_SELECTING_SERVICE)
-    from services.models import MainService
+    from services.models import Category
+    from accounts.models import BotUser
 
     try:
-        services = MainService.objects.all()
-        if services:
+        # Get user's branch and filter categories by that branch
+        user = BotUser.objects.filter(user_id=user_id).first()
+        if user and user.branch:
+            services = Category.objects.filter(branch=user.branch, is_active=True)
+        else:
+            # No branch selected - show message to select branch first
+            if language == "uz":
+                no_branch_text = "⚠️ Iltimos, avval filialni tanlang.\n\nProfilga o'ting va filialni tanlang."
+            elif language == "ru":
+                no_branch_text = "⚠️ Пожалуйста, сначала выберите филиал.\n\nПерейдите в профиль и выберите филиал."
+            else:
+                no_branch_text = "⚠️ Please select a branch first.\n\nGo to Profile and select a branch."
+            send_message(message.chat.id, no_branch_text)
+            show_main_menu(message, language)
+            return
+        
+        if services.exists():
             markup = types.InlineKeyboardMarkup(row_width=2)
             for service in services:
                 button = types.InlineKeyboardButton(
@@ -1760,9 +2260,25 @@ def show_categorys(message, language):
                 reply_markup=markup,
             )
         else:
-            send_message(message.chat.id, "translation:no_services_found")
+            # No services available for this branch
+            if language == "uz":
+                no_services_text = "📋 Hozircha bu filialda xizmatlar mavjud emas."
+            elif language == "ru":
+                no_services_text = "📋 В данном филиале пока нет доступных услуг."
+            else:
+                no_services_text = "📋 No services available for this branch yet."
+            send_message(message.chat.id, no_services_text)
+            show_main_menu(message, language)
     except Exception as e:
-        send_message(message.chat.id, f"translation:error_fetching_services {e}")
+        print(f"[ERROR] show_categorys error: {e}")
+        if language == "uz":
+            error_text = "❌ Xatolik yuz berdi. Iltimos, qayta urinib ko'ring."
+        elif language == "ru":
+            error_text = "❌ Произошла ошибка. Пожалуйста, попробуйте еще раз."
+        else:
+            error_text = "❌ An error occurred. Please try again."
+        send_message(message.chat.id, error_text)
+        show_main_menu(message, language)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == ("main_menu"))
@@ -1775,8 +2291,8 @@ def handle_main_menu(call):
 def handle_service_selection(call):
     language = get_user_language(call.message.chat.id)
     try:
-        service_id = int(call.data.split("_")[2])
-        from services.models import MainService
+        service_id = int(call.data.split("_")[1])
+        from services.models import Category
 
         # Delete the service selection message
         try:
@@ -1786,7 +2302,7 @@ def handle_service_selection(call):
         except:
             pass
 
-        category = MainService.objects.get(id=service_id)
+        category = Category.objects.get(id=service_id)
 
         # Check if service has multiple languages
         if category.languages.count() > 1:
@@ -1801,7 +2317,7 @@ def handle_service_selection(call):
                 lang_id=lang.id if lang else None,
             )
 
-    except MainService.DoesNotExist:
+    except Category.DoesNotExist:
         error_msg = get_text("service_not_found", language)
         bot.send_message(call.message.chat.id, error_msg)
         show_categorys(call.message, language)
@@ -1830,9 +2346,9 @@ def show_available_langs(
             if message_id is None and hasattr(message, "message_id"):
                 message_id = message.message_id
 
-        from services.models import MainService, Language
+        from services.models import Category, Language
 
-        service = MainService.objects.get(id=service_id)
+        service = Category.objects.get(id=service_id)
 
         # Get available languages for this service
         available_languages = service.languages.all()
@@ -1907,7 +2423,7 @@ def show_available_langs(
                 user_data[user_id]["message_ids"] = []
             user_data[user_id]["message_ids"].append(sent_message.message_id)
 
-    except MainService.DoesNotExist:
+    except Category.DoesNotExist:
         error_msg = get_text("service_not_found", language)
         if edit_message and message_id:
             bot.edit_message_text(
@@ -1941,7 +2457,7 @@ def show_products(
     lang_id=None,
 ):
     """Show document types for the selected service and language"""
-    from services.models import DocumentType, Language, MainService
+    from services.models import Category, Product, Language
 
     # Get chat_id and message_id if not provided
     if chat_id is None:
@@ -1966,11 +2482,11 @@ def show_products(
 
     # Get the service and language objects
     try:
-        service = MainService.objects.get(id=service_id)
+        service = Category.objects.get(id=service_id)
         lang = Language.objects.get(id=lang_id) if lang_id else None
 
         # Get available document types for this service
-        doc_types = DocumentType.objects.filter(category=service, is_active=True)
+        doc_types = Product.objects.filter(category=service, is_active=True)
 
         # Update user step
         update_user_step(chat_id, STEP_SELECTING_DOCUMENT)
@@ -2058,7 +2574,7 @@ def show_products(
                 user_data[user_id]["message_ids"] = []
             user_data[user_id]["message_ids"].append(sent_message.message_id)
 
-    except MainService.DoesNotExist:
+    except Category.DoesNotExist:
         error_msg = get_text("service_not_found", language)
         if edit_message and message_id:
             bot.edit_message_text(
@@ -2169,9 +2685,9 @@ def handle_copy_number_selection(call):
             return
 
         # Get document type and language
-        from services.models import DocumentType, Language
+        from services.models import Product, Language
 
-        doc_type = DocumentType.objects.get(id=doc_type_id)
+        doc_type = Product.objects.get(id=doc_type_id)
         lang_name = Language.objects.get(id=lang_id).name if lang_id else ""
 
         # Show upload files interface
@@ -2278,10 +2794,10 @@ def handle_document_selection(call):
         lang_id = int(parts[4]) if len(parts) > 4 else None
 
         # Get document type and language details
-        from services.models import DocumentType, Language, MainService
+        from services.models import Category, Product, Language
 
-        doc_type = DocumentType.objects.get(id=doc_type_id)
-        category = MainService.objects.get(id=service_id)
+        doc_type = Product.objects.get(id=doc_type_id)
+        category = Category.objects.get(id=service_id)
         lang = Language.objects.get(id=lang_id) if lang_id else None
 
         # Store the selected document type and language in user data
@@ -2307,9 +2823,9 @@ def handle_document_selection(call):
         }
 
         # Get document type and language names for the message
-        from services.models import DocumentType, Language
+        from services.models import Product, Language
 
-        doc_type = DocumentType.objects.get(id=doc_type_id)
+        doc_type = Product.objects.get(id=doc_type_id)
         lang_name = Language.objects.get(id=lang_id).name if lang_id else ""
 
         # Store copy number as 0 by default
@@ -2506,7 +3022,7 @@ def handle_file_upload(message):
                     return
 
                 order_id = user_data["order_id"]
-                from accounts.models import Order
+                from orders.models import Order
 
                 order = Order.objects.get(id=order_id)
 
@@ -2692,6 +3208,10 @@ def handle_file_upload(message):
                     parse_mode="HTML",
                 )
 
+                # Send branch location for pickup
+                if order.branch:
+                    send_branch_location(message.chat.id, order.branch, language)
+
                 # Return user to main menu
                 show_main_menu(message, language)
                 return
@@ -2876,7 +3396,7 @@ def handle_payment_card_selection(call):
     order_id = int(call.data.split("_")[2])
 
     try:
-        from accounts.models import Order
+        from orders.models import Order
 
         order = Order.objects.get(id=order_id)
 
@@ -2923,7 +3443,7 @@ def handle_payment_cash_selection(call):
     order_id = int(call.data.split("_")[2])
 
     try:
-        from accounts.models import Order
+        from orders.models import Order
 
         order = Order.objects.get(id=order_id)
 
@@ -2975,7 +3495,7 @@ def handle_payment_receipt_upload(call):
     order_id = int(call.data.split("_")[2])
 
     try:
-        from accounts.models import Order
+        from orders.models import Order
 
         order = Order.objects.get(id=order_id)
 
@@ -3043,7 +3563,7 @@ def handle_payment_receipt_photo(message):
         order_id = user_files["order_id"]
 
         # Save receipt photo
-        from accounts.models import Order
+        from orders.models import Order
         from django.core.files.base import ContentFile
 
         order = Order.objects.get(id=order_id)
@@ -3146,9 +3666,9 @@ def handle_text_messages(message):
                 return
 
             # Get document type and language
-            from services.models import DocumentType, Language
+            from services.models import Product, Language
 
-            doc_type = DocumentType.objects.get(id=doc_type_id)
+            doc_type = Product.objects.get(id=doc_type_id)
             lang_name = Language.objects.get(id=lang_id).name if lang_id else ""
 
             # Show upload files interface
@@ -3182,7 +3702,7 @@ def handle_text_messages(message):
             order_id = user_data["order_id"]
 
             try:
-                from accounts.models import Order
+                from orders.models import Order
 
                 order = Order.objects.get(id=order_id)
 
@@ -3287,6 +3807,10 @@ def handle_text_messages(message):
                     text=completion_text,
                     parse_mode="HTML",
                 )
+                
+                # Send branch location for pickup
+                if order.branch:
+                    send_branch_location(message.chat.id, order.branch, language)
                 return
 
             except Order.DoesNotExist:
@@ -3423,8 +3947,8 @@ def handle_card_payment_message(message, language):
         order.is_active = False  # Keep inactive until receipt is uploaded
         order.save()
 
-        # Get card details from AdditionalInfo model
-        additional_info = AdditionalInfo.objects.first()
+        # Get card details from AdditionalInfo for user's branch
+        additional_info = AdditionalInfo.get_for_user(user)
         card_number = additional_info.bank_card if additional_info else "Noma'lum"
         card_holder = additional_info.holder_name if additional_info else "Noma'lum"
 
@@ -3622,11 +4146,12 @@ def handle_finish_upload_message(message, language):
 
     try:
         # Create order with uploaded files
-        from accounts.models import BotUser, Order, OrderFiles
-        from services.models import DocumentType
+        from accounts.models import BotUser
+        from orders.models import Order, OrderMedia
+        from services.models import Product
 
         user = BotUser.objects.get(user_id=user_id)
-        doc_type = DocumentType.objects.get(id=user_data["doc_type_id"])
+        doc_type = Product.objects.get(id=user_data["doc_type_id"])
 
         print(f"[DEBUG] Creating order for user {user_id} with doc_type {doc_type.id}")
 
@@ -3665,8 +4190,8 @@ def handle_finish_upload_message(message, language):
 
         # Save all uploaded files (now from dictionary)
         for file_uid, file_info in user_data["files"].items():
-            # Create OrderFiles entry
-            order_file = OrderFiles.objects.create(
+            # Create OrderMedia entry
+            order_file = OrderMedia.objects.create(
                 file=file_info["file_path"], pages=file_info["pages"]
             )
             order.files.add(order_file)
@@ -3721,7 +4246,7 @@ def handle_back_to_upload_docs_message(message, language):
 
         try:
             # Get the order and restore files
-            from accounts.models import Order, OrderFiles
+            from orders.models import Order, OrderMedia
 
             order = Order.objects.get(id=order_id)
 
@@ -3816,7 +4341,8 @@ def handle_cash_payment_message(message, language):
     order_id = user_data["order_id"]
 
     try:
-        from accounts.models import Order, BotUser
+        from accounts.models import BotUser
+        from orders.models import Order
 
         order = Order.objects.get(id=order_id)
 
@@ -3952,6 +4478,10 @@ def handle_cash_payment_message(message, language):
         # Send order summary first
         bot.send_message(chat_id=message.chat.id, text=cash_text, parse_mode="HTML")
 
+        # Send branch location for pickup
+        if order.branch:
+            send_branch_location(message.chat.id, order.branch, language)
+
         # Then show main menu
         show_main_menu(message, language)
 
@@ -4011,9 +4541,9 @@ def handle_back_to_copy_number_message(message, language):
 
     if doc_type_id:
         try:
-            from services.models import DocumentType, Language
+            from services.models import Product, Language
 
-            doc_type = DocumentType.objects.get(id=doc_type_id)
+            doc_type = Product.objects.get(id=doc_type_id)
             lang_name = Language.objects.get(id=lang_id).name if lang_id else ""
 
             # Clear any uploaded files but keep doc_type and service info
@@ -4048,7 +4578,7 @@ def handle_payment_cash(call):
     order_id = int(call.data.split("_")[2])
 
     try:
-        from accounts.models import Order
+        from orders.models import Order
 
         order = Order.objects.get(id=order_id)
 

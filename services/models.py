@@ -203,3 +203,9 @@ class Product(models.Model):
         verbose_name = str(_("Document Type"))
         verbose_name_plural = str(_("Document Types"))
         unique_together = ("category", "name")
+
+
+# Backward compatibility aliases for bot/main.py
+# The bot was written with old model names - these aliases allow it to work
+MainService = Category
+Product = Product

@@ -1169,3 +1169,144 @@ def get_center_webhook_info(request, center_id):
     result = get_webhook_info(center)
     
     return JsonResponse(result)
+
+
+# ============ Branch Settings (Additional Info) Views ============
+
+
+@login_required(login_url="admin_login")
+def branch_settings(request, branch_id):
+    """
+    View branch settings (Additional Info).
+    Requires can_view_branch_settings or can_manage_branch_settings permission.
+    """
+    from accounts.models import AdditionalInfo
+    
+    branch = get_object_or_404(Branch, pk=branch_id)
+    
+    # Permission check
+    if not request.user.is_superuser:
+        if not request.admin_profile:
+            messages.error(request, "You need an admin profile to access this page.")
+            return redirect('index')
+        
+        # Check if user has permission
+        has_view_perm = request.admin_profile.has_permission('can_view_branch_settings')
+        has_manage_perm = request.admin_profile.has_permission('can_manage_branch_settings')
+        
+        if not (has_view_perm or has_manage_perm):
+            messages.error(request, "You don't have permission to view branch settings.")
+            return redirect('branch_detail', branch_id=branch_id)
+        
+        # Check if user has access to this branch
+        if not request.is_owner:
+            user_branch = request.admin_profile.branch
+            if user_branch and user_branch.id != branch_id:
+                messages.error(request, "You can only view settings for your own branch.")
+                return redirect('branch_detail', branch_id=user_branch.id)
+    
+    # Get or create additional info for this branch
+    additional_info, created = AdditionalInfo.objects.get_or_create(branch=branch)
+    
+    # Check if user can edit
+    can_edit = request.user.is_superuser or (
+        request.admin_profile and 
+        request.admin_profile.has_permission('can_manage_branch_settings')
+    )
+    
+    context = {
+        "title": "Branch Settings",
+        "subTitle": f"Settings for {branch.name}",
+        "branch": branch,
+        "info": additional_info,
+        "can_edit": can_edit,
+    }
+    return render(request, "organizations/branch_settings.html", context)
+
+
+@login_required(login_url="admin_login")
+def branch_settings_edit(request, branch_id):
+    """
+    Edit branch settings (Additional Info).
+    Requires can_manage_branch_settings permission.
+    """
+    from accounts.models import AdditionalInfo
+    
+    branch = get_object_or_404(Branch, pk=branch_id)
+    
+    # Permission check
+    if not request.user.is_superuser:
+        if not request.admin_profile:
+            messages.error(request, "You need an admin profile to access this page.")
+            return redirect('index')
+        
+        # Check if user has permission
+        has_manage_perm = request.admin_profile.has_permission('can_manage_branch_settings')
+        
+        if not has_manage_perm:
+            messages.error(request, "You don't have permission to edit branch settings.")
+            return redirect('branch_settings', branch_id=branch_id)
+        
+        # Check if user has access to this branch
+        if not request.is_owner:
+            user_branch = request.admin_profile.branch
+            if user_branch and user_branch.id != branch_id:
+                messages.error(request, "You can only edit settings for your own branch.")
+                return redirect('branch_settings', branch_id=user_branch.id)
+    
+    # Get or create additional info for this branch
+    additional_info, created = AdditionalInfo.objects.get_or_create(branch=branch)
+    
+    if request.method == "POST":
+        # Payment Information
+        additional_info.bank_card = request.POST.get("bank_card", "").strip() or None
+        additional_info.holder_name = request.POST.get("holder_name", "").strip() or None
+        
+        # Contact Information
+        additional_info.support_phone = request.POST.get("support_phone", "").strip() or None
+        additional_info.support_telegram = request.POST.get("support_telegram", "").strip() or None
+        
+        # Working Hours
+        additional_info.working_hours = request.POST.get("working_hours", "").strip() or None
+        additional_info.working_hours_uz = request.POST.get("working_hours_uz", "").strip() or None
+        additional_info.working_hours_ru = request.POST.get("working_hours_ru", "").strip() or None
+        additional_info.working_hours_en = request.POST.get("working_hours_en", "").strip() or None
+        
+        # Help Text (translated)
+        additional_info.help_text = request.POST.get("help_text", "").strip() or None
+        additional_info.help_text_uz = request.POST.get("help_text_uz", "").strip() or None
+        additional_info.help_text_ru = request.POST.get("help_text_ru", "").strip() or None
+        additional_info.help_text_en = request.POST.get("help_text_en", "").strip() or None
+        
+        # Description (translated)
+        additional_info.description = request.POST.get("description", "").strip() or None
+        additional_info.description_uz = request.POST.get("description_uz", "").strip() or None
+        additional_info.description_ru = request.POST.get("description_ru", "").strip() or None
+        additional_info.description_en = request.POST.get("description_en", "").strip() or None
+        
+        # About Us (translated)
+        additional_info.about_us = request.POST.get("about_us", "").strip() or None
+        additional_info.about_us_uz = request.POST.get("about_us_uz", "").strip() or None
+        additional_info.about_us_ru = request.POST.get("about_us_ru", "").strip() or None
+        additional_info.about_us_en = request.POST.get("about_us_en", "").strip() or None
+        
+        additional_info.save()
+        
+        # Log the update
+        log_update(
+            user=request.user,
+            target=additional_info,
+            changes={"branch_settings": f"Updated for {branch.name}"},
+            request=request
+        )
+        
+        messages.success(request, f"Settings for '{branch.name}' updated successfully!")
+        return redirect('branch_settings', branch_id=branch_id)
+    
+    context = {
+        "title": "Edit Branch Settings",
+        "subTitle": f"Edit settings for {branch.name}",
+        "branch": branch,
+        "info": additional_info,
+    }
+    return render(request, "organizations/branch_settings_form.html", context)

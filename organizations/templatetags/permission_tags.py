@@ -96,6 +96,11 @@ PERMISSION_ACTIONS = {
     'marketing.broadcast_branch': ['can_send_branch_broadcasts'],
     'marketing.broadcast_center': ['can_send_center_broadcasts'],
     'marketing.view_stats': ['can_view_broadcast_stats'],
+    
+    # Branch Settings
+    'branch_settings.view': ['can_view_branch_settings'],
+    'branch_settings.manage': ['can_manage_branch_settings'],
+    'branch_settings.edit': ['can_manage_branch_settings'],
 }
 
 # Actions that require ALL listed permissions (default is ANY)
@@ -147,7 +152,7 @@ def get_user_permissions(context):
         'can_apply_discounts', 'can_refund_orders', 'can_view_reports', 'can_view_analytics',
         'can_export_data', 'can_manage_products', 'can_manage_customers', 'can_view_customer_details',
         'can_create_marketing_posts', 'can_send_branch_broadcasts', 'can_send_center_broadcasts',
-        'can_view_broadcast_stats',
+        'can_view_broadcast_stats', 'can_manage_branch_settings', 'can_view_branch_settings',
     ]
     for field in permission_fields:
         result[field] = getattr(role, field, False)
