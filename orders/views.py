@@ -6,6 +6,7 @@ from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils.translation import gettext_lazy as _
+from decimal import Decimal, InvalidOperation
 from .models import Order, OrderMedia
 from organizations.rbac import (
     get_user_orders, get_user_staff, get_user_branches,
@@ -359,6 +360,8 @@ def orderEdit(request, order_id):
         copy_number = request.POST.get('copy_number', 0)
         payment_type = request.POST.get('payment_type')
         description = request.POST.get('description', '')
+        extra_fee = request.POST.get('extra_fee', 0)
+        extra_fee_description = request.POST.get('extra_fee_description', '')
         
         # Store old values for audit
         old_values = {
@@ -368,6 +371,8 @@ def orderEdit(request, order_id):
             'copy_number': order.copy_number,
             'payment_type': order.payment_type,
             'total_price': str(order.total_price),
+            'extra_fee': str(order.extra_fee),
+            'extra_fee_description': order.extra_fee_description,
             'description': order.description,
             'files_count': order.files.count(),
         }
@@ -418,6 +423,13 @@ def orderEdit(request, order_id):
             copy_price = order.product.copy_price * order.copy_number * order.total_pages if order.copy_number > 0 else 0
             order.total_price = base_price + copy_price
             
+            # Update extra fee
+            try:
+                order.extra_fee = Decimal(extra_fee) if extra_fee else Decimal('0')
+            except (ValueError, InvalidOperation):
+                order.extra_fee = Decimal('0')
+            order.extra_fee_description = extra_fee_description
+            
             order.save()
             
             # Audit log the edit
@@ -428,6 +440,8 @@ def orderEdit(request, order_id):
                 'copy_number': order.copy_number,
                 'payment_type': order.payment_type,
                 'total_price': str(order.total_price),
+                'extra_fee': str(order.extra_fee),
+                'extra_fee_description': order.extra_fee_description,
                 'description': order.description,
                 'files_count': order.files.count(),
             }
@@ -954,3 +968,176 @@ def orderCreate(request):
         "is_superuser": request.user.is_superuser,
     }
     return render(request, "orders/orderCreate.html", context)
+
+
+# ============ Payment Management Views ============
+
+from decimal import Decimal
+from orders.payment_service import PaymentService, PaymentError
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def record_order_payment(request, order_id):
+    """
+    Record a payment for an order.
+    
+    POST params:
+        amount: Decimal amount received (optional if accept_fully)
+        accept_fully: "true" to mark as fully paid
+        extra_fee: Decimal extra fee to add (optional)
+        extra_fee_description: String description (optional)
+        force_accept: "true" to force full acceptance (owner only)
+    """
+    order = get_object_or_404(Order, id=order_id)
+    
+    # Check permission - need can_receive_payments
+    if not has_order_permission(request, 'can_receive_payments', order):
+        return JsonResponse({
+            'success': False,
+            'error': 'You do not have permission to receive payments'
+        }, status=403)
+    
+    try:
+        # Parse request data
+        amount = request.POST.get('amount')
+        accept_fully = request.POST.get('accept_fully', '').lower() == 'true'
+        extra_fee = request.POST.get('extra_fee')
+        extra_fee_description = request.POST.get('extra_fee_description', '').strip()
+        force_accept = request.POST.get('force_accept', '').lower() == 'true'
+        
+        # Force accept is only allowed for owners/superusers
+        if force_accept:
+            is_owner = (
+                request.user.is_superuser or 
+                (request.admin_profile and request.admin_profile.is_owner)
+            )
+            if not is_owner:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Only owners can force accept payments'
+                }, status=403)
+        
+        # Convert to Decimal
+        amount = Decimal(amount) if amount else None
+        extra_fee = Decimal(extra_fee) if extra_fee else None
+        
+        # Record the payment
+        result = PaymentService.record_payment(
+            order_id=order_id,
+            received_by=request.admin_profile,
+            amount=amount,
+            accept_fully=accept_fully,
+            extra_fee=extra_fee,
+            extra_fee_description=extra_fee_description if extra_fee else None,
+            force_accept=force_accept,
+            request=request
+        )
+        
+        return JsonResponse(result)
+        
+    except PaymentError as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({
+            'success': False,
+            'error': f'An error occurred: {str(e)}'
+        }, status=500)
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def add_order_extra_fee(request, order_id):
+    """
+    Add an extra fee to an order.
+    
+    POST params:
+        amount: Decimal fee amount
+        description: String description
+    """
+    order = get_object_or_404(Order, id=order_id)
+    
+    # Check permission - need can_edit_orders or owner/manager
+    can_add_fee = (
+        request.user.is_superuser or
+        has_order_permission(request, 'can_edit_orders', order) or
+        (request.admin_profile and (request.admin_profile.is_owner or request.admin_profile.is_manager))
+    )
+    
+    if not can_add_fee:
+        return JsonResponse({
+            'success': False,
+            'error': 'You do not have permission to add extra fees'
+        }, status=403)
+    
+    try:
+        amount = request.POST.get('amount')
+        description = request.POST.get('description', '').strip()
+        
+        if not amount:
+            return JsonResponse({
+                'success': False,
+                'error': 'Amount is required'
+            }, status=400)
+        
+        if not description:
+            return JsonResponse({
+                'success': False,
+                'error': 'Description is required for extra fees'
+            }, status=400)
+        
+        result = PaymentService.add_extra_fee(
+            order_id=order_id,
+            amount=Decimal(amount),
+            description=description,
+            added_by=request.admin_profile,
+            request=request
+        )
+        
+        return JsonResponse(result)
+        
+    except PaymentError as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'An error occurred: {str(e)}'
+        }, status=500)
+
+
+@login_required(login_url="admin_login")
+def get_order_payment_info(request, order_id):
+    """Get current payment status for an order"""
+    order = get_object_or_404(Order, id=order_id)
+    
+    # Check view permission
+    if not has_order_permission(request, 'can_view_all_orders', order):
+        if not (request.admin_profile and order.assigned_to == request.admin_profile):
+            return JsonResponse({
+                'success': False,
+                'error': 'Permission denied'
+            }, status=403)
+    
+    return JsonResponse({
+        'success': True,
+        'order_id': order.id,
+        'total_price': float(order.total_price),
+        'extra_fee': float(order.extra_fee or 0),
+        'extra_fee_description': order.extra_fee_description or '',
+        'total_due': float(order.total_due),
+        'received': float(order.received or 0),
+        'remaining': float(order.remaining),
+        'payment_accepted_fully': order.payment_accepted_fully,
+        'is_fully_paid': order.is_fully_paid,
+        'payment_percentage': order.payment_percentage,
+        'status': order.status,
+        'payment_type': order.payment_type,
+    })

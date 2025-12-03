@@ -132,6 +132,34 @@ class Order(models.Model):
     payment_received_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("Payment Received At")
     )
+    
+    # Partial payment support
+    received = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        verbose_name=_("Amount Received"),
+        help_text=_("Total amount received so far"),
+    )
+    extra_fee = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name=_("Extra Fee"),
+        help_text=_("Additional charges (rush fee, special handling, etc.)"),
+    )
+    extra_fee_description = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_("Extra Fee Description"),
+        help_text=_("Reason for the extra fee"),
+    )
+    payment_accepted_fully = models.BooleanField(
+        default=False,
+        verbose_name=_("Payment Accepted Fully"),
+        help_text=_("Mark as True to consider payment complete regardless of received amount"),
+    )
 
     # Order completion tracking
     completed_by = models.ForeignKey(
@@ -167,6 +195,40 @@ class Order(models.Model):
             return base_price + copy_charge
 
         return base_price
+
+    @property
+    def total_due(self):
+        """Total amount due including extra fees"""
+        from decimal import Decimal
+        return Decimal(str(self.total_price or 0)) + Decimal(str(self.extra_fee or 0))
+
+    @property
+    def remaining(self):
+        """
+        Calculate remaining balance.
+        Returns 0 if payment_accepted_fully is True.
+        Otherwise returns total_due - received.
+        """
+        from decimal import Decimal
+        if self.payment_accepted_fully:
+            return Decimal('0.00')
+        return max(Decimal('0.00'), self.total_due - Decimal(str(self.received or 0)))
+
+    @property
+    def is_fully_paid(self):
+        """Check if order is fully paid"""
+        return self.payment_accepted_fully or self.remaining <= 0
+
+    @property
+    def payment_percentage(self):
+        """Calculate payment progress percentage"""
+        if self.total_due <= 0:
+            return 100
+        if self.payment_accepted_fully:
+            return 100
+        from decimal import Decimal
+        received = Decimal(str(self.received or 0))
+        return min(100, int((received / self.total_due) * 100))
 
     @property
     def category(self):
@@ -222,15 +284,41 @@ class Order(models.Model):
             ]
         )
 
-    def mark_payment_received(self, received_by):
-        """Mark payment as received"""
+    def mark_payment_received(self, received_by, amount=None, accept_fully=False):
+        """
+        Mark payment as received.
+        
+        Args:
+            received_by: AdminUser who received the payment
+            amount: Decimal amount received (if partial payment)
+            accept_fully: If True, marks payment as fully accepted regardless of amount
+        """
+        from decimal import Decimal
+        
         self.payment_received_by = received_by
         self.payment_received_at = timezone.now()
-        self.status = "payment_confirmed"
+        
+        if accept_fully:
+            self.payment_accepted_fully = True
+            self.received = self.total_due
+            self.status = "payment_confirmed"
+        elif amount is not None:
+            self.received = Decimal(str(self.received or 0)) + Decimal(str(amount))
+            # Auto-confirm if fully paid
+            if self.remaining <= 0:
+                self.status = "payment_confirmed"
+            else:
+                self.status = "payment_received"  # Partial payment received
+        else:
+            # Legacy behavior - mark as confirmed
+            self.status = "payment_confirmed"
+        
         self.save(
             update_fields=[
                 "payment_received_by",
                 "payment_received_at",
+                "received",
+                "payment_accepted_fully",
                 "status",
                 "updated_at",
             ]
@@ -246,12 +334,23 @@ class Order(models.Model):
         )
 
     def save(self, *args, **kwargs):
-        # Auto-set branch from bot_user if not set
-        if not self.branch and self.bot_user and self.bot_user.branch:
-            self.branch = self.bot_user.branch
+        # Get update_fields to check if this is a partial update
+        update_fields = kwargs.get('update_fields')
+        
+        # Auto-set branch from bot_user if not set (only on full save)
+        if not update_fields:
+            if not self.branch and self.bot_user and self.bot_user.branch:
+                self.branch = self.bot_user.branch
 
-        # Validate that the selected language is available in the product's category
-        if self.language and self.product and self.product.category:
+        # Validate language only on full save or when language is being updated
+        # Skip validation for payment-only updates
+        should_validate_language = (
+            not update_fields or 
+            'language' in update_fields or 
+            'product' in update_fields
+        )
+        
+        if should_validate_language and self.language and self.product and self.product.category:
             available_languages = self.product.category.languages.all()
             if (
                 available_languages.exists()
@@ -267,12 +366,12 @@ class Order(models.Model):
                     }
                 )
 
-        # Update total pages before calculating price
-        if hasattr(self, "_update_pages") and self._update_pages:
+        # Update total pages before calculating price (only on full save)
+        if not update_fields and hasattr(self, "_update_pages") and self._update_pages:
             self.update_total_pages()
 
-        # Auto-calculate total price based on pages and user type
-        if not self.total_price or self.total_pages:
+        # Auto-calculate total price based on pages and user type (only on full save)
+        if not update_fields and (not self.total_price or self.total_pages):
             self.total_price = self.calculated_price
 
         super().save(*args, **kwargs)

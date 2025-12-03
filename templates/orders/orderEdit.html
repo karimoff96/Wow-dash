@@ -136,11 +136,50 @@
                     
                     <!-- Current Price Info -->
                     <div class="mb-20 p-16 bg-success-50 radius-8">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <span class="text-secondary-light text-sm" data-i18n="detail.currentPrice">Current Price</span>
-                            <h5 class="text-success-600 fw-bold mb-0">{{ order.total_price|floatformat:0 }} UZS</h5>
+                        <div class="d-flex align-items-center justify-content-between mb-8">
+                            <span class="text-secondary-light text-sm" data-i18n="detail.basePrice">Base Price</span>
+                            <span class="text-md fw-medium">{{ order.total_price|floatformat:0 }} UZS</span>
                         </div>
+                        {% if order.extra_fee > 0 %}
+                        <div class="d-flex align-items-center justify-content-between mb-8">
+                            <span class="text-secondary-light text-sm">Extra Fee</span>
+                            <span class="text-md fw-medium text-warning-600">+{{ order.extra_fee|floatformat:0 }} UZS</span>
+                        </div>
+                        {% endif %}
+                        <div class="d-flex align-items-center justify-content-between border-top pt-8">
+                            <span class="text-secondary-light text-sm fw-semibold" data-i18n="detail.totalDue">Total Due</span>
+                            <h5 class="text-success-600 fw-bold mb-0">{{ order.total_due|floatformat:0 }} UZS</h5>
+                        </div>
+                        {% if order.received > 0 %}
+                        <div class="d-flex align-items-center justify-content-between mt-8">
+                            <span class="text-secondary-light text-sm">Received</span>
+                            <span class="text-md fw-medium text-primary-600">{{ order.received|floatformat:0 }} UZS</span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="text-secondary-light text-sm">Remaining</span>
+                            <span class="text-md fw-medium {% if order.remaining > 0 %}text-danger-600{% else %}text-success-600{% endif %}">{{ order.remaining|floatformat:0 }} UZS</span>
+                        </div>
+                        {% endif %}
                         <small class="text-primary-light">Price will be recalculated based on product and pages</small>
+                    </div>
+                    
+                    <!-- Extra Fee Section -->
+                    <div class="mb-20">
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                            <iconify-icon icon="mdi:cash-plus" class="me-1"></iconify-icon>
+                            Extra Fee (Optional)
+                        </label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="number" name="extra_fee" class="form-control radius-8" 
+                                       value="{{ order.extra_fee|floatformat:0 }}" min="0" step="1000" placeholder="0">
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" name="extra_fee_description" class="form-control radius-8" 
+                                       value="{{ order.extra_fee_description|default:'' }}" placeholder="Reason for extra fee (e.g., Urgent delivery)">
+                            </div>
+                        </div>
+                        <small class="text-primary-light mt-8 d-block">Add additional charges for express delivery, special handling, etc.</small>
                     </div>
                     
                     <!-- Submit Buttons -->

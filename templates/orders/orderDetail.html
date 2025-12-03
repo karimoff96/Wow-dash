@@ -65,6 +65,61 @@
                             <h4 class="text-success-600 fw-bold mb-0">{{ order.total_price|floatformat:0 }} UZS</h4>
                         </div>
                     </div>
+                    
+                    <!-- Payment Progress Section -->
+                    {% if order.extra_fee > 0 or order.received > 0 or order.payment_accepted_fully %}
+                    <div class="col-12 mt-16">
+                        <div class="p-16 bg-neutral-50 radius-8">
+                            <div class="d-flex justify-content-between align-items-center mb-12">
+                                <span class="text-md fw-semibold">Payment Progress</span>
+                                {% if order.is_fully_paid %}
+                                <span class="badge bg-success-focus text-success-600 px-12 py-6">
+                                    <iconify-icon icon="mdi:check-circle" class="me-1"></iconify-icon> Fully Paid
+                                </span>
+                                {% else %}
+                                <span class="badge bg-warning-focus text-warning-600 px-12 py-6">
+                                    {{ order.payment_percentage }}% Paid
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="progress mb-12" style="height: 8px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: {{ order.payment_percentage }}%"></div>
+                            </div>
+                            
+                            <div class="row text-sm">
+                                <div class="col-4 text-center">
+                                    <span class="text-secondary-light d-block">Total Due</span>
+                                    <span class="fw-semibold">{{ order.total_due|floatformat:0 }} UZS</span>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <span class="text-secondary-light d-block">Received</span>
+                                    <span class="fw-semibold text-success-600">{{ order.received|floatformat:0 }} UZS</span>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <span class="text-secondary-light d-block">Remaining</span>
+                                    <span class="fw-semibold {% if order.remaining > 0 %}text-danger-600{% else %}text-success-600{% endif %}">
+                                        {{ order.remaining|floatformat:0 }} UZS
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {% if order.extra_fee > 0 %}
+                            <div class="mt-12 pt-12 border-top">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-secondary-light">Extra Fee:</span>
+                                    <span class="fw-semibold">{{ order.extra_fee|floatformat:0 }} UZS</span>
+                                </div>
+                                {% if order.extra_fee_description %}
+                                <small class="text-muted">{{ order.extra_fee_description }}</small>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <!-- Branch & Assignment Info -->
@@ -291,14 +346,17 @@
                 {% endif %}
 
                 <!-- Quick Actions -->
-                {% if can_receive_payment and order.status == 'payment_received' or can_receive_payment and order.status == 'payment_pending' %}
+                {% if can_receive_payment %}
                 <div class="mb-16">
-                    <form method="post" action="{% url 'receivePayment' order.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success w-100 d-flex align-items-center justify-content-center">
-                            <iconify-icon icon="mdi:cash-check" class="me-1"></iconify-icon> Confirm Payment
-                        </button>
-                    </form>
+                    <button type="button" class="btn btn-success w-100 d-flex align-items-center justify-content-center" 
+                            data-bs-toggle="modal" data-bs-target="#paymentModal">
+                        <iconify-icon icon="mdi:cash-check" class="me-1"></iconify-icon> 
+                        {% if order.is_fully_paid %}
+                            View Payment
+                        {% else %}
+                            Record Payment
+                        {% endif %}
+                    </button>
                 </div>
                 {% endif %}
 
@@ -373,4 +431,272 @@
         </div>
     </div>
 </div>
+
+<!-- Payment Modal -->
+{% if can_receive_payment %}
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <iconify-icon icon="mdi:cash" class="me-2"></iconify-icon>
+                    Payment Management - Order #{{ order.id }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Payment Summary -->
+                <div class="row mb-24">
+                    <div class="col-md-3 col-6 text-center">
+                        <div class="p-12 bg-neutral-50 radius-8">
+                            <small class="text-secondary-light d-block">Total Price</small>
+                            <span class="fw-bold" id="pm-total-price">{{ order.total_price|floatformat:0 }}</span> UZS
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 text-center">
+                        <div class="p-12 bg-neutral-50 radius-8">
+                            <small class="text-secondary-light d-block">Extra Fee</small>
+                            <span class="fw-bold" id="pm-extra-fee">{{ order.extra_fee|floatformat:0 }}</span> UZS
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 text-center">
+                        <div class="p-12 bg-success-50 radius-8">
+                            <small class="text-secondary-light d-block">Received</small>
+                            <span class="fw-bold text-success-600" id="pm-received">{{ order.received|floatformat:0 }}</span> UZS
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 text-center">
+                        <div class="p-12 {% if order.remaining > 0 %}bg-danger-50{% else %}bg-success-50{% endif %} radius-8">
+                            <small class="text-secondary-light d-block">Remaining</small>
+                            <span class="fw-bold {% if order.remaining > 0 %}text-danger-600{% else %}text-success-600{% endif %}" id="pm-remaining">
+                                {{ order.remaining|floatformat:0 }}
+                            </span> UZS
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="progress mb-24" style="height: 10px;">
+                    <div class="progress-bar bg-success" role="progressbar" id="pm-progress"
+                         style="width: {{ order.payment_percentage }}%"></div>
+                </div>
+                
+                {% if not order.is_fully_paid %}
+                <!-- Payment Form -->
+                <form id="paymentForm">
+                    <!-- Accept Fully Checkbox -->
+                    <div class="form-check form-switch mb-16">
+                        <input class="form-check-input" type="checkbox" id="acceptFully" name="accept_fully">
+                        <label class="form-check-label fw-semibold" for="acceptFully">
+                            Mark as Fully Paid
+                        </label>
+                        <small class="text-secondary-light d-block">
+                            Check this to accept the full amount regardless of what's been received
+                        </small>
+                    </div>
+                    
+                    <!-- Partial Payment Amount -->
+                    <div id="partialPaymentSection">
+                        <div class="row">
+                            <div class="col-md-6 mb-16">
+                                <label class="form-label fw-semibold">Amount Received Now</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="paymentAmount" 
+                                           name="amount" min="0" step="100" 
+                                           placeholder="Enter amount">
+                                    <span class="input-group-text">UZS</span>
+                                </div>
+                                <small class="text-secondary-light">
+                                    Quick: 
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-2" 
+                                            onclick="setAmount({{ order.remaining }})">
+                                        Full ({{ order.remaining|floatformat:0 }})
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 
+                                            onclick="setAmount({{ order.remaining|divisibleby:2 }})">
+                                        Half
+                                    </button>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Extra Fee Section (collapsible) -->
+                    <div class="mt-16 pt-16 border-top">
+                        <a class="text-decoration-none d-flex align-items-center" 
+                           data-bs-toggle="collapse" href="#extraFeeSection">
+                            <iconify-icon icon="mdi:plus-circle" class="me-2"></iconify-icon>
+                            Add Extra Fee
+                        </a>
+                        <div class="collapse mt-12" id="extraFeeSection">
+                            <div class="row">
+                                <div class="col-md-4 mb-12">
+                                    <label class="form-label">Extra Fee Amount</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="extraFeeAmount" 
+                                               name="extra_fee" min="0" step="100">
+                                        <span class="input-group-text">UZS</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 mb-12">
+                                    <label class="form-label">Reason</label>
+                                    <input type="text" class="form-control" id="extraFeeDescription" 
+                                           name="extra_fee_description" 
+                                           placeholder="e.g., Rush delivery, special handling">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if request.user.is_superuser or request.admin_profile.is_owner %}
+                    <!-- Force Accept (Owner only) -->
+                    <div class="mt-16 pt-16 border-top">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="forceAccept" name="force_accept">
+                            <label class="form-check-label text-warning-600" for="forceAccept">
+                                <iconify-icon icon="mdi:shield-alert" class="me-1"></iconify-icon>
+                                Force Accept (Owner Override)
+                            </label>
+                            <small class="text-secondary-light d-block">
+                                Mark as fully paid even if received is less than total
+                            </small>
+                        </div>
+                    </div>
+                    {% endif %}
+                </form>
+                {% else %}
+                <!-- Already Fully Paid -->
+                <div class="text-center py-24">
+                    <iconify-icon icon="mdi:check-circle" class="text-success-600" style="font-size: 64px;"></iconify-icon>
+                    <h5 class="mt-16 text-success-600">Payment Complete</h5>
+                    <p class="text-secondary-light">This order has been fully paid.</p>
+                </div>
+                {% endif %}
+                
+                <!-- Alert container -->
+                <div id="paymentAlert" class="mt-16" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                {% if not order.is_fully_paid %}
+                <button type="button" class="btn btn-success" id="submitPayment" onclick="submitPayment()">
+                    <iconify-icon icon="mdi:check" class="me-1"></iconify-icon> Record Payment
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock content %}
+
+{% block script %}
+<script>
+const orderId = {{ order.id }};
+const csrfToken = '{{ csrf_token }}';
+
+{% if can_receive_payment %}
+// Toggle partial payment section based on "accept fully" checkbox
+document.getElementById('acceptFully')?.addEventListener('change', function() {
+    const partialSection = document.getElementById('partialPaymentSection');
+    if (this.checked) {
+        partialSection.style.display = 'none';
+    } else {
+        partialSection.style.display = 'block';
+    }
+});
+
+function setAmount(amount) {
+    document.getElementById('paymentAmount').value = Math.round(amount);
+}
+
+function showAlert(message, type = 'danger') {
+    const alertDiv = document.getElementById('paymentAlert');
+    alertDiv.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    alertDiv.style.display = 'block';
+}
+
+function updatePaymentDisplay(data) {
+    document.getElementById('pm-total-price').textContent = Math.round(data.total_price);
+    document.getElementById('pm-extra-fee').textContent = Math.round(data.extra_fee);
+    document.getElementById('pm-received').textContent = Math.round(data.received);
+    document.getElementById('pm-remaining').textContent = Math.round(data.remaining);
+    document.getElementById('pm-progress').style.width = data.payment_percentage + '%';
+    
+    // Update remaining color
+    const remainingEl = document.getElementById('pm-remaining');
+    if (data.remaining > 0) {
+        remainingEl.className = 'fw-bold text-danger-600';
+    } else {
+        remainingEl.className = 'fw-bold text-success-600';
+    }
+}
+
+async function submitPayment() {
+    const submitBtn = document.getElementById('submitPayment');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Processing...';
+    
+    try {
+        const formData = new FormData();
+        
+        const acceptFully = document.getElementById('acceptFully')?.checked;
+        const amount = document.getElementById('paymentAmount')?.value;
+        const extraFee = document.getElementById('extraFeeAmount')?.value;
+        const extraFeeDesc = document.getElementById('extraFeeDescription')?.value;
+        const forceAccept = document.getElementById('forceAccept')?.checked;
+        
+        if (acceptFully) {
+            formData.append('accept_fully', 'true');
+        } else if (amount) {
+            formData.append('amount', amount);
+        }
+        
+        if (extraFee) {
+            formData.append('extra_fee', extraFee);
+            if (extraFeeDesc) {
+                formData.append('extra_fee_description', extraFeeDesc);
+            }
+        }
+        
+        if (forceAccept) {
+            formData.append('force_accept', 'true');
+        }
+        
+        const response = await fetch(`/orders/${orderId}/payment/record/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showAlert('Payment recorded successfully!', 'success');
+            updatePaymentDisplay(data);
+            
+            // Reload page after 1.5 seconds to update all UI
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showAlert(data.error || 'Failed to record payment', 'danger');
+        }
+    } catch (error) {
+        showAlert('An error occurred: ' + error.message, 'danger');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<iconify-icon icon="mdi:check" class="me-1"></iconify-icon> Record Payment';
+    }
+}
+{% endif %}
+</script>
+{% endblock %}

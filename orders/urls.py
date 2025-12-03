@@ -6,7 +6,8 @@ from django.urls import path
 from .views import (
     ordersList, orderDetail, orderEdit, updateOrderStatus, deleteOrder,
     assignOrder, unassignOrder, receivePayment, completeOrder,
-    api_order_stats, api_branch_staff, myOrders, orderCreate
+    api_order_stats, api_branch_staff, myOrders, orderCreate,
+    record_order_payment, add_order_extra_fee, get_order_payment_info
 )
 
 urlpatterns = [
@@ -24,6 +25,11 @@ urlpatterns = [
     path("<int:order_id>/unassign/", unassignOrder, name="unassignOrder"),
     path("<int:order_id>/receive-payment/", receivePayment, name="receivePayment"),
     path("<int:order_id>/complete/", completeOrder, name="completeOrder"),
+    
+    # Payment management API
+    path("<int:order_id>/payment/record/", record_order_payment, name="record_order_payment"),
+    path("<int:order_id>/payment/extra-fee/", add_order_extra_fee, name="add_order_extra_fee"),
+    path("<int:order_id>/payment/info/", get_order_payment_info, name="get_order_payment_info"),
     
     # API endpoints
     path("api/stats/", api_order_stats, name="api_order_stats"),

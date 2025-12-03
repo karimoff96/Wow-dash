@@ -266,14 +266,19 @@
                                 </div>
                             </div>
                         </td>
-                        <!-- Payment: Total + Type (combined) -->
+                        <!-- Payment: Total + Type + Status -->
                         <td>
                             <div class="d-flex flex-column">
-                                <span class="fw-semibold text-success-600 text-sm">{{ order.total_price|floatformat:0 }}</span>
+                                <span class="fw-semibold text-success-600 text-sm">{{ order.total_due|floatformat:0 }}</span>
                                 {% if order.payment_type == 'cash' %}
                                 <span class="text-xs text-success-600"><iconify-icon icon="mdi:cash" class="text-sm"></iconify-icon> Cash</span>
                                 {% else %}
                                 <span class="text-xs text-primary-600"><iconify-icon icon="mdi:credit-card" class="text-sm"></iconify-icon> Card</span>
+                                {% endif %}
+                                {% if order.is_fully_paid %}
+                                <span class="badge bg-success-focus text-success-600 text-xs mt-4">Paid</span>
+                                {% elif order.received > 0 %}
+                                <span class="badge bg-warning-focus text-warning-600 text-xs mt-4">{{ order.payment_percentage }}%</span>
                                 {% endif %}
                             </div>
                         </td>

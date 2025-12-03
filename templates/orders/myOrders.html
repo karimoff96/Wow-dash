@@ -118,7 +118,14 @@
                                     <span class="badge bg-info-focus text-info-600">{{ order.total_pages }}</span>
                                 </td>
                                 <td>
-                                    <span class="fw-medium text-success-600">{{ order.total_price|floatformat:0 }} UZS</span>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-medium text-success-600">{{ order.total_due|floatformat:0 }} UZS</span>
+                                        {% if order.is_fully_paid %}
+                                        <span class="badge bg-success-focus text-success-600 text-xs mt-4">Paid</span>
+                                        {% elif order.received > 0 %}
+                                        <span class="badge bg-warning-focus text-warning-600 text-xs mt-4">{{ order.payment_percentage }}% paid</span>
+                                        {% endif %}
+                                    </div>
                                 </td>
                                 <td>
                                     {% if order.status == 'pending' %}
