@@ -294,7 +294,7 @@ def get_text(key, language="uz"):
 
 
 def create_or_update_user(
-    user_id, username=None, language=None, name=None, phone=None, agency_token=None, branch=None
+    user_id, username=None, language=None, name=None, phone=None, agency_token=None, branch=None, center=None
 ):
     """
     Create or update telegram user in database
@@ -307,16 +307,24 @@ def create_or_update_user(
         phone: User's phone number
         agency_token: Optional agency token if coming from an invite link
         branch: Optional Branch instance to associate user with
+        center: Optional TranslationCenter instance - required for multi-tenant support
     """
     from accounts.models import BotUser
     from uuid import UUID
 
     try:
-        # First try to get the user by user_id if it exists
+        # Get center from branch if not provided
+        if center is None and branch is not None:
+            center = branch.center
+        
+        # First try to get the user by user_id and center if they exist
         user = None
         created = False
 
-        if user_id is not None:
+        if user_id is not None and center is not None:
+            user = BotUser.objects.filter(user_id=user_id, center=center).first()
+        elif user_id is not None:
+            # Fallback for legacy calls without center
             user = BotUser.objects.filter(user_id=user_id).first()
 
         # If user not found by user_id but we have an agency token, check for existing agency
@@ -330,6 +338,7 @@ def create_or_update_user(
                     if user_id is not None:
                         user.user_id = user_id
                     user.agency = agency
+                    user.center = center  # Set center for new user
                     created = True
             except Exception as e:
                 print(f"Error processing agency token: {e}")
@@ -339,6 +348,7 @@ def create_or_update_user(
             user = BotUser()
             if user_id is not None:
                 user.user_id = user_id
+            user.center = center  # Set center for new user
             created = True
 
         # Update fields
@@ -351,6 +361,8 @@ def create_or_update_user(
             user.step = 0
             if branch:
                 user.branch = branch
+            if center:
+                user.center = center
         else:
             if language and user.language != language:
                 user.language = language
@@ -364,6 +376,9 @@ def create_or_update_user(
                 user.user_id = user_id
             if branch and user.branch != branch:
                 user.branch = branch
+            # Update center if provided and user doesn't have one
+            if center and not user.center:
+                user.center = center
 
         user.save()
         return user

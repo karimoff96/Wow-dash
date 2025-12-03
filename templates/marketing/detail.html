@@ -111,8 +111,7 @@
                 
                 <!-- Action Buttons -->
                 {% if post.is_sendable %}
-                {% with can_send=permissions.can_platform_wide or post.target_scope == 'center' and permissions.can_center_wide or post.target_scope == 'branch' and permissions.can_branch %}
-                {% if can_send %}
+                {% if can_send_this_post %}
                 <div class="d-flex gap-3 mt-24">
                     <a href="{% url 'marketing_preview' post.id %}" class="btn btn-outline-primary">
                         <iconify-icon icon="mdi:eye" class="me-2"></iconify-icon>
@@ -133,7 +132,6 @@
                     You don't have permission to send this broadcast.
                 </div>
                 {% endif %}
-                {% endwith %}
                 {% endif %}
                 
                 {% if post.status == 'sending' %}

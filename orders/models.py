@@ -384,21 +384,31 @@ class Order(models.Model):
 
 @receiver(pre_save, sender=Order)
 def track_status_change(sender, instance, **kwargs):
-    """Track status changes before save"""
+    """Track status and payment changes before save"""
     if instance.pk:
         try:
             old_instance = Order.objects.get(pk=instance.pk)
             instance._old_status = old_instance.status
+            instance._old_received = old_instance.received
+            instance._old_payment_type = old_instance.payment_type
         except Order.DoesNotExist:
             instance._old_status = None
+            instance._old_received = None
+            instance._old_payment_type = None
     else:
         instance._old_status = None
+        instance._old_received = None
+        instance._old_payment_type = None
 
 
 @receiver(post_save, sender=Order)
 def send_status_notification(sender, instance, created, **kwargs):
-    """Send notification after status change"""
-    if not created and hasattr(instance, "_old_status"):
+    """Send notification after status or payment change"""
+    if created:
+        return
+        
+    # Check for status change
+    if hasattr(instance, "_old_status"):
         old_status = instance._old_status
         new_status = instance.status
 
@@ -411,5 +421,21 @@ def send_status_notification(sender, instance, created, **kwargs):
             except Exception as e:
                 print(f"[ERROR] Failed to send status notification: {e}")
                 import traceback
-
+                traceback.print_exc()
+    
+    # Check for payment amount change (partial payment received)
+    if hasattr(instance, "_old_received"):
+        old_received = instance._old_received or 0
+        new_received = instance.received or 0
+        
+        if new_received > old_received and new_received > 0:
+            # Payment received, send notification
+            try:
+                from bot.main import send_payment_received_notification
+                
+                amount_received = new_received - old_received
+                send_payment_received_notification(instance, amount_received, new_received)
+            except Exception as e:
+                print(f"[ERROR] Failed to send payment notification: {e}")
+                import traceback
                 traceback.print_exc()

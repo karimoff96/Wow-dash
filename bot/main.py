@@ -177,54 +177,248 @@ def create_order_zip(order):
 
 def send_order_status_notification(order, old_status, new_status):
     """
-    Send notification to user when order status changes
+    Send notification to user when order status changes.
+    Handles both status and payment-related notifications.
     """
-    from accounts.models import BotUser, AdditionalInfo
+    from accounts.models import AdditionalInfo
 
-    # Only send notifications for specific status changes
-    notifiable_statuses = [
-        "payment_confirmed",
-        "in_progress",
-        "ready",
-        "completed",
-        "cancelled",
-    ]
+    # Define all notifiable statuses with their notification types
+    notifiable_statuses = {
+        "payment_pending": "payment",
+        "payment_received": "payment",
+        "payment_confirmed": "payment",
+        "in_progress": "status",
+        "ready": "status",
+        "completed": "status",
+        "cancelled": "status",
+    }
 
     if new_status not in notifiable_statuses:
         return
 
     try:
         user = order.bot_user
+        if not user or not user.user_id:
+            print(f"[WARNING] No user or user_id for order {order.id}")
+            return
+            
         language = user.language or "uz"
 
-        # Get notification text key
-        text_key = f"status_{new_status}"
-
-        # Get base notification text
-        notification_text = get_text(text_key, language)
-
-        if not notification_text:
-            print(f"[WARNING] No notification text found for status: {new_status}")
-            return
-
-        # Prepare placeholder values
-        price = f"{order.total_price:,.0f}"
-        days = order.product.estimated_days
-
-        # Get additional info for address and phone (use user's branch with fallback)
+        # Get additional info for address and phone
         additional_info = AdditionalInfo.get_for_user(user)
-        phone = additional_info.support_phone if additional_info and additional_info.support_phone else (additional_info.bank_card if additional_info else "N/A")
-        address = "Translation Center"  # You can add address field to AdditionalInfo if needed
+        phone = additional_info.support_phone if additional_info and additional_info.support_phone else "N/A"
+        branch_name = order.branch.name if order.branch else "Translation Center"
+        branch_address = order.branch.address if order.branch and order.branch.address else ""
+        
+        # Build notification based on status
+        if new_status == "payment_pending":
+            if language == "uz":
+                notification_text = (
+                    f"💳 <b>To'lov kutilmoqda</b>\n\n"
+                    f"📋 Buyurtma raqami: #{order.id}\n"
+                    f"💰 To'lov summasi: {order.total_price:,.0f} so'm\n\n"
+                    f"📱 To'lov chekini yuborishingizni kutmoqdamiz."
+                )
+            elif language == "ru":
+                notification_text = (
+                    f"💳 <b>Ожидание оплаты</b>\n\n"
+                    f"📋 Номер заказа: #{order.id}\n"
+                    f"💰 Сумма к оплате: {order.total_price:,.0f} сум\n\n"
+                    f"📱 Ожидаем квитанцию об оплате."
+                )
+            else:
+                notification_text = (
+                    f"💳 <b>Payment Pending</b>\n\n"
+                    f"📋 Order #: #{order.id}\n"
+                    f"💰 Amount: {order.total_price:,.0f} sum\n\n"
+                    f"📱 Waiting for your payment receipt."
+                )
+        
+        elif new_status == "payment_received":
+            if language == "uz":
+                notification_text = (
+                    f"📨 <b>To'lov cheki qabul qilindi</b>\n\n"
+                    f"📋 Buyurtma raqami: #{order.id}\n"
+                    f"💰 Summa: {order.total_price:,.0f} so'm\n\n"
+                    f"⏳ To'lovingiz tekshirilmoqda. Tez orada tasdiqlash habarimiz keladi."
+                )
+            elif language == "ru":
+                notification_text = (
+                    f"📨 <b>Квитанция об оплате получена</b>\n\n"
+                    f"📋 Номер заказа: #{order.id}\n"
+                    f"💰 Сумма: {order.total_price:,.0f} сум\n\n"
+                    f"⏳ Ваша оплата проверяется. Скоро вы получите подтверждение."
+                )
+            else:
+                notification_text = (
+                    f"📨 <b>Payment Receipt Received</b>\n\n"
+                    f"📋 Order #: #{order.id}\n"
+                    f"💰 Amount: {order.total_price:,.0f} sum\n\n"
+                    f"⏳ Your payment is being verified. You'll receive confirmation shortly."
+                )
+        
+        elif new_status == "payment_confirmed":
+            if language == "uz":
+                notification_text = (
+                    f"✅ <b>To'lov tasdiqlandi!</b>\n\n"
+                    f"📋 Buyurtma raqami: #{order.id}\n"
+                    f"💰 Summa: {order.total_price:,.0f} so'm\n\n"
+                    f"🔄 Buyurtmangiz jarayonga qo'shildi. Operatorlarimiz tez orada bog'lanishadi."
+                )
+            elif language == "ru":
+                notification_text = (
+                    f"✅ <b>Оплата подтверждена!</b>\n\n"
+                    f"📋 Номер заказа: #{order.id}\n"
+                    f"💰 Сумма: {order.total_price:,.0f} сум\n\n"
+                    f"🔄 Ваш заказ добавлен в обработку. Наши операторы свяжутся с вами."
+                )
+            else:
+                notification_text = (
+                    f"✅ <b>Payment Confirmed!</b>\n\n"
+                    f"📋 Order #: #{order.id}\n"
+                    f"💰 Amount: {order.total_price:,.0f} sum\n\n"
+                    f"🔄 Your order is now being processed. Our operators will contact you soon."
+                )
+        
+        elif new_status == "in_progress":
+            estimated_days = order.product.estimated_days if order.product else "N/A"
+            if language == "uz":
+                notification_text = (
+                    f"🔄 <b>Buyurtma jarayonda!</b>\n\n"
+                    f"📋 Buyurtma raqami: #{order.id}\n"
+                    f"⏱️ Taxminiy muddat: {estimated_days} kun\n\n"
+                    f"✅ Sizga tayyor bo'lganda xabar beramiz."
+                )
+            elif language == "ru":
+                notification_text = (
+                    f"🔄 <b>Заказ в процессе!</b>\n\n"
+                    f"📋 Номер заказа: #{order.id}\n"
+                    f"⏱️ Примерный срок: {estimated_days} дней\n\n"
+                    f"✅ Мы сообщим вам, когда будет готово."
+                )
+            else:
+                notification_text = (
+                    f"🔄 <b>Order In Progress!</b>\n\n"
+                    f"📋 Order #: #{order.id}\n"
+                    f"⏱️ Estimated time: {estimated_days} days\n\n"
+                    f"✅ We'll notify you when it's ready."
+                )
+        
+        elif new_status == "ready":
+            if language == "uz":
+                notification_text = (
+                    f"✅ <b>Buyurtma tayyor!</b>\n\n"
+                    f"📋 Buyurtma raqami: #{order.id}\n"
+                    f"📦 Buyurtmangizni olib ketishingiz mumkin.\n\n"
+                    f"🏢 Filial: {branch_name}\n"
+                )
+                if branch_address:
+                    notification_text += f"📍 Manzil: {branch_address}\n"
+                if phone != "N/A":
+                    notification_text += f"📞 Telefon: {phone}"
+            elif language == "ru":
+                notification_text = (
+                    f"✅ <b>Заказ готов!</b>\n\n"
+                    f"📋 Номер заказа: #{order.id}\n"
+                    f"📦 Вы можете забрать свой заказ.\n\n"
+                    f"🏢 Филиал: {branch_name}\n"
+                )
+                if branch_address:
+                    notification_text += f"📍 Адрес: {branch_address}\n"
+                if phone != "N/A":
+                    notification_text += f"📞 Телефон: {phone}"
+            else:
+                notification_text = (
+                    f"✅ <b>Order Ready!</b>\n\n"
+                    f"📋 Order #: #{order.id}\n"
+                    f"📦 You can pick up your order.\n\n"
+                    f"🏢 Branch: {branch_name}\n"
+                )
+                if branch_address:
+                    notification_text += f"📍 Address: {branch_address}\n"
+                if phone != "N/A":
+                    notification_text += f"📞 Phone: {phone}"
+        
+        elif new_status == "completed":
+            if language == "uz":
+                notification_text = (
+                    f"🎉 <b>Buyurtma yakunlandi!</b>\n\n"
+                    f"📋 Buyurtma raqami: #{order.id}\n\n"
+                    f"🙏 Xizmatlarimizdan foydalanganingiz uchun rahmat!\n"
+                    f"⭐ Fikr-mulohazangizni kutamiz."
+                )
+            elif language == "ru":
+                notification_text = (
+                    f"🎉 <b>Заказ завершен!</b>\n\n"
+                    f"📋 Номер заказа: #{order.id}\n\n"
+                    f"🙏 Спасибо за использование наших услуг!\n"
+                    f"⭐ Ждем ваших отзывов."
+                )
+            else:
+                notification_text = (
+                    f"🎉 <b>Order Completed!</b>\n\n"
+                    f"📋 Order #: #{order.id}\n\n"
+                    f"🙏 Thank you for using our services!\n"
+                    f"⭐ We look forward to your feedback."
+                )
+        
+        elif new_status == "cancelled":
+            if language == "uz":
+                notification_text = (
+                    f"❌ <b>Buyurtma bekor qilindi</b>\n\n"
+                    f"📋 Buyurtma raqami: #{order.id}\n\n"
+                    f"📞 Savollaringiz bo'lsa, operatorlarimiz bilan bog'laning."
+                )
+                if phone != "N/A":
+                    notification_text += f"\n📱 Telefon: {phone}"
+            elif language == "ru":
+                notification_text = (
+                    f"❌ <b>Заказ отменен</b>\n\n"
+                    f"📋 Номер заказа: #{order.id}\n\n"
+                    f"📞 Если у вас есть вопросы, свяжитесь с нашими операторами."
+                )
+                if phone != "N/A":
+                    notification_text += f"\n📱 Телефон: {phone}"
+            else:
+                notification_text = (
+                    f"❌ <b>Order Cancelled</b>\n\n"
+                    f"📋 Order #: #{order.id}\n\n"
+                    f"📞 If you have questions, contact our operators."
+                )
+                if phone != "N/A":
+                    notification_text += f"\n📱 Phone: {phone}"
+        else:
+            # Generic fallback
+            notification_text = get_text(f"status_{new_status}", language)
+            if not notification_text or "Missing translation" in notification_text:
+                print(f"[WARNING] No notification text found for status: {new_status}")
+                return
+            notification_text = notification_text.format(
+                order_id=order.id,
+                price=f"{order.total_price:,.0f}",
+                days=order.product.estimated_days if order.product else "N/A",
+                phone=phone,
+                address=branch_address or branch_name
+            )
 
-        # Replace placeholders
-        notification_text = notification_text.format(
-            order_id=order.id, price=price, days=days, phone=phone, address=address
-        )
-
-        # Send notification
-        bot.send_message(
-            chat_id=user.user_id, text=notification_text, parse_mode="HTML"
-        )
+        # Get the correct bot instance for this order's center
+        from bot.webhook_manager import get_bot_for_center
+        if order.branch and order.branch.center:
+            center_bot = get_bot_for_center(order.branch.center)
+            if center_bot:
+                center_bot.send_message(
+                    chat_id=user.user_id, text=notification_text, parse_mode="HTML"
+                )
+            else:
+                # Fallback to global bot
+                bot.send_message(
+                    chat_id=user.user_id, text=notification_text, parse_mode="HTML"
+                )
+        else:
+            # No branch center, use global bot
+            bot.send_message(
+                chat_id=user.user_id, text=notification_text, parse_mode="HTML"
+            )
 
         print(
             f"[INFO] Sent status notification to user {user.user_id} for order {order.id}: {old_status} → {new_status}"
@@ -234,6 +428,108 @@ def send_order_status_notification(order, old_status, new_status):
         print(f"[ERROR] Failed to send status notification: {e}")
         import traceback
 
+        traceback.print_exc()
+
+
+def send_payment_received_notification(order, amount_received, total_received):
+    """
+    Send notification to user when a payment amount is received (partial payment support).
+    """
+    try:
+        user = order.bot_user
+        if not user or not user.user_id:
+            print(f"[WARNING] No user or user_id for order {order.id}")
+            return
+            
+        language = user.language or "uz"
+        
+        # Calculate remaining balance
+        remaining = order.remaining_balance
+        total_due = order.total_due
+        
+        # Check if payment is fully completed
+        is_fully_paid = remaining <= 0 or order.payment_accepted_fully
+        
+        if is_fully_paid:
+            # Full payment notification
+            if language == "uz":
+                notification_text = (
+                    f"✅ <b>To'lov to'liq qabul qilindi!</b>\n\n"
+                    f"📋 Buyurtma raqami: #{order.id}\n"
+                    f"💰 Qabul qilingan summa: {amount_received:,.0f} so'm\n"
+                    f"💵 Jami to'langan: {total_received:,.0f} / {total_due:,.0f} so'm\n\n"
+                    f"🎉 Rahmat! Buyurtmangiz tez orada bajariladi."
+                )
+            elif language == "ru":
+                notification_text = (
+                    f"✅ <b>Оплата полностью получена!</b>\n\n"
+                    f"📋 Номер заказа: #{order.id}\n"
+                    f"💰 Полученная сумма: {amount_received:,.0f} сум\n"
+                    f"💵 Всего оплачено: {total_received:,.0f} / {total_due:,.0f} сум\n\n"
+                    f"🎉 Спасибо! Ваш заказ скоро будет выполнен."
+                )
+            else:
+                notification_text = (
+                    f"✅ <b>Payment Fully Received!</b>\n\n"
+                    f"📋 Order #: #{order.id}\n"
+                    f"💰 Amount received: {amount_received:,.0f} sum\n"
+                    f"💵 Total paid: {total_received:,.0f} / {total_due:,.0f} sum\n\n"
+                    f"🎉 Thank you! Your order will be processed soon."
+                )
+        else:
+            # Partial payment notification
+            if language == "uz":
+                notification_text = (
+                    f"💳 <b>Qisman to'lov qabul qilindi</b>\n\n"
+                    f"📋 Buyurtma raqami: #{order.id}\n"
+                    f"💰 Qabul qilingan summa: {amount_received:,.0f} so'm\n"
+                    f"💵 Jami to'langan: {total_received:,.0f} / {total_due:,.0f} so'm\n"
+                    f"📊 Qolgan summa: {remaining:,.0f} so'm\n\n"
+                    f"ℹ️ To'lov to'liq qabul qilinganida xabar beramiz."
+                )
+            elif language == "ru":
+                notification_text = (
+                    f"💳 <b>Частичная оплата получена</b>\n\n"
+                    f"📋 Номер заказа: #{order.id}\n"
+                    f"💰 Полученная сумма: {amount_received:,.0f} сум\n"
+                    f"💵 Всего оплачено: {total_received:,.0f} / {total_due:,.0f} сум\n"
+                    f"📊 Остаток: {remaining:,.0f} сум\n\n"
+                    f"ℹ️ Мы сообщим, когда оплата будет завершена."
+                )
+            else:
+                notification_text = (
+                    f"💳 <b>Partial Payment Received</b>\n\n"
+                    f"📋 Order #: #{order.id}\n"
+                    f"💰 Amount received: {amount_received:,.0f} sum\n"
+                    f"💵 Total paid: {total_received:,.0f} / {total_due:,.0f} sum\n"
+                    f"📊 Remaining: {remaining:,.0f} sum\n\n"
+                    f"ℹ️ We'll notify you when payment is complete."
+                )
+        
+        # Get the correct bot instance for this order's center
+        from bot.webhook_manager import get_bot_for_center
+        if order.branch and order.branch.center:
+            center_bot = get_bot_for_center(order.branch.center)
+            if center_bot:
+                center_bot.send_message(
+                    chat_id=user.user_id, text=notification_text, parse_mode="HTML"
+                )
+            else:
+                bot.send_message(
+                    chat_id=user.user_id, text=notification_text, parse_mode="HTML"
+                )
+        else:
+            bot.send_message(
+                chat_id=user.user_id, text=notification_text, parse_mode="HTML"
+            )
+
+        print(
+            f"[INFO] Sent payment notification to user {user.user_id} for order {order.id}: received {amount_received}, total {total_received}"
+        )
+
+    except Exception as e:
+        print(f"[ERROR] Failed to send payment notification: {e}")
+        import traceback
         traceback.print_exc()
 
 
@@ -585,10 +881,10 @@ def get_user_files(user_id):
 def get_user_language(user_id):
     """Get user's preferred language"""
     try:
-        from accounts.models import BotUser
-
-        user = BotUser.objects.get(user_id=user_id)
-        return user.language
+        user = get_bot_user(user_id)
+        if user:
+            return user.language
+        return "uz"
     except Exception as e:
         print(f"[DEBUG] Error getting user language for {user_id}: {e}")
         return "uz"
@@ -760,6 +1056,59 @@ def get_current_center():
         return None
 
 
+def get_bot_user(user_id, center=None):
+    """
+    Get BotUser for the given user_id and center.
+    Each Telegram user has a separate account per translation center.
+    
+    Args:
+        user_id: Telegram user ID
+        center: TranslationCenter instance. If None, uses current bot's center.
+    
+    Returns:
+        BotUser instance or None if not found
+    """
+    if center is None:
+        center = get_current_center()
+    
+    try:
+        return BotUser.objects.filter(user_id=user_id, center=center).first()
+    except Exception as e:
+        print(f"[ERROR] Failed to get bot user: {e}")
+        return None
+
+
+def get_or_create_bot_user(user_id, center=None, defaults=None):
+    """
+    Get or create BotUser for the given user_id and center.
+    
+    Args:
+        user_id: Telegram user ID
+        center: TranslationCenter instance. If None, uses current bot's center.
+        defaults: Dict of default values for creation
+    
+    Returns:
+        Tuple of (BotUser instance, created boolean)
+    """
+    if center is None:
+        center = get_current_center()
+    
+    if defaults is None:
+        defaults = {}
+    
+    defaults['center'] = center
+    
+    try:
+        return BotUser.objects.get_or_create(
+            user_id=user_id,
+            center=center,
+            defaults=defaults
+        )
+    except Exception as e:
+        print(f"[ERROR] Failed to get or create bot user: {e}")
+        return None, False
+
+
 def get_center_branches(center=None):
     """
     Get all active branches for a center.
@@ -802,13 +1151,12 @@ def show_branch_selection(message, language):
     if len(branches) == 1:
         branch = branches[0]
         # Save branch to user
-        from accounts.models import BotUser
-        try:
-            user = BotUser.objects.get(user_id=user_id)
+        user = get_bot_user(user_id, center)
+        if user:
             user.branch = branch
             user.save()
-        except BotUser.DoesNotExist:
-            create_or_update_user(user_id=user_id, branch=branch)
+        else:
+            create_or_update_user(user_id=user_id, branch=branch, center=center)
         
         # Skip branch selection, go to registration
         start_registration(message, language)
@@ -888,11 +1236,10 @@ def ensure_additional_info_exists():
 def update_user_step(user_id, step):
     """Update user's current step"""
     try:
-        from accounts.models import BotUser
-
-        user = BotUser.objects.get(user_id=user_id)
-        user.step = step
-        user.save()
+        user = get_bot_user(user_id)
+        if user:
+            user.step = step
+            user.save()
     except:
         pass
 
@@ -900,10 +1247,10 @@ def update_user_step(user_id, step):
 def get_user_step(user_id):
     """Get user's current step"""
     try:
-        from accounts.models import BotUser
-
-        user = BotUser.objects.get(user_id=user_id)
-        return user.step
+        user = get_bot_user(user_id)
+        if user:
+            return user.step
+        return 0
     except:
         return 0
 
@@ -992,8 +1339,9 @@ def start(message):
             except Exception as e:
                 print(f"[ERROR] ❌ Unexpected error processing agency token: {e}")
 
-    # Check if user already exists
-    existing_user = BotUser.objects.filter(user_id=user_id).first()
+    # Check if user already exists for this center
+    center = get_current_center()
+    existing_user = get_bot_user(user_id, center)
 
     if existing_user:
         # User already exists
@@ -1143,16 +1491,17 @@ def handle_branch_selection(call):
         from accounts.models import BotUser
         
         branch = Branch.objects.get(id=branch_id)
+        center = get_current_center()
         
         # Update user with selected branch and complete registration
-        try:
-            user = BotUser.objects.get(user_id=user_id)
+        user = get_bot_user(user_id, center)
+        if user:
             user.branch = branch
             user.is_active = True
             user.step = STEP_REGISTERED
             user.save()
-        except BotUser.DoesNotExist:
-            user = create_or_update_user(user_id=user_id, branch=branch)
+        else:
+            user = create_or_update_user(user_id=user_id, branch=branch, center=center)
             if user:
                 user.is_active = True
                 user.step = STEP_REGISTERED
@@ -1299,7 +1648,8 @@ def handle_contact(message):
     # Handle regular registration contact (existing functionality)
     elif current_step == STEP_PHONE_REQUESTED and message.contact:
         phone = message.contact.phone_number
-        user = create_or_update_user(user_id=user_id, phone=phone)
+        center = get_current_center()
+        user = create_or_update_user(user_id=user_id, phone=phone, center=center)
 
         if user:
             current_step = get_user_step(user_id)
@@ -1308,23 +1658,18 @@ def handle_contact(message):
                 send_message(message.chat.id, contact_text)
 
                 # Check if user already has a branch selected
-                from accounts.models import BotUser
-                try:
-                    bot_user = BotUser.objects.get(user_id=user_id)
-                    if bot_user.branch:
-                        # User already has a branch, complete registration
-                        bot_user.is_active = True
-                        bot_user.step = STEP_REGISTERED
-                        bot_user.save()
-                        
-                        complete_text = get_text("registration_complete", language)
-                        send_message(message.chat.id, complete_text)
-                        show_main_menu(message, language)
-                    else:
-                        # No branch yet, show branch selection
-                        show_branch_selection(message, language)
-                except BotUser.DoesNotExist:
-                    # No user found, show branch selection
+                bot_user = get_bot_user(user_id, center)
+                if bot_user and bot_user.branch:
+                    # User already has a branch, complete registration
+                    bot_user.is_active = True
+                    bot_user.step = STEP_REGISTERED
+                    bot_user.save()
+                    
+                    complete_text = get_text("registration_complete", language)
+                    send_message(message.chat.id, complete_text)
+                    show_main_menu(message, language)
+                else:
+                    # No branch yet, show branch selection
                     show_branch_selection(message, language)
             elif current_step == STEP_EDITING_PHONE:
                 send_message(
@@ -1398,10 +1743,10 @@ def handle_main_menu(message):
     language = get_user_language(user_id)
 
     # Get AdditionalInfo for user's branch (with fallback)
-    try:
-        user = BotUser.objects.get(user_id=user_id)
+    user = get_bot_user(user_id)
+    if user:
         additional_info = AdditionalInfo.get_for_user(user)
-    except BotUser.DoesNotExist:
+    else:
         additional_info = AdditionalInfo.get_for_branch(None)
 
     if (
@@ -1485,10 +1830,13 @@ def show_user_orders(message, language):
     user_id = message.from_user.id
 
     try:
-        from accounts.models import BotUser, AdditionalInfo
+        from accounts.models import AdditionalInfo
         from orders.models import Order
 
-        user = BotUser.objects.get(user_id=user_id)
+        user = get_bot_user(user_id)
+        if not user:
+            send_message(message.chat.id, get_text("error_general", language))
+            return
 
         # Get all orders for this user
         orders = Order.objects.filter(bot_user=user).order_by("-id")
@@ -1909,14 +2257,10 @@ def handle_edit_branch_request(call):
     markup = types.InlineKeyboardMarkup(row_width=1)
     
     # Get current user's branch
-    from accounts.models import BotUser
     current_branch_id = None
-    try:
-        user = BotUser.objects.get(user_id=user_id)
-        if user.branch:
-            current_branch_id = user.branch.id
-    except:
-        pass
+    user = get_bot_user(user_id)
+    if user and user.branch:
+        current_branch_id = user.branch.id
     
     for branch in branches:
         # Mark current branch with checkmark
@@ -1966,12 +2310,14 @@ def handle_change_branch(call):
     try:
         branch_id = int(call.data.split("_")[2])
         from organizations.models import Branch
-        from accounts.models import BotUser
         
         branch = Branch.objects.get(id=branch_id)
         
         # Update user's branch
-        user = BotUser.objects.get(user_id=user_id)
+        user = get_bot_user(user_id)
+        if not user:
+            bot.answer_callback_query(call.id, "User not found")
+            return
         user.branch = branch
         user.save()
         
@@ -2223,11 +2569,10 @@ def show_categorys(message, language):
     user_id = message.from_user.id
     update_user_step(user_id, STEP_SELECTING_SERVICE)
     from services.models import Category
-    from accounts.models import BotUser
 
     try:
         # Get user's branch and filter categories by that branch
-        user = BotUser.objects.filter(user_id=user_id).first()
+        user = get_bot_user(user_id)
         if user and user.branch:
             services = Category.objects.filter(branch=user.branch, is_active=True)
         else:
@@ -3063,9 +3408,10 @@ def handle_file_upload(message):
                 update_user_step(user_id, STEP_REGISTERED)
 
                 # Send completion confirmation
-                from accounts.models import BotUser
-
-                user = BotUser.objects.get(user_id=user_id)
+                user = get_bot_user(user_id)
+                if not user:
+                    print(f"[ERROR] User not found for order completion: {user_id}")
+                    return
 
                 # Calculate pricing with copy charges
                 base_price, copy_charge, total_price, copy_percentage = (
@@ -3630,14 +3976,12 @@ def handle_text_messages(message):
     if message.text.startswith("/"):
         return
 
-    try:
-        from accounts.models import BotUser
-
-        user = BotUser.objects.get(user_id=user_id)
-        current_step = user.step
-    except BotUser.DoesNotExist:
+    user = get_bot_user(user_id)
+    if not user:
         start(message)
         return
+    
+    current_step = user.step
 
     # Handle copy number input
     if current_step == STEP_SELECTING_COPY_NUMBER:
@@ -3736,9 +4080,10 @@ def handle_text_messages(message):
                 update_user_step(user_id, STEP_REGISTERED)
 
                 # Get user for display
-                from accounts.models import BotUser
-
-                user = BotUser.objects.get(user_id=user_id)
+                user = get_bot_user(user_id)
+                if not user:
+                    print(f"[ERROR] User not found for completion: {user_id}")
+                    return
 
                 # Format user display with username if available
                 user_display = user.name
@@ -3935,11 +4280,14 @@ def handle_card_payment_message(message, language):
     order_id = user_data["order_id"]
 
     try:
-        from accounts.models import AdditionalInfo, BotUser
+        from accounts.models import AdditionalInfo
         from orders.models import Order
 
         order = Order.objects.get(id=order_id)
-        user = BotUser.objects.get(user_id=user_id)
+        user = get_bot_user(user_id)
+        if not user:
+            bot.send_message(message.chat.id, "❌ User not found")
+            return
 
         # Update order payment type to card (but don't mark as active yet)
         order.payment_type = "card"
@@ -4146,11 +4494,14 @@ def handle_finish_upload_message(message, language):
 
     try:
         # Create order with uploaded files
-        from accounts.models import BotUser
         from orders.models import Order, OrderMedia
         from services.models import Product
 
-        user = BotUser.objects.get(user_id=user_id)
+        user = get_bot_user(user_id)
+        if not user:
+            bot.send_message(message.chat.id, "❌ User not found")
+            return
+        
         doc_type = Product.objects.get(id=user_data["doc_type_id"])
 
         print(f"[DEBUG] Creating order for user {user_id} with doc_type {doc_type.id}")
@@ -4363,7 +4714,10 @@ def handle_cash_payment_message(message, language):
         update_user_step(user_id, STEP_REGISTERED)
 
         # Generate order summary with cash payment status
-        user = BotUser.objects.get(user_id=user_id)
+        user = get_bot_user(user_id)
+        if not user:
+            print(f"[ERROR] User not found for cash payment: {user_id}")
+            return
 
         # Calculate pricing with copy charges
         base_price, copy_charge, total_price, copy_percentage = calculate_order_pricing(
@@ -4693,9 +5047,14 @@ def handle_admin_callbacks(call):
     if call.data == "admin_users":
         try:
             from accounts.models import BotUser
-
-            total_users = BotUser.objects.count()
-            active_users = BotUser.objects.filter(is_active=True).count()
+            
+            center = get_current_center()
+            if center:
+                total_users = BotUser.objects.filter(center=center).count()
+                active_users = BotUser.objects.filter(center=center, is_active=True).count()
+            else:
+                total_users = BotUser.objects.count()
+                active_users = BotUser.objects.filter(is_active=True).count()
             text = f"👥 <b>Users Statistics</b>\n\n"
             text += f"Total users: {total_users}\n"
             text += f"Active users: {active_users}\n"

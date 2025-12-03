@@ -284,6 +284,15 @@ def marketing_detail(request, post_id):
                 messages.error(request, _("You don't have access to this post."))
                 return redirect('marketing_list')
     
+    # Compute if user can send this specific post
+    can_send_this_post = False
+    if permissions['can_platform_wide']:
+        can_send_this_post = True
+    elif post.target_scope == 'center' and permissions['can_center_wide']:
+        can_send_this_post = True
+    elif post.target_scope == 'branch' and permissions['can_branch']:
+        can_send_this_post = True
+    
     # Get recipient stats
     recipient_stats = {
         'pending': BroadcastRecipient.objects.filter(post=post, status='pending').count(),
@@ -304,6 +313,7 @@ def marketing_detail(request, post_id):
         'recipient_stats': recipient_stats,
         'recent_recipients': recent_recipients,
         'permissions': permissions,
+        'can_send_this_post': can_send_this_post,
     }
     
     return render(request, 'marketing/detail.html', context)

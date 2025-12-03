@@ -158,6 +158,18 @@ class BotUser(models.Model):
         ("en", "English"),
     )
 
+    # Center relationship - users are scoped per center (multi-tenant)
+    # Same Telegram user can register separately for each translation center
+    center = models.ForeignKey(
+        'organizations.TranslationCenter',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='bot_users',
+        verbose_name=_("Translation Center"),
+        help_text=_("The center this user belongs to. Same Telegram user can have separate accounts per center.")
+    )
+
     # Branch relationship - customers are tied to specific branches
     branch = models.ForeignKey(
         'organizations.Branch',
@@ -170,7 +182,7 @@ class BotUser(models.Model):
 
     # Telegram user data
     user_id = models.BigIntegerField(
-        unique=True, verbose_name=_("Telegram User ID"), blank=True, null=True
+        verbose_name=_("Telegram User ID"), blank=True, null=True
     )
     username = models.CharField(
         max_length=100, blank=True, null=True, verbose_name=_("Username")
@@ -212,7 +224,8 @@ class BotUser(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated At"))
 
     def __str__(self):
-        return f"@{self.username or self.user_id} - {self.name}"
+        center_name = self.center.name if self.center else "Global"
+        return f"@{self.username or self.user_id} - {self.name} ({center_name})"
 
     @property
     def display_name(self):
@@ -232,6 +245,14 @@ class BotUser(models.Model):
     class Meta:
         verbose_name = _("Telegram User")
         verbose_name_plural = _("Telegram Users")
+        # Unique constraint: same user_id can exist for different centers
+        unique_together = [['user_id', 'center']]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user_id', 'center'],
+                name='unique_user_per_center'
+            )
+        ]
 
     def save(self, *args, **kwargs):
         # Generate agency token and link if this is an agency user
