@@ -1,222 +1,245 @@
-# Translation Center
+# WEMARD - Translation Center Management System
 
-A comprehensive Telegram bot system for document translation and apostille services with per-page pricing and automated file processing.
-
-## 🏗️ Architecture Overview
-
-This project implements a complete translation center management system with:
-
-- **Telegram Bot Integration** - User registration and service ordering
-- **Per-Page Pricing System** - Dynamic pricing based on document content
-- **Multi-Format File Processing** - PDF, DOCX, images, and text files
-- **Multi-Language Support** - Uzbek, Russian, and English
-- **Admin Management System** - Separate interfaces for bot users and internal staff
-
-## 📊 Model Structure
-
-### **Users Module**
-- **`TelegramUser`** - Bot users (customers)
-  - Fields: user_id, username, name, phone, language, step, is_active, is_agency
-  - Purpose: Store and manage bot user data
-
-- **`Accaunts`** - Internal users (admins, staff)
-  - Fields: name, email, password, is_active, is_superuser
-  - Purpose: Django authentication for internal management
-
-### **Services Module**
-- **`MainService`** - Service categories (Translation, Apostille)
-- **`DocumentType`** - Document types with per-page pricing
-- **Page counting utilities** - Automatic page detection
-
-### **Orders Module**
-- **`Order`** - Service orders linked to TelegramUser
-- **`OrderFiles`** - Uploaded files with page counts
-- **Automatic pricing calculation** based on pages and user type
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Python 3.8+
-- Django 5.2+
-- Telegram Bot Token
-
-### Installation
-
-1. **Clone the repository:**
-```bash
-git clone <repository-url>
-cd translation-center
-```
-
-2. **Create virtual environment:**
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. **Install dependencies:**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Setup environment variables:**
-```bash
-cp .env.example .env
-# Edit .env with your bot token and admin IDs
-```
-
-5. **Run migrations:**
-```bash
-python manage.py migrate
-```
-
-6. **Setup basic data:**
-```bash
-python manage.py setup_initial_data
-```
-
-7. **Run development server:**
-```bash
-python manage.py runserver
-```
-
-8. **Set webhook for bot:**
-Update the webhook URL in `bot/bot.py`
-
-## 📱 Bot Features
-
-### User Registration
-- Automatic user creation on /start
-- Multi-language selection (UZ, RU, EN)
-- Step-by-step registration with validation
-- Phone number collection via contact button
-
-### Service Ordering
-- Per-page pricing system
-- Automatic page counting from uploaded files
-- Agency discounts
-- Order tracking and management
-
-### Supported File Types
-- **PDF files** - Direct page counting
-- **DOCX files** - Content-based estimation
-- **Images** - 1 page per image
-- **Text files** - Line-based estimation
-
-## 🔧 Admin Features
-
-### TelegramUser Management
-- View all bot users and their data
-- Filter by language, status, agency
-- Search by name, username, phone
-- Registration progress tracking
-
-### Order Management
-- View all orders with TelegramUser details
-- File management with page counts
-- Pricing and payment tracking
-- Order status management
-
-### Internal User Management
-- Admin/staff account management
-- Superuser permissions
-- Internal system access
-
-## 🌍 Multi-Language Support
-
-The bot supports 3 languages with complete translations:
-- **Uzbek** (uz) - Primary language
-- **Russian** (ru) - Secondary language
-- **English** (en) - International language
-
-All messages, buttons, and responses are localized.
-
-## 📋 API Endpoints
-
-- **Bot Webhook:** `/bot/` - Handles Telegram bot updates
-- **Admin Panel:** `/admin/` - Django admin interface
-
-## 🛠️ Development
-
-### Project Structure
-```
-translation-center/
-├── bot/                    # Telegram bot application
-│   ├── bot.py             # Main bot logic
-│   ├── translations.py    # Multi-language translations
-│   └── enhanced_bot.py    # Additional bot features
-├── services/              # Core business logic
-│   ├── models.py          # MainService, DocumentType
-│   ├── bot_helpers.py     # Bot integration helpers
-│   └── page_counter.py    # File processing utilities
-├── users/                 # User management
-│   ├── models.py          # TelegramUser, Accaunts, Order
-│   └── admin.py           # Admin interfaces
-├── core/                  # Django core settings
-└── requirements.txt       # Python dependencies
-```
-
-### Key Commands
-```bash
-# Run tests
-python test_bot.py
-
-# Create migrations
-python manage.py makemigrations
-
-# Run migrations
-python manage.py migrate
-
-# Setup initial data
-python manage.py setup_initial_data
-
-# Access admin
-python manage.py createsuperuser
-```
-
-## 🔒 Security Features
-
-- **User data separation** - Clear distinction between bot users and internal users
-- **Input validation** - All user inputs are validated and sanitized
-- **File upload security** - Safe file processing with type checking
-- **Admin authentication** - Proper Django authentication system
-
-## 📈 Production Deployment
-
-1. **Environment Setup:**
-   - Configure production database
-   - Set secure bot token and admin IDs
-   - Configure webhook URL
-
-2. **Security:**
-   - Use HTTPS for webhook
-   - Set up proper file upload limits
-   - Configure firewall and security groups
-
-3. **Monitoring:**
-   - Set up logging for bot interactions
-   - Monitor database performance
-   - Track user registration and order metrics
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests: `python test_bot.py`
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Check the bot's help command
-- Contact system administrators
-- Review the documentation in BOT_IMPLEMENTATION.md
+A comprehensive **multi-tenant SaaS platform** for managing translation centers, with an integrated Telegram bot for customer ordering and a modern admin dashboard for business operations.
 
 ---
 
-**Translation Center Bot** - Automated document translation and apostille services with intelligent pricing and file processing.
+## 🎯 Project Summary
+
+**WEMARD** is a complete business management solution designed for translation service companies. It enables:
+
+- **Translation Center Owners** to manage multiple branches, staff, services, and track business performance
+- **Customers** to order translation/apostille services via Telegram bot with automatic pricing
+- **Staff Members** to process orders with role-based access control
+
+### Core Value Proposition
+- 🏢 **Multi-tenant Architecture** - One platform serves multiple translation centers
+- 🤖 **Telegram Bot Integration** - Customers order directly through Telegram
+- 📊 **Real-time Analytics** - Sales, revenue, and staff performance dashboards
+- 🔐 **Role-Based Access Control (RBAC)** - Granular permissions for different user types
+- 🌍 **Multi-language Support** - Uzbek, Russian, and English interfaces
+
+---
+
+## 🏗️ System Architecture
+
+### User Hierarchy
+```
+Super Admin (Platform Owner)
+    └── Translation Center Owner
+            └── Branch
+                    ├── Manager
+                    └── Staff Members
+```
+
+### Main Modules
+
+| Module | Description |
+|--------|-------------|
+| **Organizations** | Centers, Branches, Staff, Roles & Permissions |
+| **Services** | Categories (Translation, Apostille), Products with pricing |
+| **Orders** | Order lifecycle, payments, file management, assignment |
+| **Accounts** | Bot users (customers), Admin users, Agencies |
+| **Analytics** | Dashboards, Reports, Staff Performance |
+| **Bot** | Telegram integration for customer ordering |
+
+---
+
+## 👥 User Roles & Permissions
+
+| Role | Access Level |
+|------|--------------|
+| **Super Admin** | Full platform access, manage all centers |
+| **Owner** | Manage their center, all branches, staff, products |
+| **Manager** | Manage assigned branch, view reports, assign orders |
+| **Staff** | Process assigned orders, view personal statistics |
+
+### Key Permissions
+- `can_manage_center` - Center settings and configuration
+- `can_manage_branches` - Branch CRUD operations
+- `can_manage_staff` - Staff user management
+- `can_manage_products` - Categories and products
+- `can_manage_orders` - Order status updates
+- `can_assign_orders` - Assign orders to staff
+- `can_view_reports` - Analytics and reports access
+- `can_receive_payments` - Payment confirmation
+
+---
+
+## 📱 Telegram Bot Features
+
+### Customer Journey
+1. **Start** → Language selection (UZ/RU/EN)
+2. **Registration** → Name, phone number collection
+3. **Service Selection** → Choose category (Translation/Apostille)
+4. **Document Upload** → Upload files (PDF, DOCX, images)
+5. **Pricing** → Automatic page counting & price calculation
+6. **Payment** → Cash or card with receipt upload
+7. **Tracking** → Order status notifications
+
+### Pricing System
+- **Per-page pricing** - Dynamic pricing based on document pages
+- **Agency discounts** - Special rates for agency customers
+- **Copy pricing** - Additional copies at percentage rate
+- **Static/Dynamic** - Fixed price or per-page options
+
+### Supported File Types
+- PDF (automatic page counting)
+- DOCX (content-based estimation)
+- Images (JPG, PNG - 1 page each)
+- Text files (line-based estimation)
+
+---
+
+## 🖥️ Admin Dashboard Features
+
+### Dashboard Views
+- **Main Dashboard** - Overview with key metrics
+- **Sales Dashboard** - Revenue, orders, trends
+- **Finance Dashboard** - Payments, pending amounts
+
+### Management Sections
+- **Organizations** - Centers, Branches, Staff, Roles
+- **Customers** - Bot users with order history
+- **Orders** - Full order lifecycle management
+- **Services** - Categories and Products with translations
+- **Reports** - Financial, Orders, Staff Performance
+
+### UI Features
+- 🌙 Dark/Light mode toggle
+- 🌐 Multi-language interface (UZ/RU/EN)
+- 📱 Responsive design
+- 📊 Interactive charts (ApexCharts)
+- 🔍 Advanced search and filtering
+- 📄 Pagination with customizable page size
+
+---
+
+## 🛠️ Technical Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Backend** | Django 5.2, Python 3.10+ |
+| **Database** | SQLite (dev), PostgreSQL (prod) |
+| **Bot** | pyTelegramBotAPI |
+| **Frontend** | Bootstrap 5, jQuery, Iconify |
+| **Charts** | ApexCharts |
+| **Translations** | django-modeltranslation |
+| **File Processing** | PyPDF2, python-docx, Pillow |
+
+---
+
+## 📁 Project Structure
+
+```
+WowDash/
+├── accounts/           # User authentication, bot users
+├── bot/                # Telegram bot logic
+├── core/               # Regions, districts, audit logs
+├── orders/             # Order management
+├── organizations/      # Centers, branches, staff, RBAC
+├── services/           # Categories, products, pricing
+├── templates/          # HTML templates
+├── static/             # CSS, JS, images
+├── WowDash/            # Django settings, URLs
+├── manage.py
+└── requirements.txt
+```
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# 1. Clone and setup
+git clone <repository>
+cd WowDash
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Run migrations
+python manage.py migrate
+
+# 4. Create superuser
+python manage.py createsuperuser
+
+# 5. Setup initial data (optional)
+python manage.py setup_initial_data
+
+# 6. Run server
+python manage.py runserver
+```
+
+---
+
+## 📊 Key Features Summary
+
+### For Center Owners
+✅ Multi-branch management  
+✅ Staff management with roles  
+✅ Product/service configuration  
+✅ Revenue and sales analytics  
+✅ Staff performance tracking  
+
+### For Managers
+✅ Branch operations oversight  
+✅ Order assignment to staff  
+✅ Daily/weekly reports  
+✅ Customer management  
+
+### For Staff
+✅ Personal order queue  
+✅ Order status updates  
+✅ Personal statistics  
+
+### For Customers (via Bot)
+✅ Easy service ordering  
+✅ Automatic price calculation  
+✅ Order tracking  
+✅ Multi-language support  
+✅ Payment options (cash/card)  
+
+---
+
+## 🔐 Security
+
+- Django authentication system
+- Role-based access control
+- Branch-level data isolation
+- Secure file upload handling
+- Input validation and sanitization
+- Audit logging for critical actions
+
+---
+
+## 📈 Analytics & Reports
+
+- **Financial Reports** - Revenue by period, payment methods
+- **Order Reports** - Status distribution, volume trends
+- **Staff Performance** - Completed orders, average time
+- **Customer Analytics** - New registrations, order frequency
+
+---
+
+## 🌍 Internationalization
+
+Full support for 3 languages:
+- 🇺🇿 **Uzbek** (O'zbek) - Primary
+- 🇷🇺 **Russian** (Русский) - Secondary
+- 🇬🇧 **English** - International
+
+Both admin interface and bot support language switching.
+
+---
+
+## 📞 Support
+
+For questions and support, contact the system administrator.
+
+---
+
+**WEMARD** - Complete Translation Center Management Solution
+
