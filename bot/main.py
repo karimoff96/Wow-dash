@@ -445,7 +445,7 @@ def send_payment_received_notification(order, amount_received, total_received):
         language = user.language or "uz"
         
         # Calculate remaining balance
-        remaining = order.remaining_balance
+        remaining = order.remaining
         total_due = order.total_due
         
         # Check if payment is fully completed
@@ -1468,7 +1468,8 @@ def handle_language_selection(message):
         language = "en"
         language_name = "English"
 
-    create_or_update_user(user_id=user_id, language=language)
+    center = get_current_center()
+    create_or_update_user(user_id=user_id, language=language, center=center)
     update_user_step(user_id, STEP_LANGUAGE_SELECTED)
 
     language_selected_text = get_text("language_selected", language).format(
@@ -1634,7 +1635,8 @@ def handle_contact(message):
     current_step = get_user_step(user_id)
     if current_step == STEP_EDITING_PHONE and message.contact:
         phone = message.contact.phone_number
-        create_or_update_user(user_id=user_id, phone=phone)
+        center = get_current_center()
+        create_or_update_user(user_id=user_id, phone=phone, center=center)
         update_user_step(user_id, STEP_EDITING_PROFILE)
 
         # Remove keyboard
@@ -2177,37 +2179,54 @@ def handle_pay_order(call):
         additional_info = AdditionalInfo.get_for_user(user)
         
         # Build payment instructions
-        amount = order.remaining
+        total_due = order.total_due
+        received = order.received or 0
+        remaining = order.remaining
         
         if language == "uz":
             text = f"💳 <b>To'lov qilish</b>\n\n"
-            text += f"📋 Buyurtma #{order.id}\n"
-            text += f"💰 To'lov miqdori: <b>{amount:,.0f}</b> so'm\n\n"
+            text += f"📋 Buyurtma: #{order.id}\n"
+            text += f"� Umumiy narx: {total_due:,.0f} so'm\n"
+            text += f"✅ To'langan: {received:,.0f} so'm\n"
+            text += f"💰 Qolgan to'lov: <b>{remaining:,.0f} so'm</b>\n\n"
             if additional_info and additional_info.bank_card:
-                text += f"💳 Karta raqami: <code>{additional_info.bank_card}</code>\n"
+                text += f"💳 Karta raqami:\n<code>{additional_info.bank_card}</code>\n"
                 if additional_info.holder_name:
                     text += f"👤 Karta egasi: {additional_info.holder_name}\n"
-            text += f"\n📎 To'lovni amalga oshirib, chekni yuboring.\n"
+                text += "\n"
+            else:
+                text += "⚠️ Karta ma'lumotlari topilmadi\n\n"
+            text += f"📎 To'lovni amalga oshirib, chekni yuboring.\n"
             text += f"📷 Rasm yoki hujjat sifatida yuborishingiz mumkin."
         elif language == "ru":
             text = f"💳 <b>Оплата</b>\n\n"
-            text += f"📋 Заказ #{order.id}\n"
-            text += f"💰 Сумма оплаты: <b>{amount:,.0f}</b> сум\n\n"
+            text += f"📋 Заказ: #{order.id}\n"
+            text += f"� Общая цена: {total_due:,.0f} сум\n"
+            text += f"✅ Оплачено: {received:,.0f} сум\n"
+            text += f"💰 Остаток к оплате: <b>{remaining:,.0f} сум</b>\n\n"
             if additional_info and additional_info.bank_card:
-                text += f"💳 Номер карты: <code>{additional_info.bank_card}</code>\n"
+                text += f"💳 Номер карты:\n<code>{additional_info.bank_card}</code>\n"
                 if additional_info.holder_name:
                     text += f"👤 Владелец карты: {additional_info.holder_name}\n"
-            text += f"\n📎 Произведите оплату и отправьте чек.\n"
+                text += "\n"
+            else:
+                text += "⚠️ Данные карты не найдены\n\n"
+            text += f"📎 Произведите оплату и отправьте чек.\n"
             text += f"📷 Можете отправить как фото или документ."
         else:
             text = f"💳 <b>Payment</b>\n\n"
-            text += f"📋 Order #{order.id}\n"
-            text += f"💰 Payment amount: <b>{amount:,.0f}</b> sum\n\n"
+            text += f"📋 Order: #{order.id}\n"
+            text += f"� Total price: {total_due:,.0f} sum\n"
+            text += f"✅ Paid: {received:,.0f} sum\n"
+            text += f"💰 Remaining payment: <b>{remaining:,.0f} sum</b>\n\n"
             if additional_info and additional_info.bank_card:
-                text += f"💳 Card number: <code>{additional_info.bank_card}</code>\n"
+                text += f"💳 Card number:\n<code>{additional_info.bank_card}</code>\n"
                 if additional_info.holder_name:
                     text += f"👤 Card holder: {additional_info.holder_name}\n"
-            text += f"\n📎 Make the payment and send the receipt.\n"
+                text += "\n"
+            else:
+                text += "⚠️ Card details not found\n\n"
+            text += f"📎 Make the payment and send the receipt.\n"
             text += f"📷 You can send it as a photo or document."
         
         # Create cancel button
@@ -3622,15 +3641,19 @@ def handle_file_upload(message):
                 # Save receipt file
                 from django.core.files.base import ContentFile
                 from django.core.files.storage import default_storage
+                from orders.models import Receipt
+                import time
 
                 if message.document:
                     file_info = bot.get_file(message.document.file_id)
                     downloaded_file = bot.download_file(file_info.file_path)
-                    file_name = f"receipt_{order_id}_{message.document.file_name}"
+                    file_name = f"receipt_{order_id}_{int(time.time())}_{message.document.file_name}"
+                    telegram_file_id = message.document.file_id
                 else:  # message.photo
                     file_info = bot.get_file(message.photo[-1].file_id)
                     downloaded_file = bot.download_file(file_info.file_path)
-                    file_name = f"receipt_{order_id}_{message.photo[-1].file_id}.jpg"
+                    file_name = f"receipt_{order_id}_{int(time.time())}_{message.photo[-1].file_id}.jpg"
+                    telegram_file_id = message.photo[-1].file_id
 
                 # Save receipt to storage
                 file_content = ContentFile(downloaded_file, name=file_name)
@@ -3638,7 +3661,21 @@ def handle_file_upload(message):
                     f"receipts/{file_name}", file_content
                 )
 
-                # Update order with payment receipt
+                # Get user for Receipt record
+                user = get_bot_user(user_id)
+
+                # Create Receipt record instead of updating order.recipt
+                Receipt.objects.create(
+                    order=order,
+                    file=receipt_path,
+                    telegram_file_id=telegram_file_id,
+                    amount=order.total_due,  # Initial payment - full amount
+                    source='bot',
+                    status='pending',
+                    uploaded_by_user=user,
+                )
+
+                # Keep legacy field for backward compatibility (optional)
                 order.recipt = receipt_path
                 order.payment_type = "card"
                 order.status = "payment_received"
@@ -4266,15 +4303,17 @@ def handle_payment_receipt_photo(message):
         order_id = user_files["order_id"]
 
         # Save receipt photo
-        from orders.models import Order
+        from orders.models import Order, Receipt
         from django.core.files.base import ContentFile
+        import time
 
         order = Order.objects.get(id=order_id)
+        user = get_bot_user(user_id)
 
         # Download and save receipt photo
         photo_file = bot.get_file(message.photo[-1].file_id)
         downloaded_file = bot.download_file(photo_file.file_path)
-        file_name = f"receipt_{order_id}_{message.photo[-1].file_id}.jpg"
+        file_name = f"receipt_{order_id}_{int(time.time())}_{message.photo[-1].file_id}.jpg"
         file_content = ContentFile(downloaded_file, name=file_name)
 
         # Save to media directory
@@ -4282,7 +4321,18 @@ def handle_payment_receipt_photo(message):
 
         file_path = default_storage.save(f"receipts/{file_name}", file_content)
 
-        # Update order with receipt
+        # Create Receipt record instead of updating order.recipt
+        Receipt.objects.create(
+            order=order,
+            file=file_path,
+            telegram_file_id=message.photo[-1].file_id,
+            amount=order.total_due,
+            source='bot',
+            status='pending',
+            uploaded_by_user=user,
+        )
+
+        # Update legacy field for backward compatibility
         order.recipt = file_path
         order.save()
 
@@ -4573,13 +4623,15 @@ def handle_text_messages(message):
 
     # Handle name input during registration
     if current_step == STEP_NAME_REQUESTED:
-        create_or_update_user(user_id=user_id, name=message.text)
+        center = get_current_center()
+        create_or_update_user(user_id=user_id, name=message.text, center=center)
         ask_contact(message, language)
         return
 
     # Handle name editing
     elif current_step == STEP_EDITING_NAME:
-        create_or_update_user(user_id=user_id, name=message.text)
+        center = get_current_center()
+        create_or_update_user(user_id=user_id, name=message.text, center=center)
         update_user_step(user_id, STEP_EDITING_PROFILE)
         bot.send_message(message.chat.id, get_text("name_updated", language))
         show_profile(message, language)
@@ -4593,7 +4645,8 @@ def handle_text_messages(message):
             else (message.contact.phone_number if message.contact else None)
         )
         if phone_number:
-            create_or_update_user(user_id=user_id, phone=phone_number)
+            center = get_current_center()
+            create_or_update_user(user_id=user_id, phone=phone_number, center=center)
             update_user_step(user_id, STEP_EDITING_PROFILE)
             bot.send_message(message.chat.id, get_text("phone_updated", language))
             show_profile(message, language)

@@ -1,6 +1,7 @@
 {% extends '../layout/layout.html' %}
 {% load static %}
 {% load translation_filters %}
+{% load permission_tags %}
 
 {% block content %}
 <div class="row gy-4">
@@ -64,10 +65,13 @@
                         <iconify-icon icon="ep:back" class="me-4"></iconify-icon>
                         <span data-i18n="detail.back">Back</span>
                     </a>
+                    {% can_do 'products.manage' as can_manage_products %}
+                    {% if can_manage_products %}
                     <a href="{% url 'editCategory' category.id %}" class="btn btn-primary radius-8 px-20 py-11 flex-grow-1 d-flex align-items-center justify-content-center">
                         <iconify-icon icon="lucide:edit" class="me-4"></iconify-icon>
                         <span data-i18n="detail.edit">Edit</span>
                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -81,10 +85,12 @@
                     <iconify-icon icon="solar:box-linear" class="me-8 text-warning-600"></iconify-icon>
                     <span data-i18n="detail.products">Products</span> ({{ product_count }})
                 </h6>
+                {% if can_manage_products %}
                 <a href="{% url 'addProduct' %}?category={{ category.id }}" class="btn btn-sm btn-primary radius-8 d-flex align-items-center">
                     <iconify-icon icon="ic:baseline-plus" class="me-4"></iconify-icon>
                     <span data-i18n="detail.addProduct">Add Product</span>
                 </a>
+                {% endif %}
             </div>
             <div class="card-body p-0">
                 {% if products %}
@@ -123,9 +129,11 @@
                                         <a href="{% url 'productDetail' product.id %}" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-36-px h-36-px d-inline-flex justify-content-center align-items-center rounded-circle">
                                             <iconify-icon icon="majesticons:eye-line" class="icon text-lg"></iconify-icon>
                                         </a>
+                                        {% if can_manage_products %}
                                         <a href="{% url 'editProduct' product.id %}" class="bg-success-focus bg-hover-success-200 text-success-600 fw-medium w-36-px h-36-px d-inline-flex justify-content-center align-items-center rounded-circle">
                                             <iconify-icon icon="lucide:edit" class="icon text-lg"></iconify-icon>
                                         </a>
+                                        {% endif %}
                                     </div>
                                 </td>
                             </tr>
@@ -137,10 +145,12 @@
                 <div class="text-center py-40">
                     <iconify-icon icon="solar:box-linear" class="text-4xl text-secondary-light mb-8"></iconify-icon>
                     <p class="text-secondary-light mb-16" data-i18n="detail.noProductsInCategory">No products in this category</p>
+                    {% if can_manage_products %}
                     <a href="{% url 'addProduct' %}?category={{ category.id }}" class="btn btn-sm btn-primary radius-8 d-inline-flex align-items-center">
                         <iconify-icon icon="ic:baseline-plus" class="me-4"></iconify-icon>
                         <span data-i18n="detail.addFirstProduct">Add First Product</span>
                     </a>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>

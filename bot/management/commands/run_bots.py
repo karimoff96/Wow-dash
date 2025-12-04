@@ -131,21 +131,54 @@ class MultiCenterBotRunner:
     def monitor(self):
         """Monitor all subprocesses"""
         while self.running and self.processes:
+            # Check processes and remove dead ones
+            still_running = []
             for center, process in self.processes:
                 # Check if process is still running
-                if process.poll() is not None:
+                if process.poll() is None:
+                    # Process is still alive
+                    still_running.append((center, process))
+                else:
+                    # Process has exited
                     self.stdout.write(f'  ⚠️ Bot for {center.name} stopped (exit code: {process.returncode})\n')
+            
+            # Update the process list to only include running processes
+            self.processes = still_running
+            
+            # If no processes left, exit monitoring
+            if not self.processes:
+                self.stdout.write('  All bot processes have stopped.\n')
+                break
+            
             time.sleep(1)
     
     def shutdown(self):
         """Shutdown all subprocesses"""
         self.running = False
+        self.stdout.write('  Terminating all bot processes...\n')
+        
         for center, process in self.processes:
             try:
+                self.stdout.write(f'  Stopping bot for {center.name}...\n')
                 process.terminate()
-                process.wait(timeout=5)
-            except Exception:
-                process.kill()
+            except Exception as e:
+                self.stderr.write(f'  Error terminating {center.name}: {e}\n')
+        
+        # Wait for processes to terminate gracefully
+        time.sleep(2)
+        
+        # Force kill any remaining processes
+        for center, process in self.processes:
+            if process.poll() is None:
+                try:
+                    self.stdout.write(f'  Force killing bot for {center.name}...\n')
+                    process.kill()
+                    process.wait(timeout=2)
+                except Exception as e:
+                    self.stderr.write(f'  Error killing {center.name}: {e}\n')
+        
+        self.processes = []
+        self.stdout.write('  All bot processes terminated.\n')
 
 
 class Command(BaseCommand):

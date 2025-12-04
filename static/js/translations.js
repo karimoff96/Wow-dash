@@ -219,6 +219,328 @@ const translations = {
         en: 'My Orders'
     },
 
+    // ========== COMMON UI ELEMENTS ==========
+    'common.name': {
+        uz: 'Ism',
+        ru: 'Имя',
+        en: 'Name'
+    },
+    'common.date': {
+        uz: 'Sana',
+        ru: 'Дата',
+        en: 'Date'
+    },
+    'common.status': {
+        uz: 'Holat',
+        ru: 'Статус',
+        en: 'Status'
+    },
+    'common.actions': {
+        uz: 'Amallar',
+        ru: 'Действия',
+        en: 'Actions'
+    },
+    'common.edit': {
+        uz: 'Tahrirlash',
+        ru: 'Редактировать',
+        en: 'Edit'
+    },
+    'common.view': {
+        uz: 'Ko\'rish',
+        ru: 'Просмотр',
+        en: 'View'
+    },
+    'common.save': {
+        uz: 'Saqlash',
+        ru: 'Сохранить',
+        en: 'Save'
+    },
+    'common.update': {
+        uz: 'Yangilash',
+        ru: 'Обновить',
+        en: 'Update'
+    },
+    'common.create': {
+        uz: 'Yaratish',
+        ru: 'Создать',
+        en: 'Create'
+    },
+    'common.back': {
+        uz: 'Orqaga',
+        ru: 'Назад',
+        en: 'Back'
+    },
+    'common.close': {
+        uz: 'Yopish',
+        ru: 'Закрыть',
+        en: 'Close'
+    },
+    'common.search': {
+        uz: 'Qidirish',
+        ru: 'Поиск',
+        en: 'Search'
+    },
+    'common.filter': {
+        uz: 'Filtr',
+        ru: 'Фильтр',
+        en: 'Filter'
+    },
+    'common.export': {
+        uz: 'Eksport',
+        ru: 'Экспорт',
+        en: 'Export'
+    },
+    'common.import': {
+        uz: 'Import',
+        ru: 'Импорт',
+        en: 'Import'
+    },
+    'common.print': {
+        uz: 'Chop etish',
+        ru: 'Печать',
+        en: 'Print'
+    },
+    'common.download': {
+        uz: 'Yuklab olish',
+        ru: 'Скачать',
+        en: 'Download'
+    },
+    'common.upload': {
+        uz: 'Yuklash',
+        ru: 'Загрузить',
+        en: 'Upload'
+    },
+    'common.loading': {
+        uz: 'Yuklanmoqda...',
+        ru: 'Загрузка...',
+        en: 'Loading...'
+    },
+    'common.submit': {
+        uz: 'Yuborish',
+        ru: 'Отправить',
+        en: 'Submit'
+    },
+    'common.reset': {
+        uz: 'Tiklash',
+        ru: 'Сбросить',
+        en: 'Reset'
+    },
+    'common.apply': {
+        uz: 'Qo\'llash',
+        ru: 'Применить',
+        en: 'Apply'
+    },
+    'common.confirm': {
+        uz: 'Tasdiqlash',
+        ru: 'Подтвердить',
+        en: 'Confirm'
+    },
+    'common.yes': {
+        uz: 'Ha',
+        ru: 'Да',
+        en: 'Yes'
+    },
+    'common.no': {
+        uz: 'Yo\'q',
+        ru: 'Нет',
+        en: 'No'
+    },
+    'common.total': {
+        uz: 'Jami',
+        ru: 'Всего',
+        en: 'Total'
+    },
+    'common.count': {
+        uz: 'Soni',
+        ru: 'Количество',
+        en: 'Count'
+    },
+    'common.price': {
+        uz: 'Narx',
+        ru: 'Цена',
+        en: 'Price'
+    },
+    'common.amount': {
+        uz: 'Miqdor',
+        ru: 'Сумма',
+        en: 'Amount'
+    },
+    'common.description': {
+        uz: 'Tavsif',
+        ru: 'Описание',
+        en: 'Description'
+    },
+    'common.details': {
+        uz: 'Tafsilotlar',
+        ru: 'Детали',
+        en: 'Details'
+    },
+    'common.type': {
+        uz: 'Turi',
+        ru: 'Тип',
+        en: 'Type'
+    },
+    'common.category': {
+        uz: 'Kategoriya',
+        ru: 'Категория',
+        en: 'Category'
+    },
+    'common.phone': {
+        uz: 'Telefon',
+        ru: 'Телефон',
+        en: 'Phone'
+    },
+    'common.email': {
+        uz: 'Elektron pochta',
+        ru: 'Электронная почта',
+        en: 'Email'
+    },
+    'common.address': {
+        uz: 'Manzil',
+        ru: 'Адрес',
+        en: 'Address'
+    },
+    'common.notes': {
+        uz: 'Izohlar',
+        ru: 'Заметки',
+        en: 'Notes'
+    },
+    'common.createdAt': {
+        uz: 'Yaratilgan',
+        ru: 'Создано',
+        en: 'Created At'
+    },
+    'common.updatedAt': {
+        uz: 'Yangilangan',
+        ru: 'Обновлено',
+        en: 'Updated At'
+    },
+    'common.createdBy': {
+        uz: 'Yaratuvchi',
+        ru: 'Создано кем',
+        en: 'Created By'
+    },
+    'common.all': {
+        uz: 'Hammasi',
+        ru: 'Все',
+        en: 'All'
+    },
+    'common.active': {
+        uz: 'Faol',
+        ru: 'Активный',
+        en: 'Active'
+    },
+    'common.inactive': {
+        uz: 'Faol emas',
+        ru: 'Неактивный',
+        en: 'Inactive'
+    },
+    'common.show': {
+        uz: 'Ko\'rsatish',
+        ru: 'Показать',
+        en: 'Show'
+    },
+    'common.entries': {
+        uz: 'yozuvlar',
+        ru: 'записей',
+        en: 'entries'
+    },
+    'common.showing': {
+        uz: 'Ko\'rsatilmoqda',
+        ru: 'Показано',
+        en: 'Showing'
+    },
+    'common.to': {
+        uz: 'dan',
+        ru: 'до',
+        en: 'to'
+    },
+    'common.of': {
+        uz: 'dan',
+        ru: 'из',
+        en: 'of'
+    },
+    'common.previous': {
+        uz: 'Oldingi',
+        ru: 'Предыдущая',
+        en: 'Previous'
+    },
+    'common.next': {
+        uz: 'Keyingi',
+        ru: 'Следующая',
+        en: 'Next'
+    },
+    'common.first': {
+        uz: 'Birinchi',
+        ru: 'Первая',
+        en: 'First'
+    },
+    'common.last': {
+        uz: 'Oxirgi',
+        ru: 'Последняя',
+        en: 'Last'
+    },
+    'common.noDataFound': {
+        uz: 'Ma\'lumot topilmadi',
+        ru: 'Данные не найдены',
+        en: 'No data found'
+    },
+    'common.noResultsFound': {
+        uz: 'Natija topilmadi',
+        ru: 'Результаты не найдены',
+        en: 'No results found'
+    },
+    'common.selectOption': {
+        uz: 'Variantni tanlang',
+        ru: 'Выберите вариант',
+        en: 'Select option'
+    },
+    'common.selectAll': {
+        uz: 'Barchasini tanlash',
+        ru: 'Выбрать все',
+        en: 'Select All'
+    },
+    'common.deselectAll': {
+        uz: 'Barcha tanlovni bekor qilish',
+        ru: 'Отменить все',
+        en: 'Deselect All'
+    },
+    'common.selected': {
+        uz: 'Tanlangan',
+        ru: 'Выбрано',
+        en: 'Selected'
+    },
+    'common.optional': {
+        uz: 'Ixtiyoriy',
+        ru: 'Необязательно',
+        en: 'Optional'
+    },
+    'common.required': {
+        uz: 'Majburiy',
+        ru: 'Обязательно',
+        en: 'Required'
+    },
+    'common.success': {
+        uz: 'Muvaffaqiyatli',
+        ru: 'Успешно',
+        en: 'Success'
+    },
+    'common.error': {
+        uz: 'Xato',
+        ru: 'Ошибка',
+        en: 'Error'
+    },
+    'common.warning': {
+        uz: 'Ogohlantirish',
+        ru: 'Предупреждение',
+        en: 'Warning'
+    },
+    'common.info': {
+        uz: 'Ma\'lumot',
+        ru: 'Информация',
+        en: 'Info'
+    },
+
     // ========== DASHBOARD/INDEX ==========
     'dashboard.title': {
         uz: 'Boshqaruv paneli',
@@ -1415,6 +1737,56 @@ const translations = {
         ru: 'Заказы не найдены',
         en: 'No orders found'
     },
+    'common.location': {
+        uz: 'Joylashuv',
+        ru: 'Местоположение',
+        en: 'Location'
+    },
+    'common.details': {
+        uz: 'Tafsilotlar',
+        ru: 'Детали',
+        en: 'Details'
+    },
+    'common.payment': {
+        uz: 'To\'lov',
+        ru: 'Оплата',
+        en: 'Payment'
+    },
+    'common.assigned': {
+        uz: 'Tayinlangan',
+        ru: 'Назначено',
+        en: 'Assigned'
+    },
+    'common.confirmDeleteOrder': {
+        uz: 'Ushbu buyurtmani o\'chirmoqchimisiz?',
+        ru: 'Вы уверены, что хотите удалить этот заказ?',
+        en: 'Are you sure you want to delete this order?'
+    },
+    'common.allCenters': {
+        uz: 'Barcha markazlar',
+        ru: 'Все центры',
+        en: 'All Centers'
+    },
+    'common.allBranches': {
+        uz: 'Barcha filiallar',
+        ru: 'Все филиалы',
+        en: 'All Branches'
+    },
+    'common.allOrders': {
+        uz: 'Barcha buyurtmalar',
+        ru: 'Все заказы',
+        en: 'All Orders'
+    },
+    'common.allStatus': {
+        uz: 'Barcha holatlar',
+        ru: 'Все статусы',
+        en: 'All Status'
+    },
+    'common.allPayments': {
+        uz: 'Barcha to\'lovlar',
+        ru: 'Все платежи',
+        en: 'All Payments'
+    },
     'common.noUsersFound': {
         uz: 'Foydalanuvchilar topilmadi',
         ru: 'Пользователи не найдены',
@@ -1671,6 +2043,68 @@ const translations = {
         uz: 'Ruxsatlar',
         ru: 'Разрешения',
         en: 'Permissions'
+    },
+
+    // ========== STATUS ==========
+    'status.pending': {
+        uz: 'Kutilmoqda',
+        ru: 'Ожидание',
+        en: 'Pending'
+    },
+    'status.inProgress': {
+        uz: 'Jarayonda',
+        ru: 'В процессе',
+        en: 'In Progress'
+    },
+    'status.completed': {
+        uz: 'Yakunlangan',
+        ru: 'Завершено',
+        en: 'Completed'
+    },
+    'status.cancelled': {
+        uz: 'Bekor qilindi',
+        ru: 'Отменено',
+        en: 'Cancelled'
+    },
+    'status.unassigned': {
+        uz: 'Tayinlanmagan',
+        ru: 'Не назначено',
+        en: 'Unassigned'
+    },
+    'status.assigned': {
+        uz: 'Tayinlangan',
+        ru: 'Назначено',
+        en: 'Assigned'
+    },
+    'status.paymentPending': {
+        uz: 'To\'lov kutilmoqda',
+        ru: 'Ожидание оплаты',
+        en: 'Payment Pending'
+    },
+    'status.paymentReceived': {
+        uz: 'To\'lov qabul qilindi',
+        ru: 'Оплата получена',
+        en: 'Payment Received'
+    },
+    'status.paymentConfirmed': {
+        uz: 'To\'lov tasdiqlandi',
+        ru: 'Оплата подтверждена',
+        en: 'Payment Confirmed'
+    },
+    'status.ready': {
+        uz: 'Tayyor',
+        ru: 'Готово',
+        en: 'Ready'
+    },
+    'status.active': {
+        uz: 'Faol',
+        ru: 'Активный',
+        en: 'Active'
+    },
+    'status.inactive': {
+        uz: 'Nofaol',
+        ru: 'Неактивный',
+        en: 'Inactive'
     },
 
     // ========== ROLES ==========
@@ -3223,6 +3657,1199 @@ const translations = {
         uz: 'Rolni yangilash',
         ru: 'Обновить роль',
         en: 'Update Role'
+    },
+
+    // ========== ORDERS ==========
+    'orders.pageTitle': {
+        uz: 'Buyurtmalar ro\'yxati',
+        ru: 'Список заказов',
+        en: 'Orders List'
+    },
+    'orders.allOrders': {
+        uz: 'Barcha buyurtmalar',
+        ru: 'Все заказы',
+        en: 'All Orders'
+    },
+    'orders.myOrders': {
+        uz: 'Mening buyurtmalarim',
+        ru: 'Мои заказы',
+        en: 'My Orders'
+    },
+    'orders.createOrder': {
+        uz: 'Buyurtma yaratish',
+        ru: 'Создать заказ',
+        en: 'Create Order'
+    },
+    'orders.total': {
+        uz: 'Jami',
+        ru: 'Всего',
+        en: 'Total'
+    },
+    'orders.pending': {
+        uz: 'Kutilmoqda',
+        ru: 'Ожидание',
+        en: 'Pending'
+    },
+    'orders.inProgress': {
+        uz: 'Jarayonda',
+        ru: 'В процессе',
+        en: 'In Progress'
+    },
+    'orders.completed': {
+        uz: 'Yakunlangan',
+        ru: 'Завершено',
+        en: 'Completed'
+    },
+    'orders.cancelled': {
+        uz: 'Bekor qilindi',
+        ru: 'Отменено',
+        en: 'Cancelled'
+    },
+    'orders.unassigned': {
+        uz: 'Tayinlanmagan',
+        ru: 'Не назначено',
+        en: 'Unassigned'
+    },
+    'orders.show': {
+        uz: 'Ko\'rsatish',
+        ru: 'Показать',
+        en: 'Show'
+    },
+    'orders.filterByStatus': {
+        uz: 'Holat bo\'yicha',
+        ru: 'По статусу',
+        en: 'Filter by Status'
+    },
+    'orders.filterByPayment': {
+        uz: 'To\'lov bo\'yicha',
+        ru: 'По оплате',
+        en: 'Filter by Payment'
+    },
+    'orders.filterByBranch': {
+        uz: 'Filial bo\'yicha',
+        ru: 'По филиалу',
+        en: 'Filter by Branch'
+    },
+    'orders.allStatus': {
+        uz: 'Barcha holatlar',
+        ru: 'Все статусы',
+        en: 'All Status'
+    },
+    'orders.allPayment': {
+        uz: 'Barcha to\'lovlar',
+        ru: 'Все платежи',
+        en: 'All Payment'
+    },
+    'orders.allBranches': {
+        uz: 'Barcha filiallar',
+        ru: 'Все филиалы',
+        en: 'All Branches'
+    },
+    'orders.orderNumber': {
+        uz: 'Buyurtma raqami',
+        ru: 'Номер заказа',
+        en: 'Order Number'
+    },
+    'orders.customer': {
+        uz: 'Mijoz',
+        ru: 'Клиент',
+        en: 'Customer'
+    },
+    'orders.product': {
+        uz: 'Mahsulot',
+        ru: 'Продукт',
+        en: 'Product'
+    },
+    'orders.category': {
+        uz: 'Kategoriya',
+        ru: 'Категория',
+        en: 'Category'
+    },
+    'orders.totalPrice': {
+        uz: 'Jami narx',
+        ru: 'Общая цена',
+        en: 'Total Price'
+    },
+    'orders.received': {
+        uz: 'Qabul qilindi',
+        ru: 'Получено',
+        en: 'Received'
+    },
+    'orders.remaining': {
+        uz: 'Qolgan',
+        ru: 'Осталось',
+        en: 'Remaining'
+    },
+    'orders.assignedTo': {
+        uz: 'Tayinlangan',
+        ru: 'Назначено',
+        en: 'Assigned To'
+    },
+    'orders.branch': {
+        uz: 'Filial',
+        ru: 'Филиал',
+        en: 'Branch'
+    },
+    'orders.createdAt': {
+        uz: 'Yaratilgan sana',
+        ru: 'Дата создания',
+        en: 'Created At'
+    },
+    'orders.actions': {
+        uz: 'Amallar',
+        ru: 'Действия',
+        en: 'Actions'
+    },
+    'orders.view': {
+        uz: 'Ko\'rish',
+        ru: 'Просмотр',
+        en: 'View'
+    },
+    'orders.edit': {
+        uz: 'Tahrirlash',
+        ru: 'Редактировать',
+        en: 'Edit'
+    },
+    'orders.delete': {
+        uz: 'O\'chirish',
+        ru: 'Удалить',
+        en: 'Delete'
+    },
+    'orders.noOrders': {
+        uz: 'Buyurtmalar topilmadi',
+        ru: 'Заказы не найдены',
+        en: 'No orders found'
+    },
+    'orders.search': {
+        uz: 'Qidirish',
+        ru: 'Поиск',
+        en: 'Search'
+    },
+    'orders.searchPlaceholder': {
+        uz: 'Buyurtma yoki mijoz qidirish',
+        ru: 'Поиск заказа или клиента',
+        en: 'Search order or customer'
+    },
+    'orders.paid': {
+        uz: 'To\'langan',
+        ru: 'Оплачено',
+        en: 'Paid'
+    },
+    'orders.notPaid': {
+        uz: 'To\'lanmagan',
+        ru: 'Не оплачено',
+        en: 'Not Paid'
+    },
+    'orders.partiallyPaid': {
+        uz: 'Qisman to\'langan',
+        ru: 'Частично оплачено',
+        en: 'Partially Paid'
+    },
+    'orders.paid': {
+        uz: 'To\'langan',
+        ru: 'Оплачено',
+        en: 'Paid'
+    },
+    'orders.notPaid': {
+        uz: 'To\'lanmagan',
+        ru: 'Не оплачено',
+        en: 'Not Paid'
+    },
+    'orders.partiallyPaid': {
+        uz: 'Qisman to\'langan',
+        ru: 'Частично оплачено',
+        en: 'Partially Paid'
+    },
+    'orders.cash': {
+        uz: 'Naqd',
+        ru: 'Наличные',
+        en: 'Cash'
+    },
+    'orders.card': {
+        uz: 'Karta',
+        ru: 'Карта',
+        en: 'Card'
+    },
+    'orders.orderDetails': {
+        uz: 'Buyurtma tafsilotlari',
+        ru: 'Детали заказа',
+        en: 'Order Details'
+    },
+    'orders.customerInfo': {
+        uz: 'Mijoz ma\'lumotlari',
+        ru: 'Информация о клиенте',
+        en: 'Customer Information'
+    },
+    'orders.paymentInfo': {
+        uz: 'To\'lov ma\'lumotlari',
+        ru: 'Информация об оплате',
+        en: 'Payment Information'
+    },
+    'orders.assignmentInfo': {
+        uz: 'Tayinlash ma\'lumotlari',
+        ru: 'Информация о назначении',
+        en: 'Assignment Information'
+    },
+    'orders.notes': {
+        uz: 'Izohlar',
+        ru: 'Заметки',
+        en: 'Notes'
+    },
+    'orders.status': {
+        uz: 'Holat',
+        ru: 'Статус',
+        en: 'Status'
+    },
+    'orders.updateStatus': {
+        uz: 'Holatni yangilash',
+        ru: 'Обновить статус',
+        en: 'Update Status'
+    },
+    'orders.save': {
+        uz: 'Saqlash',
+        ru: 'Сохранить',
+        en: 'Save'
+    },
+    'orders.cancel': {
+        uz: 'Bekor qilish',
+        ru: 'Отменить',
+        en: 'Cancel'
+    },
+    'orders.confirm': {
+        uz: 'Tasdiqlash',
+        ru: 'Подтвердить',
+        en: 'Confirm'
+    },
+    'orders.extraFee': {
+        uz: 'Qo\'shimcha to\'lov',
+        ru: 'Дополнительная плата',
+        en: 'Extra Fee'
+    },
+    'orders.discount': {
+        uz: 'Chegirma',
+        ru: 'Скидка',
+        en: 'Discount'
+    },
+
+    // ========== USERS ==========
+    'users.pageTitle': {
+        uz: 'Foydalanuvchilar ro\'yxati',
+        ru: 'Список пользователей',
+        en: 'Users List'
+    },
+    'users.allUsers': {
+        uz: 'Barcha foydalanuvchilar',
+        ru: 'Все пользователи',
+        en: 'All Users'
+    },
+    'users.createUser': {
+        uz: 'Foydalanuvchi yaratish',
+        ru: 'Создать пользователя',
+        en: 'Create User'
+    },
+    'users.name': {
+        uz: 'Ism',
+        ru: 'Имя',
+        en: 'Name'
+    },
+    'users.email': {
+        uz: 'Email',
+        ru: 'Email',
+        en: 'Email'
+    },
+    'users.phone': {
+        uz: 'Telefon',
+        ru: 'Телефон',
+        en: 'Phone'
+    },
+    'users.role': {
+        uz: 'Rol',
+        ru: 'Роль',
+        en: 'Role'
+    },
+    'users.branch': {
+        uz: 'Filial',
+        ru: 'Филиал',
+        en: 'Branch'
+    },
+    'users.status': {
+        uz: 'Holat',
+        ru: 'Статус',
+        en: 'Status'
+    },
+    'users.active': {
+        uz: 'Faol',
+        ru: 'Активный',
+        en: 'Active'
+    },
+    'users.inactive': {
+        uz: 'Nofaol',
+        ru: 'Неактивный',
+        en: 'Inactive'
+    },
+    'users.actions': {
+        uz: 'Amallar',
+        ru: 'Действия',
+        en: 'Actions'
+    },
+    'users.view': {
+        uz: 'Ko\'rish',
+        ru: 'Просмотр',
+        en: 'View'
+    },
+    'users.edit': {
+        uz: 'Tahrirlash',
+        ru: 'Редактировать',
+        en: 'Edit'
+    },
+    'users.delete': {
+        uz: 'O\'chirish',
+        ru: 'Удалить',
+        en: 'Delete'
+    },
+    'users.search': {
+        uz: 'Qidirish',
+        ru: 'Поиск',
+        en: 'Search'
+    },
+    'users.searchPlaceholder': {
+        uz: 'Foydalanuvchi qidirish',
+        ru: 'Поиск пользователя',
+        en: 'Search user'
+    },
+    'users.filterByRole': {
+        uz: 'Rol bo\'yicha',
+        ru: 'По роли',
+        en: 'Filter by Role'
+    },
+    'users.filterByBranch': {
+        uz: 'Filial bo\'yicha',
+        ru: 'По филиалу',
+        en: 'Filter by Branch'
+    },
+    'users.filterByStatus': {
+        uz: 'Holat bo\'yicha',
+        ru: 'По статусу',
+        en: 'Filter by Status'
+    },
+    'users.allRoles': {
+        uz: 'Barcha rollar',
+        ru: 'Все роли',
+        en: 'All Roles'
+    },
+    'users.allBranches': {
+        uz: 'Barcha filiallar',
+        ru: 'Все филиалы',
+        en: 'All Branches'
+    },
+    'users.allStatus': {
+        uz: 'Barcha holatlar',
+        ru: 'Все статусы',
+        en: 'All Status'
+    },
+    'users.userDetails': {
+        uz: 'Foydalanuvchi tafsilotlari',
+        ru: 'Детали пользователя',
+        en: 'User Details'
+    },
+    'users.personalInfo': {
+        uz: 'Shaxsiy ma\'lumot',
+        ru: 'Личная информация',
+        en: 'Personal Information'
+    },
+    'users.permissions': {
+        uz: 'Ruxsatlar',
+        ru: 'Разрешения',
+        en: 'Permissions'
+    },
+    'users.lastLogin': {
+        uz: 'So\'nggi kirish',
+        ru: 'Последний вход',
+        en: 'Last Login'
+    },
+    'users.createdAt': {
+        uz: 'Yaratilgan sana',
+        ru: 'Дата создания',
+        en: 'Created At'
+    },
+    'users.password': {
+        uz: 'Parol',
+        ru: 'Пароль',
+        en: 'Password'
+    },
+    'users.confirmPassword': {
+        uz: 'Parolni tasdiqlash',
+        ru: 'Подтвердите пароль',
+        en: 'Confirm Password'
+    },
+    'users.resetPassword': {
+        uz: 'Parolni tiklash',
+        ru: 'Сбросить пароль',
+        en: 'Reset Password'
+    },
+
+    // ========== PRODUCTS ==========
+    'products.pageTitle': {
+        uz: 'Mahsulotlar ro\'yxati',
+        ru: 'Список продуктов',
+        en: 'Products List'
+    },
+    'products.allProducts': {
+        uz: 'Barcha mahsulotlar',
+        ru: 'Все продукты',
+        en: 'All Products'
+    },
+    'products.createProduct': {
+        uz: 'Mahsulot yaratish',
+        ru: 'Создать продукт',
+        en: 'Create Product'
+    },
+    'products.name': {
+        uz: 'Nomi',
+        ru: 'Название',
+        en: 'Name'
+    },
+    'products.category': {
+        uz: 'Kategoriya',
+        ru: 'Категория',
+        en: 'Category'
+    },
+    'products.price': {
+        uz: 'Narx',
+        ru: 'Цена',
+        en: 'Price'
+    },
+    'products.cost': {
+        uz: 'Tannarx',
+        ru: 'Себестоимость',
+        en: 'Cost'
+    },
+    'products.description': {
+        uz: 'Ta\'rif',
+        ru: 'Описание',
+        en: 'Description'
+    },
+    'products.status': {
+        uz: 'Holat',
+        ru: 'Статус',
+        en: 'Status'
+    },
+    'products.active': {
+        uz: 'Faol',
+        ru: 'Активный',
+        en: 'Active'
+    },
+    'products.inactive': {
+        uz: 'Nofaol',
+        ru: 'Неактивный',
+        en: 'Inactive'
+    },
+    'products.actions': {
+        uz: 'Amallar',
+        ru: 'Действия',
+        en: 'Actions'
+    },
+    'products.view': {
+        uz: 'Ko\'rish',
+        ru: 'Просмотр',
+        en: 'View'
+    },
+    'products.edit': {
+        uz: 'Tahrirlash',
+        ru: 'Редактировать',
+        en: 'Edit'
+    },
+    'products.delete': {
+        uz: 'O\'chirish',
+        ru: 'Удалить',
+        en: 'Delete'
+    },
+    'products.search': {
+        uz: 'Qidirish',
+        ru: 'Поиск',
+        en: 'Search'
+    },
+    'products.searchPlaceholder': {
+        uz: 'Mahsulot qidirish',
+        ru: 'Поиск продукта',
+        en: 'Search product'
+    },
+    'products.filterByCategory': {
+        uz: 'Kategoriya bo\'yicha',
+        ru: 'По категории',
+        en: 'Filter by Category'
+    },
+    'products.allCategories': {
+        uz: 'Barcha kategoriyalar',
+        ru: 'Все категории',
+        en: 'All Categories'
+    },
+    'products.productDetails': {
+        uz: 'Mahsulot tafsilotlari',
+        ru: 'Детали продукта',
+        en: 'Product Details'
+    },
+    'products.createdAt': {
+        uz: 'Yaratilgan sana',
+        ru: 'Дата создания',
+        en: 'Created At'
+    },
+    'products.updatedAt': {
+        uz: 'Yangilangan sana',
+        ru: 'Дата обновления',
+        en: 'Updated At'
+    },
+
+    // ========== CATEGORIES ==========
+    'categories.pageTitle': {
+        uz: 'Kategoriyalar ro\'yxati',
+        ru: 'Список категорий',
+        en: 'Categories List'
+    },
+    'categories.allCategories': {
+        uz: 'Barcha kategoriyalar',
+        ru: 'Все категории',
+        en: 'All Categories'
+    },
+    'categories.createCategory': {
+        uz: 'Kategoriya yaratish',
+        ru: 'Создать категорию',
+        en: 'Create Category'
+    },
+    'categories.name': {
+        uz: 'Nomi',
+        ru: 'Название',
+        en: 'Name'
+    },
+    'categories.description': {
+        uz: 'Ta\'rif',
+        ru: 'Описание',
+        en: 'Description'
+    },
+    'categories.productsCount': {
+        uz: 'Mahsulotlar soni',
+        ru: 'Количество продуктов',
+        en: 'Products Count'
+    },
+    'categories.actions': {
+        uz: 'Amallar',
+        ru: 'Действия',
+        en: 'Actions'
+    },
+    'categories.view': {
+        uz: 'Ko\'rish',
+        ru: 'Просмотр',
+        en: 'View'
+    },
+    'categories.edit': {
+        uz: 'Tahrirlash',
+        ru: 'Редактировать',
+        en: 'Edit'
+    },
+    'categories.delete': {
+        uz: 'O\'chirish',
+        ru: 'Удалить',
+        en: 'Delete'
+    },
+
+    // ========== EXPENSES ==========
+    'expenses.pageTitle': {
+        uz: 'Xarajatlar ro\'yxati',
+        ru: 'Список расходов',
+        en: 'Expenses List'
+    },
+    'expenses.allExpenses': {
+        uz: 'Barcha xarajatlar',
+        ru: 'Все расходы',
+        en: 'All Expenses'
+    },
+    'expenses.createExpense': {
+        uz: 'Xarajat yaratish',
+        ru: 'Создать расход',
+        en: 'Create Expense'
+    },
+    'expenses.title': {
+        uz: 'Sarlavha',
+        ru: 'Заголовок',
+        en: 'Title'
+    },
+    'expenses.amount': {
+        uz: 'Miqdor',
+        ru: 'Сумма',
+        en: 'Amount'
+    },
+    'expenses.category': {
+        uz: 'Kategoriya',
+        ru: 'Категория',
+        en: 'Category'
+    },
+    'expenses.date': {
+        uz: 'Sana',
+        ru: 'Дата',
+        en: 'Date'
+    },
+    'expenses.description': {
+        uz: 'Ta\'rif',
+        ru: 'Описание',
+        en: 'Description'
+    },
+    'expenses.branch': {
+        uz: 'Filial',
+        ru: 'Филиал',
+        en: 'Branch'
+    },
+    'expenses.createdBy': {
+        uz: 'Yaratuvchi',
+        ru: 'Создано',
+        en: 'Created By'
+    },
+    'expenses.actions': {
+        uz: 'Amallar',
+        ru: 'Действия',
+        en: 'Actions'
+    },
+    'expenses.view': {
+        uz: 'Ko\'rish',
+        ru: 'Просмотр',
+        en: 'View'
+    },
+    'expenses.edit': {
+        uz: 'Tahrirlash',
+        ru: 'Редактировать',
+        en: 'Edit'
+    },
+    'expenses.delete': {
+        uz: 'O\'chirish',
+        ru: 'Удалить',
+        en: 'Delete'
+    },
+    'expenses.filterByCategory': {
+        uz: 'Kategoriya bo\'yicha',
+        ru: 'По категории',
+        en: 'Filter by Category'
+    },
+    'expenses.filterByBranch': {
+        uz: 'Filial bo\'yicha',
+        ru: 'По филиалу',
+        en: 'Filter by Branch'
+    },
+    'expenses.filterByDate': {
+        uz: 'Sana bo\'yicha',
+        ru: 'По дате',
+        en: 'Filter by Date'
+    },
+    'expenses.totalExpenses': {
+        uz: 'Jami xarajatlar',
+        ru: 'Всего расходов',
+        en: 'Total Expenses'
+    },
+
+    // ========== SALES ==========
+    'sales.pageTitle': {
+        uz: 'Savdo',
+        ru: 'Продажи',
+        en: 'Sales'
+    },
+    'sales.totalRevenue': {
+        uz: 'Jami daromad',
+        ru: 'Общий доход',
+        en: 'Total Revenue'
+    },
+    'sales.totalOrders': {
+        uz: 'Jami buyurtmalar',
+        ru: 'Всего заказов',
+        en: 'Total Orders'
+    },
+    'sales.averageOrderValue': {
+        uz: 'O\'rtacha buyurtma qiymati',
+        ru: 'Средняя стоимость заказа',
+        en: 'Average Order Value'
+    },
+    'sales.completionRate': {
+        uz: 'Yakunlanish darajasi',
+        ru: 'Процент завершения',
+        en: 'Completion Rate'
+    },
+    'sales.revenueChart': {
+        uz: 'Daromad grafigi',
+        ru: 'График доходов',
+        en: 'Revenue Chart'
+    },
+    'sales.ordersChart': {
+        uz: 'Buyurtmalar grafigi',
+        ru: 'График заказов',
+        en: 'Orders Chart'
+    },
+    'sales.topProducts': {
+        uz: 'Eng yaxshi mahsulotlar',
+        ru: 'Топ продукты',
+        en: 'Top Products'
+    },
+    'sales.topCustomers': {
+        uz: 'Eng yaxshi mijozlar',
+        ru: 'Топ клиенты',
+        en: 'Top Customers'
+    },
+    'sales.salesByBranch': {
+        uz: 'Filial bo\'yicha savdo',
+        ru: 'Продажи по филиалам',
+        en: 'Sales by Branch'
+    },
+    'sales.salesByCategory': {
+        uz: 'Kategoriya bo\'yicha savdo',
+        ru: 'Продажи по категориям',
+        en: 'Sales by Category'
+    },
+    'sales.daily': {
+        uz: 'Kunlik',
+        ru: 'Ежедневно',
+        en: 'Daily'
+    },
+    'sales.weekly': {
+        uz: 'Haftalik',
+        ru: 'Еженедельно',
+        en: 'Weekly'
+    },
+    'sales.monthly': {
+        uz: 'Oylik',
+        ru: 'Ежемесячно',
+        en: 'Monthly'
+    },
+    'sales.yearly': {
+        uz: 'Yillik',
+        ru: 'Ежегодно',
+        en: 'Yearly'
+    },
+    'sales.filterByDate': {
+        uz: 'Sana bo\'yicha',
+        ru: 'По дате',
+        en: 'Filter by Date'
+    },
+    'sales.exportReport': {
+        uz: 'Hisobotni eksport qilish',
+        ru: 'Экспорт отчета',
+        en: 'Export Report'
+    },
+
+    // ========== REPORTS ==========
+    'reports.pageTitle': {
+        uz: 'Hisobotlar',
+        ru: 'Отчеты',
+        en: 'Reports'
+    },
+    'reports.financialReport': {
+        uz: 'Moliyaviy hisobot',
+        ru: 'Финансовый отчет',
+        en: 'Financial Report'
+    },
+    'reports.unitEconomyReport': {
+        uz: 'Birlik iqtisodiyoti hisoboti',
+        ru: 'Отчет по юнит-экономике',
+        en: 'Unit Economy Report'
+    },
+    'reports.ordersReport': {
+        uz: 'Buyurtmalar hisoboti',
+        ru: 'Отчет по заказам',
+        en: 'Orders Report'
+    },
+    'reports.staffPerformanceReport': {
+        uz: 'Xodimlar samaradorligi hisoboti',
+        ru: 'Отчет по эффективности персонала',
+        en: 'Staff Performance Report'
+    },
+    'reports.branchComparisonReport': {
+        uz: 'Filiallar taqqoslash hisoboti',
+        ru: 'Отчет по сравнению филиалов',
+        en: 'Branch Comparison Report'
+    },
+    'reports.customersReport': {
+        uz: 'Mijozlar hisoboti',
+        ru: 'Отчет по клиентам',
+        en: 'Customers Report'
+    },
+    'reports.selectDateRange': {
+        uz: 'Sana oralig\'ini tanlang',
+        ru: 'Выберите диапазон дат',
+        en: 'Select Date Range'
+    },
+    'reports.startDate': {
+        uz: 'Boshlanish sanasi',
+        ru: 'Дата начала',
+        en: 'Start Date'
+    },
+    'reports.endDate': {
+        uz: 'Tugash sanasi',
+        ru: 'Дата окончания',
+        en: 'End Date'
+    },
+    'reports.generateReport': {
+        uz: 'Hisobot yaratish',
+        ru: 'Создать отчет',
+        en: 'Generate Report'
+    },
+    'reports.exportToExcel': {
+        uz: 'Excel ga eksport qilish',
+        ru: 'Экспорт в Excel',
+        en: 'Export to Excel'
+    },
+    'reports.totalRevenue': {
+        uz: 'Jami daromad',
+        ru: 'Общий доход',
+        en: 'Total Revenue'
+    },
+    'reports.totalExpenses': {
+        uz: 'Jami xarajatlar',
+        ru: 'Всего расходов',
+        en: 'Total Expenses'
+    },
+    'reports.netProfit': {
+        uz: 'Sof foyda',
+        ru: 'Чистая прибыль',
+        en: 'Net Profit'
+    },
+    'reports.profitMargin': {
+        uz: 'Foyda marjasi',
+        ru: 'Маржа прибыли',
+        en: 'Profit Margin'
+    },
+    'reports.totalOrders': {
+        uz: 'Jami buyurtmalar',
+        ru: 'Всего заказов',
+        en: 'Total Orders'
+    },
+    'reports.completedOrders': {
+        uz: 'Yakunlangan buyurtmalar',
+        ru: 'Завершенные заказы',
+        en: 'Completed Orders'
+    },
+    'reports.pendingOrders': {
+        uz: 'Kutilayotgan buyurtmalar',
+        ru: 'Ожидающие заказы',
+        en: 'Pending Orders'
+    },
+    'reports.cancelledOrders': {
+        uz: 'Bekor qilingan buyurtmalar',
+        ru: 'Отмененные заказы',
+        en: 'Cancelled Orders'
+    },
+    'reports.averageOrderValue': {
+        uz: 'O\'rtacha buyurtma qiymati',
+        ru: 'Средняя стоимость заказа',
+        en: 'Average Order Value'
+    },
+    'reports.customerAcquisitionCost': {
+        uz: 'Mijoz jalb qilish xarajati',
+        ru: 'Стоимость привлечения клиента',
+        en: 'Customer Acquisition Cost'
+    },
+    'reports.customerLifetimeValue': {
+        uz: 'Mijozning umr bo\'yi qiymati',
+        ru: 'Пожизненная ценность клиента',
+        en: 'Customer Lifetime Value'
+    },
+    'reports.conversionRate': {
+        uz: 'Konversiya darajasi',
+        ru: 'Коэффициент конверсии',
+        en: 'Conversion Rate'
+    },
+    'reports.topPerformers': {
+        uz: 'Eng yaxshi ishchilar',
+        ru: 'Лучшие работники',
+        en: 'Top Performers'
+    },
+    'reports.staffMember': {
+        uz: 'Xodim',
+        ru: 'Сотрудник',
+        en: 'Staff Member'
+    },
+    'reports.ordersCompleted': {
+        uz: 'Yakunlangan buyurtmalar',
+        ru: 'Завершенные заказы',
+        en: 'Orders Completed'
+    },
+    'reports.revenueGenerated': {
+        uz: 'Yaratilgan daromad',
+        ru: 'Сгенерированный доход',
+        en: 'Revenue Generated'
+    },
+    'reports.branchName': {
+        uz: 'Filial nomi',
+        ru: 'Название филиала',
+        en: 'Branch Name'
+    },
+    'reports.branchRevenue': {
+        uz: 'Filial daromadi',
+        ru: 'Доход филиала',
+        en: 'Branch Revenue'
+    },
+    'reports.branchOrders': {
+        uz: 'Filial buyurtmalari',
+        ru: 'Заказы филиала',
+        en: 'Branch Orders'
+    },
+    'reports.newCustomers': {
+        uz: 'Yangi mijozlar',
+        ru: 'Новые клиенты',
+        en: 'New Customers'
+    },
+    'reports.returningCustomers': {
+        uz: 'Qaytgan mijozlar',
+        ru: 'Вернувшиеся клиенты',
+        en: 'Returning Customers'
+    },
+    'reports.customerRetentionRate': {
+        uz: 'Mijozlarni ushlab qolish darajasi',
+        ru: 'Коэффициент удержания клиентов',
+        en: 'Customer Retention Rate'
+    },
+    'reports.totalReceived': {
+        uz: 'Jami qabul qilindi',
+        ru: 'Всего получено',
+        en: 'Total Received'
+    },
+    'reports.totalExpected': {
+        uz: 'Jami kutilmoqda',
+        ru: 'Всего ожидается',
+        en: 'Total Expected'
+    },
+    'reports.totalDue': {
+        uz: 'Jami qarz',
+        ru: 'Всего долг',
+        en: 'Total Due'
+    },
+    'reports.revenue': {
+        uz: 'Daromad',
+        ru: 'Доход',
+        en: 'Revenue'
+    },
+    'reports.expenses': {
+        uz: 'Xarajatlar',
+        ru: 'Расходы',
+        en: 'Expenses'
+    },
+    'reports.profit': {
+        uz: 'Foyda',
+        ru: 'Прибыль',
+        en: 'Profit'
+    },
+    'reports.productName': {
+        uz: 'Mahsulot nomi',
+        ru: 'Название продукта',
+        en: 'Product Name'
+    },
+    'reports.unitsSold': {
+        uz: 'Sotilgan birliklar',
+        ru: 'Проданные единицы',
+        en: 'Units Sold'
+    },
+    'reports.totalSales': {
+        uz: 'Jami savdo',
+        ru: 'Всего продаж',
+        en: 'Total Sales'
+    },
+    'reports.noDataAvailable': {
+        uz: 'Ma\'lumot mavjud emas',
+        ru: 'Данные недоступны',
+        en: 'No Data Available'
+    },
+    'reports.loading': {
+        uz: 'Yuklanmoqda...',
+        ru: 'Загрузка...',
+        en: 'Loading...'
+    },
+
+    // ========== COMMON TABLE ==========
+    'table.show': {
+        uz: 'Ko\'rsatish',
+        ru: 'Показать',
+        en: 'Show'
+    },
+    'table.entries': {
+        uz: 'ta yozuv',
+        ru: 'записей',
+        en: 'entries'
+    },
+    'table.showing': {
+        uz: 'Ko\'rsatilmoqda',
+        ru: 'Показано',
+        en: 'Showing'
+    },
+    'table.to': {
+        uz: 'dan',
+        ru: 'до',
+        en: 'to'
+    },
+    'table.of': {
+        uz: 'dan',
+        ru: 'из',
+        en: 'of'
+    },
+    'table.previous': {
+        uz: 'Oldingi',
+        ru: 'Предыдущая',
+        en: 'Previous'
+    },
+    'table.next': {
+        uz: 'Keyingi',
+        ru: 'Следующая',
+        en: 'Next'
+    },
+    'table.noResults': {
+        uz: 'Natijalar topilmadi',
+        ru: 'Результаты не найдены',
+        en: 'No results found'
+    },
+
+    // ========== MARKETING ==========
+    'marketing.posts': {
+        uz: 'Marketing postlari',
+        ru: 'Маркетинговые посты',
+        en: 'Marketing Posts'
+    },
+    'marketing.createPost': {
+        uz: 'Post yaratish',
+        ru: 'Создать пост',
+        en: 'Create Post'
+    },
+    'marketing.allStatus': {
+        uz: 'Barcha holatlar',
+        ru: 'Все статусы',
+        en: 'All Status'
+    },
+    'marketing.allScopes': {
+        uz: 'Barcha doiralar',
+        ru: 'Все области',
+        en: 'All Scopes'
+    },
+    'marketing.title': {
+        uz: 'Sarlavha',
+        ru: 'Заголовок',
+        en: 'Title'
+    },
+    'marketing.scope': {
+        uz: 'Doira',
+        ru: 'Область',
+        en: 'Scope'
+    },
+    'marketing.status': {
+        uz: 'Holat',
+        ru: 'Статус',
+        en: 'Status'
+    },
+    'marketing.recipients': {
+        uz: 'Qabul qiluvchilar',
+        ru: 'Получатели',
+        en: 'Recipients'
+    },
+    'marketing.delivery': {
+        uz: 'Yetkazib berish',
+        ru: 'Доставка',
+        en: 'Delivery'
+    },
+    'marketing.created': {
+        uz: 'Yaratilgan',
+        ru: 'Создано',
+        en: 'Created'
+    },
+    'marketing.actions': {
+        uz: 'Amallar',
+        ru: 'Действия',
+        en: 'Actions'
+    },
+    'marketing.platformWide': {
+        uz: 'Butun platforma',
+        ru: 'Вся платформа',
+        en: 'Platform-wide'
+    },
+    'marketing.center': {
+        uz: 'Markaz',
+        ru: 'Центр',
+        en: 'Center'
+    },
+    'marketing.branch': {
+        uz: 'Filial',
+        ru: 'Филиал',
+        en: 'Branch'
+    },
+    'marketing.custom': {
+        uz: 'Maxsus',
+        ru: 'Пользовательское',
+        en: 'Custom'
+    },
+    'marketing.draft': {
+        uz: 'Qoralama',
+        ru: 'Черновик',
+        en: 'Draft'
+    },
+    'marketing.scheduled': {
+        uz: 'Rejalashtirilgan',
+        ru: 'Запланировано',
+        en: 'Scheduled'
+    },
+    'marketing.sending': {
+        uz: 'Yuborilmoqda',
+        ru: 'Отправка',
+        en: 'Sending'
+    },
+    'marketing.sent': {
+        uz: 'Yuborildi',
+        ru: 'Отправлено',
+        en: 'Sent'
+    },
+    'marketing.paused': {
+        uz: 'To\'xtatilgan',
+        ru: 'Приостановлено',
+        en: 'Paused'
+    },
+    'marketing.failed': {
+        uz: 'Muvaffaqiyatsiz',
+        ru: 'Не удалось',
+        en: 'Failed'
+    },
+    'marketing.cancelled': {
+        uz: 'Bekor qilindi',
+        ru: 'Отменено',
+        en: 'Cancelled'
+    },
+    'marketing.totalRecipients': {
+        uz: 'Jami qabul qiluvchilar',
+        ru: 'Всего получателей',
+        en: 'Total Recipients'
+    },
+    'marketing.delivered': {
+        uz: 'Yetkazildi',
+        ru: 'Доставлено',
+        en: 'Delivered'
+    },
+    'marketing.pending': {
+        uz: 'Kutilmoqda',
+        ru: 'Ожидание',
+        en: 'Pending'
+    },
+    'marketing.viewDetails': {
+        uz: 'Tafsilotlarni ko\'rish',
+        ru: 'Посмотреть детали',
+        en: 'View Details'
+    },
+    'marketing.edit': {
+        uz: 'Tahrirlash',
+        ru: 'Редактировать',
+        en: 'Edit'
+    },
+    'marketing.noPostsFound': {
+        uz: 'Postlar topilmadi',
+        ru: 'Посты не найдены',
+        en: 'No posts found'
+    },
+    'marketing.previous': {
+        uz: 'Oldingi',
+        ru: 'Предыдущая',
+        en: 'Previous'
+    },
+    'marketing.next': {
+        uz: 'Keyingi',
+        ru: 'Следующая',
+        en: 'Next'
     }
 };
 
@@ -3272,6 +4899,22 @@ const LanguageManager = {
             const translation = this.translate(key);
             if (translation !== key) {
                 element.placeholder = translation;
+            }
+        });
+
+        // Translate tooltips
+        document.querySelectorAll('[data-i18n-title]').forEach(element => {
+            const key = element.getAttribute('data-i18n-title');
+            const translation = this.translate(key);
+            if (translation !== key) {
+                element.setAttribute('title', translation);
+                element.setAttribute('data-bs-original-title', translation);
+                // Re-initialize tooltip if it was already initialized
+                const tooltip = bootstrap.Tooltip.getInstance(element);
+                if (tooltip) {
+                    tooltip.dispose();
+                    new bootstrap.Tooltip(element);
+                }
             }
         });
 

@@ -204,6 +204,11 @@ class MarketingPost(models.Model):
         return round((self.delivered_count / self.sent_count) * 100, 1)
     
     @property
+    def pending_count(self):
+        """Calculate pending recipients (sent but not yet delivered or failed)"""
+        return max(0, self.sent_count - self.delivered_count - self.failed_count)
+    
+    @property
     def is_scheduled(self):
         """Check if post is scheduled for future"""
         if not self.scheduled_at:

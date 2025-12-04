@@ -1,5 +1,6 @@
 {% extends '../layout/layout.html' %}
 {% load static %}
+{% load permission_tags %}
 
 {% block content %}
 <div class="card h-100 p-0 radius-12">
@@ -23,7 +24,8 @@
             </form>
             {% endif %}
         </div>
-        {% if permissions.can_manage_branches %}
+        {% can_do 'branches.manage' as can_manage_branches %}
+        {% if can_manage_branches %}
         <a href="{% url 'branch_create' %}" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
             <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
             <span data-i18n="common.addNewBranch">Add New Branch</span>
@@ -87,7 +89,8 @@
                             <span class="{% if branch.is_active %}bg-success-focus text-success-main{% else %}bg-danger-focus text-danger-main{% endif %} px-16 py-4 radius-4 text-xs fw-medium" data-i18n="{% if branch.is_active %}common.active{% else %}common.inactive{% endif %}">
                                 {% if branch.is_active %}Active{% else %}Inactive{% endif %}
                             </span>
-                            {% if permissions.can_manage_branches %}
+                            {% can_do 'branches.manage' as can_manage_branch %}
+                            {% if can_manage_branch %}
                             <div class="d-flex gap-8">
                                 {% if branch.location_url %}
                                 <a href="{{ branch.location_url }}" target="_blank" class="bg-info-focus text-info-main w-32-px h-32-px d-flex justify-content-center align-items-center radius-8" title="View on Map" onclick="event.stopPropagation();">
@@ -109,7 +112,8 @@
                     <iconify-icon icon="fluent:building-20-regular" class="icon text-5xl text-secondary-light mb-16"></iconify-icon>
                     <h6 class="text-lg fw-medium mb-8" data-i18n="common.noBranchesFound">No branches found</h6>
                     <p class="text-secondary-light mb-16" data-i18n="common.startByCreatingBranch">Get started by creating your first branch</p>
-                    {% if permissions.can_manage_branches %}
+                    {% can_do 'branches.manage' as can_manage_branches %}
+                    {% if can_manage_branches %}
                     <a href="{% url 'branch_create' %}" class="btn btn-primary d-inline-flex align-items-center gap-2">
                         <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
                         <span data-i18n="common.addBranch">Add Branch</span>

@@ -1,5 +1,6 @@
 {% extends '../layout/layout.html' %}
 {% load static %}
+{% load permission_tags %}
 
 {% block content %}
 <!-- Branch Header -->
@@ -39,14 +40,20 @@
                 <span class="{% if branch.is_active %}bg-success-focus text-success-main{% else %}bg-danger-focus text-danger-main{% endif %} px-16 py-8 radius-8 text-sm fw-medium">
                     {% if branch.is_active %}Active{% else %}Inactive{% endif %}
                 </span>
+                {% can_do 'branch_settings.view' as can_view_settings %}
+                {% if can_view_settings %}
                 <a href="{% url 'branch_settings' branch.id %}" class="btn btn-outline-info-600 btn-sm px-16 py-8 radius-8 d-inline-flex align-items-center">
                     <iconify-icon icon="fluent:settings-20-filled" class="me-4"></iconify-icon>
                     Bot Settings
                 </a>
+                {% endif %}
+                {% can_do 'branches.manage' as can_edit_branch %}
+                {% if can_edit_branch %}
                 <a href="{% url 'branch_edit' branch.id %}" class="btn btn-outline-primary-600 btn-sm px-16 py-8 radius-8 d-inline-flex align-items-center">
                     <iconify-icon icon="fluent:edit-20-filled" class="me-4"></iconify-icon>
                     Edit
                 </a>
+                {% endif %}
                 {% if branch.location_url %}
                 <a href="{{ branch.location_url }}" target="_blank" class="btn btn-outline-info-600 btn-sm px-16 py-8 radius-8 d-inline-flex align-items-center">
                     <iconify-icon icon="fluent:map-20-filled" class="me-4"></iconify-icon>

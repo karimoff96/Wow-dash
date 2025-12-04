@@ -2,6 +2,7 @@
 {% load static %}
 {% load translation_filters %}
 {% load number_filters %}
+{% load permission_tags %}
 
 {% block content %}
 <div class="row gy-4">
@@ -11,6 +12,8 @@
             <div class="card-header border-bottom bg-base py-16 px-24">
                 <div class="d-flex align-items-center justify-content-between">
                     <h6 class="mb-0" data-i18n="detail.productDetails">Product Details</h6>
+                    {% can_do 'products.manage' as can_manage_products %}
+                    {% if can_manage_products %}
                     <div class="dropdown">
                         <button type="button" class="btn btn-outline-secondary-600 btn-sm radius-8 dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
                             <iconify-icon icon="solar:settings-linear" class="me-4"></iconify-icon>
@@ -34,6 +37,7 @@
                             </li>
                         </ul>
                     </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body p-24">

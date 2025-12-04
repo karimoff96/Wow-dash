@@ -297,7 +297,8 @@
             </div>
             <div class="card-body p-24">
                 <!-- Edit Button -->
-                {% if can_edit %}
+                {% can_do 'orders.edit' as can_edit_order %}
+                {% if can_edit_order %}
                 <div class="mb-16">
                     <a href="{% url 'orderEdit' order.id %}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
                         <iconify-icon icon="lucide:edit" class="me-1"></iconify-icon> <span data-i18n="common.edit">Edit Order</span>
@@ -307,7 +308,8 @@
                 {% endif %}
                 
                 <!-- Assignment Section -->
-                {% if can_assign %}
+                {% can_do 'orders.assign' as can_assign_order %}
+                {% if can_assign_order %}
                 <div class="mb-24">
                     <h6 class="text-sm fw-semibold mb-12">Assignment</h6>
                     {% if order.assigned_to %}
@@ -347,7 +349,8 @@
                 {% endif %}
 
                 <!-- Quick Actions -->
-                {% if can_receive_payment %}
+                {% can_do 'payments.receive' as can_receive_payment_permission %}
+                {% if can_receive_payment_permission %}
                 <div class="mb-16">
                     <button type="button" class="btn btn-success w-100 d-flex align-items-center justify-content-center" 
                             data-bs-toggle="modal" data-bs-target="#paymentModal">
@@ -361,7 +364,8 @@
                 </div>
                 {% endif %}
 
-                {% if can_complete and order.status == 'ready' or can_complete and order.status == 'in_progress' %}
+                {% can_do 'orders.complete' as can_complete_order %}
+                {% if can_complete_order and order.status == 'ready' or can_complete_order and order.status == 'in_progress' %}
                 <div class="mb-16">
                     <form method="post" action="{% url 'completeOrder' order.id %}">
                         {% csrf_token %}
@@ -373,7 +377,8 @@
                 {% endif %}
 
                 <!-- Status Update -->
-                {% if can_update_status and allowed_transitions %}
+                {% can_do 'orders.update_status' as can_update_status_permission %}
+                {% if can_update_status_permission and allowed_transitions %}
                 <div class="mb-16">
                     <h6 class="text-sm fw-semibold mb-12" data-i18n="detail.updateStatus">Update Status</h6>
                     <form method="post" action="{% url 'updateOrderStatus' order.id %}">
@@ -401,7 +406,8 @@
                     <span data-i18n="detail.back">Back to Orders</span>
                 </a>
                 
-                {% if can_delete %}
+                {% can_do 'orders.delete' as can_delete_order %}
+                {% if can_delete_order %}
                 <button type="button" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#deleteOrderModal">
                     <iconify-icon icon="mdi:delete" class="me-1"></iconify-icon> <span data-i18n="detail.deleteOrder">Delete Order</span>
                 </button>

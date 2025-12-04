@@ -3,17 +3,17 @@
 
 {% block content %}
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-    <h6 class="fw-semibold mb-0">Marketing Posts</h6>
+    <h6 class="fw-semibold mb-0" data-i18n="marketing.posts">Marketing Posts</h6>
     <div class="d-flex align-items-center gap-3">
         <!-- Filters -->
         <select class="form-select form-select-sm w-auto" id="statusFilter" onchange="applyFilters()">
-            <option value="">All Status</option>
+            <option value="" data-i18n="marketing.allStatus">All Status</option>
             {% for value, label in status_choices %}
             <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
         </select>
         <select class="form-select form-select-sm w-auto" id="scopeFilter" onchange="applyFilters()">
-            <option value="">All Scopes</option>
+            <option value="" data-i18n="marketing.allScopes">All Scopes</option>
             {% for value, label in scope_choices %}
             <option value="{{ value }}" {% if current_scope == value %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
@@ -21,7 +21,7 @@
         {% if permissions.can_create %}
         <a href="{% url 'marketing_create' %}" class="btn btn-primary btn-sm d-flex align-items-center gap-2">
             <iconify-icon icon="ic:round-plus" class="icon text-xl line-height-1"></iconify-icon>
-            Create Post
+            <span data-i18n="marketing.createPost">Create Post</span>
         </a>
         {% endif %}
     </div>
@@ -34,13 +34,13 @@
             <table class="table bordered-table mb-0">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Scope</th>
-                        <th>Status</th>
-                        <th>Recipients</th>
-                        <th>Delivery</th>
-                        <th>Created</th>
-                        <th class="text-center">Actions</th>
+                        <th data-i18n="marketing.title">Title</th>
+                        <th data-i18n="marketing.scope">Scope</th>
+                        <th data-i18n="marketing.status">Status</th>
+                        <th data-i18n="marketing.recipients">Recipients</th>
+                        <th data-i18n="marketing.delivery">Delivery</th>
+                        <th data-i18n="marketing.created">Created</th>
+                        <th class="text-center" data-i18n="marketing.actions">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,40 +58,81 @@
                         </td>
                         <td>
                             {% if post.target_scope == 'all' %}
-                            <span class="badge bg-danger-focus text-danger-main">Platform-wide</span>
+                            <span class="badge bg-danger-focus text-danger-main" data-i18n="marketing.platformWide">Platform-wide</span>
                             {% elif post.target_scope == 'center' %}
                             <span class="badge bg-primary-focus text-primary-main">{{ post.target_center.name|default:"Center" }}</span>
                             {% elif post.target_scope == 'branch' %}
                             <span class="badge bg-info-focus text-info-main">{{ post.target_branch.name|default:"Branch" }}</span>
                             {% else %}
-                            <span class="badge bg-secondary-focus text-secondary-main">Custom</span>
+                            <span class="badge bg-secondary-focus text-secondary-main" data-i18n="marketing.custom">Custom</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if post.status == 'draft' %}
-                            <span class="badge bg-secondary-focus text-secondary-main">Draft</span>
+                            <span class="badge bg-secondary-focus text-secondary-main" data-i18n="marketing.draft">Draft</span>
                             {% elif post.status == 'scheduled' %}
                             <span class="badge bg-info-focus text-info-main">
                                 <iconify-icon icon="mdi:clock-outline" class="me-1"></iconify-icon>
-                                Scheduled
+                                <span data-i18n="marketing.scheduled">Scheduled</span>
                             </span>
                             {% elif post.status == 'sending' %}
                             <span class="badge bg-warning-focus text-warning-main">
                                 <iconify-icon icon="mdi:loading" class="me-1 animate-spin"></iconify-icon>
-                                Sending
+                                <span data-i18n="marketing.sending">Sending</span>
                             </span>
                             {% elif post.status == 'sent' %}
-                            <span class="badge bg-success-focus text-success-main">Sent</span>
+                            <span class="badge bg-success-focus text-success-main" data-i18n="marketing.sent">Sent</span>
                             {% elif post.status == 'paused' %}
-                            <span class="badge bg-warning-focus text-warning-main">Paused</span>
+                            <span class="badge bg-warning-focus text-warning-main" data-i18n="marketing.paused">Paused</span>
                             {% elif post.status == 'failed' %}
-                            <span class="badge bg-danger-focus text-danger-main">Failed</span>
+                            <span class="badge bg-danger-focus text-danger-main" data-i18n="marketing.failed">Failed</span>
                             {% elif post.status == 'cancelled' %}
-                            <span class="badge bg-secondary-focus text-secondary-main">Cancelled</span>
+                            <span class="badge bg-secondary-focus text-secondary-main" data-i18n="marketing.cancelled">Cancelled</span>
                             {% endif %}
                         </td>
                         <td>
-                            <span class="text-secondary-light">{{ post.total_recipients }}</span>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <!-- Total -->
+                                <span class="badge bg-neutral-200 text-neutral-600 px-8 py-4" 
+                                      data-bs-toggle="tooltip" 
+                                      data-bs-placement="top"
+                                      data-i18n-title="marketing.totalRecipients"
+                                      title="Total Recipients">
+                                    {{ post.total_recipients }}
+                                </span>
+                                {% if post.sent_count > 0 %}
+                                <!-- Delivered -->
+                                {% if post.delivered_count > 0 %}
+                                <span class="badge bg-success-focus text-success-600 px-8 py-4" 
+                                      data-bs-toggle="tooltip" 
+                                      data-bs-placement="top"
+                                      data-i18n-title="marketing.delivered"
+                                      title="Delivered">
+                                    {{ post.delivered_count }}
+                                </span>
+                                {% endif %}
+                                <!-- Failed -->
+                                {% if post.failed_count > 0 %}
+                                <span class="badge bg-danger-focus text-danger-600 px-8 py-4" 
+                                      data-bs-toggle="tooltip" 
+                                      data-bs-placement="top"
+                                      data-i18n-title="marketing.failed"
+                                      title="Failed">
+                                    {{ post.failed_count }}
+                                </span>
+                                {% endif %}
+                                <!-- Pending -->
+                                {% if post.pending_count > 0 %}
+                                <span class="badge bg-warning-focus text-warning-600 px-8 py-4" 
+                                      data-bs-toggle="tooltip" 
+                                      data-bs-placement="top"
+                                      data-i18n-title="marketing.pending"
+                                      title="Pending">
+                                    {{ post.pending_count }}
+                                </span>
+                                {% endif %}
+                                {% endif %}
+                            </div>
                         </td>
                         <td>
                             {% if post.sent_count > 0 %}

@@ -18,7 +18,7 @@ from decimal import Decimal
 from typing import List, Dict, Any, Optional, Union
 from dataclasses import dataclass
 
-from django.db.models import Sum, Count, Avg, F, Q
+from django.db.models import Sum, Count, Avg, F, Q, DecimalField
 from django.db.models.functions import Coalesce, TruncDate
 from django.http import HttpResponse
 from django.utils import timezone
@@ -28,26 +28,31 @@ try:
     from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
     from openpyxl.utils import get_column_letter
     OPENPYXL_AVAILABLE = True
+    
+    # Styling constants - only defined if openpyxl is available
+    HEADER_FONT = Font(bold=True, color="FFFFFF", size=11)
+    HEADER_FILL = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+    HEADER_ALIGNMENT = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    CELL_ALIGNMENT = Alignment(vertical="center", wrap_text=True)
+    THIN_BORDER = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
 except ImportError:
     OPENPYXL_AVAILABLE = False
+    # Define dummy constants to prevent NameError
+    HEADER_FONT = None
+    HEADER_FILL = None
+    HEADER_ALIGNMENT = None
+    CELL_ALIGNMENT = None
+    THIN_BORDER = None
 
 from orders.models import Order
 from accounts.models import BotUser
 from organizations.models import Branch, TranslationCenter, AdminUser
 from organizations.rbac import get_user_orders, get_user_customers, get_user_branches
-
-
-# Styling constants
-HEADER_FONT = Font(bold=True, color="FFFFFF", size=11)
-HEADER_FILL = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
-HEADER_ALIGNMENT = Alignment(horizontal="center", vertical="center", wrap_text=True)
-CELL_ALIGNMENT = Alignment(vertical="center", wrap_text=True)
-THIN_BORDER = Border(
-    left=Side(style='thin'),
-    right=Side(style='thin'),
-    top=Side(style='thin'),
-    bottom=Side(style='thin')
-)
 
 # Status display mappings
 STATUS_LABELS = {
@@ -438,8 +443,8 @@ def export_orders_report(
     # Sheet 2: Status Breakdown
     status_breakdown = orders.values('status').annotate(
         count=Count('id'),
-        revenue=Coalesce(Sum('total_price'), 0),
-        paid=Coalesce(Sum('received'), 0)
+        revenue=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField()),
+        paid=Coalesce(Sum('received'), Decimal('0'), output_field=DecimalField())
     ).order_by('-count')
     
     status_data = []
@@ -461,7 +466,7 @@ def export_orders_report(
     # Sheet 3: Language Breakdown
     lang_breakdown = orders.values('language__name').annotate(
         count=Count('id'),
-        revenue=Coalesce(Sum('total_price'), 0)
+        revenue=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField())
     ).order_by('-count')
     
     lang_data = []
@@ -483,9 +488,9 @@ def export_orders_report(
         date=TruncDate('created_at')
     ).values('date').annotate(
         count=Count('id'),
-        revenue=Coalesce(Sum('total_price'), 0),
+        revenue=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField()),
         pages=Coalesce(Sum('total_pages'), 0),
-        paid=Coalesce(Sum('received'), 0)
+        paid=Coalesce(Sum('received'), Decimal('0'), output_field=DecimalField())
     ).order_by('date')
     
     daily_data = []
@@ -573,8 +578,8 @@ def export_financial_report(
     # Sheet 2: Revenue by Status
     status_revenue = orders.values('status').annotate(
         count=Count('id'),
-        revenue=Coalesce(Sum('total_price'), 0),
-        received=Coalesce(Sum('received'), 0)
+        revenue=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField()),
+        received=Coalesce(Sum('received'), Decimal('0'), output_field=DecimalField())
     ).order_by('-revenue')
     
     status_data = []
@@ -596,9 +601,9 @@ def export_financial_report(
     # Sheet 3: Revenue by Branch
     branch_revenue = orders.values('branch__id', 'branch__name', 'branch__center__name').annotate(
         count=Count('id'),
-        revenue=Coalesce(Sum('total_price'), 0),
-        received=Coalesce(Sum('received'), 0),
-        avg=Coalesce(Avg('total_price'), 0)
+        revenue=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField()),
+        received=Coalesce(Sum('received'), Decimal('0'), output_field=DecimalField()),
+        avg=Coalesce(Avg('total_price'), Decimal('0'), output_field=DecimalField())
     ).order_by('-revenue')
     
     branch_data = []
@@ -623,7 +628,7 @@ def export_financial_report(
     # Sheet 4: Revenue by Product
     product_revenue = orders.values('product__name', 'product__category__name').annotate(
         count=Count('id'),
-        revenue=Coalesce(Sum('total_price'), 0),
+        revenue=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField()),
         pages=Coalesce(Sum('total_pages'), 0)
     ).order_by('-revenue')
     
@@ -649,9 +654,9 @@ def export_financial_report(
         date=TruncDate('created_at')
     ).values('date').annotate(
         count=Count('id'),
-        revenue=Coalesce(Sum('total_price'), 0),
-        received=Coalesce(Sum('received'), 0),
-        avg=Coalesce(Avg('total_price'), 0)
+        revenue=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField()),
+        received=Coalesce(Sum('received'), Decimal('0'), output_field=DecimalField()),
+        avg=Coalesce(Avg('total_price'), Decimal('0'), output_field=DecimalField())
     ).order_by('date')
     
     daily_data = []
@@ -810,7 +815,7 @@ def export_staff_performance(
         count=Count('id'),
         completed=Count('id', filter=Q(status='completed')),
         pages=Coalesce(Sum('total_pages'), 0),
-        revenue=Coalesce(Sum('total_price'), 0)
+        revenue=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField())
     ).order_by('date')
     
     daily_data = []
@@ -910,8 +915,8 @@ def export_branch_comparison(
         date=TruncDate('created_at')
     ).values('date', 'branch__name').annotate(
         count=Count('id'),
-        revenue=Coalesce(Sum('total_price'), 0),
-        received=Coalesce(Sum('received'), 0)
+        revenue=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField()),
+        received=Coalesce(Sum('received'), Decimal('0'), output_field=DecimalField())
     ).order_by('date', 'branch__name')
     
     daily_data = []
@@ -1018,8 +1023,8 @@ def export_customer_analytics(
         'bot_user__id', 'bot_user__name', 'bot_user__phone', 'bot_user__is_agency'
     ).annotate(
         order_count=Count('id'),
-        total_spent=Coalesce(Sum('total_price'), 0),
-        total_paid=Coalesce(Sum('received'), 0)
+        total_spent=Coalesce(Sum('total_price'), Decimal('0'), output_field=DecimalField()),
+        total_paid=Coalesce(Sum('received'), Decimal('0'), output_field=DecimalField())
     ).order_by('-total_spent')[:50]
     
     top_data = []
@@ -1250,13 +1255,13 @@ def export_unit_economy(
             item['total_orders'],
             item['orders_with_debt'],
             item['remaining'],
-            item['total_spent'],
-            item['total_paid'],
+            item['total_expected'],
+            item['total_received'],
         ])
     
     exporter.add_sheet(SheetConfig(
         name="Top Debtors",
-        headers=["Customer Name", "Phone", "Type", "Total Orders", "Orders with Debt", "Outstanding", "Total Spent", "Total Paid"],
+        headers=["Customer Name", "Phone", "Type", "Total Orders", "Orders with Debt", "Outstanding", "Total Expected", "Total Paid"],
         data=debtor_data
     ))
     
@@ -1264,10 +1269,11 @@ def export_unit_economy(
     orders = get_user_orders(user).exclude(status='cancelled').select_related(
         'bot_user', 'product', 'branch'
     ).annotate(
-        total_due=Coalesce(F('total_price'), Decimal('0')) + Coalesce(F('extra_fee'), Decimal('0')),
         calc_remaining=Case(
             When(payment_accepted_fully=True, then=Decimal('0')),
-            default=F('total_due') - Coalesce(F('received'), Decimal('0')),
+            default=(
+                Coalesce(F('total_price'), Decimal('0')) + Coalesce(F('extra_fee'), Decimal('0'))
+            ) - Coalesce(F('received'), Decimal('0')),
             output_field=DecimalField(max_digits=12, decimal_places=2)
         )
     ).filter(calc_remaining__gt=0).order_by('-calc_remaining')[:500]

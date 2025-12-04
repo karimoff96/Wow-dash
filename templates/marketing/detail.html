@@ -172,7 +172,7 @@
                         <iconify-icon icon="mdi:alert-circle" class="me-2"></iconify-icon>
                         Delivery Issues
                     </h6>
-                    <p class="text-sm text-secondary-light mb-8">
+                    <p class="text-sm mb-8">
                         Some messages could not be delivered. Common reasons:
                     </p>
                     <ul class="text-sm mb-12 ps-16">
@@ -182,7 +182,7 @@
                     </ul>
                     <details class="text-sm">
                         <summary class="cursor-pointer fw-medium">View error details</summary>
-                        <pre class="mt-8 mb-0 text-sm bg-neutral-100 p-12 radius-8" style="white-space: pre-wrap;">{{ post.last_error }}</pre>
+                        <pre class="mt-8 mb-0 text-sm bg-secondary-100 p-12 radius-8" style="white-space: pre-wrap;">{{ post.last_error }}</pre>
                     </details>
                 </div>
                 {% endif %}
