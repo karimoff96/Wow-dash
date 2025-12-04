@@ -1,0 +1,155 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+{% load number_filters %}
+
+{% block content %}
+<div class="row gy-4">
+    <!-- Summary Cards -->
+    <div class="col-12">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card radius-12 p-0 h-100">
+                    <div class="card-body p-24">
+                        <div class="d-flex align-items-center gap-16">
+                            <div class="w-64-px h-64-px radius-12 bg-primary-50 d-flex align-items-center justify-content-center">
+                                <iconify-icon icon="solar:wallet-bold" class="text-primary-600 text-3xl"></iconify-icon>
+                            </div>
+                            <div>
+                                <span class="text-secondary-light text-md">Total Expenses</span>
+                                <h4 class="text-primary-600 mb-0">{{ analytics.total|format_number }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card radius-12 p-0 h-100">
+                    <div class="card-body p-24">
+                        <div class="d-flex align-items-center gap-16">
+                            <div class="w-64-px h-64-px radius-12 bg-info-50 d-flex align-items-center justify-content-center">
+                                <iconify-icon icon="mdi:office-building" class="text-info-600 text-3xl"></iconify-icon>
+                            </div>
+                            <div>
+                                <span class="text-secondary-light text-md">B2B Expenses</span>
+                                <h4 class="text-info-600 mb-0">{{ analytics.b2b_total|format_number }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card radius-12 p-0 h-100">
+                    <div class="card-body p-24">
+                        <div class="d-flex align-items-center gap-16">
+                            <div class="w-64-px h-64-px radius-12 bg-success-50 d-flex align-items-center justify-content-center">
+                                <iconify-icon icon="mdi:account-group" class="text-success-600 text-3xl"></iconify-icon>
+                            </div>
+                            <div>
+                                <span class="text-secondary-light text-md">B2C Expenses</span>
+                                <h4 class="text-success-600 mb-0">{{ analytics.b2c_total|format_number }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Analytics Details -->
+    <div class="col-xxl-8">
+        <div class="card h-100 p-0 radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <h6 class="mb-0 d-flex align-items-center">
+                    <iconify-icon icon="solar:chart-linear" class="me-8 text-primary-600"></iconify-icon>
+                    <span>Expense Breakdown by Type</span>
+                </h6>
+            </div>
+            <div class="card-body p-24">
+                {% if expense_breakdown %}
+                <div class="table-responsive">
+                    <table class="table bordered-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Expense Type</th>
+                                <th>Count</th>
+                                <th>Total Amount</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in expense_breakdown %}
+                            <tr>
+                                <td>
+                                    {% if item.expense_type == 'b2b' %}
+                                    <span class="badge bg-info-100 text-info-600 px-12 py-6">B2B (Agency/Business)</span>
+                                    {% elif item.expense_type == 'b2c' %}
+                                    <span class="badge bg-success-100 text-success-600 px-12 py-6">B2C (Individual)</span>
+                                    {% else %}
+                                    <span class="badge bg-warning-100 text-warning-600 px-12 py-6">Both B2B & B2C</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.count }}</td>
+                                <td class="fw-semibold">{{ item.total|format_number }}</td>
+                                <td>
+                                    {% widthratio item.total analytics.total 100 as percentage %}
+                                    <div class="d-flex align-items-center gap-8">
+                                        <div class="progress w-100" style="height: 8px;">
+                                            <div class="progress-bar bg-primary-600" style="width: {{ percentage }}%"></div>
+                                        </div>
+                                        <span class="text-sm fw-medium">{{ percentage }}%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-32 text-secondary-light">
+                    <iconify-icon icon="solar:chart-linear" class="text-5xl mb-16"></iconify-icon>
+                    <p class="mb-0">No expense data available.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter Info -->
+    <div class="col-xxl-4">
+        <div class="card h-100 p-0 radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <h6 class="mb-0 d-flex align-items-center">
+                    <iconify-icon icon="solar:filter-linear" class="me-8 text-warning-600"></iconify-icon>
+                    <span>Current Filter</span>
+                </h6>
+            </div>
+            <div class="card-body p-24">
+                <div class="d-flex flex-column gap-16">
+                    {% if branch %}
+                    <div class="bg-primary-50 radius-8 p-16">
+                        <span class="text-secondary-light text-sm">Branch</span>
+                        <h6 class="mb-0 text-primary-600">{{ branch.name }}</h6>
+                        <small class="text-secondary-light">{{ branch.center.name }}</small>
+                    </div>
+                    {% elif center %}
+                    <div class="bg-info-50 radius-8 p-16">
+                        <span class="text-secondary-light text-sm">Center</span>
+                        <h6 class="mb-0 text-info-600">{{ center.name }}</h6>
+                    </div>
+                    {% else %}
+                    <div class="bg-neutral-100 radius-8 p-16">
+                        <span class="text-secondary-light text-sm">Scope</span>
+                        <h6 class="mb-0">All Accessible Expenses</h6>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="alert alert-info mb-0">
+                        <iconify-icon icon="mdi:information" class="me-8"></iconify-icon>
+                        Use URL parameters <code>?branch=ID</code> or <code>?center=ID</code> to filter.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

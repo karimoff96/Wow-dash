@@ -1,0 +1,123 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24">
+        <div class="d-flex align-items-center justify-content-between">
+            <h6 class="mb-0 d-flex align-items-center">
+                <iconify-icon icon="solar:wallet-linear" class="me-8 text-warning-600"></iconify-icon>
+                <span>Edit Expense: {{ expense.name }}</span>
+            </h6>
+            <a href="{% url 'expenseList' %}" class="btn btn-outline-secondary-600 radius-8 px-20 py-9 d-flex align-items-center">
+                <iconify-icon icon="ep:back" class="me-4"></iconify-icon>
+                <span data-i18n="form.backToList">Back to List</span>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-24">
+        <div class="row justify-content-center">
+            <div class="col-xxl-6 col-xl-8">
+                <form method="post" action="{% url 'editExpense' expense.id %}">
+                    {% csrf_token %}
+                    
+                    <!-- Basic Info -->
+                    <div class="mb-24">
+                        <h6 class="text-md fw-semibold text-primary-light mb-16 d-flex align-items-center">
+                            <iconify-icon icon="solar:info-circle-linear" class="me-8"></iconify-icon>
+                            <span data-i18n="form.basicInformation">Basic Information</span>
+                        </h6>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-20">
+                                <label for="branch" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span data-i18n="table.branch">Branch</span> <span class="text-danger-600">*</span>
+                                </label>
+                                <select class="form-control radius-8 form-select" id="branch" name="branch" required>
+                                    <option value="">Select Branch</option>
+                                    {% for branch in branches %}
+                                    <option value="{{ branch.id }}" {% if branch.id == expense.branch_id %}selected{% endif %}>{{ branch.name }} ({{ branch.center.name }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-20">
+                                <label for="expense_type" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span>Expense Type</span> <span class="text-danger-600">*</span>
+                                </label>
+                                <select class="form-control radius-8 form-select" id="expense_type" name="expense_type" required>
+                                    {% for type_val, type_label in expense_types %}
+                                    <option value="{{ type_val }}" {% if type_val == expense.expense_type %}selected{% endif %}>{{ type_label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-secondary-light">Whether this expense applies to B2B, B2C, or both.</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8 mb-20">
+                                <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span>Expense Name</span> <span class="text-danger-600">*</span>
+                                </label>
+                                <input type="text" class="form-control radius-8" id="name" name="name" 
+                                       value="{{ expense.name }}" placeholder="e.g., Paper Cost, Notarization Fee" required>
+                            </div>
+                            <div class="col-md-4 mb-20">
+                                <label for="price" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span>Price (UZS)</span> <span class="text-danger-600">*</span>
+                                </label>
+                                <input type="number" step="0.01" class="form-control radius-8" id="price" 
+                                       name="price" value="{{ expense.price }}" placeholder="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-20">
+                            <label for="description" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.description">Description</span>
+                            </label>
+                            <textarea class="form-control radius-8" id="description" name="description" 
+                                      rows="3" placeholder="Optional description for this expense">{{ expense.description|default:'' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-20">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if expense.is_active %}checked{% endif %}>
+                                <label class="form-check-label fw-semibold text-primary-light" for="is_active">
+                                    <span data-i18n="form.active">Active</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Linked Products Info -->
+                    {% if expense.products.count > 0 %}
+                    <div class="alert alert-warning mb-24">
+                        <div class="d-flex align-items-start gap-12">
+                            <iconify-icon icon="mdi:link-variant" class="text-xl flex-shrink-0 mt-4"></iconify-icon>
+                            <div>
+                                <h6 class="mb-8">Linked Products ({{ expense.products.count }})</h6>
+                                <ul class="mb-0 ps-16">
+                                    {% for product in expense.products.all|slice:":5" %}
+                                    <li>{{ product.name }}</li>
+                                    {% endfor %}
+                                    {% if expense.products.count > 5 %}
+                                    <li>...and {{ expense.products.count|add:"-5" }} more</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex align-items-center justify-content-center gap-3">
+                        <a href="{% url 'expenseList' %}" class="btn btn-outline-secondary-600 radius-8 px-20 py-11" data-i18n="form.cancel">Cancel</a>
+                        <button type="submit" class="btn btn-primary-600 radius-8 px-20 py-11">
+                            <iconify-icon icon="mingcute:save-line" class="me-4"></iconify-icon>
+                            <span>Update Expense</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

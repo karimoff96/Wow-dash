@@ -1,5 +1,6 @@
 {% extends '../layout/layout.html' %}
 {% load static %}
+{% load number_filters %}
 
 {% block content %}
 <div class="card h-100 p-0 radius-12">
@@ -201,6 +202,62 @@
                         </div>
                     </div>
                     
+                    <!-- Expenses Section -->
+                    <div class="mb-24">
+                        <h6 class="text-md fw-semibold text-primary-light mb-16 d-flex align-items-center justify-content-between">
+                            <span class="d-flex align-items-center">
+                                <iconify-icon icon="solar:wallet-money-linear" class="me-8"></iconify-icon>
+                                <span data-i18n="form.expenses">Product Expenses</span>
+                            </span>
+                            <button type="button" class="btn btn-sm btn-outline-primary-600 radius-8 d-flex align-items-center gap-1" 
+                                    data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+                                <iconify-icon icon="ic:round-plus" class="text-lg"></iconify-icon>
+                                <span data-i18n="form.addNewExpense">Add New Expense</span>
+                            </button>
+                        </h6>
+                        <div class="row">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.selectExpenses">
+                                    Select Expenses to Associate with Product
+                                </label>
+                                <div class="border radius-8 p-16" style="max-height: 300px; overflow-y: auto;" id="expense-list-container">
+                                    {% if expenses %}
+                                        {% for expense in expenses %}
+                                        <div class="form-check d-flex align-items-center justify-content-between mb-12 pb-12 border-bottom expense-item" data-expense-id="{{ expense.id }}">
+                                            <div class="d-flex align-items-center gap-12">
+                                                <input class="form-check-input expense-checkbox" type="checkbox" 
+                                                       name="expenses" value="{{ expense.id }}" id="expense_{{ expense.id }}">
+                                                <label class="form-check-label cursor-pointer" for="expense_{{ expense.id }}">
+                                                    <span class="fw-semibold text-primary-light">{{ expense.name }}</span>
+                                                    <span class="text-secondary-light ms-8">
+                                                        ({{ expense.price|format_number }} UZS)
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-8">
+                                                <span class="badge {% if expense.expense_type == 'b2b' %}bg-primary-100 text-primary-600{% elif expense.expense_type == 'b2c' %}bg-success-100 text-success-600{% else %}bg-info-100 text-info-600{% endif %} px-12 py-6 radius-4 text-sm">
+                                                    {{ expense.get_expense_type_display }}
+                                                </span>
+                                                {% if expense.branch %}
+                                                <span class="text-secondary-light text-xs">{{ expense.branch.name }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-secondary-light text-center py-20 mb-0" id="no-expenses-message">
+                                            <iconify-icon icon="solar:wallet-money-linear" class="text-xl me-8"></iconify-icon>
+                                            <span data-i18n="form.noExpensesAvailable">No expenses available. Create one using the button above.</span>
+                                        </p>
+                                    {% endif %}
+                                </div>
+                                <small class="text-secondary-light mt-8 d-block" data-i18n="form.expenseHint">
+                                    Select expenses that apply to this product. These will be used for profit margin calculations.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="d-flex align-items-center justify-content-center gap-3 mt-24">
                         <a href="{% url 'productList' %}" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-40 py-11 radius-8" data-i18n="common.cancel">
                             Cancel
@@ -215,4 +272,248 @@
         </div>
     </div>
 </div>
+
+<!-- Add Expense Modal -->
+<div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content radius-16 overflow-hidden">
+            <div class="modal-header py-16 px-24 border-bottom">
+                <h6 class="modal-title fw-semibold" id="addExpenseModalLabel">
+                    <iconify-icon icon="solar:wallet-money-linear" class="me-8 text-primary-600"></iconify-icon>
+                    <span data-i18n="form.addNewExpense">Add New Expense</span>
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-24">
+                <form id="inlineExpenseForm">
+                    <div class="mb-20">
+                        <label for="expense_name" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                            <span data-i18n="form.expenseName">Expense Name</span> <span class="text-danger-600">*</span>
+                        </label>
+                        <input type="text" class="form-control radius-8" id="expense_name" name="expense_name" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-20">
+                            <label for="expense_price" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.price">Price (UZS)</span> <span class="text-danger-600">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control radius-8" id="expense_price" name="expense_price" value="0" required>
+                        </div>
+                        <div class="col-md-6 mb-20">
+                            <label for="expense_type" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.expenseType">Expense Type</span> <span class="text-danger-600">*</span>
+                            </label>
+                            <select class="form-control radius-8 form-select" id="expense_type" name="expense_type" required>
+                                {% for value, label in expense_types %}
+                                <option value="{{ value }}" {% if value == 'both' %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    {% if is_superuser %}
+                    <!-- Center/Branch Selection for Superadmin -->
+                    <div class="row">
+                        <div class="col-md-6 mb-20">
+                            <label for="expense_center" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.center">Center</span> <span class="text-danger-600">*</span>
+                            </label>
+                            <select class="form-control radius-8 form-select" id="expense_center" name="expense_center" required>
+                                <option value="">Select Center</option>
+                                {% for center in centers %}
+                                <option value="{{ center.id }}">{{ center.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-20">
+                            <label for="expense_branch" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.branch">Branch</span> <span class="text-danger-600">*</span>
+                            </label>
+                            <select class="form-control radius-8 form-select" id="expense_branch" name="expense_branch" required disabled>
+                                <option value="">Select Center First</option>
+                            </select>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Branch Selection for Non-superadmin -->
+                    <div class="mb-20">
+                        <label for="expense_branch" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                            <span data-i18n="form.branch">Branch</span> <span class="text-danger-600">*</span>
+                        </label>
+                        <select class="form-control radius-8 form-select" id="expense_branch" name="expense_branch" required>
+                            <option value="">Select Branch</option>
+                            {% for branch in branches %}
+                            <option value="{{ branch.id }}">{{ branch.name }} ({{ branch.center.name }})</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-secondary-light">The expense will be linked to the selected branch.</small>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-0">
+                        <label for="expense_description" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.description">
+                            Description
+                        </label>
+                        <textarea class="form-control radius-8" id="expense_description" name="expense_description" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer py-16 px-24 border-top">
+                <button type="button" class="btn btn-secondary-600 radius-8" data-bs-dismiss="modal" data-i18n="common.cancel">Cancel</button>
+                <button type="button" class="btn btn-primary-600 radius-8 d-flex align-items-center gap-2" id="saveExpenseBtn">
+                    <iconify-icon icon="ic:round-plus" class="text-lg"></iconify-icon>
+                    <span data-i18n="form.createExpense">Create Expense</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const expenseBranchSelect = document.getElementById('expense_branch');
+    const saveExpenseBtn = document.getElementById('saveExpenseBtn');
+    const expenseListContainer = document.getElementById('expense-list-container');
+    const noExpensesMessage = document.getElementById('no-expenses-message');
+    
+    {% if is_superuser %}
+    // Superadmin: Center/Branch cascading selection
+    const expenseCenterSelect = document.getElementById('expense_center');
+    
+    // Branch data for superadmin
+    const branchData = [
+        {% for branch in branches %}
+        { id: '{{ branch.id }}', name: '{{ branch.name }}', centerId: '{{ branch.center_id }}' }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+    
+    expenseCenterSelect.addEventListener('change', function() {
+        const centerId = this.value;
+        expenseBranchSelect.innerHTML = '<option value="">Select Branch</option>';
+        
+        if (centerId) {
+            const filteredBranches = branchData.filter(b => b.centerId === centerId);
+            
+            if (filteredBranches.length > 0) {
+                expenseBranchSelect.disabled = false;
+                filteredBranches.forEach(branch => {
+                    const option = document.createElement('option');
+                    option.value = branch.id;
+                    option.textContent = branch.name;
+                    expenseBranchSelect.appendChild(option);
+                });
+            } else {
+                expenseBranchSelect.innerHTML = '<option value="">No branches available</option>';
+                expenseBranchSelect.disabled = true;
+            }
+        } else {
+            expenseBranchSelect.innerHTML = '<option value="">Select Center First</option>';
+            expenseBranchSelect.disabled = true;
+        }
+    });
+    {% endif %}
+    
+    // Save expense via AJAX
+    saveExpenseBtn.addEventListener('click', function() {
+        const name = document.getElementById('expense_name').value.trim();
+        const price = document.getElementById('expense_price').value;
+        const expenseType = document.getElementById('expense_type').value;
+        const branchId = document.getElementById('expense_branch').value;
+        const description = document.getElementById('expense_description').value.trim();
+        
+        if (!name) {
+            alert('Please enter an expense name.');
+            return;
+        }
+        if (!branchId) {
+            {% if is_superuser %}
+            alert('Please select a center and branch.');
+            {% else %}
+            alert('Please select a branch.');
+            {% endif %}
+            return;
+        }
+        
+        // Disable button and show loading
+        saveExpenseBtn.disabled = true;
+        saveExpenseBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating...';
+        
+        fetch('{% url "createExpenseInline" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                name: name,
+                price: price,
+                expense_type: expenseType,
+                branch: branchId,
+                description: description
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove "no expenses" message if present
+                if (noExpensesMessage) {
+                    noExpensesMessage.remove();
+                }
+                
+                // Add new expense to the list
+                const expense = data.expense;
+                const typeClass = expense.expense_type === 'b2b' ? 'bg-primary-100 text-primary-600' :
+                                  expense.expense_type === 'b2c' ? 'bg-success-100 text-success-600' :
+                                  'bg-info-100 text-info-600';
+                
+                const expenseHtml = `
+                    <div class="form-check d-flex align-items-center justify-content-between mb-12 pb-12 border-bottom expense-item" data-expense-id="${expense.id}">
+                        <div class="d-flex align-items-center gap-12">
+                            <input class="form-check-input expense-checkbox" type="checkbox" 
+                                   name="expenses" value="${expense.id}" id="expense_${expense.id}" checked>
+                            <label class="form-check-label cursor-pointer" for="expense_${expense.id}">
+                                <span class="fw-semibold text-primary-light">${expense.name}</span>
+                                <span class="text-secondary-light ms-8">
+                                    (${parseFloat(expense.price).toLocaleString()} UZS)
+                                </span>
+                            </label>
+                        </div>
+                        <div class="d-flex align-items-center gap-8">
+                            <span class="badge ${typeClass} px-12 py-6 radius-4 text-sm">
+                                ${expense.expense_type_display}
+                            </span>
+                            <span class="text-secondary-light text-xs">${expense.branch_name}</span>
+                        </div>
+                    </div>
+                `;
+                
+                expenseListContainer.insertAdjacentHTML('afterbegin', expenseHtml);
+                
+                // Close modal and reset form
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addExpenseModal'));
+                modal.hide();
+                document.getElementById('inlineExpenseForm').reset();
+                
+                {% if is_superuser %}
+                // Reset branch select for superadmin
+                expenseBranchSelect.innerHTML = '<option value="">Select Center First</option>';
+                expenseBranchSelect.disabled = true;
+                {% endif %}
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while creating the expense.');
+        })
+        .finally(() => {
+            saveExpenseBtn.disabled = false;
+            saveExpenseBtn.innerHTML = '<iconify-icon icon="ic:round-plus" class="text-lg"></iconify-icon><span data-i18n="form.createExpense">Create Expense</span>';
+        });
+    });
+});
+</script>
+{% endblock scripts %}

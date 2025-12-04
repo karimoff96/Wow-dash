@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from services.models import MainService, Product
+from services.models import Cateogry, Product
 
 
 class Command(BaseCommand):
@@ -16,12 +16,12 @@ class Command(BaseCommand):
         if options["reset"]:
             self.stdout.write("Deleting existing data...")
             Product.objects.all().delete()
-            MainService.objects.all().delete()
+            Cateogry.objects.all().delete()
 
         self.stdout.write("Creating basic main services...")
 
         # Create main services only
-        translation_service, created = MainService.objects.get_or_create(
+        translation_service, created = Cateogry.objects.get_or_create(
             name="Translation",
             defaults={
                 "description": "Document translation services",
@@ -31,7 +31,7 @@ class Command(BaseCommand):
         if created:
             self.stdout.write(f"Created main service: {translation_service.name}")
 
-        apostille_service, created = MainService.objects.get_or_create(
+        apostille_service, created = Cateogry.objects.get_or_create(
             name="Apostille",
             defaults={"description": "Document apostille services", "is_active": True},
         )
@@ -45,7 +45,7 @@ class Command(BaseCommand):
         )
 
         # Print summary
-        self.stdout.write(f"Total Main Services: {MainService.objects.count()}")
+        self.stdout.write(f"Total Main Services: {Cateogry.objects.count()}")
         self.stdout.write(f"Total Document Types: {Product.objects.count()}")
 
         self.stdout.write("\nNext steps:")

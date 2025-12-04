@@ -15,4 +15,13 @@ urlpatterns = [
     path("products/<int:product_id>/", views.productDetail, name="productDetail"),
     path("products/<int:product_id>/edit/", views.editProduct, name="editProduct"),
     path("products/<int:product_id>/delete/", views.deleteProduct, name="deleteProduct"),
+    
+    # Expenses
+    path("expenses/", views.expenseList, name="expenseList"),
+    path("expenses/add/", views.addExpense, name="addExpense"),
+    path("expenses/<int:expense_id>/", views.expenseDetail, name="expenseDetail"),
+    path("expenses/<int:expense_id>/edit/", views.editExpense, name="editExpense"),
+    path("expenses/<int:expense_id>/delete/", views.deleteExpense, name="deleteExpense"),
+    path("expenses/analytics/", views.expenseAnalytics, name="expenseAnalytics"),
+    path("expenses/create-inline/", views.createExpenseInline, name="createExpenseInline"),
 ]

@@ -64,7 +64,7 @@ def get_translated_field(obj, field_name, language):
     For modeltranslation, fields are stored as field_uz, field_ru, field_en
 
     Args:
-        obj: Model instance (MainService or Product)
+        obj: Model instance (Cateogry or Product)
         field_name: Base field name ('name' or 'description')
         language: User's language ('uz', 'ru', 'en')
 

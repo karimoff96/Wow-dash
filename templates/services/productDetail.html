@@ -1,6 +1,7 @@
 {% extends '../layout/layout.html' %}
 {% load static %}
 {% load translation_filters %}
+{% load number_filters %}
 
 {% block content %}
 <div class="row gy-4">
@@ -262,6 +263,96 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product Expenses -->
+            <div class="col-12">
+                <div class="card p-0 radius-12">
+                    <div class="card-header border-bottom bg-base py-16 px-24">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6 class="mb-0 d-flex align-items-center">
+                                <iconify-icon icon="solar:wallet-money-linear" class="me-8 text-danger-600"></iconify-icon>
+                                <span data-i18n="detail.productExpenses">Product Expenses</span>
+                                {% if product.expenses.exists %}
+                                <span class="badge bg-danger-100 text-danger-600 ms-8">{{ product.expenses.count }}</span>
+                                {% endif %}
+                            </h6>
+                            <a href="{% url 'editProduct' product.id %}" class="btn btn-sm btn-outline-primary-600 radius-8 d-flex align-items-center gap-1">
+                                <iconify-icon icon="lucide:edit" class="text-lg"></iconify-icon>
+                                <span data-i18n="detail.manageExpenses">Manage Expenses</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-24">
+                        {% if product.expenses.exists %}
+                        <div class="table-responsive">
+                            <table class="table basic-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="table.name">Name</th>
+                                        <th class="text-center" data-i18n="table.type">Type</th>
+                                        <th class="text-end" data-i18n="table.price">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for expense in product.expenses.all %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'expenseDetail' expense.id %}" class="text-primary-600 hover-text-decoration-underline fw-medium">
+                                                {{ expense.name }}
+                                            </a>
+                                            {% if expense.description %}
+                                            <small class="d-block text-secondary-light text-xs">{{ expense.description|truncatechars:50 }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge {% if expense.expense_type == 'b2b' %}bg-primary-100 text-primary-600{% elif expense.expense_type == 'b2c' %}bg-success-100 text-success-600{% else %}bg-info-100 text-info-600{% endif %} px-12 py-6 radius-4 text-sm">
+                                                {{ expense.get_expense_type_display }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end fw-semibold">{{ expense.price|format_number }} UZS</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="bg-neutral-100">
+                                    <tr>
+                                        <td colspan="2" class="fw-semibold text-end" data-i18n="detail.totalExpenses">Total Expenses:</td>
+                                        <td class="text-end fw-bold text-danger-600">{{ product.get_expenses_total|format_number }} UZS</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        
+                        <!-- Profit Margin Info -->
+                        <div class="mt-20 p-16 bg-warning-50 radius-8">
+                            <div class="d-flex align-items-center gap-12">
+                                <iconify-icon icon="solar:chart-2-linear" class="text-warning-600 text-2xl"></iconify-icon>
+                                <div>
+                                    <h6 class="mb-4 text-warning-600" data-i18n="detail.profitMargin">Profit Margin (Regular User)</h6>
+                                    <p class="mb-0 text-secondary-light text-sm">
+                                        <span data-i18n="detail.basedOnFirstPage">Based on first page price:</span>
+                                        <strong class="{% if product.get_profit_margin > 0 %}text-success-600{% else %}text-danger-600{% endif %}">
+                                            {{ product.get_profit_margin|floatformat:0 }} UZS
+                                        </strong>
+                                        {% if product.ordinary_first_page_price > 0 %}
+                                        ({% widthratio product.get_profit_margin product.ordinary_first_page_price 100 %}%)
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-32">
+                            <iconify-icon icon="solar:wallet-money-linear" class="text-secondary-light" style="font-size: 48px;"></iconify-icon>
+                            <p class="text-secondary-light mt-12 mb-0" data-i18n="detail.noExpenses">No expenses associated with this product.</p>
+                            <a href="{% url 'editProduct' product.id %}" class="btn btn-sm btn-primary-600 radius-8 mt-16">
+                                <iconify-icon icon="ic:round-plus" class="me-4"></iconify-icon>
+                                <span data-i18n="detail.addExpenses">Add Expenses</span>
+                            </a>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

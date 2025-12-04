@@ -3,7 +3,7 @@ Custom template filters for number formatting and utilities
 """
 
 from django import template
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 register = template.Library()
 
@@ -49,10 +49,15 @@ def short_number(value):
         1234567 -> 1.2M
         1234567890 -> 1.2B
     """
+    if value is None:
+        return "0"
     try:
-        value = float(value)
-    except (TypeError, ValueError):
-        return value
+        if isinstance(value, Decimal):
+            value = float(value)
+        else:
+            value = float(value)
+    except (TypeError, ValueError, InvalidOperation):
+        return "0"
 
     if value >= 1_000_000_000:
         return f"{value / 1_000_000_000:.1f}B"
@@ -70,10 +75,15 @@ def format_currency(value, short=False):
     Format number as currency with thousand separators
     If short=True, uses short_number format
     """
+    if value is None:
+        return "0"
     try:
-        value = float(value)
-    except (TypeError, ValueError):
-        return value
+        if isinstance(value, Decimal):
+            value = float(value)
+        else:
+            value = float(value)
+    except (TypeError, ValueError, InvalidOperation):
+        return "0"
 
     if short:
         return short_number(value)
@@ -91,13 +101,18 @@ def intcomma(value):
         1234 -> 1,234
         1234567 -> 1,234,567
     """
+    if value is None:
+        return "0"
     try:
-        value = float(value)
+        if isinstance(value, Decimal):
+            value = float(value)
+        else:
+            value = float(value)
         if value == int(value):
             return f"{int(value):,}"
         return f"{value:,.2f}"
-    except (TypeError, ValueError):
-        return value
+    except (TypeError, ValueError, InvalidOperation):
+        return "0"
 
 
 @register.filter
@@ -109,3 +124,26 @@ def percentage(value, total):
         return round((float(value) / float(total)) * 100, 1)
     except (TypeError, ValueError, ZeroDivisionError):
         return 0
+
+
+@register.filter
+def format_number(value):
+    """
+    Format number with thousand separators.
+    Examples:
+        1234 -> 1,234
+        1234567.89 -> 1,234,567.89
+    """
+    if value is None:
+        return "0"
+    try:
+        # Handle Decimal specifically
+        if isinstance(value, Decimal):
+            value = float(value)
+        else:
+            value = float(value)
+        if value == int(value):
+            return f"{int(value):,}"
+        return f"{value:,.2f}"
+    except (TypeError, ValueError, InvalidOperation):
+        return "0"

@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Q, Count
-from .models import Category, Product, Language
-from organizations.rbac import get_user_categories, get_user_products, get_user_branches
+from django.db.models import Q, Count, Sum
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from decimal import Decimal, InvalidOperation
+from .models import Category, Product, Language, Expense
+from organizations.rbac import get_user_categories, get_user_products, get_user_branches, get_user_expenses
 from organizations.models import TranslationCenter
 
 
@@ -331,7 +334,7 @@ def productDetail(request, product_id):
     # Get product with RBAC check
     accessible_products = get_user_products(request.user)
     product = get_object_or_404(
-        accessible_products.select_related('category', 'category__branch', 'category__branch__center'),
+        accessible_products.select_related('category', 'category__branch', 'category__branch__center').prefetch_related('expenses'),
         id=product_id
     )
     
@@ -349,6 +352,11 @@ def addProduct(request):
     # Get RBAC-filtered categories
     categories = get_user_categories(request.user).filter(is_active=True).select_related(
         'branch', 'branch__center'
+    ).order_by('name')
+    
+    # Get RBAC-filtered expenses for multi-select
+    expenses = get_user_expenses(request.user).filter(is_active=True).select_related(
+        'branch'
     ).order_by('name')
     
     if request.method == 'POST':
@@ -378,6 +386,9 @@ def addProduct(request):
         min_pages = request.POST.get('min_pages', '1')
         estimated_days = request.POST.get('estimated_days', '1')
         is_active = request.POST.get('is_active') == 'on'
+        
+        # Get selected expenses
+        selected_expenses = request.POST.getlist('expenses')
         
         if not name:
             messages.error(request, 'Product name is required in at least one language.')
@@ -405,15 +416,33 @@ def addProduct(request):
                     estimated_days=estimated_days or 1,
                     is_active=is_active,
                 )
+                
+                # Add selected expenses to product
+                if selected_expenses:
+                    product.expenses.set(selected_expenses)
+                
                 messages.success(request, f'Product "{name}" has been created successfully.')
                 return redirect('productList')
             except Exception as e:
                 messages.error(request, f'Error creating product: {str(e)}')
     
+    # Get branches for inline expense creation modal
+    branches = get_user_branches(request.user).select_related('center').order_by('name')
+    
+    # Center selection for superadmin
+    centers = None
+    if request.user.is_superuser:
+        centers = TranslationCenter.objects.filter(is_active=True).order_by('name')
+    
     context = {
         "title": "Add Product",
         "subTitle": "Add Product",
         "categories": categories,
+        "expenses": expenses,
+        "expense_types": Expense.EXPENSE_TYPE_CHOICES,
+        "branches": branches,
+        "centers": centers,
+        "is_superuser": request.user.is_superuser,
     }
     return render(request, "services/addProduct.html", context)
 
@@ -431,6 +460,14 @@ def editProduct(request, product_id):
     categories = get_user_categories(request.user).filter(is_active=True).select_related(
         'branch', 'branch__center'
     ).order_by('name')
+    
+    # Get RBAC-filtered expenses for multi-select
+    expenses = get_user_expenses(request.user).filter(is_active=True).select_related(
+        'branch'
+    ).order_by('name')
+    
+    # Get currently selected expense IDs
+    selected_expense_ids = list(product.expenses.values_list('id', flat=True))
     
     if request.method == 'POST':
         # Get translated fields
@@ -460,6 +497,9 @@ def editProduct(request, product_id):
         estimated_days = request.POST.get('estimated_days', '1')
         is_active = request.POST.get('is_active') == 'on'
         
+        # Get selected expenses
+        selected_expenses = request.POST.getlist('expenses')
+        
         if not name:
             messages.error(request, 'Product name is required in at least one language.')
         elif not category_id:
@@ -486,16 +526,33 @@ def editProduct(request, product_id):
                 product.is_active = is_active
                 product.save()
                 
+                # Update expenses
+                product.expenses.set(selected_expenses)
+                
                 messages.success(request, f'Product "{name}" has been updated successfully.')
                 return redirect('productList')
             except Exception as e:
                 messages.error(request, f'Error updating product: {str(e)}')
+    
+    # Get branches for inline expense creation modal
+    branches = get_user_branches(request.user).select_related('center').order_by('name')
+    
+    # Center selection for superadmin
+    centers = None
+    if request.user.is_superuser:
+        centers = TranslationCenter.objects.filter(is_active=True).order_by('name')
     
     context = {
         "title": "Edit Product",
         "subTitle": "Edit Product",
         "product": product,
         "categories": categories,
+        "expenses": expenses,
+        "selected_expense_ids": selected_expense_ids,
+        "expense_types": Expense.EXPENSE_TYPE_CHOICES,
+        "branches": branches,
+        "centers": centers,
+        "is_superuser": request.user.is_superuser,
     }
     return render(request, "services/editProduct.html", context)
 
@@ -513,3 +570,362 @@ def deleteProduct(request, product_id):
         messages.success(request, f'Product "{name}" has been deleted successfully.')
     
     return redirect('productList')
+
+
+# ============ Expense Views ============
+
+@login_required(login_url='admin_login')
+def expenseList(request):
+    """List all expenses with search and filter"""
+    # Use RBAC-filtered expenses
+    expenses = get_user_expenses(request.user).select_related(
+        'branch', 'branch__center'
+    ).prefetch_related('products').annotate(
+        product_count=Count('products')
+    ).order_by('-created_at')
+    
+    # Get accessible branches for filter dropdown
+    branches = get_user_branches(request.user).select_related('center')
+    
+    # Center filter (superuser only)
+    centers = None
+    center_filter = request.GET.get('center', '')
+    if request.user.is_superuser:
+        centers = TranslationCenter.objects.filter(is_active=True)
+        if center_filter:
+            expenses = expenses.filter(branch__center_id=center_filter)
+            branches = branches.filter(center_id=center_filter)
+    
+    # Branch filter
+    branch_filter = request.GET.get('branch', '')
+    if branch_filter:
+        expenses = expenses.filter(branch_id=branch_filter)
+    
+    # Search functionality
+    search_query = request.GET.get('search', '')
+    if search_query:
+        expenses = expenses.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+    
+    # Status filter
+    status_filter = request.GET.get('status', '')
+    if status_filter == 'active':
+        expenses = expenses.filter(is_active=True)
+    elif status_filter == 'inactive':
+        expenses = expenses.filter(is_active=False)
+    
+    # Expense type filter
+    expense_type_filter = request.GET.get('expense_type', '')
+    if expense_type_filter:
+        expenses = expenses.filter(expense_type=expense_type_filter)
+    
+    # Calculate aggregates for current filtered set
+    aggregates = expenses.aggregate(
+        total_expenses=Sum('price'),
+        b2b_total=Sum('price', filter=Q(expense_type__in=['b2b', 'both'])),
+        b2c_total=Sum('price', filter=Q(expense_type__in=['b2c', 'both'])),
+    )
+    
+    # Pagination
+    per_page = request.GET.get('per_page', 10)
+    try:
+        per_page = int(per_page)
+    except ValueError:
+        per_page = 10
+    
+    paginator = Paginator(expenses, per_page)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        "title": "Expenses",
+        "subTitle": "Expenses",
+        "expenses": page_obj,
+        "branches": branches,
+        "branch_filter": branch_filter,
+        "centers": centers,
+        "center_filter": center_filter,
+        "search_query": search_query,
+        "status_filter": status_filter,
+        "expense_type_filter": expense_type_filter,
+        "expense_types": Expense.EXPENSE_TYPE_CHOICES,
+        "per_page": per_page,
+        "total_expenses": paginator.count,
+        "total_amount": aggregates['total_expenses'] or 0,
+        "b2b_total": aggregates['b2b_total'] or 0,
+        "b2c_total": aggregates['b2c_total'] or 0,
+    }
+    return render(request, "services/expenseList.html", context)
+
+
+@login_required(login_url='admin_login')
+def expenseDetail(request, expense_id):
+    """View expense details with linked products"""
+    # Get expense with RBAC check
+    accessible_expenses = get_user_expenses(request.user)
+    expense = get_object_or_404(
+        accessible_expenses.select_related('branch', 'branch__center').prefetch_related('products'),
+        id=expense_id
+    )
+    
+    context = {
+        "title": f"Expense: {expense.name}",
+        "subTitle": "Expense Details",
+        "expense": expense,
+        "linked_products": expense.products.all(),
+    }
+    return render(request, "services/expenseDetail.html", context)
+
+
+@login_required(login_url='admin_login')
+def addExpense(request):
+    """Add a new expense"""
+    # Get RBAC-filtered branches
+    branches = get_user_branches(request.user).select_related('center').order_by('name')
+    
+    # Center selection for superadmin
+    centers = None
+    if request.user.is_superuser:
+        centers = TranslationCenter.objects.filter(is_active=True).order_by('name')
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        price = request.POST.get('price', '0')
+        expense_type = request.POST.get('expense_type', 'both')
+        branch_id = request.POST.get('branch', '')
+        description = request.POST.get('description', '').strip()
+        is_active = request.POST.get('is_active') == 'on'
+        
+        # Validate price doesn't exceed max_digits=12
+        try:
+            price_decimal = Decimal(price or '0')
+            if price_decimal >= Decimal('10000000000'):  # 10^10, max safe value for 12 digits with 2 decimals
+                messages.error(request, 'Price value is too large. Maximum is 9,999,999,999.99')
+                price_decimal = None
+        except (InvalidOperation, ValueError):
+            messages.error(request, 'Invalid price value.')
+            price_decimal = None
+        
+        if not name:
+            messages.error(request, 'Expense name is required.')
+        elif not branch_id:
+            messages.error(request, 'Please select a branch.')
+        elif price_decimal is None:
+            pass  # Error already shown above
+        else:
+            try:
+                # Validate branch access
+                branch = get_object_or_404(branches, id=branch_id)
+                expense = Expense.objects.create(
+                    name=name,
+                    price=price_decimal,
+                    expense_type=expense_type,
+                    branch=branch,
+                    description=description or None,
+                    is_active=is_active,
+                )
+                messages.success(request, f'Expense "{name}" has been created successfully.')
+                return redirect('expenseList')
+            except Exception as e:
+                messages.error(request, f'Error creating expense: {str(e)}')
+    
+    context = {
+        "title": "Add Expense",
+        "subTitle": "Add Expense",
+        "branches": branches,
+        "centers": centers,
+        "expense_types": Expense.EXPENSE_TYPE_CHOICES,
+    }
+    return render(request, "services/addExpense.html", context)
+
+
+@login_required(login_url='admin_login')
+def editExpense(request, expense_id):
+    """Edit an existing expense"""
+    # Get expense with RBAC check
+    accessible_expenses = get_user_expenses(request.user)
+    expense = get_object_or_404(
+        accessible_expenses.select_related('branch', 'branch__center'),
+        id=expense_id
+    )
+    # Get RBAC-filtered branches
+    branches = get_user_branches(request.user).select_related('center').order_by('name')
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        price = request.POST.get('price', '0')
+        expense_type = request.POST.get('expense_type', 'both')
+        branch_id = request.POST.get('branch', '')
+        description = request.POST.get('description', '').strip()
+        is_active = request.POST.get('is_active') == 'on'
+        
+        # Validate price doesn't exceed max_digits=12
+        try:
+            price_decimal = Decimal(price or '0')
+            if price_decimal >= Decimal('10000000000'):  # 10^10, max safe value for 12 digits with 2 decimals
+                messages.error(request, 'Price value is too large. Maximum is 9,999,999,999.99')
+                price_decimal = None
+        except (InvalidOperation, ValueError):
+            messages.error(request, 'Invalid price value.')
+            price_decimal = None
+        
+        if not name:
+            messages.error(request, 'Expense name is required.')
+        elif not branch_id:
+            messages.error(request, 'Please select a branch.')
+        elif price_decimal is None:
+            pass  # Error already shown above
+        else:
+            try:
+                # Validate branch access
+                branch = get_object_or_404(branches, id=branch_id)
+                expense.name = name
+                expense.price = price_decimal
+                expense.expense_type = expense_type
+                expense.branch = branch
+                expense.description = description or None
+                expense.is_active = is_active
+                expense.save()
+                
+                messages.success(request, f'Expense "{name}" has been updated successfully.')
+                return redirect('expenseList')
+            except Exception as e:
+                messages.error(request, f'Error updating expense: {str(e)}')
+    
+    context = {
+        "title": "Edit Expense",
+        "subTitle": "Edit Expense",
+        "expense": expense,
+        "branches": branches,
+        "expense_types": Expense.EXPENSE_TYPE_CHOICES,
+    }
+    return render(request, "services/editExpense.html", context)
+
+
+@login_required(login_url='admin_login')
+def deleteExpense(request, expense_id):
+    """Delete an expense"""
+    # Get expense with RBAC check
+    accessible_expenses = get_user_expenses(request.user)
+    expense = get_object_or_404(accessible_expenses, id=expense_id)
+    
+    if request.method == 'POST':
+        name = expense.name
+        expense.delete()
+        messages.success(request, f'Expense "{name}" has been deleted successfully.')
+    
+    return redirect('expenseList')
+
+
+# ============ Expense Analytics API ============
+
+@login_required(login_url='admin_login')
+def expenseAnalytics(request):
+    """Get expense analytics by B2B/B2C for center/branch level"""
+    branch_id = request.GET.get('branch')
+    center_id = request.GET.get('center')
+    
+    branch = None
+    center = None
+    
+    # Validate access
+    if branch_id:
+        branches = get_user_branches(request.user)
+        branch = get_object_or_404(branches, id=branch_id)
+    elif center_id and request.user.is_superuser:
+        center = get_object_or_404(TranslationCenter, id=center_id)
+    
+    # Get aggregated expenses
+    analytics = Expense.aggregate_expenses_by_type(
+        branch=branch,
+        center=center,
+        active_only=True
+    )
+    
+    # Get expense breakdown by type
+    base_expenses = get_user_expenses(request.user).filter(is_active=True)
+    if branch:
+        base_expenses = base_expenses.filter(branch=branch)
+    elif center:
+        base_expenses = base_expenses.filter(branch__center=center)
+    
+    expense_breakdown = list(base_expenses.values(
+        'expense_type'
+    ).annotate(
+        total=Sum('price'),
+        count=Count('id')
+    ).order_by('expense_type'))
+    
+    context = {
+        "title": "Expense Analytics",
+        "subTitle": "Expense Analytics",
+        "analytics": analytics,
+        "expense_breakdown": expense_breakdown,
+        "branch": branch,
+        "center": center,
+    }
+    return render(request, "services/expenseAnalytics.html", context)
+
+
+# ============ Inline Expense Creation (AJAX) ============
+
+@login_required(login_url='admin_login')
+@require_POST
+def createExpenseInline(request):
+    """Create an expense inline via AJAX from the product add/edit page"""
+    import json
+    
+    try:
+        # Check if JSON or form data
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+        else:
+            data = request.POST
+        
+        name = data.get('name', '').strip()
+        price = data.get('price', '0')
+        expense_type = data.get('expense_type', 'both')
+        branch_id = data.get('branch', '')
+        description = data.get('description', '').strip()
+        
+        if not name:
+            return JsonResponse({'success': False, 'error': 'Expense name is required.'}, status=400)
+        
+        if not branch_id:
+            return JsonResponse({'success': False, 'error': 'Branch is required.'}, status=400)
+        
+        # Verify branch access
+        branches = get_user_branches(request.user)
+        try:
+            branch = branches.get(id=branch_id)
+        except:
+            return JsonResponse({'success': False, 'error': 'Invalid branch.'}, status=400)
+        
+        # Create the expense
+        expense = Expense.objects.create(
+            name=name,
+            price=Decimal(str(price)) if price else Decimal('0'),
+            expense_type=expense_type,
+            branch=branch,
+            description=description,
+            is_active=True,
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'expense': {
+                'id': expense.id,
+                'name': expense.name,
+                'price': str(expense.price),
+                'expense_type': expense.expense_type,
+                'expense_type_display': expense.get_expense_type_display(),
+                'branch_name': branch.name,
+            }
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON data.'}, status=400)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)

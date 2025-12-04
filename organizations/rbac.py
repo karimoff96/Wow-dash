@@ -456,3 +456,14 @@ def get_user_products(user):
     
     accessible_branches = get_user_branches(user)
     return Product.objects.filter(category__branch__in=accessible_branches)
+
+
+def get_user_expenses(user):
+    """Get all expenses accessible by this user."""
+    from services.models import Expense
+    
+    if user.is_superuser:
+        return Expense.objects.all()
+    
+    accessible_branches = get_user_branches(user)
+    return Expense.objects.filter(branch__in=accessible_branches)

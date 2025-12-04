@@ -1,0 +1,158 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+{% load number_filters %}
+
+{% block content %}
+<div class="row gy-4">
+    <!-- Expense Details Card -->
+    <div class="col-xxl-8">
+        <div class="card h-100 p-0 radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                    <h6 class="mb-0 d-flex align-items-center">
+                        <iconify-icon icon="solar:wallet-bold" class="me-8 text-warning-600"></iconify-icon>
+                        <span>{{ expense.name }}</span>
+                    </h6>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="{% url 'editExpense' expense.id %}" class="btn btn-success-600 radius-8 px-16 py-9 d-flex align-items-center gap-2">
+                            <iconify-icon icon="lucide:edit" class="text-lg"></iconify-icon>
+                            <span>Edit</span>
+                        </a>
+                        <a href="{% url 'expenseList' %}" class="btn btn-outline-secondary-600 radius-8 px-16 py-9 d-flex align-items-center gap-2">
+                            <iconify-icon icon="ep:back"></iconify-icon>
+                            <span>Back</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-24">
+                <div class="row g-4">
+                    <!-- Basic Info -->
+                    <div class="col-md-6">
+                        <div class="bg-neutral-50 radius-8 p-20 h-100">
+                            <h6 class="text-primary-light mb-16 d-flex align-items-center">
+                                <iconify-icon icon="solar:info-circle-linear" class="me-8"></iconify-icon>
+                                Basic Information
+                            </h6>
+                            <table class="table table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-secondary-light py-8 ps-0" style="width: 120px;">Name:</td>
+                                        <td class="py-8 fw-semibold">{{ expense.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-secondary-light py-8 ps-0">Price:</td>
+                                        <td class="py-8 fw-semibold text-success-600">{{ expense.price|format_number }} UZS</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-secondary-light py-8 ps-0">Type:</td>
+                                        <td class="py-8">
+                                            {% if expense.expense_type == 'b2b' %}
+                                            <span class="badge bg-info-100 text-info-600 px-12 py-6">B2B (Agency/Business)</span>
+                                            {% elif expense.expense_type == 'b2c' %}
+                                            <span class="badge bg-success-100 text-success-600 px-12 py-6">B2C (Individual)</span>
+                                            {% else %}
+                                            <span class="badge bg-warning-100 text-warning-600 px-12 py-6">Both B2B & B2C</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-secondary-light py-8 ps-0">Status:</td>
+                                        <td class="py-8">
+                                            {% if expense.is_active %}
+                                            <span class="bg-success-focus text-success-600 border border-success-main px-12 py-4 radius-4 fw-medium text-sm">Active</span>
+                                            {% else %}
+                                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-12 py-4 radius-4 fw-medium text-sm">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Location Info -->
+                    <div class="col-md-6">
+                        <div class="bg-neutral-50 radius-8 p-20 h-100">
+                            <h6 class="text-primary-light mb-16 d-flex align-items-center">
+                                <iconify-icon icon="solar:buildings-2-linear" class="me-8"></iconify-icon>
+                                Location & Timestamps
+                            </h6>
+                            <table class="table table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-secondary-light py-8 ps-0" style="width: 120px;">Center:</td>
+                                        <td class="py-8 fw-semibold">{{ expense.branch.center.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-secondary-light py-8 ps-0">Branch:</td>
+                                        <td class="py-8 fw-semibold">{{ expense.branch.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-secondary-light py-8 ps-0">Created:</td>
+                                        <td class="py-8">{{ expense.created_at|date:"M d, Y H:i" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-secondary-light py-8 ps-0">Updated:</td>
+                                        <td class="py-8">{{ expense.updated_at|date:"M d, Y H:i" }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Description -->
+                    {% if expense.description %}
+                    <div class="col-12">
+                        <div class="bg-neutral-50 radius-8 p-20">
+                            <h6 class="text-primary-light mb-12 d-flex align-items-center">
+                                <iconify-icon icon="solar:document-text-linear" class="me-8"></iconify-icon>
+                                Description
+                            </h6>
+                            <p class="text-secondary-light mb-0">{{ expense.description }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Linked Products Card -->
+    <div class="col-xxl-4">
+        <div class="card h-100 p-0 radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24">
+                <h6 class="mb-0 d-flex align-items-center">
+                    <iconify-icon icon="solar:box-linear" class="me-8 text-info-600"></iconify-icon>
+                    <span>Linked Products</span>
+                    <span class="badge bg-primary-100 text-primary-600 ms-8">{{ linked_products.count }}</span>
+                </h6>
+            </div>
+            <div class="card-body p-0">
+                {% if linked_products %}
+                <div class="list-group list-group-flush">
+                    {% for product in linked_products %}
+                    <a href="{% url 'productDetail' product.id %}" class="list-group-item list-group-item-action d-flex align-items-center gap-12 p-16 border-bottom">
+                        <div class="w-40-px h-40-px bg-primary-50 radius-8 d-flex align-items-center justify-content-center flex-shrink-0">
+                            <iconify-icon icon="solar:document-linear" class="text-primary-600 text-xl"></iconify-icon>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="text-sm fw-semibold mb-4">{{ product.name }}</h6>
+                            <span class="text-xs text-secondary-light">{{ product.category.name }}</span>
+                        </div>
+                        <iconify-icon icon="ep:arrow-right" class="text-secondary-light"></iconify-icon>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-24 text-center text-secondary-light">
+                    <iconify-icon icon="solar:box-linear" class="text-4xl mb-8"></iconify-icon>
+                    <p class="mb-0">No products linked to this expense.</p>
+                    <small>Link this expense to products from the product edit page.</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

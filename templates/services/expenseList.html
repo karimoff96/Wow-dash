@@ -1,0 +1,237 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+{% load number_filters %}
+
+{% block content %}
+<div class="card h-100 p-0 radius-12">
+    <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
+        <div class="d-flex align-items-center flex-wrap gap-3">
+            <span class="text-md fw-medium text-secondary-light mb-0" data-i18n="common.show">Show</span>
+            <form method="get" class="d-flex align-items-center gap-3">
+                <select name="per_page" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                    <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                    <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                </select>
+                <div class="navbar-search">
+                    <input type="text" class="bg-base h-40-px w-auto" name="search" data-i18n-placeholder="common.search" placeholder="Search" value="{{ search_query }}">
+                    <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
+                </div>
+                {% if user.is_superuser and centers %}
+                <select name="center" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="" data-i18n="common.allCenters">All Centers</option>
+                    {% for center in centers %}
+                    <option value="{{ center.id }}" {% if center_filter == center.id|stringformat:"i" %}selected{% endif %}>{{ center.name }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+                {% if branches %}
+                <select name="branch" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="" data-i18n="common.allBranches">All Branches</option>
+                    {% for branch in branches %}
+                    <option value="{{ branch.id }}" {% if branch_filter == branch.id|stringformat:"i" %}selected{% endif %}>{{ branch.name }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+                <select name="expense_type" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="">All Types</option>
+                    {% for type_val, type_label in expense_types %}
+                    <option value="{{ type_val }}" {% if expense_type_filter == type_val %}selected{% endif %}>{{ type_label }}</option>
+                    {% endfor %}
+                </select>
+                <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="" data-i18n="common.allStatus">All Status</option>
+                    <option value="active" {% if status_filter == 'active' %}selected{% endif %} data-i18n="common.active">Active</option>
+                    <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %} data-i18n="common.inactive">Inactive</option>
+                </select>
+            </form>
+        </div>
+        <a href="{% url 'addExpense' %}" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+            <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
+            <span>Add Expense</span>
+        </a>
+    </div>
+    
+    <!-- Summary Cards -->
+    <div class="card-body border-bottom py-16 px-24">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="bg-primary-50 radius-8 p-16 text-center">
+                    <iconify-icon icon="solar:wallet-bold" class="text-primary-600 text-3xl mb-8"></iconify-icon>
+                    <h6 class="text-primary-600 mb-4">Total Expenses</h6>
+                    <h4 class="text-primary-600 mb-0">{{ total_amount|format_number }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-info-50 radius-8 p-16 text-center">
+                    <iconify-icon icon="mdi:office-building" class="text-info-600 text-3xl mb-8"></iconify-icon>
+                    <h6 class="text-info-600 mb-4">B2B Expenses</h6>
+                    <h4 class="text-info-600 mb-0">{{ b2b_total|format_number }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-success-50 radius-8 p-16 text-center">
+                    <iconify-icon icon="mdi:account-group" class="text-success-600 text-3xl mb-8"></iconify-icon>
+                    <h6 class="text-success-600 mb-4">B2C Expenses</h6>
+                    <h4 class="text-success-600 mb-0">{{ b2c_total|format_number }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-body p-24">
+        <div class="table-responsive scroll-sm">
+            <table class="table bordered-table sm-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Expense Name</th>
+                        {% if user.is_superuser or is_owner %}
+                        <th scope="col" data-i18n="table.location">Location</th>
+                        {% endif %}
+                        <th scope="col">Price</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Products</th>
+                        <th scope="col" class="text-center" data-i18n="table.status">Status</th>
+                        <th scope="col" class="text-center" data-i18n="table.action">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex flex-column">
+                                <span class="text-md fw-medium text-primary-light">{{ expense.name }}</span>
+                                {% if expense.description %}
+                                <small class="text-secondary-light text-truncate" style="max-width: 200px;">{{ expense.description }}</small>
+                                {% endif %}
+                            </div>
+                        </td>
+                        {% if user.is_superuser or is_owner %}
+                        <td>
+                            {% if user.is_superuser %}
+                            <span class="badge bg-info-focus text-info-600 me-1">{{ expense.branch.center.name }}</span>
+                            {% endif %}
+                            <span class="badge bg-primary-focus text-primary-600">{{ expense.branch.name }}</span>
+                        </td>
+                        {% endif %}
+                        <td>
+                            <span class="text-success-600 fw-semibold">{{ expense.price|format_number }}</span>
+                        </td>
+                        <td>
+                            {% if expense.expense_type == 'b2b' %}
+                            <span class="badge bg-info-100 text-info-600 px-12 py-6">B2B</span>
+                            {% elif expense.expense_type == 'b2c' %}
+                            <span class="badge bg-success-100 text-success-600 px-12 py-6">B2C</span>
+                            {% else %}
+                            <span class="badge bg-warning-100 text-warning-600 px-12 py-6">Both</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-neutral-200 text-neutral-600 px-12 py-6">{{ expense.product_count }}</span>
+                        </td>
+                        <td class="text-center">
+                            {% if expense.is_active %}
+                                <span class="bg-success-focus text-success-600 border border-success-main px-12 py-4 radius-4 fw-medium text-sm" data-i18n="common.active">Active</span>
+                            {% else %}
+                                <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-12 py-4 radius-4 fw-medium text-sm" data-i18n="common.inactive">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex align-items-center gap-6 justify-content-center">
+                                <a href="{% url 'expenseDetail' expense.id %}" class="bg-info-focus bg-hover-info-200 text-info-600 fw-medium w-32-px h-32-px d-flex justify-content-center align-items-center rounded-circle" title="View">
+                                    <iconify-icon icon="majesticons:eye-line" class="text-lg"></iconify-icon>
+                                </a>
+                                <a href="{% url 'editExpense' expense.id %}" class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-32-px h-32-px d-flex justify-content-center align-items-center rounded-circle" title="Edit">
+                                    <iconify-icon icon="lucide:edit" class="text-lg"></iconify-icon>
+                                </a>
+                                <button type="button" class="bg-danger-focus bg-hover-danger-200 text-danger-600 fw-medium w-32-px h-32-px d-flex justify-content-center align-items-center rounded-circle" 
+                                        data-bs-toggle="modal" data-bs-target="#deleteModal{{ expense.id }}" title="Delete">
+                                    <iconify-icon icon="fluent:delete-24-regular" class="text-lg"></iconify-icon>
+                                </button>
+                            </div>
+                            
+                            <!-- Delete Modal -->
+                            <div class="modal fade" id="deleteModal{{ expense.id }}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Delete Expense</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete <strong>{{ expense.name }}</strong>?</p>
+                                            {% if expense.product_count > 0 %}
+                                            <div class="alert alert-warning">
+                                                <iconify-icon icon="mdi:warning" class="me-8"></iconify-icon>
+                                                This expense is linked to {{ expense.product_count }} product(s). They will be unlinked.
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancel</button>
+                                            <form action="{% url 'deleteExpense' expense.id %}" method="POST" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger" data-i18n="common.delete">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="{% if user.is_superuser or is_owner %}8{% else %}7{% endif %}" class="text-center py-4">
+                            <div class="text-secondary-light">
+                                <iconify-icon icon="solar:wallet-linear" class="text-4xl mb-2"></iconify-icon>
+                                <p class="mb-0">No expenses found</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if expenses %}
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
+            <span>Showing {{ expenses.start_index }} to {{ expenses.end_index }} of {{ total_expenses }} entries</span>
+            <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                {% if expenses.has_previous %}
+                <li class="page-item">
+                    <a class="page-link bg-neutral-300 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px" 
+                       href="?page={{ expenses.previous_page_number }}&search={{ search_query }}&expense_type={{ expense_type_filter }}&status={{ status_filter }}&center={{ center_filter }}&branch={{ branch_filter }}&per_page={{ per_page }}">
+                        <iconify-icon icon="ep:arrow-left"></iconify-icon>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in expenses.paginator.page_range %}
+                    {% if expenses.number == num %}
+                    <li class="page-item">
+                        <span class="page-link bg-primary-600 text-white fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px">{{ num }}</span>
+                    </li>
+                    {% elif num > expenses.number|add:'-3' and num < expenses.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link bg-neutral-300 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px" 
+                           href="?page={{ num }}&search={{ search_query }}&expense_type={{ expense_type_filter }}&status={{ status_filter }}&center={{ center_filter }}&branch={{ branch_filter }}&per_page={{ per_page }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if expenses.has_next %}
+                <li class="page-item">
+                    <a class="page-link bg-neutral-300 text-secondary-light fw-semibold radius-8 border-0 d-flex align-items-center justify-content-center h-32-px w-32-px" 
+                       href="?page={{ expenses.next_page_number }}&search={{ search_query }}&expense_type={{ expense_type_filter }}&status={{ status_filter }}&center={{ center_filter }}&branch={{ branch_filter }}&per_page={{ per_page }}">
+                        <iconify-icon icon="ep:arrow-right"></iconify-icon>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
