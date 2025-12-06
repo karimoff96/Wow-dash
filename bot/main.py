@@ -2458,7 +2458,13 @@ def show_profile(message, language):
         lang_name = get_text(f"language_name_{user.language}", language)
         status_text = get_text("status_active", language) if user.is_active else get_text("status_inactive", language)
         
-        profile_text = get_text("profile_title", language) + "\n\n"
+        profile_text = get_text("profile_title", language) + "\n"
+        
+        # Add agency badge if user is an agency
+        if user.is_agency:
+            profile_text += get_text("profile_agency_badge", language) + "\n"
+        
+        profile_text += "\n"
         profile_text += f"{get_text('profile_name', language)}: {user.name}\n"
         profile_text += f"{get_text('profile_phone', language)}: {user.phone}\n"
         profile_text += f"{get_text('profile_branch', language)}: {branch_name}\n"

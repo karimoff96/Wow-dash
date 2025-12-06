@@ -99,6 +99,28 @@
                                 <span class="text-md fw-medium">{{ bot_user.created_at|date:"d M Y, H:i" }}</span>
                             </div>
                         </li>
+                        {% if bot_user.center %}
+                        <li class="d-flex align-items-center gap-8 mb-16">
+                            <div class="w-40-px h-40-px rounded-circle bg-cyan-50 d-flex align-items-center justify-content-center flex-shrink-0">
+                                <iconify-icon icon="mdi:office-building" class="text-cyan-600 text-xl"></iconify-icon>
+                            </div>
+                            <div class="flex-grow-1">
+                                <span class="text-sm text-secondary-light d-block" data-i18n="detail.center">Center</span>
+                                <span class="text-md fw-medium">{{ bot_user.center.name }}</span>
+                            </div>
+                        </li>
+                        {% endif %}
+                        {% if bot_user.branch %}
+                        <li class="d-flex align-items-center gap-8 mb-16">
+                            <div class="w-40-px h-40-px rounded-circle bg-indigo-50 d-flex align-items-center justify-content-center flex-shrink-0">
+                                <iconify-icon icon="mdi:store" class="text-indigo-600 text-xl"></iconify-icon>
+                            </div>
+                            <div class="flex-grow-1">
+                                <span class="text-sm text-secondary-light d-block" data-i18n="detail.branch">Branch</span>
+                                <span class="text-md fw-medium">{{ bot_user.branch.name }}</span>
+                            </div>
+                        </li>
+                        {% endif %}
                         {% if bot_user.agency %}
                         <li class="d-flex align-items-center gap-8">
                             <div class="w-40-px h-40-px rounded-circle bg-purple-50 d-flex align-items-center justify-content-center flex-shrink-0">

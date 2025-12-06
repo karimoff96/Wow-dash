@@ -296,43 +296,69 @@ class BotUser(models.Model):
         if self.is_agency:
             if not self.agency_token:
                 self.agency_token = uuid.uuid4()
-            if not self.agency_link:
-                self.agency_link = self.get_agency_invite_link()
+            # Always regenerate the link to ensure it uses the correct bot username
+            self.agency_link = self.get_agency_invite_link()
         super().save(*args, **kwargs)
 
     def get_agency_invite_link(self):
-        """Generate a unique invite link for the agency"""
+        """Generate a unique invite link for the agency scoped to their center"""
         if not self.is_agency:
             return None
 
-        # Get bot username from environment variables
-        bot_username = os.getenv("TELEGRAM_BOT_USERNAME", "").strip()
+        # Get bot username from the center's configuration
+        bot_username = None
+        if self.center and self.center.bot_username:
+            bot_username = self.center.bot_username.strip().lstrip("@")
+        
+        # Fallback to environment variable for backward compatibility
         if not bot_username:
-            raise ValueError("TELEGRAM_BOT_USERNAME environment variable is not set")
+            bot_username = os.getenv("TELEGRAM_BOT_USERNAME", "").strip().lstrip("@")
+        
+        if not bot_username:
+            raise ValueError(
+                "Bot username not configured. Please set the bot username in Center settings "
+                "or TELEGRAM_BOT_USERNAME environment variable."
+            )
 
-        # Remove @ if present and ensure it's included in the final URL
-        bot_username = bot_username.lstrip("@")
+        # Generate link with center scope if available
+        # Format: agency_{token}_{center_id} for center-scoped invites
+        if self.center:
+            return f"https://t.me/{bot_username}?start=agency_{self.agency_token}_{self.center.id}"
         return f"https://t.me/{bot_username}?start=agency_{self.agency_token}"
 
     @classmethod
-    def get_agency_by_token(cls, token):
+    def get_agency_by_token(cls, token, center_id=None):
         """
         Get agency by invitation token if it exists and hasn't been used yet.
         Marks the token as used if found.
+        
+        Args:
+            token: The agency UUID token
+            center_id: Optional center ID to scope the search (for multi-tenant)
         """
         from django.db import transaction
 
         try:
-            logger.debug(f"Looking for agency with token: {token}")
+            logger.debug(f"Looking for agency with token: {token}, center_id: {center_id}")
+
+            # Build the filter
+            filter_kwargs = {
+                'agency_token': token,
+                'is_agency': True,
+            }
+            
+            # If center_id is provided, scope the search to that center
+            if center_id:
+                filter_kwargs['center_id'] = center_id
 
             # First, let's check if the agency exists at all (regardless of is_used)
-            all_agencies = cls.objects.filter(agency_token=token, is_agency=True)
+            all_agencies = cls.objects.filter(**filter_kwargs)
             logger.debug(f"Found {all_agencies.count()} agency(ies) with this token")
 
             if all_agencies.exists():
                 first_agency = all_agencies.first()
                 logger.debug(
-                    f"Agency found: {first_agency.name}, is_used={first_agency.is_used}"
+                    f"Agency found: {first_agency.name}, is_used={first_agency.is_used}, center={first_agency.center}"
                 )
 
                 if first_agency.is_used:
@@ -340,12 +366,11 @@ class BotUser(models.Model):
                     return None
 
             with transaction.atomic():
+                # Add is_used filter for the actual fetch
+                filter_kwargs['is_used'] = False
+                
                 # Use select_for_update to lock the row
-                agency = cls.objects.select_for_update().get(
-                    agency_token=token,
-                    is_agency=True,
-                    is_used=False,  # Only get unused tokens
-                )
+                agency = cls.objects.select_for_update().get(**filter_kwargs)
                 logger.debug(
                     f"Successfully retrieved unused agency: {agency.name} (ID: {agency.id})"
                 )
@@ -357,13 +382,14 @@ class BotUser(models.Model):
 
                 return agency
         except cls.DoesNotExist:
-            logger.warning(f"No unused agency found with token: {token}")
+            logger.warning(f"No unused agency found with token: {token}, center_id: {center_id}")
             return None
         except ValueError as e:
             logger.error(f"ValueError in get_agency_by_token: {e}")
             return None
         except Exception as e:
             logger.error(f"Unexpected error in get_agency_by_token: {e}", exc_info=True)
+            return None
             return None
 
 

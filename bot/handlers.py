@@ -72,16 +72,49 @@ def register_all_handlers(bot, center=None):
         is_agency_invite = False
         agency_token = None
         agency = None
+        agency_center_id = None
         
         if len(message.text.split()) > 1:
             param = message.text.split()[1]
             if param.startswith("agency_"):
                 try:
-                    agency_token = param[7:]
-                    uuid_obj = uuid_module.UUID(agency_token)
-                    agency = BotUser.get_agency_by_token(agency_token)
-                    if agency:
-                        is_agency_invite = True
+                    # Parse: agency_{token} or agency_{token}_{center_id}
+                    parts = param[7:].split("_")
+                    if len(parts) >= 1:
+                        # First part is the UUID token (may contain hyphens from UUID format)
+                        # UUID format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx (36 chars)
+                        # But in the link it's without hyphens, so we reconstruct
+                        token_part = parts[0]
+                        # Check if there are more parts that could be center_id
+                        # The token is 32 chars hex (no hyphens) or 36 chars (with hyphens)
+                        if len(token_part) == 32:
+                            agency_token = token_part
+                            # Check for center_id at the end
+                            if len(parts) > 1:
+                                try:
+                                    agency_center_id = int(parts[-1])
+                                except ValueError:
+                                    pass
+                        else:
+                            # Token might include hyphens, need to parse differently
+                            # Full param minus "agency_" prefix
+                            full_token = param[7:]
+                            # Try to find center_id at the end
+                            last_underscore = full_token.rfind("_")
+                            if last_underscore > 0:
+                                try:
+                                    agency_center_id = int(full_token[last_underscore + 1:])
+                                    agency_token = full_token[:last_underscore]
+                                except ValueError:
+                                    # No center_id, full string is token
+                                    agency_token = full_token
+                            else:
+                                agency_token = full_token
+                        
+                        uuid_obj = uuid_module.UUID(agency_token)
+                        agency = BotUser.get_agency_by_token(str(uuid_obj), center_id=agency_center_id)
+                        if agency:
+                            is_agency_invite = True
                 except (ValueError, IndexError) as e:
                     logger.error(f"Invalid agency token: {e}")
         

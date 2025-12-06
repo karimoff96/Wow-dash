@@ -173,8 +173,23 @@ from organizations.rbac import get_user_customers
 @login_required(login_url="admin_login")
 def addUser(request):
     """Add a new BotUser (Telegram user)"""
+    from organizations.models import TranslationCenter, Branch
+    from organizations.rbac import get_user_branches
+    
     # Get agencies from user's accessible branches only
     agencies = get_user_customers(request.user).filter(is_agency=True).order_by("name")
+    
+    # Get centers and branches based on user permissions
+    if request.user.is_superuser:
+        centers = TranslationCenter.objects.filter(is_active=True).order_by("name")
+        branches = Branch.objects.filter(is_active=True).select_related('center').order_by("center__name", "name")
+    else:
+        # Get branches user has access to
+        user_branches = get_user_branches(request.user)
+        branches = user_branches.filter(is_active=True).select_related('center').order_by("center__name", "name")
+        # Get unique centers from those branches
+        center_ids = branches.values_list('center_id', flat=True).distinct()
+        centers = TranslationCenter.objects.filter(id__in=center_ids, is_active=True).order_by("name")
 
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -185,6 +200,8 @@ def addUser(request):
         is_active = request.POST.get("is_active") == "on"
         is_agency = request.POST.get("is_agency") == "on"
         agency_id = request.POST.get("agency", "")
+        center_id = request.POST.get("center", "")
+        branch_id = request.POST.get("branch", "")
 
         # Validation
         if not name:
@@ -203,6 +220,25 @@ def addUser(request):
                     is_active=is_active,
                     is_agency=is_agency,
                 )
+                
+                # Set center if selected
+                if center_id:
+                    try:
+                        center = TranslationCenter.objects.get(id=center_id)
+                        bot_user.center = center
+                    except TranslationCenter.DoesNotExist:
+                        pass
+                
+                # Set branch if selected
+                if branch_id:
+                    try:
+                        branch = Branch.objects.get(id=branch_id)
+                        bot_user.branch = branch
+                        # Also set center from branch if not already set
+                        if not bot_user.center:
+                            bot_user.center = branch.center
+                    except Branch.DoesNotExist:
+                        pass
 
                 # Set agency if selected and not an agency itself
                 if agency_id and not is_agency:
@@ -225,6 +261,8 @@ def addUser(request):
         "title": "Add User",
         "subTitle": "Add User",
         "agencies": agencies,
+        "centers": centers,
+        "branches": branches,
         "languages": BotUser.LANGUAGES,
     }
     return render(request, "users/addUser.html", context)
@@ -313,12 +351,26 @@ def usersList(request):
 def editUser(request, user_id):
     """Edit an existing BotUser"""
     from django.shortcuts import get_object_or_404
+    from organizations.models import TranslationCenter, Branch
+    from organizations.rbac import get_user_branches
 
     user = get_object_or_404(BotUser, id=user_id)
     # Get agencies from user's accessible branches only
     agencies = (
         get_user_customers(request.user).filter(is_agency=True).exclude(id=user_id).order_by("name")
     )
+    
+    # Get centers and branches based on user permissions
+    if request.user.is_superuser:
+        centers = TranslationCenter.objects.filter(is_active=True).order_by("name")
+        branches = Branch.objects.filter(is_active=True).select_related('center').order_by("center__name", "name")
+    else:
+        # Get branches user has access to
+        user_branches = get_user_branches(request.user)
+        branches = user_branches.filter(is_active=True).select_related('center').order_by("center__name", "name")
+        # Get unique centers from those branches
+        center_ids = branches.values_list('center_id', flat=True).distinct()
+        centers = TranslationCenter.objects.filter(id__in=center_ids, is_active=True).order_by("name")
 
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -329,6 +381,8 @@ def editUser(request, user_id):
         is_active = request.POST.get("is_active") == "on"
         is_agency = request.POST.get("is_agency") == "on"
         agency_id = request.POST.get("agency", "")
+        center_id = request.POST.get("center", "")
+        branch_id = request.POST.get("branch", "")
 
         # Validation
         if not name:
@@ -345,6 +399,29 @@ def editUser(request, user_id):
                 user.language = language
                 user.is_active = is_active
                 user.is_agency = is_agency
+                
+                # Set center
+                if center_id:
+                    try:
+                        center = TranslationCenter.objects.get(id=center_id)
+                        user.center = center
+                    except TranslationCenter.DoesNotExist:
+                        user.center = None
+                else:
+                    user.center = None
+                
+                # Set branch
+                if branch_id:
+                    try:
+                        branch = Branch.objects.get(id=branch_id)
+                        user.branch = branch
+                        # Also set center from branch if not already set
+                        if not user.center:
+                            user.center = branch.center
+                    except Branch.DoesNotExist:
+                        user.branch = None
+                else:
+                    user.branch = None
 
                 # Set agency if selected and not an agency itself
                 if agency_id and not is_agency:
@@ -370,6 +447,8 @@ def editUser(request, user_id):
         "subTitle": "Edit User",
         "user": user,
         "agencies": agencies,
+        "centers": centers,
+        "branches": branches,
         "languages": BotUser.LANGUAGES,
     }
     return render(request, "users/editUser.html", context)

@@ -82,6 +82,32 @@
                         </h6>
                         <div class="row">
                             <div class="col-md-6 mb-20">
+                                <label for="center" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span data-i18n="form.center">Center</span>
+                                </label>
+                                <select class="form-control radius-8 form-select" id="center" name="center">
+                                    <option value="" data-i18n="form.selectCenter">-- Select Center --</option>
+                                    {% for center in centers %}
+                                    <option value="{{ center.id }}" {% if user.center_id == center.id %}selected{% endif %}>{{ center.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-secondary-light" data-i18n="form.centerHint">Translation center this user belongs to</small>
+                            </div>
+                            <div class="col-md-6 mb-20">
+                                <label for="branch" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span data-i18n="form.branch">Branch</span>
+                                </label>
+                                <select class="form-control radius-8 form-select" id="branch" name="branch">
+                                    <option value="" data-i18n="form.selectBranch">-- Select Branch --</option>
+                                    {% for branch in branches %}
+                                    <option value="{{ branch.id }}" data-center="{{ branch.center_id }}" {% if user.branch_id == branch.id %}selected{% endif %}>
+                                        {{ branch.center.name }} - {{ branch.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-secondary-light" data-i18n="form.branchHint">Specific branch for this user</small>
+                            </div>
+                            <div class="col-md-6 mb-20">
                                 <label for="language" class="form-label fw-semibold text-primary-light text-sm mb-8">
                                     <span data-i18n="form.language">Language</span> <span class="text-danger-600">*</span>
                                 </label>
@@ -161,6 +187,67 @@
 
 {% block script %}
 <script>
+    // Store all branch options for filtering
+    const allBranchOptions = [];
+    $('#branch option').each(function() {
+        if ($(this).val()) {
+            allBranchOptions.push({
+                value: $(this).val(),
+                text: $(this).text(),
+                centerId: $(this).data('center'),
+                selected: $(this).is(':selected')
+            });
+        }
+    });
+    
+    // Filter branches when center changes
+    $('#center').on('change', function() {
+        const centerId = $(this).val();
+        const $branchSelect = $('#branch');
+        const currentBranchId = $branchSelect.val();
+        
+        // Clear and rebuild branch options
+        $branchSelect.find('option:not(:first)').remove();
+        
+        if (centerId) {
+            // Filter branches for selected center
+            allBranchOptions.forEach(function(opt) {
+                if (opt.centerId == centerId) {
+                    const $option = $('<option>', {
+                        value: opt.value,
+                        text: opt.text,
+                        'data-center': opt.centerId
+                    });
+                    if (opt.value == currentBranchId) {
+                        $option.prop('selected', true);
+                    }
+                    $branchSelect.append($option);
+                }
+            });
+        } else {
+            // Show all branches
+            allBranchOptions.forEach(function(opt) {
+                const $option = $('<option>', {
+                    value: opt.value,
+                    text: opt.text,
+                    'data-center': opt.centerId
+                });
+                if (opt.value == currentBranchId) {
+                    $option.prop('selected', true);
+                }
+                $branchSelect.append($option);
+            });
+        }
+    });
+    
+    // Auto-select center when branch is selected
+    $('#branch').on('change', function() {
+        const centerId = $(this).find(':selected').data('center');
+        if (centerId) {
+            $('#center').val(centerId);
+        }
+    });
+    
     // Agency field dependency on is_agency checkbox
     $('#is_agency').on('change', function() {
         if ($(this).is(':checked')) {
@@ -173,6 +260,16 @@
     // Trigger on page load
     if ($('#is_agency').is(':checked')) {
         $('#agency').prop('disabled', true);
+    }
+    
+    // Filter branches on page load if center is selected
+    const initialCenter = $('#center').val();
+    if (initialCenter) {
+        $('#center').trigger('change');
+        // Re-select the current branch
+        {% if user.branch_id %}
+        $('#branch').val('{{ user.branch_id }}');
+        {% endif %}
     }
 </script>
 {% endblock %}

@@ -178,6 +178,7 @@ def center_edit(request, center_id):
         
         # Bot fields
         company_orders_channel_id = request.POST.get("company_orders_channel_id", "").strip() or None
+        bot_username = request.POST.get("bot_username", "").strip().lstrip("@") or None
         # Only superuser can edit bot_token
         if request.user.is_superuser:
             bot_token = request.POST.get("bot_token", "").strip() or None
@@ -199,6 +200,7 @@ def center_edit(request, center_id):
             center.location_url = location_url or None
             center.is_active = is_active
             center.bot_token = bot_token
+            center.bot_username = bot_username
             center.company_orders_channel_id = company_orders_channel_id
             center.save()
             messages.success(request, f'Center "{name}" updated successfully!')

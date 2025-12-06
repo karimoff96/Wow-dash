@@ -43,6 +43,13 @@ class TranslationCenter(models.Model):
         unique=True,
         help_text=_("Telegram Bot Token for this center (unique, superuser only)"),
     )
+    bot_username = models.CharField(
+        _("Bot Username"),
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text=_("Telegram Bot username without @ (e.g., 'my_translation_bot')"),
+    )
     company_orders_channel_id = models.CharField(
         _("Company Orders Channel ID"),
         max_length=50,

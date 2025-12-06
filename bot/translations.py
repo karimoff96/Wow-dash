@@ -130,6 +130,7 @@ TRANSLATIONS = {
         "change_branch": "🏢 Filialni o'zgartirish",
         # Profile
         "profile_title": "👤 <b>Sizning profilingiz:</b>",
+        "profile_agency_badge": "🏢 <b>Agentlik hisobi</b>",
         "profile_name": "👤 Ism",
         "profile_phone": "📞 Telefon",
         "profile_branch": "🏢 Filial",
@@ -335,6 +336,7 @@ TRANSLATIONS = {
         "change_branch": "🏢 Сменить филиал",
         # Profile
         "profile_title": "👤 <b>Ваш профиль:</b>",
+        "profile_agency_badge": "🏢 <b>Агентский аккаунт</b>",
         "profile_name": "👤 Имя",
         "profile_phone": "📞 Телефон",
         "profile_branch": "🏢 Филиал",
@@ -542,6 +544,7 @@ TRANSLATIONS = {
         "change_branch": "🏢 Change Branch",
         # Profile
         "profile_title": "👤 <b>Your Profile:</b>",
+        "profile_agency_badge": "🏢 <b>Agency Account</b>",
         "profile_name": "👤 Name",
         "profile_phone": "📞 Phone",
         "profile_branch": "🏢 Branch",

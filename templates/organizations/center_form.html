@@ -161,6 +161,19 @@
                         
                         <div class="col-md-6">
                             <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.botUsername">Bot Username</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-neutral-100">@</span>
+                                <input type="text" name="bot_username" class="form-control radius-8" 
+                                       value="{% if center %}{{ center.bot_username|default:'' }}{% endif %}"
+                                       placeholder="my_translation_bot">
+                            </div>
+                            <small class="text-secondary-light">Bot username without @ (required for agency invitation links)</small>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">
                                 <span data-i18n="form.companyOrdersChannel">Company Orders Channel ID</span>
                             </label>
                             <input type="text" name="company_orders_channel_id" class="form-control radius-8" 
