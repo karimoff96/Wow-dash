@@ -340,6 +340,21 @@ def widgets(request):
 @any_permission_required('can_view_reports', 'can_view_analytics')
 def sales(request):
     """Sales Dashboard - requires can_view_reports or can_view_analytics permission"""
+    # Period filter for UI state (data is already computed for all periods)
+    period = request.GET.get("period", "year")
+    date_from = request.GET.get("date_from", "")
+    date_to = request.GET.get("date_to", "")
+    
+    # Period label for display
+    period_labels = {
+        "today": "Today",
+        "week": "This Week",
+        "month": "This Month",
+        "year": "This Year",
+        "custom": f"{date_from} to {date_to}" if date_from and date_to else "Custom Range"
+    }
+    period_label = period_labels.get(period, "This Year")
+    
     now = timezone.now()
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     week_start = today_start - timedelta(days=today_start.weekday())
@@ -708,6 +723,11 @@ def sales(request):
     context = {
         "title": "Sales Statistics",
         "subTitle": "Sales",
+        # Period filter state
+        "period": period,
+        "date_from": date_from,
+        "date_to": date_to,
+        "period_label": period_label,
         # Today
         "today_count": today_count,
         "today_revenue": today_revenue,
@@ -754,6 +774,21 @@ def sales(request):
 @any_permission_required('can_view_financial_reports', 'can_view_analytics')
 def finance(request):
     """Finance/Analytics page - requires can_view_financial_reports or can_view_analytics permission"""
+    # Period filter for UI state
+    period = request.GET.get("period", "year")
+    date_from = request.GET.get("date_from", "")
+    date_to = request.GET.get("date_to", "")
+    
+    # Period label for display
+    period_labels = {
+        "today": "Today",
+        "week": "This Week",
+        "month": "This Month",
+        "year": "This Year",
+        "custom": f"{date_from} to {date_to}" if date_from and date_to else "Custom Range"
+    }
+    period_label = period_labels.get(period, "This Year")
+    
     now = timezone.now()
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
     week_start = today_start - timedelta(days=today_start.weekday())
@@ -928,6 +963,11 @@ def finance(request):
     context = {
         "title": "Finance & Analytics",
         "subTitle": "Finance",
+        # Period filter state
+        "period": period,
+        "date_from": date_from,
+        "date_to": date_to,
+        "period_label": period_label,
         # Revenue stats for each period
         "today_stats": today_stats,
         "weekly_stats": weekly_stats,

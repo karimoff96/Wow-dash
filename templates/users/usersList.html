@@ -18,6 +18,18 @@
                     <input type="text" class="bg-base h-40-px w-auto" name="search" data-i18n-placeholder="common.search" placeholder="Search" value="{{ search_query }}">
                     <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                 </div>
+                <select name="period" id="periodSelect" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
+                    <option value="all" {% if period == 'all' %}selected{% endif %} data-i18n="filter.allTime">All Time</option>
+                    <option value="today" {% if period == 'today' %}selected{% endif %} data-i18n="filter.today">Today</option>
+                    <option value="week" {% if period == 'week' %}selected{% endif %} data-i18n="filter.thisWeek">This Week</option>
+                    <option value="month" {% if period == 'month' %}selected{% endif %} data-i18n="filter.thisMonth">This Month</option>
+                    <option value="year" {% if period == 'year' %}selected{% endif %} data-i18n="filter.thisYear">This Year</option>
+                    <option value="custom" {% if period == 'custom' %}selected{% endif %} data-i18n="filter.custom">Custom</option>
+                </select>
+                <div id="customDateRange" class="d-flex gap-2" style="{% if period != 'custom' %}display: none;{% endif %}">
+                    <input type="date" name="date_from" class="form-control form-control-sm h-40-px" value="{{ date_from }}" style="width: 140px;">
+                    <input type="date" name="date_to" class="form-control form-control-sm h-40-px" value="{{ date_to }}" style="width: 140px;">
+                </div>
                 <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
                     <option value="" data-i18n="common.allStatus">All Status</option>
                     <option value="active" {% if status_filter == 'active' %}selected{% endif %} data-i18n="common.active">Active</option>
@@ -266,5 +278,21 @@
     $('#selectAll').on('change', function() {
         $('tbody input[type="checkbox"]').prop('checked', $(this).prop('checked'));
     });
+    
+    // Period selection toggle for custom date range
+    const periodSelect = document.getElementById('periodSelect');
+    const customDateRange = document.getElementById('customDateRange');
+    
+    if (periodSelect && customDateRange) {
+        periodSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDateRange.style.display = 'flex';
+            } else {
+                customDateRange.style.display = 'none';
+                // Auto-submit when not custom
+                this.form.submit();
+            }
+        });
+    }
 </script>
 {% endblock %}

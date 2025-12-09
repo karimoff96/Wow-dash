@@ -1087,6 +1087,16 @@ def unit_economy(request):
         get_top_debtors,
     )
     
+    # Period filter
+    period = request.GET.get("period", "month")
+    custom_from = request.GET.get("date_from")
+    custom_to = request.GET.get("date_to")
+    
+    # Get period dates
+    period_data = get_period_dates(period, custom_from, custom_to)
+    date_from = period_data["date_from"]
+    date_to = period_data["date_to"]
+    
     # Get branch and center filters
     branch_id = request.GET.get("branch")
     center_id = request.GET.get("center")
@@ -1106,12 +1116,12 @@ def unit_economy(request):
     if hasattr(request.user, "admin_profile") and request.user.admin_profile:
         is_owner = request.user.admin_profile.is_owner
     
-    # Get analytics data
-    summary = get_remaining_balance_summary(request.user)
-    by_branch = get_remaining_by_branch(request.user)
-    by_client_type = get_remaining_by_client_type(request.user)
-    by_center = get_remaining_by_center(request.user)
-    top_debtors = get_top_debtors(request.user)
+    # Get analytics data with date filtering
+    summary = get_remaining_balance_summary(request.user, date_from=date_from, date_to=date_to)
+    by_branch = get_remaining_by_branch(request.user, date_from=date_from, date_to=date_to)
+    by_client_type = get_remaining_by_client_type(request.user, date_from=date_from, date_to=date_to)
+    by_center = get_remaining_by_center(request.user, date_from=date_from, date_to=date_to)
+    top_debtors = get_top_debtors(request.user, date_from=date_from, date_to=date_to)
     
     # Prepare chart data for branch remaining
     branch_labels = [b['branch_name'] for b in by_branch]
@@ -1128,6 +1138,12 @@ def unit_economy(request):
     context = {
         "title": "Unit Economy",
         "subTitle": "Reports / Unit Economy",
+        # Period filter
+        "period": period_data["period"],
+        "period_label": period_data["label"],
+        "period_choices": PERIOD_CHOICES,
+        "date_from": period_data["date_from_str"],
+        "date_to": period_data["date_to_str"],
         # Filters
         "branches": branches,
         "selected_branch": branch_id,

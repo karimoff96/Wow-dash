@@ -298,9 +298,13 @@
 {% endblock %}
 
 {% block script %}
+<script>
+// CSRF token for all AJAX requests
+const csrfToken = '{{ csrf_token }}';
+</script>
+
 {% if request.user.is_superuser %}
 <script>
-const csrfToken = '{{ csrf_token }}';
 
 async function createNewUser() {
     const form = document.getElementById('createUserForm');
@@ -409,13 +413,33 @@ async function checkWebhook() {
 
 async function setupWebhook() {
     updateStatus('Setting up webhook...', 'info');
+    
+    // Prompt for ngrok URL if using local development
+    const baseUrl = prompt(
+        'Enter your public HTTPS URL (ngrok/production):\n\n' +
+        'Example: https://your-domain.ngrok-free.app\n' +
+        'Leave empty to use current domain.',
+        'https://declinatory-chieko-nonprovocatively.ngrok-free.dev'
+    );
+    
+    if (baseUrl === null) {
+        updateStatus('Webhook setup cancelled', 'info');
+        return;
+    }
+    
     try {
+        const formData = new URLSearchParams();
+        if (baseUrl && baseUrl.trim()) {
+            formData.append('base_url', baseUrl.trim());
+        }
+        
         const response = await fetch(`/organizations/api/centers/${centerId}/webhook/setup/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken,
                 'Content-Type': 'application/x-www-form-urlencoded',
-            }
+            },
+            body: formData
         });
         const data = await response.json();
         

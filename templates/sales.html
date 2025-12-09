@@ -1,6 +1,36 @@
 ﻿{% extends './layout/layout.html' %} 
 
 {% block content %}
+<!-- Filter Bar -->
+<div class="card radius-8 border-0 mb-24">
+    <div class="card-body p-16">
+        <form method="GET" class="d-flex align-items-center gap-3">
+            <span class="text-md fw-semibold text-secondary-light" data-i18n="filter.defaultPeriod">Default Period:</span>
+            <select name="period" id="mainPeriodSelect" class="form-select form-select-sm w-auto">
+                <option value="today" {% if period == 'today' %}selected{% endif %} data-i18n="filter.today">Today</option>
+                <option value="week" {% if period == 'week' %}selected{% endif %} data-i18n="filter.thisWeek">This Week</option>
+                <option value="month" {% if period == 'month' %}selected{% endif %} data-i18n="filter.thisMonth">This Month</option>
+                <option value="year" {% if period == 'year' %}selected{% endif %} data-i18n="filter.thisYear">This Year</option>
+                <option value="custom" {% if period == 'custom' %}selected{% endif %} data-i18n="filter.custom">Custom Range</option>
+            </select>
+            <div id="customDateRange" class="d-flex gap-2" style="{% if period != 'custom' %}display: none;{% endif %}">
+                <input type="date" name="date_from" class="form-control form-control-sm" value="{{ date_from }}" style="width: 150px;">
+                <input type="date" name="date_to" class="form-control form-control-sm" value="{{ date_to }}" style="width: 150px;">
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm px-16 d-inline-flex align-items-center gap-2">
+                <iconify-icon icon="solar:filter-bold" class="icon"></iconify-icon>
+                <span data-i18n="common.apply">Apply</span>
+            </button>
+            {% if period_label %}
+            <span class="badge bg-primary-light text-primary-main px-12 py-6">
+                <iconify-icon icon="solar:calendar-bold" class="me-1"></iconify-icon>
+                {{ period_label }}
+            </span>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
 <div class="row gy-4">
     <!-- Row 1: Quick Stats Cards -->
     <div class="col-xxl-3 col-sm-6">
@@ -263,6 +293,22 @@
 
 {% block script %}
 <script>
+// Main period filter toggle for custom date range
+const mainPeriodSelect = document.getElementById('mainPeriodSelect');
+const customDateRange = document.getElementById('customDateRange');
+
+if (mainPeriodSelect && customDateRange) {
+    mainPeriodSelect.addEventListener('change', function() {
+        if (this.value === 'custom') {
+            customDateRange.style.display = 'flex';
+        } else {
+            customDateRange.style.display = 'none';
+            // Auto-submit when not custom
+            this.form.submit();
+        }
+    });
+}
+
 const ordersData = {
     today: { count: {{ today_count }}, revenue: {{ today_revenue }}, change: {{ today_change }}, dailyAvg: {{ today_daily_avg }}, chartData: {{ today_chart_data|safe }}, chartLabels: {{ today_chart_labels|safe }} },
     weekly: { count: {{ weekly_count }}, revenue: {{ weekly_revenue }}, change: {{ weekly_change }}, dailyAvg: {{ weekly_daily_avg }}, chartData: {{ weekly_chart_data|safe }}, chartLabels: {{ weekly_chart_labels|safe }} },

@@ -13,6 +13,26 @@
                         <p class="text-secondary-light mb-0" data-i18n="unitEconomy.subtitle">Receivables and payment collection analytics</p>
                     </div>
                     <form method="GET" class="d-flex flex-wrap gap-3 align-items-end">
+                        <!-- Period Filter -->
+                        <div>
+                            <label class="form-label text-sm mb-1" data-i18n="filter.period">Period</label>
+                            <select name="period" id="periodSelect" class="form-select" style="min-width: 140px;">
+                                {% for value, label in period_choices %}
+                                <option value="{{ value }}" {% if period == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Custom Date Range -->
+                        <div id="customDateRange" class="d-flex gap-2" style="{% if period != 'custom' %}display: none;{% endif %}">
+                            <div>
+                                <label class="form-label text-sm mb-1" data-i18n="filter.from">From</label>
+                                <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+                            </div>
+                            <div>
+                                <label class="form-label text-sm mb-1" data-i18n="filter.to">To</label>
+                                <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+                            </div>
+                        </div>
                         {% if user.is_superuser and centers %}
                         <div>
                             <label class="form-label text-sm mb-1" data-i18n="common.center">Center</label>
@@ -39,12 +59,20 @@
                             <iconify-icon icon="solar:filter-bold" class="icon line-height-1"></iconify-icon>
                             <span data-i18n="common.apply">Apply</span>
                         </button>
-                        <a href="{% url 'export_report' 'unit_economy' %}?{% if selected_branch %}branch={{ selected_branch }}&{% endif %}{% if selected_center %}center={{ selected_center }}{% endif %}" class="btn btn-outline-success d-inline-flex align-items-center gap-2">
+                        <a href="{% url 'export_report' 'unit_economy' %}?period={{ period }}&date_from={{ date_from }}&date_to={{ date_to }}{% if selected_branch %}&branch={{ selected_branch }}{% endif %}{% if selected_center %}&center={{ selected_center }}{% endif %}" class="btn btn-outline-success d-inline-flex align-items-center gap-2">
                             <iconify-icon icon="vscode-icons:file-type-excel" class="icon line-height-1"></iconify-icon>
                             <span data-i18n="common.exportExcel">Export Excel</span>
                         </a>
                     </form>
                 </div>
+                {% if period_label %}
+                <div class="mt-3">
+                    <span class="badge bg-primary-light text-primary-main px-12 py-6">
+                        <iconify-icon icon="solar:calendar-bold" class="me-1"></iconify-icon>
+                        {{ period_label }}
+                    </span>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -347,6 +375,22 @@ function formatShortNumber(num) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Period selection toggle for custom date range
+    const periodSelect = document.getElementById('periodSelect');
+    const customDateRange = document.getElementById('customDateRange');
+    
+    if (periodSelect && customDateRange) {
+        periodSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDateRange.style.display = 'flex';
+            } else {
+                customDateRange.style.display = 'none';
+                // Auto-submit when not custom
+                this.form.submit();
+            }
+        });
+    }
+    
     const branchLabels = {{ branch_labels|safe }};
     const branchRemainingValues = {{ branch_remaining_values|safe }};
     const clientTypeLabels = {{ client_type_labels|safe }};

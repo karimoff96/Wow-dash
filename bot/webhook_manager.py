@@ -249,10 +249,16 @@ def webhook_handler(request, center_id):
             logger.warning(f"Webhook received for center without token: {center_id}")
             return JsonResponse({"ok": False, "error": "No bot token"}, status=400)
         
-        # Get bot instance
-        bot = get_bot_for_center(center)
-        if not bot:
-            return JsonResponse({"ok": False, "error": "Bot unavailable"}, status=500)
+        # Import the global bot with handlers from bot.main
+        try:
+            import bot.main as bot_module
+            bot = bot_module.bot
+            
+            # Update bot token to match this center
+            bot.token = center.bot_token
+        except Exception as e:
+            logger.error(f"Failed to import bot handlers: {e}")
+            return JsonResponse({"ok": False, "error": "Bot handlers unavailable"}, status=500)
         
         # Parse update
         update_data = request.body.decode("utf-8")

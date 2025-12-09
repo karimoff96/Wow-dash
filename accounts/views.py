@@ -284,6 +284,42 @@ def usersList(request):
     from organizations.rbac import get_user_customers
     from organizations.models import TranslationCenter
     from django.db.models import Count, Max
+    from django.utils import timezone
+    from datetime import timedelta
+
+    # Period filter
+    period = request.GET.get("period", "all")
+    date_from_str = request.GET.get("date_from", "")
+    date_to_str = request.GET.get("date_to", "")
+    
+    # Calculate date range based on period
+    today = timezone.now()
+    date_from = None
+    date_to = None
+    
+    if period == "today":
+        date_from = today.replace(hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+    elif period == "week":
+        start_of_week = today - timedelta(days=today.weekday())
+        date_from = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+    elif period == "month":
+        date_from = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+    elif period == "year":
+        date_from = today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+    elif period == "custom" and date_from_str and date_to_str:
+        from datetime import datetime
+        try:
+            date_from = datetime.strptime(date_from_str, "%Y-%m-%d")
+            date_to = datetime.strptime(date_to_str, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
+            date_from = timezone.make_aware(date_from) if timezone.is_naive(date_from) else date_from
+            date_to = timezone.make_aware(date_to) if timezone.is_naive(date_to) else date_to
+        except ValueError:
+            date_from = None
+            date_to = None
 
     # Use RBAC-filtered customers with related branch/center data
     # Add order statistics for each user
@@ -291,8 +327,13 @@ def usersList(request):
         get_user_customers(request.user)
         .select_related("branch", "branch__center", "agency")
         .annotate(order_count=Count("order"), last_order_date=Max("order__created_at"))
-        .order_by("-created_at")
     )
+    
+    # Apply date filter if period is selected
+    if date_from and date_to:
+        users = users.filter(created_at__gte=date_from, created_at__lte=date_to)
+    
+    users = users.order_by("-created_at")
 
     # Center filter for superuser
     centers = None
@@ -353,6 +394,9 @@ def usersList(request):
         "center_filter": center_filter,
         "branches": branches,
         "branch_filter": branch_filter,
+        "period": period,
+        "date_from": date_from_str,
+        "date_to": date_to_str,
     }
     return render(request, "users/usersList.html", context)
 

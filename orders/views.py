@@ -99,6 +99,41 @@ def get_user_order_permissions(request, order=None):
 @login_required(login_url='admin_login')
 def ordersList(request):
     """List orders with search and filter - Permission-based access"""
+    from django.utils import timezone
+    from datetime import timedelta, datetime
+    
+    # Period filter
+    period = request.GET.get("period", "all")
+    date_from_str = request.GET.get("date_from", "")
+    date_to_str = request.GET.get("date_to", "")
+    
+    # Calculate date range based on period
+    today = timezone.now()
+    date_from = None
+    date_to = None
+    
+    if period == "today":
+        date_from = today.replace(hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+    elif period == "week":
+        start_of_week = today - timedelta(days=today.weekday())
+        date_from = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+    elif period == "month":
+        date_from = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+    elif period == "year":
+        date_from = today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+    elif period == "custom" and date_from_str and date_to_str:
+        try:
+            date_from = datetime.strptime(date_from_str, "%Y-%m-%d")
+            date_to = datetime.strptime(date_to_str, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
+            date_from = timezone.make_aware(date_from) if timezone.is_naive(date_from) else date_from
+            date_to = timezone.make_aware(date_to) if timezone.is_naive(date_to) else date_to
+        except ValueError:
+            date_from = None
+            date_to = None
     
     # Determine what orders user can see based on permissions
     can_view_all = request.user.is_superuser
@@ -125,6 +160,10 @@ def ordersList(request):
     else:
         # No admin profile - show nothing
         orders = Order.objects.none()
+    
+    # Apply date filter if period is selected
+    if date_from and date_to:
+        orders = orders.filter(created_at__gte=date_from, created_at__lte=date_to)
     
     orders = orders.select_related(
         'bot_user', 'product', 'language', 'branch', 'branch__center',
@@ -263,6 +302,9 @@ def ordersList(request):
         "can_view_own_only": can_view_own_only,
         "view_mode": view_mode,
         "can_create_orders": can_create_orders,
+        "period": period,
+        "date_from": date_from_str,
+        "date_to": date_to_str,
     }
     return render(request, "orders/ordersList.html", context)
 

@@ -205,6 +205,16 @@ TRANSLATIONS = {
         "doc_type_not_found": "❌ Xatolik: Hujjat turi ma'lumotlari topilmadi. Qaytadan boshlang.",
         "error_stats": "❌ Foydalanuvchi statistikasini olishda xatolik",
         "delete_file_failed": "❌ Faylni o'chirishda xatolik. Qayta urinib ko'ring.",
+        # New error keys for better validation
+        "error_no_branch_assigned": "❌ Sizga filial tayinlanmagan. Iltimos, profilga o'ting va filialni tanlang.",
+        "error_product_not_found": "❌ Hujjat turi topilmadi. Iltimos, qaytadan boshlang.",
+        "error_order_not_found": "❌ Buyurtma topilmadi. Iltimos, qaytadan boshlang.",
+        "error_general": "❌ Xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.",
+        "error_creating_account": "❌ Hisob yaratishda xatolik. Iltimos, qaytadan urinib ko'ring.",
+        "error_config": "❌ Tizim sozlamalari xatoligi. Administrator bilan bog'laning.",
+        "error_no_branches": "❌ Filiallar topilmadi. Administrator bilan bog'laning.",
+        "btn_pay": "💳 To'lash",
+        "btn_back_to_orders": "🔙 Arizalarga qaytish",
     },
     "ru": {
         "welcome": "🎉 <b>Добро пожаловать!</b>\n\nДобро пожаловать в наш центр переводов. Пожалуйста, выберите язык:",
@@ -330,6 +340,8 @@ TRANSLATIONS = {
         "error_file_too_large": "❌ Файл слишком большой. Максимальный размер: {max_size} МБ",
         "error_no_files": "❌ Файлы не загружены.",
         "error_payment": "❌ Ошибка оплаты.",
+        "error_product_not_found": "❌ Тип документа не найден. Пожалуйста, начните заново.",
+        "error_no_branch_assigned": "❌ Вам не назначен филиал. Пожалуйста, перейдите в профиль и выберите филиал.",
         # Branch selection
         "select_branch_header": "📍 <b>Выберите филиал</b>\n\nВыберите один из филиалов ниже:",
         "branch_selected": "✅ Вы выбрали филиал <b>{branch}</b>.",
@@ -536,6 +548,12 @@ TRANSLATIONS = {
         "error_order_not_found": "❌ Order not found.",
         "error_file_format": "❌ Invalid file format. Please use allowed formats.",
         "error_file_too_large": "❌ File is too large. Maximum size: {max_size} MB",
+        "error_no_files": "❌ No files uploaded.",
+        "error_payment": "❌ Payment error.",
+        "error_product_not_found": "❌ Document type not found. Please start again.",
+        "error_no_branch_assigned": "❌ You don't have a branch assigned. Please go to Profile and select a branch.",
+        # Branch selection
+        "select_branch_header": "📍 <b>Select a Branch</b>\n\nPlease select one of the branches below:",
         "error_no_files": "❌ No files uploaded.",
         "error_payment": "❌ Payment error.",
         # Branch selection

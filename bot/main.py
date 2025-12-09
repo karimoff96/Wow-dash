@@ -754,6 +754,23 @@ def forward_order_to_channel(order, language):
         return False
 
 
+def truncate_filename(filename, max_length=50):
+    """Truncate filename to prevent database field overflow while preserving extension"""
+    if not filename or len(filename) <= max_length:
+        return filename
+    
+    name, ext = os.path.splitext(filename)
+    # Reserve space for extension and some characters from name
+    max_name_length = max_length - len(ext) - 3  # -3 for "..."
+    
+    if max_name_length <= 0:
+        # Extension too long, just use hash
+        import hashlib
+        return hashlib.md5(filename.encode()).hexdigest()[:max_length]
+    
+    return f"{name[:max_name_length]}...{ext}"
+
+
 def get_file_pages_from_content(file_content, file_name):
     """Get accurate page count using the most precise methods available"""
     _, ext = os.path.splitext(file_name.lower())
@@ -2964,9 +2981,11 @@ def show_categorys(message, language):
     try:
         # Get user's branch and filter categories by that branch
         user = get_bot_user(user_id)
-        if user and user.branch:
-            services = Category.objects.filter(branch=user.branch, is_active=True)
-        else:
+        if not user:
+            send_message(message.chat.id, get_text("error_user_not_found", language))
+            return
+        
+        if not user.branch:
             # No branch selected - show message to select branch first
             if language == "uz":
                 no_branch_text = "⚠️ Iltimos, avval filialni tanlang.\n\nProfilga o'ting va filialni tanlang."
@@ -2977,6 +2996,8 @@ def show_categorys(message, language):
             send_message(message.chat.id, no_branch_text)
             show_main_menu(message, language)
             return
+        
+        services = Category.objects.filter(branch=user.branch, is_active=True)
         
         if services.exists():
             markup = types.InlineKeyboardMarkup(row_width=2)
@@ -3005,8 +3026,16 @@ def show_categorys(message, language):
                 no_services_text = "📋 No services available for this branch yet."
             send_message(message.chat.id, no_services_text)
             show_main_menu(message, language)
+    except Category.DoesNotExist:
+        logger.error(f" Category query failed for user {user_id}")
+        send_message(message.chat.id, get_text("error_general", language))
+        show_main_menu(message, language)
+    except AttributeError as e:
+        logger.error(f" AttributeError in show_categorys: {e}")
+        send_message(message.chat.id, get_text("error_general", language))
+        show_main_menu(message, language)
     except Exception as e:
-        logger.error(f" show_categorys error: {e}")
+        logger.error(f" Unexpected error in show_categorys: {e}", exc_info=True)
         send_message(message.chat.id, get_text("error_general", language))
         show_main_menu(message, language)
 
@@ -3823,18 +3852,13 @@ def handle_file_upload(message):
                 if message.document:
                     file_info = bot.get_file(message.document.file_id)
                     downloaded_file = bot.download_file(file_info.file_path)
-                    # Truncate original filename if too long to keep total path under 100 chars
-                    original_name = message.document.file_name or "doc"
-                    if len(original_name) > 30:
-                        name_parts = original_name.rsplit('.', 1)
-                        ext = f".{name_parts[1]}" if len(name_parts) > 1 else ""
-                        original_name = name_parts[0][:25] + ext
+                    # Truncate original filename to prevent path length issues
+                    original_name = truncate_filename(message.document.file_name or "doc.pdf", max_length=30)
                     file_name = f"rcpt_{order_id}_{int(time.time())}_{original_name}"
                     telegram_file_id = message.document.file_id
                 else:  # message.photo
                     file_info = bot.get_file(message.photo[-1].file_id)
                     downloaded_file = bot.download_file(file_info.file_path)
-                    # Use short unique ID instead of full Telegram file ID
                     file_name = f"rcpt_{order_id}_{int(time.time())}.jpg"
                     telegram_file_id = message.photo[-1].file_id
                 
@@ -3853,9 +3877,11 @@ def handle_file_upload(message):
                 user = get_bot_user(user_id)
                 logger.debug(f" Bot user: {user}")
 
-                # Create Receipt record
+                # Create Receipt record with proper file handling
                 logger.debug(f" Creating Receipt record...")
                 try:
+                    from django.core.files import File
+                    
                     receipt = Receipt.objects.create(
                         order=order,
                         telegram_file_id=telegram_file_id,
@@ -3864,8 +3890,10 @@ def handle_file_upload(message):
                         status='pending',
                         uploaded_by_user=user,
                     )
-                    receipt.file.name = receipt_path
-                    receipt.save()
+                    # Open the file and assign it properly
+                    with default_storage.open(receipt_path, 'rb') as f:
+                        receipt.file.save(os.path.basename(receipt_path), File(f), save=True)
+                    
                     logger.debug(f" Receipt created: {receipt.id}")
                 except Exception as receipt_error:
                     logger.error(f" Failed to create Receipt record: {receipt_error}")
@@ -5127,64 +5155,81 @@ def handle_finish_upload_message(message, language):
     try:
         # Create order with uploaded files
         from orders.models import Order, OrderMedia
-        from services.models import Product
+        from services.models import Product, Language
+        from django.db import transaction
 
         user = get_bot_user(user_id)
         if not user:
             bot.send_message(message.chat.id, get_text("user_not_found", language))
             return
         
-        doc_type = Product.objects.get(id=user_data["doc_type_id"])
+        # Validate branch assignment
+        if not user.branch:
+            bot.send_message(message.chat.id, get_text("error_no_branch_assigned", language))
+            logger.error(f"User {user_id} has no branch assigned")
+            show_main_menu(message, language)
+            return
+        
+        try:
+            doc_type = Product.objects.get(id=user_data["doc_type_id"])
+        except Product.DoesNotExist:
+            bot.send_message(message.chat.id, get_text("error_product_not_found", language))
+            logger.error(f"Product {user_data.get('doc_type_id')} not found")
+            return
 
         logger.debug(f" Creating order for user {user_id} with doc_type {doc_type.id}")
 
         # Get language ID from user data if available
         lang_id = user_data.get("lang_id")
+        service_lang = None
+        
+        if lang_id:
+            try:
+                service_lang = Language.objects.get(id=lang_id)
+            except Language.DoesNotExist:
+                logger.warning(f" Language with ID {lang_id} not found")
 
         # Get copy number from user data (default to 0)
         copy_number = user_data.get("copy_number", 0)
 
-        # Create order with language and copy number
-        order_data = {
-            "bot_user": user,
-            "product": doc_type,
-            "branch": user.branch,  # Set branch from user's branch
-            "language": None,  # Will be set below if lang_id exists
-            "total_pages": 0,  # Will be calculated from files
-            "copy_number": copy_number,  # Add copy number
-            "is_active": False,
-            "description": "",
-            "payment_type": "cash",  # Default, will be updated based on user choice
-            "total_price": 0,  # Will be calculated based on pages, user type, and copies
-        }
-
-        # Add language if available
-        if lang_id:
-            from services.models import Language
-
-            try:
-                service_lang = Language.objects.get(id=lang_id)
-                order_data["language"] = service_lang
-            except Language.DoesNotExist:
-                logger.warning(f" Language with ID {lang_id} not found")
-
-        order = Order.objects.create(**order_data)
-
-        total_pages = 0
-
-        # Save all uploaded files (now from dictionary)
-        for file_uid, file_info in user_data["files"].items():
-            # Create OrderMedia entry
-            order_file = OrderMedia.objects.create(
-                file=file_info["file_path"], pages=file_info["pages"]
+        # Use atomic transaction to ensure all-or-nothing order creation
+        with transaction.atomic():
+            # Create order with language and copy number
+            order = Order.objects.create(
+                bot_user=user,
+                product=doc_type,
+                branch=user.branch,
+                language=service_lang,
+                total_pages=0,  # Will be calculated from files
+                copy_number=copy_number,
+                is_active=False,
+                description="",
+                payment_type="cash",  # Default, will be updated based on user choice
+                total_price=0,  # Will be calculated based on pages, user type, and copies
             )
-            order.files.add(order_file)
-            total_pages += file_info["pages"]
 
-        # Update order with total pages and price
-        order.total_pages = total_pages
-        order.total_price = order.calculated_price
-        order.save()
+            total_pages = 0
+
+            # Save all uploaded files (now from dictionary)
+            for file_uid, file_info in user_data["files"].items():
+                # Truncate file path if needed
+                file_path = file_info["file_path"]
+                if len(file_path) > 90:  # Leave some margin
+                    logger.warning(f"File path too long: {file_path}")
+                    file_path = file_path[:90]
+                
+                # Create OrderMedia entry
+                order_file = OrderMedia.objects.create(
+                    file=file_path, 
+                    pages=file_info["pages"]
+                )
+                order.files.add(order_file)
+                total_pages += file_info["pages"]
+
+            # Update order with total pages and price
+            order.total_pages = total_pages
+            order.total_price = order.calculated_price
+            order.save()
 
         logger.debug(f" Order created successfully: {order.id}")
 
@@ -5197,14 +5242,23 @@ def handle_finish_upload_message(message, language):
         # Show payment options instead of going to main menu
         show_payment_options(message, language, order)
 
+    except KeyError as e:
+        logger.error(f" Missing required data in user_data: {e}")
+        bot.send_message(message.chat.id, get_text("error_general", language))
+        clear_user_files(user_id)
+        show_main_menu(message, language)
+    except Product.DoesNotExist:
+        logger.error(f" Product not found for order creation")
+        bot.send_message(message.chat.id, get_text("error_product_not_found", language))
+        clear_user_files(user_id)
+        show_main_menu(message, language)
     except Exception as e:
-        logger.error(f" Failed to create order: {e}")
+        logger.error(f" Failed to create order: {e}", exc_info=True)
         import traceback
-
         traceback.print_exc()
-        bot.send_message(
-            message.chat.id, get_text("error_general", language)
-        )
+        bot.send_message(message.chat.id, get_text("error_general", language))
+        clear_user_files(user_id)
+        show_main_menu(message, language)
 
 
 def handle_back_to_upload_docs_message(message, language):

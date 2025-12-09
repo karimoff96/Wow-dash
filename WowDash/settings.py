@@ -29,8 +29,17 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "77.42.31.194", "multilang.uz", ".multilang.uz"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "77.42.31.194", "multilang.uz", ".multilang.uz", ".ngrok-free.app", ".ngrok-free.dev", ".ngrok.io"]
     
+# CSRF trusted origins for ngrok and production
+CSRF_TRUSTED_ORIGINS = [
+    "https://multilang.uz",
+    "https://*.multilang.uz",
+    "https://*.ngrok-free.app",
+    "https://*.ngrok-free.dev",
+    "https://*.ngrok.io",
+]
+
 # Main domain for subdomain extraction
 MAIN_DOMAIN = os.getenv("MAIN_DOMAIN", "multilang.uz")
 
