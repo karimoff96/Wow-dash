@@ -114,7 +114,7 @@
                     <p class="text-secondary-light mb-16" data-i18n="common.startByCreatingBranch">Get started by creating your first branch</p>
                     {% can_do 'branches.manage' as can_manage_branches %}
                     {% if can_manage_branches %}
-                    <a href="{% url 'branch_create' %}" class="btn btn-primary d-inline-flex align-items-center gap-2">
+                    <a href="{% url 'branch_create' %}" class="btn btn-primary text-secondary-light d-inline-flex align-items-center gap-2">
                         <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
                         <span data-i18n="common.addBranch">Add Branch</span>
                     </a>

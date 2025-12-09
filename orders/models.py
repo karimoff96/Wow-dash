@@ -55,7 +55,35 @@ class Order(models.Model):
     )
 
     bot_user = models.ForeignKey(
-        BotUser, on_delete=models.CASCADE, verbose_name=_("Telegram User")
+        BotUser, 
+        on_delete=models.CASCADE, 
+        verbose_name=_("Telegram User"),
+        null=True,
+        blank=True,
+        help_text=_("Leave empty for manual orders")
+    )
+    
+    # Manual order fields (when bot_user is null)
+    manual_first_name = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name=_("First Name"),
+        help_text=_("Customer first name for manual orders")
+    )
+    manual_last_name = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name=_("Last Name"),
+        help_text=_("Customer last name for manual orders")
+    )
+    manual_phone = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name=_("Phone Number"),
+        help_text=_("Customer phone number for manual orders")
     )
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, verbose_name=_("Document Type")
@@ -179,20 +207,45 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return f"Order {self.id} - {self.bot_user.display_name} - {self.product} ({self.total_pages} pages)"
+        customer_name = self.get_customer_display_name()
+        return f"Order {self.id} - {customer_name} - {self.product} ({self.total_pages} pages)"
+    
+    def get_customer_display_name(self):
+        """Get customer name from bot_user or manual fields"""
+        if self.bot_user:
+            return self.bot_user.display_name
+        elif self.manual_first_name or self.manual_last_name:
+            name_parts = [self.manual_first_name, self.manual_last_name]
+            return " ".join(filter(None, name_parts))
+        else:
+            return _("Unknown Customer")
+    
+    def get_customer_phone(self):
+        """Get customer phone from bot_user or manual field"""
+        if self.bot_user:
+            return self.bot_user.phone_number
+        return self.manual_phone
+    
+    @property
+    def is_manual_order(self):
+        """Check if this is a manually created order (no bot_user)"""
+        return self.bot_user is None
 
     @property
     def calculated_price(self):
         """Calculate price based on user type, total pages, and copy number"""
+        # Determine if user is agency (default to False for manual orders)
+        is_agency = self.bot_user.is_agency if self.bot_user and hasattr(self.bot_user, 'is_agency') else False
+        
         base_price = self.product.get_price_for_user_type(
-            is_agency=self.bot_user.is_agency, pages=self.total_pages
+            is_agency=is_agency, pages=self.total_pages
         )
 
         # Add copy charges if copy_number > 0
         if self.copy_number > 0:
             copy_percentage = (
                 self.product.agency_copy_price_percentage
-                if self.bot_user.is_agency
+                if is_agency
                 else self.product.user_copy_price_percentage
             )
             copy_charge = (base_price * copy_percentage * self.copy_number) / 100

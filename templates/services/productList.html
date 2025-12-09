@@ -49,7 +49,7 @@
         </div>
         {% can_do 'products.manage' as can_manage_products %}
         {% if can_manage_products %}
-        <a href="{% url 'addProduct' %}" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+        <a href="{% url 'addProduct' %}" class="btn btn-primary text-sm text-secondary-light btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
             <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
             <span data-i18n="common.addProduct">Add Product</span>
         </a>

@@ -1,6 +1,7 @@
 {% extends '../layout/layout.html' %}
 {% load static %}
 {% load number_filters %}
+{% load l10n %}
 
 {% block content %}
 <div class="card h-100 p-0 radius-12">
@@ -115,14 +116,14 @@
                                     <span data-i18n="form.firstPagePrice">First Page Price</span> <span class="text-danger-600">*</span>
                                 </label>
                                 <input type="number" step="0.01" class="form-control radius-8" id="ordinary_first_page_price" 
-                                       name="ordinary_first_page_price" value="{{ product.ordinary_first_page_price }}" required>
+                                       name="ordinary_first_page_price" value="{{ product.ordinary_first_page_price|unlocalize|default:0 }}" required>
                             </div>
                             <div class="col-md-4 mb-20">
                                 <label for="ordinary_other_page_price" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.otherPagesPrice">
                                     Other Pages Price
                                 </label>
                                 <input type="number" step="0.01" class="form-control radius-8" id="ordinary_other_page_price" 
-                                       name="ordinary_other_page_price" value="{{ product.ordinary_other_page_price }}">
+                                       name="ordinary_other_page_price" value="{{ product.ordinary_other_page_price|unlocalize|default:0 }}">
                                 <small class="text-secondary-light" data-i18n="form.forDynamicPricingOnly">For dynamic pricing only</small>
                             </div>
                             <div class="col-md-4 mb-20">
@@ -130,7 +131,7 @@
                                     Copy Price %
                                 </label>
                                 <input type="number" step="0.01" class="form-control radius-8" id="user_copy_price_percentage" 
-                                       name="user_copy_price_percentage" value="{{ product.user_copy_price_percentage }}">
+                                       name="user_copy_price_percentage" value="{{ product.user_copy_price_percentage|unlocalize|default:100 }}">
                             </div>
                         </div>
                     </div>
@@ -147,14 +148,14 @@
                                     <span data-i18n="form.firstPagePrice">First Page Price</span> <span class="text-danger-600">*</span>
                                 </label>
                                 <input type="number" step="0.01" class="form-control radius-8" id="agency_first_page_price" 
-                                       name="agency_first_page_price" value="{{ product.agency_first_page_price }}" required>
+                                       name="agency_first_page_price" value="{{ product.agency_first_page_price|unlocalize|default:0 }}" required>
                             </div>
                             <div class="col-md-4 mb-20">
                                 <label for="agency_other_page_price" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.otherPagesPrice">
                                     Other Pages Price
                                 </label>
                                 <input type="number" step="0.01" class="form-control radius-8" id="agency_other_page_price" 
-                                       name="agency_other_page_price" value="{{ product.agency_other_page_price }}">
+                                       name="agency_other_page_price" value="{{ product.agency_other_page_price|unlocalize|default:0 }}">
                                 <small class="text-secondary-light" data-i18n="form.forDynamicPricingOnly">For dynamic pricing only</small>
                             </div>
                             <div class="col-md-4 mb-20">
@@ -162,7 +163,7 @@
                                     Copy Price %
                                 </label>
                                 <input type="number" step="0.01" class="form-control radius-8" id="agency_copy_price_percentage" 
-                                       name="agency_copy_price_percentage" value="{{ product.agency_copy_price_percentage }}">
+                                       name="agency_copy_price_percentage" value="{{ product.agency_copy_price_percentage|unlocalize|default:100 }}">
                             </div>
                         </div>
                     </div>
@@ -179,14 +180,14 @@
                                     Minimum Pages
                                 </label>
                                 <input type="number" class="form-control radius-8" id="min_pages" 
-                                       name="min_pages" value="{{ product.min_pages }}" min="1">
+                                       name="min_pages" value="{{ product.min_pages|default:1 }}" min="1">
                             </div>
                             <div class="col-md-4 mb-20">
                                 <label for="estimated_days" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.estimatedDays">
                                     Estimated Days
                                 </label>
                                 <input type="number" class="form-control radius-8" id="estimated_days" 
-                                       name="estimated_days" value="{{ product.estimated_days }}" min="1">
+                                       name="estimated_days" value="{{ product.estimated_days|default:1 }}" min="1">
                             </div>
                             <div class="col-md-4 mb-20">
                                 <div class="form-switch switch-primary py-12 px-16 border radius-8 position-relative h-100">

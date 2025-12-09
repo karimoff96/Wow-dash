@@ -15,7 +15,7 @@
         <ul class="sidebar-menu" id="sidebar-menu">
             <li>
                 <a href="{% url 'dashboard' %}">
-                    <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="solar:home-smile-angle-bold" class="menu-icon"></iconify-icon>
                     <span data-i18n="sidebar.dashboard">Dashboard</span>
                 </a>
             </li>
@@ -79,7 +79,7 @@
             
             <li>
                 <a href="{% url 'usersList' %}">
-                    <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="solar:users-group-rounded-bold" class="menu-icon"></iconify-icon>
                     <span data-i18n="sidebar.users">Customers</span>
                 </a>
             </li>
@@ -94,7 +94,7 @@
             {% if can_products %}
             <li class="dropdown">
                 <a href="javascript:void(0)">
-                    <iconify-icon icon="ri-star-line" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="solar:star-bold" class="menu-icon"></iconify-icon>
                     <span data-i18n="sidebar.services">Services</span>
                 </a>
                 <ul class="sidebar-submenu">
@@ -205,7 +205,7 @@
             {% if can_marketing or is_owner %}
             <li>
                 <a href="{% url 'marketing_list' %}">
-                    <iconify-icon icon="mdi:bullhorn" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="solar:chat-round-call-bold" class="menu-icon"></iconify-icon>
                     <span data-i18n="sidebar.marketing">Marketing</span>
                 </a>
             </li>

@@ -12,7 +12,7 @@
             {% endif %}
         </div>
         {% if request.user.is_superuser %}
-        <a href="{% url 'center_create' %}" class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
+        <a href="{% url 'center_create' %}" class="btn btn-primary text-sm text-secondary-light btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
             <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
             <span data-i18n="common.addNewCenter">Add New Center</span>
         </a>

@@ -6,83 +6,126 @@
 {% block content %}
 <div class="row gy-4">
     <!-- Category Info Card -->
-    <div class="col-lg-4">
-        <div class="card h-100 radius-16 overflow-hidden">
-            <div class="card-header bg-base border-bottom py-16 px-24">
+    <div class="col-xxl-4">
+        <div class="card h-100 p-0 radius-12">
+            <div class="card-header border-bottom bg-base py-16 px-24">
                 <div class="d-flex align-items-center justify-content-between">
                     <h6 class="mb-0" data-i18n="detail.categoryDetails">Category Details</h6>
-                    {% if category.is_active %}
-                        <span class="bg-success-focus text-success-600 px-16 py-4 radius-4 fw-medium text-sm" data-i18n="common.active">Active</span>
-                    {% else %}
-                        <span class="bg-neutral-200 text-neutral-600 px-16 py-4 radius-4 fw-medium text-sm" data-i18n="common.inactive">Inactive</span>
+                    {% can_do 'products.manage' as can_manage_products %}
+                    {% if can_manage_products %}
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-outline-secondary-600 btn-sm radius-8 dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+                            <iconify-icon icon="solar:settings-linear" class="me-4"></iconify-icon>
+                            <span data-i18n="detail.actions">Actions</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{% url 'editCategory' category.id %}">
+                                    <iconify-icon icon="lucide:edit" class="me-8 text-warning-600"></iconify-icon>
+                                    <span data-i18n="detail.editCategory">Edit Category</span>
+                                </a>
+                            </li>
+                            <li>
+                                <form method="post" action="{% url 'deleteCategory' category.id %}" class="d-inline" id="deleteForm">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item d-flex align-items-center text-danger-600" onclick="return confirm('Are you sure you want to delete this category? All products in this category will also be deleted.')">
+                                        <iconify-icon icon="mingcute:delete-2-line" class="me-8"></iconify-icon>
+                                        <span data-i18n="detail.deleteCategory">Delete Category</span>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                     {% endif %}
                 </div>
             </div>
             <div class="card-body p-24">
-                <div class="text-center mb-24">
-                    <div class="w-100-px h-100-px rounded-circle bg-primary-100 d-flex align-items-center justify-content-center mx-auto mb-16">
-                        <iconify-icon icon="ri-star-line" class="text-primary-600" style="font-size: 40px;"></iconify-icon>
+                <div class="d-flex flex-column align-items-center text-center">
+                    <!-- Category Icon -->
+                    <div class="w-120-px h-120-px rounded-circle bg-primary-100 d-flex align-items-center justify-content-center mb-16">
+                        <iconify-icon icon="solar:star-bold-duotone" class="text-primary-600" style="font-size: 64px;"></iconify-icon>
                     </div>
-                    <h5 class="mb-4">{{ category|trans_name }}</h5>
+                    <h5 class="mb-8">{{ category|trans_name }}</h5>
+                    
+                    <!-- Pricing Type Badge -->
                     {% if category.charging == 'static' %}
-                        <span class="badge bg-info-focus text-info-600" data-i18n="detail.staticPrice">Static Price</span>
+                    <span class="badge bg-info-focus text-info-600 px-24 py-6 radius-8 fw-semibold text-sm mb-16" data-i18n="detail.staticPrice">Static Price</span>
                     {% else %}
-                        <span class="badge bg-warning-focus text-warning-600" data-i18n="detail.perPagePricing">Per Page Pricing</span>
+                    <span class="badge bg-warning-focus text-warning-600 px-24 py-6 radius-8 fw-semibold text-sm mb-16" data-i18n="detail.perPagePricing">Per Page Pricing</span>
+                    {% endif %}
+                    
+                    <!-- Status Badge -->
+                    {% if category.is_active %}
+                    <span class="bg-success-focus text-success-600 px-24 py-6 radius-8 fw-semibold text-sm" data-i18n="common.active">Active</span>
+                    {% else %}
+                    <span class="bg-danger-focus text-danger-600 px-24 py-6 radius-8 fw-semibold text-sm" data-i18n="common.inactive">Inactive</span>
                     {% endif %}
                 </div>
-
-                <div class="border-top pt-24">
-                    <ul class="list-unstyled">
-                        {% if category.description %}
-                        <li class="mb-16">
-                            <span class="text-sm text-secondary-light d-block mb-4" data-i18n="form.description">Description</span>
-                            <span class="text-md">{{ category|trans_desc }}</span>
-                        </li>
-                        {% endif %}
-                        <li class="mb-16">
-                            <span class="text-sm text-secondary-light d-block mb-4" data-i18n="form.languages">Languages</span>
-                            <div>
-                                {% for lang in category.languages.all %}
-                                    <span class="badge bg-neutral-200 text-neutral-600 me-4 mb-4">{{ lang.name }}</span>
-                                {% empty %}
-                                    <span class="text-primary-light" data-i18n="detail.noLanguagesAssigned">No languages assigned</span>
-                                {% endfor %}
-                            </div>
-                        </li>
-                        <li class="mb-16">
-                            <span class="text-sm text-secondary-light d-block mb-4" data-i18n="detail.createdAt">Created At</span>
-                            <span class="text-md">{{ category.created_at|date:"d M Y, H:i" }}</span>
-                        </li>
-                        <li>
-                            <span class="text-sm text-secondary-light d-block mb-4" data-i18n="detail.lastUpdated">Last Updated</span>
-                            <span class="text-md">{{ category.updated_at|date:"d M Y, H:i" }}</span>
-                        </li>
-                    </ul>
+                
+                <hr class="my-24">
+                
+                <!-- Category Info -->
+                <ul class="list-group list-group-flush bg-transparent">
+                    <li class="list-group-item bg-transparent d-flex justify-content-between px-0 py-12 border-bottom">
+                        <span class="text-secondary-light" data-i18n="detail.pricingType">Pricing Type</span>
+                        <span class="fw-medium">
+                            {% if category.charging == 'dynamic' %}
+                            <span class="badge bg-info-focus text-info-600" data-i18n="detail.dynamic">Dynamic</span>
+                            {% else %}
+                            <span class="badge bg-secondary-focus text-secondary-600" data-i18n="detail.static">Static</span>
+                            {% endif %}
+                        </span>
+                    </li>
+                    <li class="list-group-item bg-transparent d-flex justify-content-between px-0 py-12 border-bottom">
+                        <span class="text-secondary-light" data-i18n="detail.products">Products</span>
+                        <span class="fw-medium text-secondary-light">{{ product_count }}</span>
+                    </li>
+                    <li class="list-group-item bg-transparent d-flex justify-content-between px-0 py-12 border-bottom">
+                        <span class="text-secondary-light" data-i18n="form.languages">Languages</span>
+                        <span class="fw-medium text-secondary-light">{{ category.languages.count }}</span>
+                    </li>
+                    <li class="list-group-item bg-transparent d-flex justify-content-between px-0 py-12 border-bottom">
+                        <span class="text-secondary-light" data-i18n="detail.createdAt">Created At</span>
+                        <span class="fw-medium text-secondary-light">{{ category.created_at|date:"M d, Y" }}</span>
+                    </li>
+                    <li class="list-group-item bg-transparent d-flex justify-content-between px-0 py-12">
+                        <span class="text-secondary-light" data-i18n="detail.lastUpdated">Last Updated</span>
+                        <span class="fw-medium text-secondary-light">{{ category.updated_at|date:"M d, Y" }}</span>
+                    </li>
+                </ul>
+                
+                {% if category.description %}
+                <hr class="my-24">
+                <h6 class="text-md mb-12" data-i18n="form.description">Description</h6>
+                <p class="text-secondary-light text-sm">{{ category|trans_desc }}</p>
+                {% endif %}
+                
+                {% if category.languages.exists %}
+                <hr class="my-24">
+                <h6 class="text-md mb-12" data-i18n="form.languages">Available Languages</h6>
+                <div class="d-flex flex-wrap gap-8">
+                    {% for lang in category.languages.all %}
+                    <span class="badge bg-neutral-200 text-neutral-600 px-12 py-6">{{ lang.name }}</span>
+                    {% endfor %}
                 </div>
-
-                <div class="d-flex gap-8 mt-24">
-                    <a href="{% url 'categoryList' %}" class="btn btn-secondary radius-8 px-20 py-11 flex-grow-1 d-flex align-items-center justify-content-center">
-                        <iconify-icon icon="ep:back" class="me-4"></iconify-icon>
-                        <span data-i18n="detail.back">Back</span>
+                {% endif %}
+                
+                <div class="mt-24">
+                    <a href="{% url 'categoryList' %}" class="btn btn-outline-primary-600 radius-8 w-100 d-flex align-items-center justify-content-center gap-2">
+                        <iconify-icon icon="ep:back" class="text-xl line-height-1"></iconify-icon>
+                        <span data-i18n="detail.backToList">Back to List</span>
                     </a>
-                    {% can_do 'products.manage' as can_manage_products %}
-                    {% if can_manage_products %}
-                    <a href="{% url 'editCategory' category.id %}" class="btn btn-primary radius-8 px-20 py-11 flex-grow-1 d-flex align-items-center justify-content-center">
-                        <iconify-icon icon="lucide:edit" class="me-4"></iconify-icon>
-                        <span data-i18n="detail.edit">Edit</span>
-                    </a>
-                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Products List -->
-    <div class="col-lg-8">
-        <div class="card radius-16">
+    <div class="col-xxl-8">
+        <div class="card radius-12">
             <div class="card-header bg-base border-bottom py-16 px-24 d-flex align-items-center justify-content-between">
                 <h6 class="mb-0 d-flex align-items-center">
-                    <iconify-icon icon="solar:box-linear" class="me-8 text-warning-600"></iconify-icon>
+                    <iconify-icon icon="solar:box-minimalistic-bold-duotone" class="me-8 text-warning-600"></iconify-icon>
                     <span data-i18n="detail.products">Products</span> ({{ product_count }})
                 </h6>
                 {% if can_manage_products %}

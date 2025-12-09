@@ -396,6 +396,7 @@ def orderDetail(request, order_id):
 def orderEdit(request, order_id):
     """Edit an order - permission-based access control"""
     from services.models import Product, Language
+    from accounts.models import BotUser
     
     order = get_object_or_404(
         Order.objects.select_related('bot_user', 'product', 'language', 'branch'),
@@ -411,6 +412,9 @@ def orderEdit(request, order_id):
     products = Product.objects.filter(is_active=True)
     languages = Language.objects.all()  # Language model doesn't have is_active field
     
+    # Get bot users for customer selection
+    bot_users = BotUser.objects.filter(is_active=True).order_by('-created_at')
+    
     if request.method == 'POST':
         # Get form data
         product_id = request.POST.get('product')
@@ -422,8 +426,16 @@ def orderEdit(request, order_id):
         extra_fee = request.POST.get('extra_fee', 0)
         extra_fee_description = request.POST.get('extra_fee_description', '')
         
+        # Get customer info (bot_user OR manual fields)
+        bot_user_id = request.POST.get('bot_user')
+        manual_first_name = request.POST.get('manual_first_name', '').strip()
+        manual_last_name = request.POST.get('manual_last_name', '').strip()
+        manual_phone = request.POST.get('manual_phone', '').strip()
+        
         # Store old values for audit
         old_values = {
+            'bot_user': str(order.bot_user) if order.bot_user else None,
+            'manual_customer': f"{order.manual_first_name} {order.manual_last_name} ({order.manual_phone})" if order.is_manual_order else None,
             'product': str(order.product),
             'language': str(order.language) if order.language else None,
             'total_pages': order.total_pages,
@@ -437,6 +449,29 @@ def orderEdit(request, order_id):
         }
         
         try:
+            # Validate customer info (either bot_user OR manual fields)
+            if bot_user_id and (manual_first_name or manual_phone):
+                messages.error(request, 'Please select either a bot user OR enter manual customer info, not both.')
+                raise ValueError('Both bot_user and manual fields provided')
+            
+            if not bot_user_id and not (manual_first_name and manual_phone):
+                messages.error(request, 'Please provide customer information (either select a bot user or enter manual details).')
+                raise ValueError('No customer information provided')
+            
+            # Update customer info
+            if bot_user_id:
+                # Bot user order
+                order.bot_user = BotUser.objects.get(pk=bot_user_id)
+                order.manual_first_name = None
+                order.manual_last_name = None
+                order.manual_phone = None
+            else:
+                # Manual order
+                order.bot_user = None
+                order.manual_first_name = manual_first_name
+                order.manual_last_name = manual_last_name
+                order.manual_phone = manual_phone
+            
             # Update order
             if product_id:
                 order.product = Product.objects.get(pk=product_id)
@@ -477,10 +512,27 @@ def orderEdit(request, order_id):
                 )
                 order.files.add(order_media)
             
-            # Recalculate price
-            base_price = order.product.price * order.total_pages
-            copy_price = order.product.copy_price * order.copy_number * order.total_pages if order.copy_number > 0 else 0
-            order.total_price = base_price + copy_price
+            # Recalculate price based on user type
+            # Determine if user is agency (from bot_user or default to False for manual orders)
+            is_agency = order.bot_user.is_agency if order.bot_user and hasattr(order.bot_user, 'is_agency') else False
+            
+            # Calculate base price using product's pricing method
+            base_price = order.product.get_price_for_user_type(
+                is_agency=is_agency,
+                pages=order.total_pages
+            )
+            
+            # Add copy charges if copy_number > 0
+            if order.copy_number > 0:
+                copy_percentage = (
+                    order.product.agency_copy_price_percentage
+                    if is_agency
+                    else order.product.user_copy_price_percentage
+                )
+                copy_charge = (base_price * copy_percentage * order.copy_number) / 100
+                order.total_price = base_price + copy_charge
+            else:
+                order.total_price = base_price
             
             # Update extra fee
             try:
@@ -493,6 +545,8 @@ def orderEdit(request, order_id):
             
             # Audit log the edit
             new_values = {
+                'bot_user': str(order.bot_user) if order.bot_user else None,
+                'manual_customer': f"{order.manual_first_name} {order.manual_last_name} ({order.manual_phone})" if order.is_manual_order else None,
                 'product': str(order.product),
                 'language': str(order.language) if order.language else None,
                 'total_pages': order.total_pages,
@@ -526,6 +580,7 @@ def orderEdit(request, order_id):
         "order": order,
         "products": products,
         "languages": languages,
+        "bot_users": bot_users,
         "payment_choices": Order.PAYMENT_TYPE,
     }
     return render(request, "orders/orderEdit.html", context)
@@ -961,6 +1016,9 @@ def orderCreate(request):
         try:
             # Get form data
             bot_user_id = request.POST.get('bot_user')
+            manual_first_name = request.POST.get('manual_first_name', '').strip()
+            manual_last_name = request.POST.get('manual_last_name', '').strip()
+            manual_phone = request.POST.get('manual_phone', '').strip()
             product_id = request.POST.get('product')
             language_id = request.POST.get('language')
             branch_id = request.POST.get('branch')
@@ -969,13 +1027,28 @@ def orderCreate(request):
             payment_type = request.POST.get('payment_type', 'cash')
             description = request.POST.get('description', '')
             
+            # Validate: either bot_user OR manual customer info must be provided
+            is_manual_order = bool(manual_first_name or manual_phone)
+            
+            if not is_manual_order and not bot_user_id:
+                messages.error(request, _("Please select a customer or enter manual customer information"))
+                return redirect('orders:orderCreate')
+            
+            if is_manual_order and bot_user_id:
+                messages.error(request, _("Please choose either a bot user OR manual customer info, not both"))
+                return redirect('orders:orderCreate')
+            
+            if is_manual_order and not (manual_first_name and manual_phone):
+                messages.error(request, _("First name and phone number are required for manual orders"))
+                return redirect('orders:orderCreate')
+            
             # Validate required fields
-            if not bot_user_id or not product_id or not branch_id:
+            if not product_id or not branch_id:
                 messages.error(request, _("Please fill in all required fields"))
                 return redirect('orders:orderCreate')
             
             # Get related objects
-            bot_user = BotUser.objects.get(id=bot_user_id)
+            bot_user = BotUser.objects.get(id=bot_user_id) if bot_user_id else None
             product = Product.objects.get(id=product_id)
             branch = Branch.objects.get(id=branch_id)
             language = Language.objects.get(id=language_id) if language_id else None
@@ -987,6 +1060,9 @@ def orderCreate(request):
             # Create the order
             order = Order.objects.create(
                 bot_user=bot_user,
+                manual_first_name=manual_first_name if is_manual_order else None,
+                manual_last_name=manual_last_name if is_manual_order else None,
+                manual_phone=manual_phone if is_manual_order else None,
                 product=product,
                 branch=branch,
                 language=language,
@@ -1008,24 +1084,27 @@ def orderCreate(request):
                 )
                 order.files.add(media)
             
-            # Send Telegram notification to channels
-            try:
-                send_order_notification(order.id)
-            except Exception as e:
-                # Log but don't fail - order creation is more important
-                import logging
-                logging.getLogger(__name__).warning(f"Failed to send order notification: {e}")
+            # Send Telegram notification to channels (only for bot users)
+            if bot_user:
+                try:
+                    send_order_notification(order.id)
+                except Exception as e:
+                    # Log but don't fail - order creation is more important
+                    import logging
+                    logging.getLogger(__name__).warning(f"Failed to send order notification: {e}")
             
             # Log the action
+            customer_name = order.get_customer_display_name()
             log_action(
                 user=request.user,
                 action='create',
                 model_name='Order',
                 instance_id=order.id,
-                description=f"Created order for {bot_user.display_name} - {product.name}"
+                description=f"Created {'manual ' if is_manual_order else ''}order for {customer_name} - {product.name}"
             )
             
-            messages.success(request, _("Order created successfully"))
+            success_msg = _("Manual order created successfully") if is_manual_order else _("Order created successfully")
+            messages.success(request, success_msg)
             return redirect('orders:orderDetail', order_id=order.id)
             
         except Exception as e:

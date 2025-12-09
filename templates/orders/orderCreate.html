@@ -18,16 +18,54 @@
                 <form method="post" action="{% url 'orders:orderCreate' %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     
-                    <!-- Customer Selection -->
-                    <div class="mb-20">
+                    <!-- Manual Order Toggle -->
+                    <div class="mb-20 p-16 bg-warning-50 radius-8 border border-warning-200">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="manualOrderToggle">
+                            <label class="form-check-label fw-semibold" for="manualOrderToggle">
+                                <iconify-icon icon="solar:phone-calling-bold" class="me-2 text-warning-600"></iconify-icon>
+                                Create Manual Order (Phone/Walk-in)
+                            </label>
+                        </div>
+                        <small class="text-secondary-light d-block mt-8">
+                            Enable this to create an order for customers who contacted via phone or walk-in (without Telegram registration)
+                        </small>
+                    </div>
+                    
+                    <!-- Customer Selection (Bot User) -->
+                    <div class="mb-20" id="botUserSection">
                         <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="orders.customer">Customer *</label>
-                        <select name="bot_user" class="form-select radius-8" required id="customerSelect">
+                        <select name="bot_user" class="form-select radius-8" id="customerSelect">
                             <option value="">-- Select Customer --</option>
                             {% for user in bot_users %}
-                            <option value="{{ user.id }}">{{ user.display_name }} {% if user.phone %}({{ user.phone }}){% endif %}</option>
+                            <option value="{{ user.id }}">{{ user.display_name }} {% if user.phone_number %}({{ user.phone_number }}){% endif %}</option>
                             {% endfor %}
                         </select>
                         <small class="text-primary-light">Select from existing customers (registered via Telegram bot)</small>
+                    </div>
+                    
+                    <!-- Manual Customer Info (Hidden by default) -->
+                    <div id="manualCustomerSection" style="display: none;">
+                        <div class="mb-16 p-12 bg-info-50 radius-8 border border-info-200">
+                            <iconify-icon icon="solar:info-circle-bold" class="text-info-600 me-2"></iconify-icon>
+                            <span class="text-sm text-info-600 fw-medium">Enter customer details manually</span>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-20">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">First Name *</label>
+                                <input type="text" name="manual_first_name" id="manualFirstName" class="form-control radius-8" placeholder="Customer's first name">
+                            </div>
+                            <div class="col-md-6 mb-20">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">Last Name</label>
+                                <input type="text" name="manual_last_name" id="manualLastName" class="form-control radius-8" placeholder="Customer's last name">
+                            </div>
+                        </div>
+                        <div class="mb-20">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">Phone Number *</label>
+                            <input type="tel" name="manual_phone" id="manualPhone" class="form-control radius-8" placeholder="+998 XX XXX XX XX">
+                            <small class="text-primary-light">Customer's contact number</small>
+                        </div>
                     </div>
                     
                     {% if is_superuser and centers %}
@@ -159,12 +197,19 @@
                 <div class="mb-16">
                     <h6 class="text-sm fw-semibold mb-8">Required Fields:</h6>
                     <ul class="list-unstyled text-sm text-secondary-light">
-                        <li class="mb-4"><iconify-icon icon="mdi:check-circle" class="text-success-600 me-2"></iconify-icon> Customer (from existing bot users)</li>
+                        <li class="mb-4"><iconify-icon icon="mdi:check-circle" class="text-success-600 me-2"></iconify-icon> Customer (bot user OR manual info)</li>
                         <li class="mb-4"><iconify-icon icon="mdi:check-circle" class="text-success-600 me-2"></iconify-icon> Branch</li>
                         <li class="mb-4"><iconify-icon icon="mdi:check-circle" class="text-success-600 me-2"></iconify-icon> Product/Service</li>
                         <li class="mb-4"><iconify-icon icon="mdi:check-circle" class="text-success-600 me-2"></iconify-icon> Total Pages</li>
                         <li class="mb-4"><iconify-icon icon="mdi:check-circle" class="text-success-600 me-2"></iconify-icon> Payment Type</li>
                     </ul>
+                </div>
+                
+                <div class="mb-16">
+                    <h6 class="text-sm fw-semibold mb-8">Manual Orders:</h6>
+                    <p class="text-sm text-secondary-light mb-0">
+                        Enable "Manual Order" to create orders for walk-in customers or phone orders. You'll need to enter their name and phone number manually.
+                    </p>
                 </div>
                 
                 <div class="mb-16">
@@ -174,9 +219,9 @@
                     </p>
                 </div>
                 
-                <div class="alert alert-info-100 text-info-600 p-12 radius-8">
+                <div class="alert alert-warning-100 text-warning-600 p-12 radius-8">
                     <iconify-icon icon="solar:info-circle-bold" class="me-2"></iconify-icon>
-                    <span class="text-sm">Customers are registered through the Telegram bot. To create an order for a new customer, they must first register via the bot.</span>
+                    <span class="text-sm">For bot users: Customers must first register through the Telegram bot before appearing in the dropdown.</span>
                 </div>
             </div>
         </div>
@@ -196,6 +241,44 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Manual Order Toggle
+    const manualOrderToggle = document.getElementById('manualOrderToggle');
+    const botUserSection = document.getElementById('botUserSection');
+    const manualCustomerSection = document.getElementById('manualCustomerSection');
+    const customerSelect = document.getElementById('customerSelect');
+    const manualFirstName = document.getElementById('manualFirstName');
+    const manualPhone = document.getElementById('manualPhone');
+    
+    if (manualOrderToggle) {
+        manualOrderToggle.addEventListener('change', function() {
+            if (this.checked) {
+                // Show manual fields, hide bot user selection
+                botUserSection.style.display = 'none';
+                manualCustomerSection.style.display = 'block';
+                
+                // Update field requirements
+                customerSelect.removeAttribute('required');
+                customerSelect.value = '';
+                manualFirstName.setAttribute('required', 'required');
+                manualPhone.setAttribute('required', 'required');
+            } else {
+                // Show bot user selection, hide manual fields
+                botUserSection.style.display = 'block';
+                manualCustomerSection.style.display = 'none';
+                
+                // Update field requirements
+                customerSelect.setAttribute('required', 'required');
+                manualFirstName.removeAttribute('required');
+                manualPhone.removeAttribute('required');
+                
+                // Clear manual fields
+                manualFirstName.value = '';
+                document.getElementById('manualLastName').value = '';
+                manualPhone.value = '';
+            }
+        });
+    }
+    
     // Center-Branch filtering (for superusers)
     const centerSelect = document.getElementById('centerSelect');
     const branchSelect = document.getElementById('branchSelect');

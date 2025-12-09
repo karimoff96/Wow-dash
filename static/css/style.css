@@ -15200,3 +15200,518 @@ button iconify-icon {
   opacity: 0.6;
 }
 /* === Dark/Light Theme Icon Colors End === */
+
+/* === Global Icon Alignment Fixes === */
+/* Fix iconify-icon alignment across the entire UI */
+iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* Icons in text/headings */
+h1 iconify-icon,
+h2 iconify-icon,
+h3 iconify-icon,
+h4 iconify-icon,
+h5 iconify-icon,
+h6 iconify-icon,
+p iconify-icon,
+span iconify-icon,
+div iconify-icon {
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Icons in buttons */
+button iconify-icon,
+.btn iconify-icon,
+a.btn iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Icons in links */
+a iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Icons in labels */
+label iconify-icon,
+.form-label iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Icons in badges */
+.badge iconify-icon,
+.alert iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-right: 0.25rem;
+}
+
+/* Icons in cards */
+.card-header iconify-icon,
+.card-title iconify-icon,
+.card-body iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Icons in tables */
+table iconify-icon,
+td iconify-icon,
+th iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Icons in list items */
+li iconify-icon,
+ul iconify-icon,
+ol iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Icons with text - ensure proper spacing */
+.d-flex iconify-icon,
+.d-inline-flex iconify-icon {
+  flex-shrink: 0;
+}
+
+/* Form controls with icons */
+.input-group-text iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Dropdown items with icons */
+.dropdown-item iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+/* Nav items with icons */
+.nav-link iconify-icon,
+.nav-item iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Breadcrumb with icons */
+.breadcrumb-item iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+/* Status indicators with icons */
+.status iconify-icon,
+.text-success iconify-icon,
+.text-danger iconify-icon,
+.text-warning iconify-icon,
+.text-info iconify-icon,
+.text-primary iconify-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+/* === Global Icon Alignment Fixes End === */
+
+/* === Dark Mode Compatibility Improvements === */
+/* Improve text contrast in dark mode */
+[data-theme=dark] {
+  color: var(--text-primary-light);
+}
+
+[data-theme=dark] .text-secondary-light {
+  color: #D1D5DB !important;
+}
+
+[data-theme=dark] .text-primary-light {
+  color: var(--neutral-900) !important;
+}
+
+/* Table improvements for dark mode */
+[data-theme=dark] .table {
+  color: var(--neutral-900);
+}
+
+[data-theme=dark] .table thead th {
+  background-color: var(--neutral-100);
+  color: var(--neutral-900);
+  border-color: var(--neutral-200);
+}
+
+[data-theme=dark] .table tbody td {
+  color: var(--neutral-800);
+  border-color: var(--neutral-200);
+}
+
+[data-theme=dark] .table-hover tbody tr:hover {
+  background-color: var(--neutral-100);
+}
+
+[data-theme=dark] .table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--neutral-50);
+}
+
+/* Card improvements for dark mode */
+[data-theme=dark] .card {
+  background-color: var(--neutral-50);
+  border-color: var(--neutral-200);
+}
+
+[data-theme=dark] .card-header {
+  background-color: var(--neutral-100);
+  border-color: var(--neutral-200);
+  color: var(--neutral-900);
+}
+
+[data-theme=dark] .card-body {
+  color: var(--neutral-800);
+}
+
+/* Form controls in dark mode */
+[data-theme=dark] .form-control,
+[data-theme=dark] .form-select {
+  background-color: var(--input-bg);
+  border-color: var(--neutral-300);
+  color: var(--neutral-900);
+}
+
+[data-theme=dark] .form-control:focus,
+[data-theme=dark] .form-select:focus {
+  background-color: var(--neutral-100);
+  border-color: var(--brand);
+  color: var(--neutral-900);
+}
+
+[data-theme=dark] .form-control::placeholder {
+  color: var(--neutral-500);
+}
+
+[data-theme=dark] .form-label {
+  color: var(--neutral-800);
+}
+
+/* Badge improvements for dark mode */
+[data-theme=dark] .badge {
+  color: inherit;
+}
+
+[data-theme=dark] .bg-success-focus {
+  background-color: rgba(34, 197, 94, 0.15);
+}
+
+[data-theme=dark] .bg-danger-focus {
+  background-color: rgba(239, 68, 68, 0.15);
+}
+
+[data-theme=dark] .bg-warning-focus {
+  background-color: rgba(251, 191, 36, 0.15);
+}
+
+[data-theme=dark] .bg-info-focus {
+  background-color: rgba(59, 130, 246, 0.15);
+}
+
+[data-theme=dark] .bg-primary-focus {
+  background-color: rgba(99, 102, 241, 0.15);
+}
+
+/* Alert improvements for dark mode */
+[data-theme=dark] .alert {
+  border-color: var(--neutral-300);
+}
+
+[data-theme=dark] .alert-info-100 {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+[data-theme=dark] .alert-warning-100 {
+  background-color: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.2);
+}
+
+[data-theme=dark] .alert-success-100 {
+  background-color: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+[data-theme=dark] .alert-danger-100 {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* Dropdown improvements for dark mode */
+[data-theme=dark] .dropdown-menu {
+  background-color: var(--neutral-100);
+  border-color: var(--neutral-300);
+}
+
+[data-theme=dark] .dropdown-item {
+  color: var(--neutral-800);
+}
+
+[data-theme=dark] .dropdown-item:hover {
+  background-color: var(--neutral-200);
+  color: var(--neutral-900);
+}
+
+/* Modal improvements for dark mode */
+[data-theme=dark] .modal-content {
+  background-color: var(--neutral-50);
+  border-color: var(--neutral-300);
+}
+
+[data-theme=dark] .modal-header {
+  background-color: var(--neutral-100);
+  border-color: var(--neutral-200);
+  color: var(--neutral-900);
+}
+
+[data-theme=dark] .modal-body {
+  color: var(--neutral-800);
+}
+
+[data-theme=dark] .modal-footer {
+  border-color: var(--neutral-200);
+}
+
+/* Button improvements for dark mode */
+[data-theme=dark] .btn-outline-secondary,
+[data-theme=dark] .btn-outline-secondary-600 {
+  color: var(--neutral-800);
+  border-color: var(--neutral-400);
+}
+
+[data-theme=dark] .btn-outline-secondary:hover,
+[data-theme=dark] .btn-outline-secondary-600:hover {
+  background-color: var(--neutral-200);
+  color: var(--neutral-900);
+}
+
+/* Link improvements for dark mode */
+[data-theme=dark] a {
+  color: var(--brand);
+}
+
+[data-theme=dark] a:hover {
+  color: var(--primary-700);
+}
+
+/* Input group improvements */
+[data-theme=dark] .input-group-text {
+  background-color: var(--neutral-100);
+  border-color: var(--neutral-300);
+  color: var(--neutral-800);
+}
+
+/* Pagination improvements */
+[data-theme=dark] .pagination .page-link {
+  background-color: var(--neutral-100);
+  border-color: var(--neutral-300);
+  color: var(--neutral-800);
+}
+
+[data-theme=dark] .pagination .page-link:hover {
+  background-color: var(--neutral-200);
+  color: var(--neutral-900);
+}
+
+[data-theme=dark] .pagination .page-item.active .page-link {
+  background-color: var(--brand);
+  border-color: var(--brand);
+  color: var(--white);
+}
+
+/* List group improvements */
+[data-theme=dark] .list-group-item {
+  background-color: var(--neutral-50);
+  border-color: var(--neutral-200);
+  color: var(--neutral-800);
+}
+
+[data-theme=dark] .list-group-item:hover {
+  background-color: var(--neutral-100);
+}
+
+/* Breadcrumb improvements */
+[data-theme=dark] .breadcrumb-item,
+[data-theme=dark] .breadcrumb-item a {
+  color: var(--neutral-700);
+}
+
+[data-theme=dark] .breadcrumb-item.active {
+  color: var(--neutral-900);
+}
+
+/* Improve sidebar icon visibility in dark mode */
+[data-theme=dark] .sidebar-menu li a .menu-icon {
+  color: var(--neutral-700);
+  font-weight: 600;
+}
+
+[data-theme=dark] .sidebar-menu li a:hover .menu-icon,
+[data-theme=dark] .sidebar-menu li.active a .menu-icon {
+  color: var(--brand);
+}
+
+/* Circle icons in submenu - better visibility */
+[data-theme=dark] .sidebar-menu .sidebar-submenu .circle-icon {
+  opacity: 0.9;
+  filter: brightness(1.3);
+}
+/* === Dark Mode Compatibility Improvements End === */
+
+/* === Button Text Visibility Improvements === */
+/* Ensure button text is always visible in both light and dark modes */
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
+  color: #ffffff !important;
+}
+
+.btn-success,
+.btn-success:hover,
+.btn-success:active,
+.btn-success:focus {
+  color: #ffffff !important;
+}
+
+.btn-danger,
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger:focus {
+  color: #ffffff !important;
+}
+
+.btn-warning,
+.btn-warning:hover,
+.btn-warning:active,
+.btn-warning:focus {
+  color: #ffffff !important;
+}
+
+.btn-info,
+.btn-info:hover,
+.btn-info:active,
+.btn-info:focus {
+  color: #ffffff !important;
+}
+
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:active,
+.btn-secondary:focus {
+  color: #ffffff !important;
+}
+
+.btn-dark,
+.btn-dark:hover,
+.btn-dark:active,
+.btn-dark:focus {
+  color: #ffffff !important;
+}
+
+/* Outline buttons - text color should match button color */
+.btn-outline-primary {
+  color: var(--primary-600);
+}
+
+.btn-outline-primary:hover {
+  color: #ffffff !important;
+}
+
+.btn-outline-success {
+  color: var(--success-600);
+}
+
+.btn-outline-success:hover {
+  color: #ffffff !important;
+}
+
+.btn-outline-danger {
+  color: var(--danger-600);
+}
+
+.btn-outline-danger:hover {
+  color: #ffffff !important;
+}
+
+.btn-outline-warning {
+  color: var(--warning-600);
+}
+
+.btn-outline-warning:hover {
+  color: #ffffff !important;
+}
+
+.btn-outline-info {
+  color: var(--info-600);
+}
+
+.btn-outline-info:hover {
+  color: #ffffff !important;
+}
+
+/* Light background buttons */
+.btn-light,
+.btn-light:hover,
+.btn-light:active,
+.btn-light:focus {
+  color: var(--neutral-900) !important;
+}
+
+/* Icons in buttons - ensure visibility */
+.btn iconify-icon {
+  color: inherit !important;
+}
+
+/* Dark mode specific button adjustments */
+[data-theme=dark] .btn-outline-secondary,
+[data-theme=dark] .btn-outline-secondary-600 {
+  color: var(--neutral-700);
+  border-color: var(--neutral-400);
+}
+
+[data-theme=dark] .btn-outline-secondary:hover,
+[data-theme=dark] .btn-outline-secondary-600:hover {
+  background-color: var(--neutral-400);
+  color: #ffffff !important;
+  border-color: var(--neutral-400);
+}
+
+[data-theme=dark] .btn-light {
+  background-color: var(--neutral-200);
+  color: var(--neutral-900) !important;
+  border-color: var(--neutral-200);
+}
+
+[data-theme=dark] .btn-light:hover {
+  background-color: var(--neutral-300);
+  color: var(--neutral-900) !important;
+}
+/* === Button Text Visibility Improvements End === */

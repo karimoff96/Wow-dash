@@ -303,8 +303,15 @@
         <div class="card radius-12 mb-24">
             <div class="card-header border-bottom bg-base py-16 px-24">
                 <h6 class="text-md fw-semibold mb-0" data-i18n="detail.customerInformation">Customer Information</h6>
+                {% if order.is_manual_order %}
+                <span class="badge bg-warning-focus text-warning-600 mt-8">
+                    <iconify-icon icon="solar:phone-calling-bold" class="me-1"></iconify-icon> Manual Order
+                </span>
+                {% endif %}
             </div>
             <div class="card-body p-24">
+                {% if order.bot_user %}
+                <!-- Bot User Information -->
                 <div class="d-flex align-items-center gap-3 mb-16">
                     <div class="w-56-px h-56-px rounded-circle bg-primary-100 d-flex align-items-center justify-content-center">
                         <span class="text-primary-600 fw-bold text-xl">{{ order.bot_user.name|slice:":1"|upper }}</span>
@@ -318,7 +325,7 @@
                 </div>
                 <div class="mb-12">
                     <span class="text-secondary-light text-sm" data-i18n="detail.phone">Phone</span>
-                    <p class="text-md fw-medium mb-0">{{ order.bot_user.phone }}</p>
+                    <p class="text-md fw-medium mb-0">{{ order.bot_user.phone_number|default:"N/A" }}</p>
                 </div>
                 <div class="mb-12">
                     <span class="text-secondary-light text-sm" data-i18n="form.language">Language</span>
@@ -332,6 +339,36 @@
                 {% if order.bot_user.is_agency %}
                 <div>
                     <span class="badge bg-warning-focus text-warning-600" data-i18n="detail.agencyAccount">Agency Account</span>
+                </div>
+                {% endif %}
+                {% else %}
+                <!-- Manual Customer Information -->
+                <div class="d-flex align-items-center gap-3 mb-16">
+                    <div class="w-56-px h-56-px rounded-circle bg-warning-100 d-flex align-items-center justify-content-center">
+                        <iconify-icon icon="solar:user-bold" class="text-warning-600 text-2xl"></iconify-icon>
+                    </div>
+                    <div>
+                        <h6 class="text-md fw-semibold mb-4">{{ order.get_customer_display_name }}</h6>
+                        <span class="text-secondary-light text-xs">Walk-in / Phone Order</span>
+                    </div>
+                </div>
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm">First Name</span>
+                    <p class="text-md fw-medium mb-0">{{ order.manual_first_name|default:"N/A" }}</p>
+                </div>
+                {% if order.manual_last_name %}
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm">Last Name</span>
+                    <p class="text-md fw-medium mb-0">{{ order.manual_last_name }}</p>
+                </div>
+                {% endif %}
+                <div class="mb-12">
+                    <span class="text-secondary-light text-sm" data-i18n="detail.phone">Phone</span>
+                    <p class="text-md fw-medium mb-0">{{ order.manual_phone|default:"N/A" }}</p>
+                </div>
+                <div class="alert alert-warning-50 text-warning-600 p-12 radius-8 mb-0">
+                    <iconify-icon icon="solar:info-circle-bold" class="me-1"></iconify-icon>
+                    <span class="text-xs">Manual order - customer not registered in bot</span>
                 </div>
                 {% endif %}
             </div>
