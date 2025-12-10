@@ -18,7 +18,7 @@
             <option value="{{ value }}" {% if current_scope == value %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
         </select>
-        {% if permissions.can_create %}
+        {% if marketing_permissions.can_create %}
         <a href="{% url 'marketing_create' %}" class="btn btn-primary btn-sm d-flex align-items-center gap-2">
             <iconify-icon icon="ic:round-plus" class="icon text-xl line-height-1"></iconify-icon>
             <span data-i18n="marketing.createPost">Create Post</span>

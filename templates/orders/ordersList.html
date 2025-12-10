@@ -3,34 +3,6 @@
 {% load permission_tags %}
 
 {% block content %}
-<style>
-    /* Optimize column widths for better fit */
-    .table th, .table td {
-        padding: 12px 8px !important;
-        white-space: nowrap;
-    }
-    .table th:first-child, .table td:first-child {
-        width: 120px;
-    }
-    .table .col-status {
-        width: 90px;
-    }
-    .table .col-action {
-        width: 100px;
-    }
-    /* Ensure truncation works */
-    .truncate-120 {
-        max-width: 120px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    /* Compact badges */
-    .badge-compact {
-        padding: 2px 6px !important;
-        font-size: 10px !important;
-    }
-</style>
 <!-- View Mode Toggle -->
 <div class="d-flex align-items-center justify-content-between mb-16">
     {% can_do 'orders.view_all' as can_view_all_orders %}
@@ -204,18 +176,6 @@
                     <input type="text" class="bg-base h-40-px w-auto" name="search" data-i18n-placeholder="orders.searchPlaceholder" placeholder="Search order or customer" value="{{ search_query }}">
                     <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                 </div>
-                <select name="period" id="periodSelect" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
-                    <option value="all" {% if period == 'all' %}selected{% endif %} data-i18n="filter.allTime">All Time</option>
-                    <option value="today" {% if period == 'today' %}selected{% endif %} data-i18n="filter.today">Today</option>
-                    <option value="week" {% if period == 'week' %}selected{% endif %} data-i18n="filter.thisWeek">This Week</option>
-                    <option value="month" {% if period == 'month' %}selected{% endif %} data-i18n="filter.thisMonth">This Month</option>
-                    <option value="year" {% if period == 'year' %}selected{% endif %} data-i18n="filter.thisYear">This Year</option>
-                    <option value="custom" {% if period == 'custom' %}selected{% endif %} data-i18n="filter.custom">Custom</option>
-                </select>
-                <div id="customDateRange" class="d-flex gap-2" style="{% if period != 'custom' %}display: none;{% endif %}">
-                    <input type="date" name="date_from" class="form-control form-control-sm h-40-px" value="{{ date_from }}" style="width: 120px;">
-                    <input type="date" name="date_to" class="form-control form-control-sm h-40-px" value="{{ date_to }}" style="width: 120px;">
-                </div>
                 <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
                     <option value="" data-i18n="orders.allStatus">All Status</option>
                     {% for value, label in status_choices %}
@@ -254,8 +214,58 @@
                 <!-- Preserve view mode in form -->
                 <input type="hidden" name="view" value="{{ view_mode }}">
             </form>
+            
+            <!-- Actions Dropdown -->
+            {% can_do 'orders.delete' as can_delete_orders_perm %}
+            {% if can_delete_orders_perm or can_delete_orders %}
+            <div class="d-flex align-items-center gap-2" style="margin-left: 10px;">
+                <select id="bulkActionSelect" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
+                    <option value="" data-i18n="common.actions">Actions</option>
+                    <option value="delete" data-i18n="common.deleteSelected">Delete selected</option>
+                </select>
+                <button id="applyBulkAction" class="btn btn-primary btn-sm px-16 h-40-px" disabled>
+                    <span data-i18n="common.apply">Apply</span>
+                </button>
+            </div>
+            {% endif %}
         </div>
     </div>
+    
+    <!-- Bulk Delete Confirmation Modal -->
+    <div class="modal fade" id="bulkDeleteModal" tabindex="-1" aria-labelledby="bulkDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger-focus">
+                    <h5 class="modal-title text-danger-main" id="bulkDeleteModalLabel">
+                        <iconify-icon icon="solar:trash-bin-minimalistic-bold" class="text-xl"></iconify-icon>
+                        <span data-i18n="common.confirmDeletion">Confirm Deletion</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-16">
+                        <iconify-icon icon="solar:danger-triangle-bold" class="text-warning-main text-xl"></iconify-icon>
+                        <span data-i18n="orders.bulkDeleteWarning">Are you sure you want to delete the selected orders?</span>
+                    </p>
+                    <p class="mb-0 fw-semibold">
+                        <span data-i18n="orders.itemsToDelete">Orders to be deleted:</span> 
+                        <span id="deleteCount" class="text-danger-main">0</span>
+                    </p>
+                    <p class="text-secondary-light text-sm mt-8" data-i18n="common.cannotUndo">
+                        This action cannot be undone.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmBulkDelete">
+                        <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
+                        <span data-i18n="common.delete">Delete</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="card-body p-24">
         <div class="table-responsive">
             <table class="table bordered-table sm-table mb-0">
@@ -264,7 +274,7 @@
                         <th scope="col">
                             <div class="d-flex align-items-center gap-10">
                                 <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAll">
+                                    <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAllOrders">
                                 </div>
                                 <span data-i18n="orders.orderNumber">Order</span>
                             </div>
@@ -273,8 +283,7 @@
                         <th scope="col" class="hide-mobile" data-i18n="common.location">Location</th>
                         {% endif %}
                         <th scope="col" data-i18n="orders.customer">Customer</th>
-                        <th scope="col" class="hide-mobile" data-i18n="common.category">Category</th>
-                        <th scope="col" class="hide-mobile" data-i18n="common.details">Product</th>
+                        <th scope="col" class="hide-mobile" data-i18n="common.details">Details</th>
                         <th scope="col" data-i18n="common.payment">Payment</th>
                         <th scope="col" class="hide-mobile" data-i18n="orders.assignedTo">Assigned</th>
                         <th scope="col" class="text-center col-status" data-i18n="orders.status">Status</th>
@@ -288,7 +297,7 @@
                         <td>
                             <div class="d-flex align-items-center gap-10">
                                 <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
+                                    <input class="form-check-input radius-4 border border-neutral-400 order-checkbox" type="checkbox" name="order_ids" value="{{ order.id }}">
                                 </div>
                                 <div>
                                     <span class="fw-semibold text-primary-600">#{{ order.id }}</span>
@@ -322,17 +331,13 @@
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="w-32-px h-32-px rounded-circle flex-shrink-0 me-8 overflow-hidden bg-primary-100 d-flex align-items-center justify-content-center">
-                                    <span class="text-primary-600 fw-semibold text-xs">{{ order.get_customer_display_name|slice:":1"|upper }}</span>
+                                    <span class="text-primary-600 fw-semibold text-xs">{{ order.bot_user.name|slice:":1"|upper }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-sm fw-medium text-secondary-light d-block" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ order.get_customer_display_name }}</span>
-                                    <small class="text-secondary-light" style="font-size: 11px;">{{ order.get_customer_phone }}</small>
+                                    <span class="text-sm fw-medium text-secondary-light d-block" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ order.bot_user.name }}</span>
+                                    <small class="text-secondary-light" style="font-size: 11px;">{{ order.bot_user.phone }}</small>
                                 </div>
                             </div>
-                        </td>
-                          <!-- Category -->
-                        <td class="hide-mobile">
-                            <span class="text-sm text-secondary-light">{{ order.product.category.name|truncatechars:12 }}</span>
                         </td>
                         <!-- Details: Product + Pages + Copies (combined) -->
                         <td class="hide-mobile">
@@ -349,7 +354,6 @@
                                 </div>
                             </div>
                         </td>
-                      
                         <!-- Payment: Total + Type + Status -->
                         <td>
                             <div class="d-flex flex-column">
@@ -384,13 +388,13 @@
                             {% if order.status == 'pending' %}
                                 <span class="bg-warning-focus text-warning-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="orders.pending">Pending</span>
                             {% elif order.status == 'payment_pending' %}
-                                <span class="bg-info-focus text-info-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentPending">Awaiting</span>
+                                <span class="bg-info-focus text-info-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentPending">Pay Pend</span>
                             {% elif order.status == 'payment_received' %}
-                                <span class="bg-primary-focus text-primary-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentReceived">Received</span>
+                                <span class="bg-primary-focus text-primary-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentReceived">Pay Recv</span>
                             {% elif order.status == 'payment_confirmed' %}
-                                <span class="bg-cyan-focus text-cyan px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentConfirmed">Confirmed</span>
+                                <span class="bg-cyan-focus text-cyan px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentConfirmed">Pay Conf</span>
                             {% elif order.status == 'in_progress' %}
-                                <span class="bg-lilac-focus text-lilac-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="orders.inProgress">In Process</span>
+                                <span class="bg-lilac-focus text-lilac-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="orders.inProgress">Progress</span>
                             {% elif order.status == 'ready' %}
                                 <span class="bg-success-focus text-success-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.ready">Ready</span>
                             {% elif order.status == 'completed' %}
@@ -506,29 +510,126 @@
         {% endif %}
     </div>
 </div>
+
 {% endblock content %}
 
 {% block script %}
 <script>
-    // Select all checkbox
-    $('#selectAll').on('change', function() {
-        $('tbody input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+$(document).ready(function() {
+    console.log('Bulk delete script loaded');
+    
+    // Select all checkbox functionality
+    $('#selectAllOrders').on('change', function() {
+        console.log('Select all clicked:', this.checked);
+        $('.order-checkbox').prop('checked', this.checked);
+        updateActionButton();
     });
     
-    // Period selection toggle for custom date range
-    const periodSelect = document.getElementById('periodSelect');
-    const customDateRange = document.getElementById('customDateRange');
+    // Individual checkbox change - using event delegation
+    $(document).on('change', '.order-checkbox', function() {
+        updateActionButton();
+        // Update "select all" checkbox state
+        const allChecked = $('.order-checkbox').length > 0 && $('.order-checkbox:checked').length === $('.order-checkbox').length;
+        $('#selectAllOrders').prop('checked', allChecked);
+    });
     
-    if (periodSelect && customDateRange) {
-        periodSelect.addEventListener('change', function() {
-            if (this.value === 'custom') {
-                customDateRange.style.display = 'flex';
-            } else {
-                customDateRange.style.display = 'none';
-                // Auto-submit when not custom
-                this.form.submit();
+    // Action dropdown change
+    $('#bulkActionSelect').on('change', function() {
+        updateActionButton();
+    });
+    
+    // Update action button state
+    function updateActionButton() {
+        const selectedCount = $('.order-checkbox:checked').length;
+        const actionSelected = $('#bulkActionSelect').val();
+        const shouldEnable = selectedCount > 0 && actionSelected;
+        console.log('Update button - Selected:', selectedCount, 'Action:', actionSelected, 'Enable:', shouldEnable);
+        $('#applyBulkAction').prop('disabled', !shouldEnable);
+    }
+    
+    // Initialize button state on page load
+    updateActionButton();
+    
+    // Apply bulk action
+    $('#applyBulkAction').on('click', function(e) {
+        e.preventDefault();
+        const action = $('#bulkActionSelect').val();
+        const selectedCount = $('.order-checkbox:checked').length;
+        
+        console.log('Apply clicked. Action:', action, 'Selected:', selectedCount);
+        
+        if (!action) {
+            alert('Please select an action');
+            return;
+        }
+        
+        if (selectedCount === 0) {
+            alert('Please select at least one order');
+            return;
+        }
+        
+        if (action === 'delete') {
+            // Show modal with count
+            $('#deleteCount').text(selectedCount);
+            $('#bulkDeleteModal').modal('show');
+        }
+    });
+    
+    // Confirm bulk delete
+    $('#confirmBulkDelete').on('click', function(e) {
+        e.preventDefault();
+        const selectedIds = $('.order-checkbox:checked').map(function() {
+            return $(this).val();
+        }).get();
+        
+        console.log('Deleting orders:', selectedIds);
+        
+        if (selectedIds.length === 0) {
+            alert('No orders selected');
+            return;
+        }
+        
+        // Disable button and show loading
+        const $btn = $(this);
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Deleting...');
+        
+        // Prepare form data
+        const formData = new FormData();
+        selectedIds.forEach(id => {
+            formData.append('order_ids', id);
+        });
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        
+        $.ajax({
+            url: '{% url "orders:bulk_delete_orders" %}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Delete response:', response);
+                if (response.success) {
+                    // Hide modal
+                    $('#bulkDeleteModal').modal('hide');
+                    // Show success message
+                    alert(response.message);
+                    // Reload page
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                    $btn.prop('disabled', false).html('<iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon> <span data-i18n="common.delete">Delete</span>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Delete error:', xhr, status, error);
+                console.error('Response:', xhr.responseText);
+                const response = xhr.responseJSON;
+                const errorMsg = response ? response.message : (xhr.responseText || 'Failed to delete orders');
+                alert('Error: ' + errorMsg);
+                $btn.prop('disabled', false).html('<iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon> <span data-i18n="common.delete">Delete</span>');
             }
         });
-    }
+    });
+});
 </script>
 {% endblock %}

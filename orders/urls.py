@@ -7,7 +7,8 @@ from .views import (
     ordersList, orderDetail, orderEdit, updateOrderStatus, deleteOrder,
     assignOrder, unassignOrder, receivePayment, completeOrder,
     api_order_stats, api_branch_staff, myOrders, orderCreate,
-    record_order_payment, add_order_extra_fee, get_order_payment_info
+    record_order_payment, add_order_extra_fee, get_order_payment_info,
+    bulk_delete_orders
 )
 
 app_name = 'orders'
@@ -23,6 +24,7 @@ urlpatterns = [
     # Order actions
     path("<int:order_id>/update-status/", updateOrderStatus, name="updateOrderStatus"),
     path("<int:order_id>/delete/", deleteOrder, name="deleteOrder"),
+    path("bulk-delete/", bulk_delete_orders, name="bulk_delete_orders"),
     path("<int:order_id>/assign/", assignOrder, name="assignOrder"),
     path("<int:order_id>/unassign/", unassignOrder, name="unassignOrder"),
     path("<int:order_id>/receive-payment/", receivePayment, name="receivePayment"),

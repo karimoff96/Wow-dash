@@ -16,7 +16,8 @@ from .views import (
     userDetail,
     viewProfile,
     updateProfile,
-    changePassword
+    changePassword,
+    bulk_delete_users
 )
 
 urlpatterns = [
@@ -31,6 +32,7 @@ urlpatterns = [
     path("add-user/", addUser, name="addUser"),
     path("edit-user/<int:user_id>/", editUser, name="editUser"),
     path("delete-user/<int:user_id>/", deleteUser, name="deleteUser"),
+    path("bulk-delete/", bulk_delete_users, name="bulk_delete_users"),
     path("user-detail/", userDetail, name="userDetail"),
     
     # Admin profile URLs

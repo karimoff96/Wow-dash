@@ -1179,6 +1179,10 @@ class AdminUser(models.Model):
             'can_edit_branches': ['can_manage_branches'],
             'can_view_financial_reports': ['can_manage_financial'],
             'can_view_branch_settings': ['can_manage_branch_settings'],
+            'can_create_marketing_posts': ['can_manage_marketing'],
+            'can_send_branch_broadcasts': ['can_manage_marketing'],
+            'can_send_center_broadcasts': ['can_manage_marketing'],
+            'can_view_broadcast_stats': ['can_manage_marketing'],
         }
         
         # Check if any master permission grants this permission

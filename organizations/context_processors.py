@@ -71,6 +71,12 @@ def rbac_context(request):
         'can_create_products': False,
         'can_edit_products': False,
         'can_delete_products': False,
+        # Expenses
+        'can_manage_expenses': False,
+        'can_view_expenses': False,
+        'can_create_expenses': False,
+        'can_edit_expenses': False,
+        'can_delete_expenses': False,
         # Customers
         'can_manage_customers': False,
         'can_view_customers': False,
@@ -137,10 +143,11 @@ def rbac_context(request):
     if admin_profile:
         role = admin_profile.role
         # Build permissions dict from role fields
+        # Use has_permission method to support master permission inheritance
         permissions = {}
         if role:
             for perm_name in all_permissions.keys():
-                permissions[perm_name] = getattr(role, perm_name, False)
+                permissions[perm_name] = admin_profile.has_permission(perm_name)
         else:
             # No role assigned - no permissions
             permissions = all_permissions.copy()

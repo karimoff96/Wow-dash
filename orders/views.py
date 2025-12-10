@@ -1,25 +1,24 @@
-import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils.translation import gettext_lazy as _
 from decimal import Decimal, InvalidOperation
+import logging
 from .models import Order, OrderMedia
-from organizations.models import TranslationCenter
-from organizations.rbac import (
-    get_user_orders, get_user_staff, get_user_branches,
-    permission_required, any_permission_required
-)
-from organizations.models import AdminUser, Branch
-from core.audit import log_action, log_order_assign, log_status_change
-from bot.notification_service import send_order_notification
 
 logger = logging.getLogger(__name__)
-audit_logger = logging.getLogger('audit')
+from organizations.rbac import (
+    get_user_orders, get_user_staff, get_user_branches,
+    admin_profile_required, role_required, manager_or_owner_required,
+    permission_required
+)
+from organizations.models import AdminUser, Branch, TranslationCenter
+from core.audit import log_action, log_order_assign, log_status_change
+from bot.notification_service import send_order_notification
 
 
 def has_order_permission(request, permission_name, order=None):
@@ -98,44 +97,8 @@ def get_user_order_permissions(request, order=None):
 
 
 @login_required(login_url='admin_login')
-@any_permission_required('can_view_all_orders', 'can_view_own_orders')
 def ordersList(request):
     """List orders with search and filter - Permission-based access"""
-    from django.utils import timezone
-    from datetime import timedelta, datetime
-    
-    # Period filter
-    period = request.GET.get("period", "all")
-    date_from_str = request.GET.get("date_from", "")
-    date_to_str = request.GET.get("date_to", "")
-    
-    # Calculate date range based on period
-    today = timezone.now()
-    date_from = None
-    date_to = None
-    
-    if period == "today":
-        date_from = today.replace(hour=0, minute=0, second=0, microsecond=0)
-        date_to = today
-    elif period == "week":
-        start_of_week = today - timedelta(days=today.weekday())
-        date_from = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
-        date_to = today
-    elif period == "month":
-        date_from = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        date_to = today
-    elif period == "year":
-        date_from = today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
-        date_to = today
-    elif period == "custom" and date_from_str and date_to_str:
-        try:
-            date_from = datetime.strptime(date_from_str, "%Y-%m-%d")
-            date_to = datetime.strptime(date_to_str, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
-            date_from = timezone.make_aware(date_from) if timezone.is_naive(date_from) else date_from
-            date_to = timezone.make_aware(date_to) if timezone.is_naive(date_to) else date_to
-        except ValueError:
-            date_from = None
-            date_to = None
     
     # Determine what orders user can see based on permissions
     can_view_all = request.user.is_superuser
@@ -162,10 +125,6 @@ def ordersList(request):
     else:
         # No admin profile - show nothing
         orders = Order.objects.none()
-    
-    # Apply date filter if period is selected
-    if date_from and date_to:
-        orders = orders.filter(created_at__gte=date_from, created_at__lte=date_to)
     
     orders = orders.select_related(
         'bot_user', 'product', 'language', 'branch', 'branch__center',
@@ -304,15 +263,11 @@ def ordersList(request):
         "can_view_own_only": can_view_own_only,
         "view_mode": view_mode,
         "can_create_orders": can_create_orders,
-        "period": period,
-        "date_from": date_from_str,
-        "date_to": date_to_str,
     }
     return render(request, "orders/ordersList.html", context)
 
 
 @login_required(login_url='admin_login')
-@any_permission_required('can_view_all_orders', 'can_view_own_orders')
 def orderDetail(request, order_id):
     """View order details with permission-based access control"""
     order = get_object_or_404(
@@ -392,11 +347,9 @@ def orderDetail(request, order_id):
 
 
 @login_required(login_url='admin_login')
-@permission_required('can_edit_orders')
 def orderEdit(request, order_id):
     """Edit an order - permission-based access control"""
     from services.models import Product, Language
-    from accounts.models import BotUser
     
     order = get_object_or_404(
         Order.objects.select_related('bot_user', 'product', 'language', 'branch'),
@@ -412,9 +365,6 @@ def orderEdit(request, order_id):
     products = Product.objects.filter(is_active=True)
     languages = Language.objects.all()  # Language model doesn't have is_active field
     
-    # Get bot users for customer selection
-    bot_users = BotUser.objects.filter(is_active=True).order_by('-created_at')
-    
     if request.method == 'POST':
         # Get form data
         product_id = request.POST.get('product')
@@ -426,16 +376,8 @@ def orderEdit(request, order_id):
         extra_fee = request.POST.get('extra_fee', 0)
         extra_fee_description = request.POST.get('extra_fee_description', '')
         
-        # Get customer info (bot_user OR manual fields)
-        bot_user_id = request.POST.get('bot_user')
-        manual_first_name = request.POST.get('manual_first_name', '').strip()
-        manual_last_name = request.POST.get('manual_last_name', '').strip()
-        manual_phone = request.POST.get('manual_phone', '').strip()
-        
         # Store old values for audit
         old_values = {
-            'bot_user': str(order.bot_user) if order.bot_user else None,
-            'manual_customer': f"{order.manual_first_name} {order.manual_last_name} ({order.manual_phone})" if order.is_manual_order else None,
             'product': str(order.product),
             'language': str(order.language) if order.language else None,
             'total_pages': order.total_pages,
@@ -449,29 +391,6 @@ def orderEdit(request, order_id):
         }
         
         try:
-            # Validate customer info (either bot_user OR manual fields)
-            if bot_user_id and (manual_first_name or manual_phone):
-                messages.error(request, 'Please select either a bot user OR enter manual customer info, not both.')
-                raise ValueError('Both bot_user and manual fields provided')
-            
-            if not bot_user_id and not (manual_first_name and manual_phone):
-                messages.error(request, 'Please provide customer information (either select a bot user or enter manual details).')
-                raise ValueError('No customer information provided')
-            
-            # Update customer info
-            if bot_user_id:
-                # Bot user order
-                order.bot_user = BotUser.objects.get(pk=bot_user_id)
-                order.manual_first_name = None
-                order.manual_last_name = None
-                order.manual_phone = None
-            else:
-                # Manual order
-                order.bot_user = None
-                order.manual_first_name = manual_first_name
-                order.manual_last_name = manual_last_name
-                order.manual_phone = manual_phone
-            
             # Update order
             if product_id:
                 order.product = Product.objects.get(pk=product_id)
@@ -512,27 +431,10 @@ def orderEdit(request, order_id):
                 )
                 order.files.add(order_media)
             
-            # Recalculate price based on user type
-            # Determine if user is agency (from bot_user or default to False for manual orders)
-            is_agency = order.bot_user.is_agency if order.bot_user and hasattr(order.bot_user, 'is_agency') else False
-            
-            # Calculate base price using product's pricing method
-            base_price = order.product.get_price_for_user_type(
-                is_agency=is_agency,
-                pages=order.total_pages
-            )
-            
-            # Add copy charges if copy_number > 0
-            if order.copy_number > 0:
-                copy_percentage = (
-                    order.product.agency_copy_price_percentage
-                    if is_agency
-                    else order.product.user_copy_price_percentage
-                )
-                copy_charge = (base_price * copy_percentage * order.copy_number) / 100
-                order.total_price = base_price + copy_charge
-            else:
-                order.total_price = base_price
+            # Recalculate price
+            base_price = order.product.price * order.total_pages
+            copy_price = order.product.copy_price * order.copy_number * order.total_pages if order.copy_number > 0 else 0
+            order.total_price = base_price + copy_price
             
             # Update extra fee
             try:
@@ -545,8 +447,6 @@ def orderEdit(request, order_id):
             
             # Audit log the edit
             new_values = {
-                'bot_user': str(order.bot_user) if order.bot_user else None,
-                'manual_customer': f"{order.manual_first_name} {order.manual_last_name} ({order.manual_phone})" if order.is_manual_order else None,
                 'product': str(order.product),
                 'language': str(order.language) if order.language else None,
                 'total_pages': order.total_pages,
@@ -580,7 +480,6 @@ def orderEdit(request, order_id):
         "order": order,
         "products": products,
         "languages": languages,
-        "bot_users": bot_users,
         "payment_choices": Order.PAYMENT_TYPE,
     }
     return render(request, "orders/orderEdit.html", context)
@@ -603,7 +502,6 @@ def get_allowed_status_transitions(current_status):
 
 @login_required(login_url='admin_login')
 @require_POST
-@permission_required('can_update_order_status')
 def updateOrderStatus(request, order_id):
     """Update order status with permission-based access control"""
     order = get_object_or_404(Order, id=order_id)
@@ -668,14 +566,12 @@ def updateOrderStatus(request, order_id):
 
 
 @login_required(login_url='admin_login')
-@permission_required('can_delete_orders')
 def deleteOrder(request, order_id):
     """Delete an order - permission-based access control"""
     order = get_object_or_404(Order, id=order_id)
     
     # Check permission using granular permission system
     if not has_order_permission(request, 'can_delete_orders', order):
-        logger.warning(f"Permission denied: User {request.user.username} attempted to delete order #{order_id}")
         messages.error(request, "You don't have permission to delete orders.")
         return redirect('orders:ordersList')
     
@@ -689,7 +585,6 @@ def deleteOrder(request, order_id):
             changes={'order_id': order.id, 'status': order.status},
             request=request
         )
-        logger.info(f"Order #{order_id} deleted by {request.user.username}")
         order.delete()
         messages.success(request, f'Order #{order_id} has been deleted')
         return redirect('orders:ordersList')
@@ -699,7 +594,6 @@ def deleteOrder(request, order_id):
 
 @login_required(login_url='admin_login')
 @require_POST
-@permission_required('can_assign_orders')
 def assignOrder(request, order_id):
     """Assign an order to a staff member - permission-based access control"""
     order = get_object_or_404(Order, id=order_id)
@@ -758,7 +652,6 @@ def assignOrder(request, order_id):
 
 @login_required(login_url='admin_login')
 @require_POST
-@permission_required('can_assign_orders')
 def unassignOrder(request, order_id):
     """Unassign an order from a staff member - owners/managers only"""
     order = get_object_or_404(Order, id=order_id)
@@ -802,14 +695,70 @@ def unassignOrder(request, order_id):
 
 @login_required(login_url='admin_login')
 @require_POST
-@permission_required('can_receive_payments')
+def bulk_delete_orders(request):
+    """Bulk delete multiple orders - permission-based access control"""
+    # Try both formats: order_ids[] and order_ids
+    order_ids = request.POST.getlist('order_ids[]') or request.POST.getlist('order_ids')
+    
+    if not order_ids:
+        return JsonResponse({'success': False, 'message': 'No orders selected'}, status=400)
+    
+    # Check if user has delete permission
+    if not request.user.is_superuser:
+        if hasattr(request, 'admin_profile') and request.admin_profile:
+            if not request.admin_profile.has_permission('can_delete_orders'):
+                return JsonResponse({'success': False, 'message': 'You don\'t have permission to delete orders'}, status=403)
+        else:
+            return JsonResponse({'success': False, 'message': 'Permission denied'}, status=403)
+    
+    try:
+        # Get orders that the user can delete based on permissions
+        orders = Order.objects.filter(id__in=order_ids)
+        
+        # For non-superusers, filter to only orders they can access
+        if not request.user.is_superuser:
+            accessible_orders = get_user_orders(request.user)
+            orders = orders.filter(id__in=accessible_orders.values_list('id', flat=True))
+        
+        deleted_count = orders.count()
+        
+        if deleted_count == 0:
+            return JsonResponse({'success': False, 'message': 'No orders found or you don\'t have permission to delete them'}, status=404)
+        
+        # Log each deletion
+        for order in orders:
+            log_action(
+                user=request.user,
+                action='delete',
+                target=order,
+                details=f'Order #{order.id} deleted (bulk delete)',
+                changes={'order_id': order.id, 'status': order.status},
+                request=request
+            )
+        
+        # Delete all orders
+        orders.delete()
+        
+        logger.info(f"{deleted_count} orders deleted by {request.user.username} (bulk delete)")
+        return JsonResponse({
+            'success': True,
+            'message': f'{deleted_count} order(s) deleted successfully',
+            'deleted_count': deleted_count
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in bulk delete orders: {str(e)}")
+        return JsonResponse({'success': False, 'message': f'Error deleting orders: {str(e)}'}, status=500)
+
+
+@login_required(login_url='admin_login')
+@require_POST
 def receivePayment(request, order_id):
     """Mark payment as received - permission-based access control"""
     order = get_object_or_404(Order, id=order_id)
     
     # Check permission using granular permission system
     if not has_order_permission(request, 'can_receive_payments', order):
-        logger.warning(f"Permission denied: User {request.user.username} attempted to receive payment for order #{order_id}")
         messages.error(request, "You don't have permission to receive payments.")
         return redirect('orders:orderDetail', order_id=order_id)
     
@@ -817,7 +766,6 @@ def receivePayment(request, order_id):
     receiver = request.admin_profile if request.admin_profile else None
     order.mark_payment_received(receiver)
     
-    logger.info(f"Payment received for Order #{order_id} by {request.user.username}")
     messages.success(request, f'Payment received for Order #{order_id}')
     
     # Return JSON for AJAX requests
@@ -833,20 +781,17 @@ def receivePayment(request, order_id):
 
 @login_required(login_url='admin_login')
 @require_POST
-@permission_required('can_complete_orders')
 def completeOrder(request, order_id):
     """Mark order as completed - permission-based access control"""
     order = get_object_or_404(Order, id=order_id)
     
     # Check permission using granular permission system
     if not has_order_permission(request, 'can_complete_orders', order):
-        logger.warning(f"Permission denied: User {request.user.username} attempted to complete order #{order_id}")
         messages.error(request, "You don't have permission to complete orders.")
         return redirect('orders:orderDetail', order_id=order_id)
     
     # Check if order is ready to be completed
     if order.status not in ['ready', 'in_progress']:
-        logger.warning(f"Invalid status change: Order #{order_id} status is {order.status}, cannot complete")
         messages.error(request, "Order must be ready or in progress to complete.")
         return redirect('orders:orderDetail', order_id=order_id)
     
@@ -854,7 +799,6 @@ def completeOrder(request, order_id):
     completer = request.admin_profile if request.admin_profile else None
     order.mark_completed(completer)
     
-    logger.info(f"Order #{order_id} completed by {request.user.username}")
     messages.success(request, f'Order #{order_id} marked as completed')
     
     # Return JSON for AJAX requests
@@ -990,7 +934,6 @@ def orderCreate(request):
     """Create a new order - requires can_create_orders permission"""
     from services.models import Product, Language
     from accounts.models import BotUser
-    from organizations.rbac import get_user_customers
     
     # Get accessible centers and branches
     centers = None
@@ -1002,23 +945,17 @@ def orderCreate(request):
     else:
         branches = Branch.objects.none()
     
-    # Get products and languages - filter by accessible branches
-    if request.user.is_superuser:
-        products = Product.objects.filter(is_active=True)
-    else:
-        products = Product.objects.filter(is_active=True, category__branch__in=branches).distinct()
+    # Get products and languages
+    products = Product.objects.filter(is_active=True)
     languages = Language.objects.all()  # Language model doesn't have is_active field
     
-    # Get bot users for selection (filtered by accessible branches)
-    bot_users = get_user_customers(request.user).order_by('-created_at')[:100]
+    # Get bot users for selection (recent 100)
+    bot_users = BotUser.objects.all().order_by('-created_at')[:100]
     
     if request.method == 'POST':
         try:
             # Get form data
             bot_user_id = request.POST.get('bot_user')
-            manual_first_name = request.POST.get('manual_first_name', '').strip()
-            manual_last_name = request.POST.get('manual_last_name', '').strip()
-            manual_phone = request.POST.get('manual_phone', '').strip()
             product_id = request.POST.get('product')
             language_id = request.POST.get('language')
             branch_id = request.POST.get('branch')
@@ -1027,28 +964,47 @@ def orderCreate(request):
             payment_type = request.POST.get('payment_type', 'cash')
             description = request.POST.get('description', '')
             
-            # Validate: either bot_user OR manual customer info must be provided
-            is_manual_order = bool(manual_first_name or manual_phone)
+            # Check for manual order (manual customer info)
+            manual_first_name = request.POST.get('manual_first_name', '').strip()
+            manual_last_name = request.POST.get('manual_last_name', '').strip()
+            manual_phone = request.POST.get('manual_phone', '').strip()
             
-            if not is_manual_order and not bot_user_id:
-                messages.error(request, _("Please select a customer or enter manual customer information"))
-                return redirect('orders:orderCreate')
-            
-            if is_manual_order and bot_user_id:
-                messages.error(request, _("Please choose either a bot user OR manual customer info, not both"))
-                return redirect('orders:orderCreate')
-            
-            if is_manual_order and not (manual_first_name and manual_phone):
-                messages.error(request, _("First name and phone number are required for manual orders"))
-                return redirect('orders:orderCreate')
+            # Determine if this is a manual order or bot user order
+            is_manual_order = bool(manual_first_name and manual_phone)
             
             # Validate required fields
-            if not product_id or not branch_id:
-                messages.error(request, _("Please fill in all required fields"))
+            if not is_manual_order and not bot_user_id:
+                messages.error(request, _("Please select a customer or enable manual order and fill in customer details"))
                 return redirect('orders:orderCreate')
             
-            # Get related objects
-            bot_user = BotUser.objects.get(id=bot_user_id) if bot_user_id else None
+            if is_manual_order and (not manual_first_name or not manual_phone):
+                messages.error(request, _("Please provide customer's first name and phone number for manual orders"))
+                return redirect('orders:orderCreate')
+                
+            if not product_id or not branch_id:
+                messages.error(request, _("Please fill in all required fields (product and branch)"))
+                return redirect('orders:orderCreate')
+            
+            # Get or create bot_user
+            if is_manual_order:
+                # Create a temporary/manual bot user for this order
+                # Check if user with this phone already exists
+                bot_user, created = BotUser.objects.get_or_create(
+                    phone=manual_phone,
+                    defaults={
+                        'name': f"{manual_first_name} {manual_last_name}".strip(),
+                        'user_id': None,  # No telegram for manual orders
+                        'username': None,
+                    }
+                )
+                # Update name if user exists but name changed
+                new_name = f"{manual_first_name} {manual_last_name}".strip()
+                if not created and bot_user.name != new_name:
+                    bot_user.name = new_name
+                    bot_user.save()
+            else:
+                # Get existing bot user
+                bot_user = BotUser.objects.get(id=bot_user_id)
             product = Product.objects.get(id=product_id)
             branch = Branch.objects.get(id=branch_id)
             language = Language.objects.get(id=language_id) if language_id else None
@@ -1060,9 +1016,6 @@ def orderCreate(request):
             # Create the order
             order = Order.objects.create(
                 bot_user=bot_user,
-                manual_first_name=manual_first_name if is_manual_order else None,
-                manual_last_name=manual_last_name if is_manual_order else None,
-                manual_phone=manual_phone if is_manual_order else None,
                 product=product,
                 branch=branch,
                 language=language,
@@ -1084,27 +1037,23 @@ def orderCreate(request):
                 )
                 order.files.add(media)
             
-            # Send Telegram notification to channels (only for bot users)
-            if bot_user:
-                try:
-                    send_order_notification(order.id)
-                except Exception as e:
-                    # Log but don't fail - order creation is more important
-                    import logging
-                    logging.getLogger(__name__).warning(f"Failed to send order notification: {e}")
+            # Send Telegram notification to channels
+            try:
+                send_order_notification(order.id)
+            except Exception as e:
+                # Log but don't fail - order creation is more important
+                import logging
+                logging.getLogger(__name__).warning(f"Failed to send order notification: {e}")
             
             # Log the action
-            customer_name = order.get_customer_display_name()
             log_action(
                 user=request.user,
                 action='create',
-                model_name='Order',
-                instance_id=order.id,
-                description=f"Created {'manual ' if is_manual_order else ''}order for {customer_name} - {product.name}"
+                target=order,
+                details=f"Created order for {bot_user.name} - {product.name}"
             )
             
-            success_msg = _("Manual order created successfully") if is_manual_order else _("Order created successfully")
-            messages.success(request, success_msg)
+            messages.success(request, _("Order created successfully"))
             return redirect('orders:orderDetail', order_id=order.id)
             
         except Exception as e:
@@ -1133,7 +1082,6 @@ from orders.payment_service import PaymentService, PaymentError
 
 @login_required(login_url="admin_login")
 @require_POST
-@permission_required('can_receive_payments')
 def record_order_payment(request, order_id):
     """
     Record a payment for an order.
@@ -1193,7 +1141,6 @@ def record_order_payment(request, order_id):
         return JsonResponse(result)
         
     except PaymentError as e:
-        logger.warning(f"Payment error for order #{order_id}: {e}")
         return JsonResponse({
             'success': False,
             'error': str(e)
@@ -1201,7 +1148,6 @@ def record_order_payment(request, order_id):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        logger.error(f"Unexpected payment error for order #{order_id}: {e}", exc_info=True)
         return JsonResponse({
             'success': False,
             'error': f'An error occurred: {str(e)}'
@@ -1210,7 +1156,6 @@ def record_order_payment(request, order_id):
 
 @login_required(login_url="admin_login")
 @require_POST
-@permission_required('can_edit_orders')
 def add_order_extra_fee(request, order_id):
     """
     Add an extra fee to an order.

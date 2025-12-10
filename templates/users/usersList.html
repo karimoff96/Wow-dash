@@ -18,18 +18,6 @@
                     <input type="text" class="bg-base h-40-px w-auto" name="search" data-i18n-placeholder="common.search" placeholder="Search" value="{{ search_query }}">
                     <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                 </div>
-                <select name="period" id="periodSelect" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
-                    <option value="all" {% if period == 'all' %}selected{% endif %} data-i18n="filter.allTime">All Time</option>
-                    <option value="today" {% if period == 'today' %}selected{% endif %} data-i18n="filter.today">Today</option>
-                    <option value="week" {% if period == 'week' %}selected{% endif %} data-i18n="filter.thisWeek">This Week</option>
-                    <option value="month" {% if period == 'month' %}selected{% endif %} data-i18n="filter.thisMonth">This Month</option>
-                    <option value="year" {% if period == 'year' %}selected{% endif %} data-i18n="filter.thisYear">This Year</option>
-                    <option value="custom" {% if period == 'custom' %}selected{% endif %} data-i18n="filter.custom">Custom</option>
-                </select>
-                <div id="customDateRange" class="d-flex gap-2" style="{% if period != 'custom' %}display: none;{% endif %}">
-                    <input type="date" name="date_from" class="form-control form-control-sm h-40-px" value="{{ date_from }}" style="width: 140px;">
-                    <input type="date" name="date_to" class="form-control form-control-sm h-40-px" value="{{ date_to }}" style="width: 140px;">
-                </div>
                 <select name="status" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
                     <option value="" data-i18n="common.allStatus">All Status</option>
                     <option value="active" {% if status_filter == 'active' %}selected{% endif %} data-i18n="common.active">Active</option>
@@ -58,7 +46,54 @@
             <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
             <span data-i18n="common.addUser">Add New User</span>
         </a>
+        
+        <!-- Actions Dropdown -->
+        <div class="d-flex align-items-center gap-2" style="margin-left: 10px;">
+            <select id="bulkActionSelect" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
+                <option value="" data-i18n="common.actions">Actions</option>
+                <option value="delete" data-i18n="common.deleteSelected">Delete selected</option>
+            </select>
+            <button id="applyBulkAction" class="btn btn-primary btn-sm px-16 h-40-px" disabled>
+                <span data-i18n="common.apply">Apply</span>
+            </button>
+        </div>
     </div>
+    
+    <!-- Bulk Delete Confirmation Modal -->
+    <div class="modal fade" id="bulkDeleteModal" tabindex="-1" aria-labelledby="bulkDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger-focus">
+                    <h5 class="modal-title text-danger-main" id="bulkDeleteModalLabel">
+                        <iconify-icon icon="solar:trash-bin-minimalistic-bold" class="text-xl"></iconify-icon>
+                        <span data-i18n="common.confirmDeletion">Confirm Deletion</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-16">
+                        <iconify-icon icon="solar:danger-triangle-bold" class="text-warning-main text-xl"></iconify-icon>
+                        <span data-i18n="users.bulkDeleteWarning">Are you sure you want to delete the selected users?</span>
+                    </p>
+                    <p class="mb-0 fw-semibold">
+                        <span data-i18n="users.itemsToDelete">Users to be deleted:</span> 
+                        <span id="deleteCount" class="text-danger-main">0</span>
+                    </p>
+                    <p class="text-secondary-light text-sm mt-8" data-i18n="common.cannotUndo">
+                        This action cannot be undone.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.cancel">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmBulkDelete">
+                        <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
+                        <span data-i18n="common.delete">Delete</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="card-body p-24">
         <div class="table-responsive">
             <table class="table bordered-table sm-table mb-0">
@@ -67,7 +102,7 @@
                         <th scope="col" class="col-id">
                             <div class="d-flex align-items-center gap-10">
                                 <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAll">
+                                    <input class="form-check-input radius-4 border input-form-dark" type="checkbox" name="checkbox" id="selectAllUsers">
                                 </div>
                                 <span data-i18n="table.userDate">#</span>
                             </div>
@@ -90,7 +125,7 @@
                         <td class="col-id">
                             <div class="d-flex align-items-center gap-10">
                                 <div class="form-check style-check d-flex align-items-center">
-                                    <input class="form-check-input radius-4 border border-neutral-400" type="checkbox" name="checkbox">
+                                    <input class="form-check-input radius-4 border border-neutral-400 user-checkbox" type="checkbox" name="user_ids" value="{{ bot_user.id }}">
                                 </div>
                                 <span class="fw-semibold text-secondary-light">{{ forloop.counter }}</span>
                             </div>
@@ -274,25 +309,121 @@
 
 {% block script %}
 <script>
-    // Select all checkbox
-    $('#selectAll').on('change', function() {
-        $('tbody input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+$(document).ready(function() {
+    console.log('Bulk delete script loaded');
+    
+    // Select all checkbox functionality
+    $('#selectAllUsers').on('change', function() {
+        console.log('Select all clicked:', this.checked);
+        $('.user-checkbox').prop('checked', this.checked);
+        updateActionButton();
     });
     
-    // Period selection toggle for custom date range
-    const periodSelect = document.getElementById('periodSelect');
-    const customDateRange = document.getElementById('customDateRange');
+    // Individual checkbox change - using event delegation
+    $(document).on('change', '.user-checkbox', function() {
+        updateActionButton();
+        // Update "select all" checkbox state
+        const allChecked = $('.user-checkbox').length > 0 && $('.user-checkbox:checked').length === $('.user-checkbox').length;
+        $('#selectAllUsers').prop('checked', allChecked);
+    });
     
-    if (periodSelect && customDateRange) {
-        periodSelect.addEventListener('change', function() {
-            if (this.value === 'custom') {
-                customDateRange.style.display = 'flex';
-            } else {
-                customDateRange.style.display = 'none';
-                // Auto-submit when not custom
-                this.form.submit();
+    // Action dropdown change
+    $('#bulkActionSelect').on('change', function() {
+        updateActionButton();
+    });
+    
+    // Update action button state
+    function updateActionButton() {
+        const selectedCount = $('.user-checkbox:checked').length;
+        const actionSelected = $('#bulkActionSelect').val();
+        const shouldEnable = selectedCount > 0 && actionSelected;
+        console.log('Update button - Selected:', selectedCount, 'Action:', actionSelected, 'Enable:', shouldEnable);
+        $('#applyBulkAction').prop('disabled', !shouldEnable);
+    }
+    
+    // Initialize button state on page load
+    updateActionButton();
+    
+    // Apply bulk action
+    $('#applyBulkAction').on('click', function(e) {
+        e.preventDefault();
+        const action = $('#bulkActionSelect').val();
+        const selectedCount = $('.user-checkbox:checked').length;
+        
+        console.log('Apply clicked. Action:', action, 'Selected:', selectedCount);
+        
+        if (!action) {
+            alert('Please select an action');
+            return;
+        }
+        
+        if (selectedCount === 0) {
+            alert('Please select at least one user');
+            return;
+        }
+        
+        if (action === 'delete') {
+            // Show modal with count
+            $('#deleteCount').text(selectedCount);
+            $('#bulkDeleteModal').modal('show');
+        }
+    });
+    
+    // Confirm bulk delete
+    $('#confirmBulkDelete').on('click', function(e) {
+        e.preventDefault();
+        const selectedIds = $('.user-checkbox:checked').map(function() {
+            return $(this).val();
+        }).get();
+        
+        console.log('Deleting users:', selectedIds);
+        
+        if (selectedIds.length === 0) {
+            alert('No users selected');
+            return;
+        }
+        
+        // Disable button and show loading
+        const $btn = $(this);
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Deleting...');
+        
+        // Prepare form data
+        const formData = new FormData();
+        selectedIds.forEach(id => {
+            formData.append('user_ids', id);
+        });
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        
+        $.ajax({
+            url: '{% url "bulk_delete_users" %}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log('Delete response:', response);
+                if (response.success) {
+                    // Hide modal
+                    $('#bulkDeleteModal').modal('hide');
+                    // Show success message
+                    alert(response.message);
+                    // Reload page
+                    location.reload();
+                } else {
+                    alert('Error: ' + response.message);
+                    $btn.prop('disabled', false).html('<iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon> <span data-i18n="common.delete">Delete</span>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Delete error:', xhr, status, error);
+                console.error('Response:', xhr.responseText);
+                const response = xhr.responseJSON;
+                const errorMsg = response ? response.message : (xhr.responseText || 'Failed to delete users');
+                alert('Error: ' + errorMsg);
+                $btn.prop('disabled', false).html('<iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon> <span data-i18n="common.delete">Delete</span>');
             }
         });
-    }
+    });
+});
 </script>
 {% endblock %}

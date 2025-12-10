@@ -207,7 +207,7 @@
             {% endif %}
             
             <!-- Marketing & Broadcasts - Permission-based -->
-            {% has_any_perm 'can_create_marketing_posts,can_send_branch_broadcasts,can_send_center_broadcasts,can_view_broadcast_stats' as can_marketing %}
+            {% has_any_perm 'can_manage_marketing,can_create_marketing_posts,can_send_branch_broadcasts,can_send_center_broadcasts,can_view_broadcast_stats' as can_marketing %}
             {% if can_marketing or is_owner %}
             <li>
                 <a href="{% url 'marketing_list' %}">

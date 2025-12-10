@@ -13,8 +13,8 @@ from django.views.decorators.http import require_POST, require_GET
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 
-from organizations.models import TranslationCenter, Branch
-from organizations.rbac import get_user_branches, permission_required
+from organizations.models import TranslationCenter, Branch, AdminUser
+from organizations.rbac import get_user_branches, permission_required, any_permission_required
 from core.audit import log_action
 from .models import MarketingPost, BroadcastRecipient
 from .broadcast_service import send_broadcast, get_recipient_count, BroadcastService
@@ -63,13 +63,13 @@ def get_user_scope_permissions(request):
         except AdminUser.DoesNotExist:
             return permissions
     
-    # Get role-based permissions
+    # Get role-based permissions using has_permission to support master permissions
     role = admin_profile.role
     if role:
-        permissions['can_create'] = getattr(role, 'can_create_marketing_posts', False)
-        permissions['can_view_stats'] = getattr(role, 'can_view_broadcast_stats', False)
-        can_send_branch = getattr(role, 'can_send_branch_broadcasts', False)
-        can_send_center = getattr(role, 'can_send_center_broadcasts', False)
+        permissions['can_create'] = admin_profile.has_permission('can_create_marketing_posts')
+        permissions['can_view_stats'] = admin_profile.has_permission('can_view_broadcast_stats')
+        can_send_branch = admin_profile.has_permission('can_send_branch_broadcasts')
+        can_send_center = admin_profile.has_permission('can_send_center_broadcasts')
     else:
         # No role, no marketing permissions
         return permissions
@@ -96,10 +96,10 @@ def get_user_scope_permissions(request):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_manage_marketing', 'can_create_marketing_posts', 'can_send_branch_broadcasts', 'can_send_center_broadcasts', 'can_view_broadcast_stats')
 def marketing_list(request):
     """List marketing posts based on user permissions"""
-    permissions = get_user_scope_permissions(request)
+    marketing_permissions = get_user_scope_permissions(request)
     
     # Build query based on permissions
     if request.user.is_superuser:
@@ -108,10 +108,10 @@ def marketing_list(request):
         # Filter to posts created by user or targeting their scope
         q = Q(created_by=request.user)
         
-        if permissions['centers']:
-            q |= Q(target_center__in=permissions['centers'])
-        if permissions['branches']:
-            q |= Q(target_branch__in=permissions['branches'])
+        if marketing_permissions['centers']:
+            q |= Q(target_center__in=marketing_permissions['centers'])
+        if marketing_permissions['branches']:
+            q |= Q(target_branch__in=marketing_permissions['branches'])
         
         posts = MarketingPost.objects.filter(q).distinct()
     
@@ -136,7 +136,7 @@ def marketing_list(request):
         'title': _('Marketing Posts'),
         'subTitle': _('Broadcast & Promotions'),
         'posts': posts_page,
-        'permissions': permissions,
+        'marketing_permissions': marketing_permissions,
         'status_choices': MarketingPost.STATUS_CHOICES,
         'scope_choices': MarketingPost.TARGET_SCOPE_CHOICES,
         'current_status': status,
@@ -147,7 +147,7 @@ def marketing_list(request):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_create_marketing_posts', 'can_manage_marketing')
 def marketing_create(request):
     """Create a new marketing post"""
     permissions = get_user_scope_permissions(request)
@@ -274,7 +274,7 @@ def marketing_create(request):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_view_broadcast_stats', 'can_manage_marketing')
 def marketing_detail(request, post_id):
     """View marketing post details"""
     post = get_object_or_404(MarketingPost, id=post_id)
@@ -337,7 +337,7 @@ def marketing_detail(request, post_id):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_create_marketing_posts', 'can_manage_marketing')
 def marketing_edit(request, post_id):
     """Edit a marketing post (draft or scheduled status)"""
     post = get_object_or_404(MarketingPost, id=post_id)
@@ -353,10 +353,22 @@ def marketing_edit(request, post_id):
         messages.error(request, _("Cannot edit post that has been sent or is currently sending."))
         return redirect('marketing_detail', post_id=post_id)
     
-    # Check access
-    if not request.user.is_superuser and post.created_by != request.user:
-        messages.error(request, _("You can only edit your own posts."))
-        return redirect('marketing_detail', post_id=post_id)
+    # Check access - allow if created by user OR if post is within user's scope
+    if not request.user.is_superuser:
+        has_access = False
+        
+        # Check if user created this post
+        if post.created_by == request.user:
+            has_access = True
+        # Check if post is within user's scope (branch or center)
+        elif post.target_branch and post.target_branch in permissions['branches']:
+            has_access = True
+        elif post.target_center and post.target_center in permissions['centers']:
+            has_access = True
+        
+        if not has_access:
+            messages.error(request, _("You don't have access to edit this post."))
+            return redirect('marketing_detail', post_id=post_id)
     
     # Get centers and branches for target scope editing (always editable for draft/scheduled)
     from organizations.models import TranslationCenter, Branch
@@ -492,16 +504,29 @@ def marketing_edit(request, post_id):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_create_marketing_posts', 'can_manage_marketing')
 @require_POST
 def marketing_delete(request, post_id):
     """Delete a marketing post"""
     post = get_object_or_404(MarketingPost, id=post_id)
+    permissions = get_user_scope_permissions(request)
     
-    # Check access
-    if not request.user.is_superuser and post.created_by != request.user:
-        messages.error(request, _("You can only delete your own posts."))
-        return redirect('marketing_detail', post_id=post_id)
+    # Check access - allow if created by user OR if post is within user's scope
+    if not request.user.is_superuser:
+        has_access = False
+        
+        # Check if user created this post
+        if post.created_by == request.user:
+            has_access = True
+        # Check if post is within user's scope (branch or center)
+        elif post.target_branch and post.target_branch in permissions['branches']:
+            has_access = True
+        elif post.target_center and post.target_center in permissions['centers']:
+            has_access = True
+        
+        if not has_access:
+            messages.error(request, _("You don't have access to delete this post."))
+            return redirect('marketing_detail', post_id=post_id)
     
     title = post.title
     post.delete()
@@ -519,7 +544,7 @@ def marketing_delete(request, post_id):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_send_branch_broadcasts', 'can_send_center_broadcasts', 'can_manage_marketing')
 def marketing_preview(request, post_id):
     """Preview broadcast before sending"""
     post = get_object_or_404(MarketingPost, id=post_id)
@@ -554,7 +579,7 @@ def marketing_preview(request, post_id):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_send_branch_broadcasts', 'can_send_center_broadcasts', 'can_manage_marketing')
 @require_POST
 def marketing_send(request, post_id):
     """Start sending a broadcast"""
@@ -618,7 +643,7 @@ def marketing_send(request, post_id):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_send_branch_broadcasts', 'can_send_center_broadcasts', 'can_manage_marketing')
 @require_POST
 def marketing_pause(request, post_id):
     """Pause an ongoing broadcast"""
@@ -636,7 +661,7 @@ def marketing_pause(request, post_id):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_send_branch_broadcasts', 'can_send_center_broadcasts', 'can_manage_marketing')
 @require_POST
 def marketing_cancel(request, post_id):
     """Cancel a broadcast"""
@@ -654,7 +679,7 @@ def marketing_cancel(request, post_id):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_create_marketing_posts', 'can_manage_marketing')
 @require_GET
 def api_recipient_count(request):
     """API to get recipient count for given scope"""
@@ -691,7 +716,7 @@ def api_recipient_count(request):
 
 
 @login_required
-@permission_required('can_manage_marketing')
+@any_permission_required('can_create_marketing_posts', 'can_manage_marketing')
 @require_GET
 def api_center_branches(request, center_id):
     """API to get branches for a center"""

@@ -1,18 +1,16 @@
-import logging
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
-from organizations.rbac import permission_required, any_permission_required, get_user_customers
-
-logger = logging.getLogger(__name__)
-audit_logger = logging.getLogger('audit')
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
 
 
 # ============ Admin Authentication Views ============
@@ -27,34 +25,17 @@ def admin_login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-        ip_address = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', 'unknown'))
 
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             if user.is_staff or user.is_superuser:
-                # Check if user belongs to the center matching the subdomain
-                if not user.is_superuser and hasattr(request, 'center') and request.center:
-                    # Get user's admin profile
-                    admin_profile = getattr(user, 'admin_profile', None)
-                    if admin_profile and admin_profile.center_id != request.center.id:
-                        audit_logger.warning(f"LOGIN_DENIED user={username} reason=wrong_center subdomain={request.center.subdomain} ip={ip_address}")
-                        logger.warning(f"Login denied for {username} - belongs to different center")
-                        messages.error(request, "You don't have access to this center.")
-                        return render(request, "authentication/signin.html")
-                
                 login(request, user)
-                audit_logger.info(f"LOGIN_SUCCESS user={username} ip={ip_address}")
-                logger.info(f"User {username} logged in successfully from {ip_address}")
                 next_url = request.GET.get("next", "index")
                 return redirect(next_url)
             else:
-                audit_logger.warning(f"LOGIN_DENIED user={username} reason=not_staff ip={ip_address}")
-                logger.warning(f"Login denied for {username} - not a staff member")
                 messages.error(request, "You do not have admin access.")
         else:
-            audit_logger.warning(f"LOGIN_FAILED user={username} reason=invalid_credentials ip={ip_address}")
-            logger.warning(f"Failed login attempt for username: {username} from {ip_address}")
             messages.error(request, "Invalid username or password.")
 
     return render(request, "authentication/signin.html")
@@ -62,10 +43,6 @@ def admin_login(request):
 
 def admin_logout(request):
     """Admin logout view"""
-    username = request.user.username if request.user.is_authenticated else 'anonymous'
-    ip_address = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', 'unknown'))
-    audit_logger.info(f"LOGOUT user={username} ip={ip_address}")
-    logger.info(f"User {username} logged out")
     logout(request)
     messages.success(request, "You have been logged out successfully.")
     return redirect("admin_login")
@@ -75,7 +52,6 @@ def forgot_password(request):
     """Forgot password view - sends reset email"""
     if request.method == "POST":
         email = request.POST.get("email")
-        client_ip = request.META.get('REMOTE_ADDR')
 
         try:
             user = User.objects.get(email=email)
@@ -115,17 +91,14 @@ def forgot_password(request):
                     [email],
                     fail_silently=False,
                 )
-                logger.info(f"Password reset email sent to {email} from {client_ip}")
                 messages.success(
                     request, "Password reset link has been sent to your email."
                 )
             except Exception as e:
-                logger.error(f"Failed to send password reset email to {email}: {e}")
                 messages.error(request, "Failed to send email. Please try again later.")
 
         except User.DoesNotExist:
             # Don't reveal that user doesn't exist for security
-            logger.info(f"Password reset requested for non-existent email: {email} from {client_ip}")
             messages.success(
                 request,
                 "If an account with this email exists, a password reset link has been sent.",
@@ -136,13 +109,11 @@ def forgot_password(request):
 
 def reset_password(request, uidb64, token):
     """Reset password view - handles the reset link"""
-    client_ip = request.META.get('REMOTE_ADDR')
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-        logger.warning(f"Invalid password reset attempt with uid: {uidb64} from {client_ip}")
 
     if user is not None and default_token_generator.check_token(user, token):
         if request.method == "POST":
@@ -150,15 +121,12 @@ def reset_password(request, uidb64, token):
             confirm_password = request.POST.get("confirm_password")
 
             if password != confirm_password:
-                logger.warning(f"Password reset failed for user {user.username}: passwords don't match from {client_ip}")
                 messages.error(request, "Passwords do not match.")
             elif len(password) < 8:
-                logger.warning(f"Password reset failed for user {user.username}: password too short from {client_ip}")
                 messages.error(request, "Password must be at least 8 characters long.")
             else:
                 user.set_password(password)
                 user.save()
-                logger.info(f"Password reset successful for user {user.username} from {client_ip}")
                 messages.success(
                     request, "Your password has been reset successfully. Please login."
                 )
@@ -168,7 +136,6 @@ def reset_password(request, uidb64, token):
             request, "authentication/resetPassword.html", {"valid_link": True}
         )
     else:
-        logger.warning(f"Expired/invalid password reset token used from {client_ip}")
         messages.error(request, "The password reset link is invalid or has expired.")
         return redirect("forgot_password")
 
@@ -178,30 +145,13 @@ def reset_password(request, uidb64, token):
 from .models import BotUser
 from django.core.paginator import Paginator
 from django.db.models import Q
-from organizations.rbac import get_user_customers
 
 
 @login_required(login_url="admin_login")
-@permission_required('can_create_customers')
 def addUser(request):
     """Add a new BotUser (Telegram user)"""
-    from organizations.models import TranslationCenter, Branch
-    from organizations.rbac import get_user_branches
-    
-    # Get agencies from user's accessible branches only
-    agencies = get_user_customers(request.user).filter(is_agency=True).order_by("name")
-    
-    # Get centers and branches based on user permissions
-    if request.user.is_superuser:
-        centers = TranslationCenter.objects.filter(is_active=True).order_by("name")
-        branches = Branch.objects.filter(is_active=True).select_related('center').order_by("center__name", "name")
-    else:
-        # Get branches user has access to
-        user_branches = get_user_branches(request.user)
-        branches = user_branches.filter(is_active=True).select_related('center').order_by("center__name", "name")
-        # Get unique centers from those branches
-        center_ids = branches.values_list('center_id', flat=True).distinct()
-        centers = TranslationCenter.objects.filter(id__in=center_ids, is_active=True).order_by("name")
+    # Get all agencies for the dropdown
+    agencies = BotUser.objects.filter(is_agency=True).order_by("name")
 
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -212,8 +162,6 @@ def addUser(request):
         is_active = request.POST.get("is_active") == "on"
         is_agency = request.POST.get("is_agency") == "on"
         agency_id = request.POST.get("agency", "")
-        center_id = request.POST.get("center", "")
-        branch_id = request.POST.get("branch", "")
 
         # Validation
         if not name:
@@ -232,25 +180,6 @@ def addUser(request):
                     is_active=is_active,
                     is_agency=is_agency,
                 )
-                
-                # Set center if selected
-                if center_id:
-                    try:
-                        center = TranslationCenter.objects.get(id=center_id)
-                        bot_user.center = center
-                    except TranslationCenter.DoesNotExist:
-                        pass
-                
-                # Set branch if selected
-                if branch_id:
-                    try:
-                        branch = Branch.objects.get(id=branch_id)
-                        bot_user.branch = branch
-                        # Also set center from branch if not already set
-                        if not bot_user.center:
-                            bot_user.center = branch.center
-                    except Branch.DoesNotExist:
-                        pass
 
                 # Set agency if selected and not an agency itself
                 if agency_id and not is_agency:
@@ -273,56 +202,17 @@ def addUser(request):
         "title": "Add User",
         "subTitle": "Add User",
         "agencies": agencies,
-        "centers": centers,
-        "branches": branches,
         "languages": BotUser.LANGUAGES,
     }
     return render(request, "users/addUser.html", context)
 
 
 @login_required(login_url="admin_login")
-@any_permission_required('can_view_customers', 'can_manage_customers')
 def usersList(request):
     """List all BotUsers with search and filter - RBAC filtered"""
     from organizations.rbac import get_user_customers
     from organizations.models import TranslationCenter
     from django.db.models import Count, Max
-    from django.utils import timezone
-    from datetime import timedelta
-
-    # Period filter
-    period = request.GET.get("period", "all")
-    date_from_str = request.GET.get("date_from", "")
-    date_to_str = request.GET.get("date_to", "")
-    
-    # Calculate date range based on period
-    today = timezone.now()
-    date_from = None
-    date_to = None
-    
-    if period == "today":
-        date_from = today.replace(hour=0, minute=0, second=0, microsecond=0)
-        date_to = today
-    elif period == "week":
-        start_of_week = today - timedelta(days=today.weekday())
-        date_from = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
-        date_to = today
-    elif period == "month":
-        date_from = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        date_to = today
-    elif period == "year":
-        date_from = today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
-        date_to = today
-    elif period == "custom" and date_from_str and date_to_str:
-        from datetime import datetime
-        try:
-            date_from = datetime.strptime(date_from_str, "%Y-%m-%d")
-            date_to = datetime.strptime(date_to_str, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
-            date_from = timezone.make_aware(date_from) if timezone.is_naive(date_from) else date_from
-            date_to = timezone.make_aware(date_to) if timezone.is_naive(date_to) else date_to
-        except ValueError:
-            date_from = None
-            date_to = None
 
     # Use RBAC-filtered customers with related branch/center data
     # Add order statistics for each user
@@ -330,13 +220,8 @@ def usersList(request):
         get_user_customers(request.user)
         .select_related("branch", "branch__center", "agency")
         .annotate(order_count=Count("order"), last_order_date=Max("order__created_at"))
+        .order_by("-created_at")
     )
-    
-    # Apply date filter if period is selected
-    if date_from and date_to:
-        users = users.filter(created_at__gte=date_from, created_at__lte=date_to)
-    
-    users = users.order_by("-created_at")
 
     # Center filter for superuser
     centers = None
@@ -397,38 +282,19 @@ def usersList(request):
         "center_filter": center_filter,
         "branches": branches,
         "branch_filter": branch_filter,
-        "period": period,
-        "date_from": date_from_str,
-        "date_to": date_to_str,
     }
     return render(request, "users/usersList.html", context)
 
 
 @login_required(login_url="admin_login")
-@any_permission_required('can_edit_customers', 'can_manage_customers')
 def editUser(request, user_id):
     """Edit an existing BotUser"""
     from django.shortcuts import get_object_or_404
-    from organizations.models import TranslationCenter, Branch
-    from organizations.rbac import get_user_branches
 
     user = get_object_or_404(BotUser, id=user_id)
-    # Get agencies from user's accessible branches only
     agencies = (
-        get_user_customers(request.user).filter(is_agency=True).exclude(id=user_id).order_by("name")
+        BotUser.objects.filter(is_agency=True).exclude(id=user_id).order_by("name")
     )
-    
-    # Get centers and branches based on user permissions
-    if request.user.is_superuser:
-        centers = TranslationCenter.objects.filter(is_active=True).order_by("name")
-        branches = Branch.objects.filter(is_active=True).select_related('center').order_by("center__name", "name")
-    else:
-        # Get branches user has access to
-        user_branches = get_user_branches(request.user)
-        branches = user_branches.filter(is_active=True).select_related('center').order_by("center__name", "name")
-        # Get unique centers from those branches
-        center_ids = branches.values_list('center_id', flat=True).distinct()
-        centers = TranslationCenter.objects.filter(id__in=center_ids, is_active=True).order_by("name")
 
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -439,8 +305,6 @@ def editUser(request, user_id):
         is_active = request.POST.get("is_active") == "on"
         is_agency = request.POST.get("is_agency") == "on"
         agency_id = request.POST.get("agency", "")
-        center_id = request.POST.get("center", "")
-        branch_id = request.POST.get("branch", "")
 
         # Validation
         if not name:
@@ -457,29 +321,6 @@ def editUser(request, user_id):
                 user.language = language
                 user.is_active = is_active
                 user.is_agency = is_agency
-                
-                # Set center
-                if center_id:
-                    try:
-                        center = TranslationCenter.objects.get(id=center_id)
-                        user.center = center
-                    except TranslationCenter.DoesNotExist:
-                        user.center = None
-                else:
-                    user.center = None
-                
-                # Set branch
-                if branch_id:
-                    try:
-                        branch = Branch.objects.get(id=branch_id)
-                        user.branch = branch
-                        # Also set center from branch if not already set
-                        if not user.center:
-                            user.center = branch.center
-                    except Branch.DoesNotExist:
-                        user.branch = None
-                else:
-                    user.branch = None
 
                 # Set agency if selected and not an agency itself
                 if agency_id and not is_agency:
@@ -505,15 +346,12 @@ def editUser(request, user_id):
         "subTitle": "Edit User",
         "user": user,
         "agencies": agencies,
-        "centers": centers,
-        "branches": branches,
         "languages": BotUser.LANGUAGES,
     }
     return render(request, "users/editUser.html", context)
 
 
 @login_required(login_url="admin_login")
-@permission_required('can_delete_customers')
 def deleteUser(request, user_id):
     """Delete a BotUser"""
     from django.shortcuts import get_object_or_404
@@ -560,7 +398,6 @@ def deleteUser(request, user_id):
 
 
 @login_required(login_url="admin_login")
-@any_permission_required('can_view_customers', 'can_manage_customers')
 def userDetail(request):
     """View BotUser (Telegram user) profile details"""
     from orders.models import Order
@@ -708,3 +545,48 @@ def changePassword(request):
             messages.error(request, f"Error changing password: {str(e)}")
 
     return redirect("viewProfile")
+
+
+@login_required(login_url="admin_login")
+@require_POST
+def bulk_delete_users(request):
+    """Bulk delete multiple users (BotUsers)"""
+    from django.http import JsonResponse
+    from organizations.rbac import get_user_customers
+    from core.audit import log_delete
+    
+    # Try both formats: user_ids[] and user_ids
+    user_ids = request.POST.getlist('user_ids[]') or request.POST.getlist('user_ids')
+    
+    if not user_ids:
+        return JsonResponse({'success': False, 'message': 'No users selected'}, status=400)
+    
+    # Get users that the logged-in user can access
+    accessible_users = get_user_customers(request.user)
+    users = accessible_users.filter(id__in=user_ids)
+    
+    deleted_count = users.count()
+    
+    if deleted_count == 0:
+        return JsonResponse({'success': False, 'message': 'No users found or you don\'t have permission to delete them'}, status=404)
+    
+    try:
+        # Log each deletion
+        for user in users:
+            log_delete(
+                user=request.user,
+                target=user,
+                request=request
+            )
+        
+        # Delete all users
+        users.delete()
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'{deleted_count} user(s) deleted successfully',
+            'deleted_count': deleted_count
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error deleting users: {str(e)}'}, status=500)
