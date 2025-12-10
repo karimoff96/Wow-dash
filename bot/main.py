@@ -176,7 +176,7 @@ def create_order_zip(order):
 def send_order_status_notification(order, old_status, new_status):
     """
     Send notification to user when order status changes.
-    Handles both status and payment-related notifications.
+    Handles both status and payment-related notifications with enhanced formatting.
     """
     from accounts.models import AdditionalInfo
 
@@ -208,183 +208,267 @@ def send_order_status_notification(order, old_status, new_status):
         branch_name = order.branch.name if order.branch else "Translation Center"
         branch_address = order.branch.address if order.branch and order.branch.address else ""
         
-        # Build notification based on status
+        # Build notification based on status with enhanced formatting
         if new_status == "payment_pending":
             if language == "uz":
                 notification_text = (
-                    f"💳 <b>To'lov kutilmoqda</b>\n\n"
-                    f"📋 Buyurtma raqami: #{order.id}\n"
-                    f"💰 To'lov summasi: {order.total_price:,.0f} so'm\n\n"
-                    f"📱 To'lov chekini yuborishingizni kutmoqdamiz."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  💳 <b>TO'LOV KUTILMOQDA</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Buyurtma:</b> #{order.id}\n"
+                    f"💰 <b>To'lov summasi:</b> {order.total_price:,.0f} so'm\n\n"
+                    f"📱 To'lov chekini yuborishingizni kutmoqdamiz.\n"
+                    f"💳 Karta orqali to'lovdan so'ng chek rasmini yuboring."
                 )
             elif language == "ru":
                 notification_text = (
-                    f"💳 <b>Ожидание оплаты</b>\n\n"
-                    f"📋 Номер заказа: #{order.id}\n"
-                    f"💰 Сумма к оплате: {order.total_price:,.0f} сум\n\n"
-                    f"📱 Ожидаем квитанцию об оплате."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  💳 <b>ОЖИДАНИЕ ОПЛАТЫ</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Заказ:</b> #{order.id}\n"
+                    f"💰 <b>Сумма к оплате:</b> {order.total_price:,.0f} сум\n\n"
+                    f"📱 Ожидаем квитанцию об оплате.\n"
+                    f"💳 После оплаты картой отправьте фото чека."
                 )
             else:
                 notification_text = (
-                    f"💳 <b>Payment Pending</b>\n\n"
-                    f"📋 Order #: #{order.id}\n"
-                    f"💰 Amount: {order.total_price:,.0f} sum\n\n"
-                    f"📱 Waiting for your payment receipt."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  💳 <b>PAYMENT PENDING</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Order:</b> #{order.id}\n"
+                    f"💰 <b>Amount:</b> {order.total_price:,.0f} sum\n\n"
+                    f"📱 Waiting for your payment receipt.\n"
+                    f"💳 After card payment, send the receipt photo."
                 )
         
         elif new_status == "payment_received":
             if language == "uz":
                 notification_text = (
-                    f"📨 <b>To'lov cheki qabul qilindi</b>\n\n"
-                    f"📋 Buyurtma raqami: #{order.id}\n"
-                    f"💰 Summa: {order.total_price:,.0f} so'm\n\n"
-                    f"⏳ To'lovingiz tekshirilmoqda. Tez orada tasdiqlash habarimiz keladi."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  📨 <b>CHEK QABUL QILINDI</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Buyurtma:</b> #{order.id}\n"
+                    f"💰 <b>Summa:</b> {order.total_price:,.0f} so'm\n"
+                    f"🧾 <b>Status:</b> Chek tekshirilmoqda ✅\n\n"
+                    f"⏳ To'lovingiz tekshirilmoqda.\n"
+                    f"⚡ Tez orada tasdiqlash habarimiz keladi."
                 )
             elif language == "ru":
                 notification_text = (
-                    f"📨 <b>Квитанция об оплате получена</b>\n\n"
-                    f"📋 Номер заказа: #{order.id}\n"
-                    f"💰 Сумма: {order.total_price:,.0f} сум\n\n"
-                    f"⏳ Ваша оплата проверяется. Скоро вы получите подтверждение."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  📨 <b>ЧЕК ПОЛУЧЕН</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Заказ:</b> #{order.id}\n"
+                    f"💰 <b>Сумма:</b> {order.total_price:,.0f} сум\n"
+                    f"🧾 <b>Статус:</b> Чек проверяется ✅\n\n"
+                    f"⏳ Ваша оплата проверяется.\n"
+                    f"⚡ Скоро вы получите подтверждение."
                 )
             else:
                 notification_text = (
-                    f"📨 <b>Payment Receipt Received</b>\n\n"
-                    f"📋 Order #: #{order.id}\n"
-                    f"💰 Amount: {order.total_price:,.0f} sum\n\n"
-                    f"⏳ Your payment is being verified. You'll receive confirmation shortly."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  📨 <b>RECEIPT RECEIVED</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Order:</b> #{order.id}\n"
+                    f"💰 <b>Amount:</b> {order.total_price:,.0f} sum\n"
+                    f"🧾 <b>Status:</b> Receipt being verified ✅\n\n"
+                    f"⏳ Your payment is being verified.\n"
+                    f"⚡ You'll receive confirmation shortly."
                 )
         
         elif new_status == "payment_confirmed":
             if language == "uz":
                 notification_text = (
-                    f"✅ <b>To'lov tasdiqlandi!</b>\n\n"
-                    f"📋 Buyurtma raqami: #{order.id}\n"
-                    f"💰 Summa: {order.total_price:,.0f} so'm\n\n"
-                    f"🔄 Buyurtmangiz jarayonga qo'shildi. Operatorlarimiz tez orada bog'lanishadi."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  ✅ <b>TO'LOV TASDIQLANDI!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Buyurtma:</b> #{order.id}\n"
+                    f"💰 <b>Summa:</b> {order.total_price:,.0f} so'm ✅\n"
+                    f"📊 <b>Progress:</b> ▰▰▱▱▱▱▱ 30%\n\n"
+                    f"🔄 Buyurtmangiz jarayonga qo'shildi.\n"
+                    f"👥 Operatorlarimiz tez orada bog'lanishadi."
                 )
             elif language == "ru":
                 notification_text = (
-                    f"✅ <b>Оплата подтверждена!</b>\n\n"
-                    f"📋 Номер заказа: #{order.id}\n"
-                    f"💰 Сумма: {order.total_price:,.0f} сум\n\n"
-                    f"🔄 Ваш заказ добавлен в обработку. Наши операторы свяжутся с вами."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  ✅ <b>ОПЛАТА ПОДТВЕРЖДЕНА!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Заказ:</b> #{order.id}\n"
+                    f"💰 <b>Сумма:</b> {order.total_price:,.0f} сум ✅\n"
+                    f"📊 <b>Прогресс:</b> ▰▰▱▱▱▱▱ 30%\n\n"
+                    f"🔄 Ваш заказ добавлен в обработку.\n"
+                    f"👥 Наши операторы свяжутся с вами."
                 )
             else:
                 notification_text = (
-                    f"✅ <b>Payment Confirmed!</b>\n\n"
-                    f"📋 Order #: #{order.id}\n"
-                    f"💰 Amount: {order.total_price:,.0f} sum\n\n"
-                    f"🔄 Your order is now being processed. Our operators will contact you soon."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  ✅ <b>PAYMENT CONFIRMED!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Order:</b> #{order.id}\n"
+                    f"💰 <b>Amount:</b> {order.total_price:,.0f} sum ✅\n"
+                    f"📊 <b>Progress:</b> ▰▰▱▱▱▱▱ 30%\n\n"
+                    f"🔄 Your order is now being processed.\n"
+                    f"👥 Our operators will contact you soon."
                 )
         
         elif new_status == "in_progress":
             estimated_days = order.product.estimated_days if order.product else "N/A"
             if language == "uz":
                 notification_text = (
-                    f"🔄 <b>Buyurtma jarayonda!</b>\n\n"
-                    f"📋 Buyurtma raqami: #{order.id}\n"
-                    f"⏱️ Taxminiy muddat: {estimated_days} kun\n\n"
-                    f"✅ Sizga tayyor bo'lganda xabar beramiz."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  🔄 <b>BUYURTMA JARAYONDA!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Buyurtma:</b> #{order.id}\n"
+                    f"⏱️ <b>Taxminiy muddat:</b> {estimated_days} kun\n"
+                    f"📊 <b>Progress:</b> ▰▰▰▰▱▱▱ 60%\n\n"
+                    f"✅ Sizga tayyor bo'lganda xabar beramiz.\n"
+                    f"📱 Savollaringiz bo'lsa, biz bilan bog'laning."
                 )
             elif language == "ru":
                 notification_text = (
-                    f"🔄 <b>Заказ в процессе!</b>\n\n"
-                    f"📋 Номер заказа: #{order.id}\n"
-                    f"⏱️ Примерный срок: {estimated_days} дней\n\n"
-                    f"✅ Мы сообщим вам, когда будет готово."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  🔄 <b>ЗАКАЗ В ПРОЦЕССЕ!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Заказ:</b> #{order.id}\n"
+                    f"⏱️ <b>Примерный срок:</b> {estimated_days} дней\n"
+                    f"📊 <b>Прогресс:</b> ▰▰▰▰▱▱▱ 60%\n\n"
+                    f"✅ Мы сообщим вам, когда будет готово.\n"
+                    f"📱 Если есть вопросы, свяжитесь с нами."
                 )
             else:
                 notification_text = (
-                    f"🔄 <b>Order In Progress!</b>\n\n"
-                    f"📋 Order #: #{order.id}\n"
-                    f"⏱️ Estimated time: {estimated_days} days\n\n"
-                    f"✅ We'll notify you when it's ready."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  🔄 <b>ORDER IN PROGRESS!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Order:</b> #{order.id}\n"
+                    f"⏱️ <b>Estimated time:</b> {estimated_days} days\n"
+                    f"📊 <b>Progress:</b> ▰▰▰▰▱▱▱ 60%\n\n"
+                    f"✅ We'll notify you when it's ready.\n"
+                    f"📱 Contact us if you have questions."
                 )
         
         elif new_status == "ready":
             if language == "uz":
                 notification_text = (
-                    f"✅ <b>Buyurtma tayyor!</b>\n\n"
-                    f"📋 Buyurtma raqami: #{order.id}\n"
-                    f"📦 Buyurtmangizni olib ketishingiz mumkin.\n\n"
-                    f"🏢 Filial: {branch_name}\n"
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  ✅ <b>BUYURTMA TAYYOR!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Buyurtma:</b> #{order.id}\n"
+                    f"📦 <b>Status:</b> Olib ketishingiz mumkin!\n"
+                    f"📊 <b>Progress:</b> ▰▰▰▰▰▰▱ 85%\n\n"
+                    f"🏢 <b>Filial:</b> {branch_name}\n"
                 )
                 if branch_address:
-                    notification_text += f"📍 Manzil: {branch_address}\n"
+                    notification_text += f"📍 <b>Manzil:</b> {branch_address}\n"
                 if phone != "N/A":
-                    notification_text += f"📞 Telefon: {phone}"
+                    notification_text += f"📞 <b>Telefon:</b> {phone}\n"
+                notification_text += f"\n⏰ Ish vaqti: 9:00 - 18:00"
             elif language == "ru":
                 notification_text = (
-                    f"✅ <b>Заказ готов!</b>\n\n"
-                    f"📋 Номер заказа: #{order.id}\n"
-                    f"📦 Вы можете забрать свой заказ.\n\n"
-                    f"🏢 Филиал: {branch_name}\n"
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  ✅ <b>ЗАКАЗ ГОТОВ!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Заказ:</b> #{order.id}\n"
+                    f"📦 <b>Статус:</b> Можно забрать!\n"
+                    f"📊 <b>Прогресс:</b> ▰▰▰▰▰▰▱ 85%\n\n"
+                    f"🏢 <b>Филиал:</b> {branch_name}\n"
                 )
                 if branch_address:
-                    notification_text += f"📍 Адрес: {branch_address}\n"
+                    notification_text += f"📍 <b>Адрес:</b> {branch_address}\n"
                 if phone != "N/A":
-                    notification_text += f"📞 Телефон: {phone}"
+                    notification_text += f"📞 <b>Телефон:</b> {phone}\n"
+                notification_text += f"\n⏰ Время работы: 9:00 - 18:00"
             else:
                 notification_text = (
-                    f"✅ <b>Order Ready!</b>\n\n"
-                    f"📋 Order #: #{order.id}\n"
-                    f"📦 You can pick up your order.\n\n"
-                    f"🏢 Branch: {branch_name}\n"
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  ✅ <b>ORDER READY!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Order:</b> #{order.id}\n"
+                    f"📦 <b>Status:</b> Ready for pickup!\n"
+                    f"📊 <b>Progress:</b> ▰▰▰▰▰▰▱ 85%\n\n"
+                    f"🏢 <b>Branch:</b> {branch_name}\n"
                 )
                 if branch_address:
-                    notification_text += f"📍 Address: {branch_address}\n"
+                    notification_text += f"📍 <b>Address:</b> {branch_address}\n"
                 if phone != "N/A":
-                    notification_text += f"📞 Phone: {phone}"
+                    notification_text += f"📞 <b>Phone:</b> {phone}\n"
+                notification_text += f"\n⏰ Working hours: 9:00 - 18:00"
         
         elif new_status == "completed":
             if language == "uz":
                 notification_text = (
-                    f"🎉 <b>Buyurtma yakunlandi!</b>\n\n"
-                    f"📋 Buyurtma raqami: #{order.id}\n\n"
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  🎉 <b>BUYURTMA YAKUNLANDI!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Buyurtma:</b> #{order.id}\n"
+                    f"📊 <b>Progress:</b> ▰▰▰▰▰▰▰ 100% ✅\n\n"
                     f"🙏 Xizmatlarimizdan foydalanganingiz uchun rahmat!\n"
-                    f"⭐ Fikr-mulohazangizni kutamiz."
+                    f"⭐ Fikr-mulohazangizni kutamiz.\n\n"
+                    f"🔄 Biz bilan yana ishlamoqchimisiz?\n"
+                    f"📱 Buyurtma berish uchun /start bosing."
                 )
             elif language == "ru":
                 notification_text = (
-                    f"🎉 <b>Заказ завершен!</b>\n\n"
-                    f"📋 Номер заказа: #{order.id}\n\n"
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  🎉 <b>ЗАКАЗ ЗАВЕРШЕН!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Заказ:</b> #{order.id}\n"
+                    f"📊 <b>Прогресс:</b> ▰▰▰▰▰▰▰ 100% ✅\n\n"
                     f"🙏 Спасибо за использование наших услуг!\n"
-                    f"⭐ Ждем ваших отзывов."
+                    f"⭐ Ждем ваших отзывов.\n\n"
+                    f"🔄 Хотите работать с нами снова?\n"
+                    f"📱 Нажмите /start для нового заказа."
                 )
             else:
                 notification_text = (
-                    f"🎉 <b>Order Completed!</b>\n\n"
-                    f"📋 Order #: #{order.id}\n\n"
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  🎉 <b>ORDER COMPLETED!</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Order:</b> #{order.id}\n"
+                    f"📊 <b>Progress:</b> ▰▰▰▰▰▰▰ 100% ✅\n\n"
                     f"🙏 Thank you for using our services!\n"
-                    f"⭐ We look forward to your feedback."
+                    f"⭐ We look forward to your feedback.\n\n"
+                    f"🔄 Want to work with us again?\n"
+                    f"📱 Press /start for a new order."
                 )
         
         elif new_status == "cancelled":
             if language == "uz":
                 notification_text = (
-                    f"❌ <b>Buyurtma bekor qilindi</b>\n\n"
-                    f"📋 Buyurtma raqami: #{order.id}\n\n"
-                    f"📞 Savollaringiz bo'lsa, operatorlarimiz bilan bog'laning."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  ❌ <b>BUYURTMA BEKOR QILINDI</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Buyurtma:</b> #{order.id}\n"
+                    f"📊 <b>Status:</b> Bekor qilingan\n\n"
+                    f"📞 Savollaringiz bo'lsa, biz bilan bog'laning.\n"
                 )
                 if phone != "N/A":
-                    notification_text += f"\n📱 Telefon: {phone}"
+                    notification_text += f"📱 <b>Telefon:</b> {phone}\n"
+                notification_text += f"\n🔄 Yangi buyurtma berish: /start"
             elif language == "ru":
                 notification_text = (
-                    f"❌ <b>Заказ отменен</b>\n\n"
-                    f"📋 Номер заказа: #{order.id}\n\n"
-                    f"📞 Если у вас есть вопросы, свяжитесь с нашими операторами."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  ❌ <b>ЗАКАЗ ОТМЕНЕН</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Заказ:</b> #{order.id}\n"
+                    f"📊 <b>Статус:</b> Отменен\n\n"
+                    f"📞 Если есть вопросы, свяжитесь с нами.\n"
                 )
                 if phone != "N/A":
-                    notification_text += f"\n📱 Телефон: {phone}"
+                    notification_text += f"📱 <b>Телефон:</b> {phone}\n"
+                notification_text += f"\n🔄 Новый заказ: /start"
             else:
                 notification_text = (
-                    f"❌ <b>Order Cancelled</b>\n\n"
-                    f"📋 Order #: #{order.id}\n\n"
-                    f"📞 If you have questions, contact our operators."
+                    f"╔═══════════════════════════════════╗\n"
+                    f"║  ❌ <b>ORDER CANCELLED</b>\n"
+                    f"╚═══════════════════════════════════╝\n\n"
+                    f"📋 <b>Order:</b> #{order.id}\n"
+                    f"📊 <b>Status:</b> Cancelled\n\n"
+                    f"📞 Contact us if you have questions.\n"
                 )
                 if phone != "N/A":
-                    notification_text += f"\n📱 Phone: {phone}"
+                    notification_text += f"📱 <b>Phone:</b> {phone}\n"
+                notification_text += f"\n🔄 New order: /start"
         else:
             # Generic fallback
             notification_text = get_text(f"status_{new_status}", language)

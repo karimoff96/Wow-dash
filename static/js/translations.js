@@ -1559,8 +1559,590 @@ const translations = {
         ru: 'Введите полное имя',
         en: 'Enter full name'
     },
+    'form.firstName': {
+        uz: 'Ism',
+        ru: 'Имя',
+        en: 'First Name'
+    },
+    'form.lastName': {
+        uz: 'Familiya',
+        ru: 'Фамилия',
+        en: 'Last Name'
+    },
+    'form.selectCustomer': {
+        uz: 'Mijozni tanlang',
+        ru: 'Выберите клиента',
+        en: 'Select Customer'
+    },
+    'form.selectBranch': {
+        uz: 'Filialni tanlang',
+        ru: 'Выберите филиал',
+        en: 'Select Branch'
+    },
+    'form.selectCenter': {
+        uz: 'Markazni tanlang',
+        ru: 'Выберите центр',
+        en: 'Select Center'
+    },
+    'form.selectRegion': {
+        uz: 'Hududni tanlang',
+        ru: 'Выберите регион',
+        en: 'Select Region'
+    },
+    'form.selectDistrict': {
+        uz: 'Tumanni tanlang',
+        ru: 'Выберите район',
+        en: 'Select District'
+    },
+    'form.selectLanguage': {
+        uz: 'Tilni tanlang',
+        ru: 'Выберите язык',
+        en: 'Select Language'
+    },
+    'form.noLanguage': {
+        uz: 'Tilsiz',
+        ru: 'Без языка',
+        en: 'No language'
+    },
+    'form.selectOption': {
+        uz: '-- Tanlang --',
+        ru: '-- Выберите --',
+        en: '-- Select --'
+    },
+    'form.extraFee': {
+        uz: 'Qo\'shimcha to\'lov',
+        ru: 'Дополнительная плата',
+        en: 'Extra Fee'
+    },
+    'form.reason': {
+        uz: 'Sabab',
+        ru: 'Причина',
+        en: 'Reason'
+    },
+    'form.cancel': {
+        uz: 'Bekor qilish',
+        ru: 'Отмена',
+        en: 'Cancel'
+    },
+    'form.saveChanges': {
+        uz: 'O\'zgarishlarni saqlash',
+        ru: 'Сохранить изменения',
+        en: 'Save Changes'
+    },
+    'form.delete': {
+        uz: 'O\'chirish',
+        ru: 'Удалить',
+        en: 'Delete'
+    },
+    'form.replace': {
+        uz: 'Almashtirish',
+        ru: 'Заменить',
+        en: 'Replace'
+    },
+    'form.currentMedia': {
+        uz: 'Joriy fayl',
+        ru: 'Текущий файл',
+        en: 'Current Media'
+    },
+    'form.uploadMedia': {
+        uz: 'Fayl yuklash',
+        ru: 'Загрузить файл',
+        en: 'Upload Media'
+    },
+    'form.title': {
+        uz: 'Sarlavha',
+        ru: 'Заголовок',
+        en: 'Title'
+    },
+    'form.contentType': {
+        uz: 'Kontent turi',
+        ru: 'Тип контента',
+        en: 'Content Type'
+    },
+    'form.messageContent': {
+        uz: 'Xabar matni',
+        ru: 'Текст сообщения',
+        en: 'Message Content'
+    },
+    'form.customerTypes': {
+        uz: 'Mijoz turlari',
+        ru: 'Типы клиентов',
+        en: 'Customer Types'
+    },
+    'form.schedule': {
+        uz: 'Rejalashtirish',
+        ru: 'Расписание',
+        en: 'Schedule'
+    },
+    'form.targetInfo': {
+        uz: 'Maqsad ma\'lumotlari',
+        ru: 'Информация о цели',
+        en: 'Target Info'
+    },
+    'form.targetScope': {
+        uz: 'Maqsad doirasi',
+        ru: 'Целевая область',
+        en: 'Target Scope'
+    },
+    'form.branch': {
+        uz: 'Filial',
+        ru: 'Филиал',
+        en: 'Branch'
+    },
+    'form.center': {
+        uz: 'Markaz',
+        ru: 'Центр',
+        en: 'Center'
+    },
+    'form.allCenters': {
+        uz: 'Barcha markazlar',
+        ru: 'Все центры',
+        en: 'All Centers'
+    },
+    'form.region': {
+        uz: 'Hudud',
+        ru: 'Регион',
+        en: 'Region'
+    },
+    'form.district': {
+        uz: 'Tuman',
+        ru: 'Район',
+        en: 'District'
+    },
+    'form.attachedFiles': {
+        uz: 'Biriktirilgan fayllar',
+        ru: 'Прикрепленные файлы',
+        en: 'Attached Files'
+    },
+    'form.addNewFiles': {
+        uz: 'Yangi fayllar qo\'shish',
+        ru: 'Добавить новые файлы',
+        en: 'Add New Files'
+    },
+    'form.totalPages': {
+        uz: 'Jami sahifalar',
+        ru: 'Всего страниц',
+        en: 'Total Pages'
+    },
+    'form.copyNumber': {
+        uz: 'Nusxalar soni',
+        ru: 'Количество копий',
+        en: 'Copy Number'
+    },
+    'form.created': {
+        uz: 'Yaratilgan',
+        ru: 'Создано',
+        en: 'Created'
+    },
+    'form.updated': {
+        uz: 'Yangilangan',
+        ru: 'Обновлено',
+        en: 'Updated'
+    },
+    'form.password': {
+        uz: 'Parol',
+        ru: 'Пароль',
+        en: 'Password'
+    },
+    'form.scope': {
+        uz: 'Doira',
+        ru: 'Область',
+        en: 'Scope'
+    },
 
-    // ========== PERIOD SELECTORS ==========
+    // ========== AUTHENTICATION ==========
+    'auth.signIn': {
+        uz: 'Tizimga kirish',
+        ru: 'Войти',
+        en: 'Sign In'
+    },
+    'auth.signInToAccount': {
+        uz: 'Hisobingizga kiring',
+        ru: 'Войдите в свой аккаунт',
+        en: 'Sign In to your Account'
+    },
+    'auth.welcomeBack': {
+        uz: 'Xush kelibsiz! Ma\'lumotlaringizni kiriting',
+        ru: 'Добро пожаловать! Введите свои данные',
+        en: 'Welcome back! Please enter your detail'
+    },
+    'auth.rememberMe': {
+        uz: 'Meni eslab qol',
+        ru: 'Запомнить меня',
+        en: 'Remember Me'
+    },
+    'auth.forgotPassword': {
+        uz: 'Parolni unutdingizmi?',
+        ru: 'Забыли пароль?',
+        en: 'Forgot Password?'
+    },
+
+    // ========== ORDERS ==========
+    'order.manualOrder': {
+        uz: 'Qo\'lda buyurtma',
+        ru: 'Ручной заказ',
+        en: 'Manual Order'
+    },
+    'order.phoneWalkIn': {
+        uz: 'Telefon/Tashrif',
+        ru: 'Телефон/Визит',
+        en: 'Phone/Walk-in'
+    },
+    'order.createManualOrder': {
+        uz: 'Qo\'lda buyurtma yaratish',
+        ru: 'Создать ручной заказ',
+        en: 'Create Manual Order'
+    },
+    'order.paymentProgress': {
+        uz: 'To\'lov jarayoni',
+        ru: 'Прогресс оплаты',
+        en: 'Payment Progress'
+    },
+    'order.fullyPaid': {
+        uz: 'To\'liq to\'langan',
+        ru: 'Полностью оплачено',
+        en: 'Fully Paid'
+    },
+    'order.totalDue': {
+        uz: 'Jami to\'lanishi kerak',
+        ru: 'Итого к оплате',
+        en: 'Total Due'
+    },
+    'order.received': {
+        uz: 'Qabul qilindi',
+        ru: 'Получено',
+        en: 'Received'
+    },
+    'order.remaining': {
+        uz: 'Qolgan',
+        ru: 'Остаток',
+        en: 'Remaining'
+    },
+    'order.branchAssignment': {
+        uz: 'Filial va tayinlash',
+        ru: 'Филиал и назначение',
+        en: 'Branch & Assignment'
+    },
+    'order.assignedTo': {
+        uz: 'Tayinlangan',
+        ru: 'Назначено',
+        en: 'Assigned To'
+    },
+    'order.unassigned': {
+        uz: 'Tayinlanmagan',
+        ru: 'Не назначено',
+        en: 'Unassigned'
+    },
+    'order.assignStaff': {
+        uz: 'Xodimni tayinlash',
+        ru: 'Назначить сотрудника',
+        en: 'Assign Staff'
+    },
+    'order.selectStaffMember': {
+        uz: 'Xodimni tanlang...',
+        ru: 'Выберите сотрудника...',
+        en: 'Select staff member...'
+    },
+    'order.assign': {
+        uz: 'Tayinlash',
+        ru: 'Назначить',
+        en: 'Assign'
+    },
+    'order.markAsFullyPaid': {
+        uz: 'To\'liq to\'langan deb belgilash',
+        ru: 'Отметить как полностью оплаченный',
+        en: 'Mark as Fully Paid'
+    },
+    'order.fullyPaidMessage': {
+        uz: 'Bu buyurtma to\'liq to\'langan.',
+        ru: 'Этот заказ полностью оплачен.',
+        en: 'This order has been fully paid.'
+    },
+    'order.productDocument': {
+        uz: 'Mahsulot/Hujjat',
+        ru: 'Продукт/Документ',
+        en: 'Product/Document'
+    },
+    'order.paymentType': {
+        uz: 'To\'lov turi',
+        ru: 'Тип оплаты',
+        en: 'Payment Type'
+    },
+    'order.confirmDelete': {
+        uz: 'Bu buyurtmani o\'chirmoqchimisiz?',
+        ru: 'Вы уверены, что хотите удалить этот заказ?',
+        en: 'Are you sure you want to delete this order?'
+    },
+
+    // ========== MARKETING ==========
+    'marketing.editPost': {
+        uz: 'Postni tahrirlash',
+        ru: 'Редактировать пост',
+        en: 'Edit Marketing Post'
+    },
+    'marketing.createPost': {
+        uz: 'Post yaratish',
+        ru: 'Создать пост',
+        en: 'Create Marketing Post'
+    },
+    'marketing.b2cIndividual': {
+        uz: 'B2C (Jismoniy shaxs)',
+        ru: 'B2C (Физическое лицо)',
+        en: 'B2C (Individual)'
+    },
+    'marketing.b2bAgency': {
+        uz: 'B2B (Agentlik)',
+        ru: 'B2B (Агентство)',
+        en: 'B2B (Agency)'
+    },
+    'marketing.targetAudienceInfo': {
+        uz: 'Maqsadli auditoriyani yuborish oldidan o\'zgartirish mumkin.',
+        ru: 'Целевую аудиторию можно изменить перед отправкой.',
+        en: 'Target audience can be modified before sending.'
+    },
+    'marketing.scopeCannotBeChanged': {
+        uz: 'Yuborilgandan keyin maqsad doirasini o\'zgartirib bo\'lmaydi.',
+        ru: 'Область действия нельзя изменить после отправки.',
+        en: 'Target scope cannot be changed after sending.'
+    },
+    'marketing.supportsHTML': {
+        uz: 'HTML qo\'llab-quvvatlaydi: <b>, <i>, <a>, <code>',
+        ru: 'Поддерживает HTML: <b>, <i>, <a>, <code>',
+        en: 'Supports HTML: <b>, <i>, <a>, <code>'
+    },
+
+    // ========== BRANCHES/ORGANIZATIONS ==========
+    'branch.editSettings': {
+        uz: 'Sozlamalarni tahrirlash',
+        ru: 'Редактировать настройки',
+        en: 'Edit Settings'
+    },
+    'branch.botSettings': {
+        uz: 'Bot sozlamalari',
+        ru: 'Настройки бота',
+        en: 'Bot Settings'
+    },
+    'branch.manageBranches': {
+        uz: 'Filiallarni boshqarish',
+        ru: 'Управление филиалами',
+        en: 'Manage your branches'
+    },
+    'branch.noBranchesFound': {
+        uz: 'Filiallar topilmadi',
+        ru: 'Филиалы не найдены',
+        en: 'No branches found'
+    },
+
+    // ========== STAFF/USERS ==========
+    'staff.staffMembers': {
+        uz: 'Xodimlar',
+        ru: 'Сотрудники',
+        en: 'Staff Members'
+    },
+    'staff.totalOrders': {
+        uz: 'Jami buyurtmalar',
+        ru: 'Всего заказов',
+        en: 'Total Orders'
+    },
+    'staff.customers': {
+        uz: 'Mijozlar',
+        ru: 'Клиенты',
+        en: 'Customers'
+    },
+
+    // ========== BUTTONS ==========
+    'button.editSettings': {
+        uz: 'Sozlamalarni tahrirlash',
+        ru: 'Редактировать настройки',
+        en: 'Edit Settings'
+    },
+    'button.viewOnMap': {
+        uz: 'Xaritada ko\'rish',
+        ru: 'Посмотреть на карте',
+        en: 'View on Map'
+    },
+    'button.addBranch': {
+        uz: 'Filial qo\'shish',
+        ru: 'Добавить филиал',
+        en: 'Add Branch'
+    },
+    'button.createBranch': {
+        uz: 'Filial yaratish',
+        ru: 'Создать филиал',
+        en: 'Create Branch'
+    },
+    'button.apply': {
+        uz: 'Qo\'llash',
+        ru: 'Применить',
+        en: 'Apply'
+    },
+
+    // ========== HELPERS/HINTS ==========
+    'helper.selectFromCustomers': {
+        uz: 'Mavjud mijozlar (Telegram bot orqali ro\'yxatdan o\'tgan) ichidan tanlang',
+        ru: 'Выберите из существующих клиентов (зарегистрированных через Telegram бот)',
+        en: 'Select from existing customers (registered via Telegram bot)'
+    },
+    'helper.toggleManualCustomer': {
+        uz: 'Bot foydalanuvchisi va qo\'lda mijoz ma\'lumotlari o\'rtasida o\'tish uchun',
+        ru: 'Переключить между пользователем бота и ручной информацией о клиенте',
+        en: 'Toggle to switch between bot user and manual customer information'
+    },
+    'helper.manualCustomerDetails': {
+        uz: 'Qo\'lda mijoz tafsilotlari',
+        ru: 'Детали ручного клиента',
+        en: 'Manual customer details'
+    },
+    'helper.phoneFormat': {
+        uz: '+998 XX XXX XX XX',
+        ru: '+998 XX XXX XX XX',
+        en: '+998 XX XXX XX XX'
+    },
+    'helper.customerContactNumber': {
+        uz: 'Mijozning aloqa raqami',
+        ru: 'Контактный номер клиента',
+        en: 'Customer\'s contact number'
+    },
+    'helper.uploadDocuments': {
+        uz: 'Tarjima/qayta ishlash uchun hujjatlarni yuklang',
+        ru: 'Загрузите документы для перевода/обработки',
+        en: 'Upload documents to be translated/processed'
+    },
+    'helper.multipleFilesSupport': {
+        uz: 'Bir nechta fayllarni tanlashingiz mumkin. Qo\'llab-quvvatlanadi: PDF, DOC, DOCX, JPG, PNG',
+        ru: 'Вы можете выбрать несколько файлов. Поддерживается: PDF, DOC, DOCX, JPG, PNG',
+        en: 'You can select multiple files. Supported: PDF, DOC, DOCX, JPG, PNG'
+    },
+    'helper.priceWillRecalculate': {
+        uz: 'Narx mahsulot va sahifalarga asoslanib qayta hisoblanadi',
+        ru: 'Цена будет пересчитана на основе продукта и страниц',
+        en: 'Price will be recalculated based on product and pages'
+    },
+    'helper.extraFeeReason': {
+        uz: 'Qo\'shimcha to\'lov sababi (masalan, Tezkor yetkazib berish)',
+        ru: 'Причина дополнительной платы (например, Срочная доставка)',
+        en: 'Reason for extra fee (e.g., Urgent delivery)'
+    },
+    'helper.addAdditionalCharges': {
+        uz: 'Tezkor yetkazib berish, maxsus xizmat va boshqalar uchun qo\'shimcha to\'lovlarni qo\'shing',
+        ru: 'Добавьте дополнительные расходы за экспресс-доставку, специальную обработку и т.д.',
+        en: 'Add additional charges for express delivery, special handling, etc.'
+    },
+    'helper.deleteFilesWarning': {
+        uz: 'Saqlashda fayllarni o\'chirish uchun katakchalarni belgilang',
+        ru: 'Отметьте флажки для удаления файлов при сохранении',
+        en: 'Check the boxes to delete files when saving'
+    },
+    'helper.allOrdersToChannel': {
+        uz: 'Ushbu markazdagi barcha buyurtmalar bu yerga yuboriladi',
+        ru: 'Все заказы из этого центра будут отправлены сюда',
+        en: 'All orders from this center will be sent here'
+    },
+    'helper.manualOrderInfo': {
+        uz: 'Tashrif buyurgan yoki telefon orqali buyurtma bergan mijozlar uchun buyurtma yaratish uchun "Qo\'lda buyurtma"ni yoqing. Ularning ism va telefon raqamlarini qo\'lda kiritishingiz kerak.',
+        ru: 'Включите "Ручной заказ", чтобы создавать заказы для клиентов, посетивших лично или заказавших по телефону. Вам нужно будет вручную ввести их имя и номер телефона.',
+        en: 'Enable "Manual Order" to create orders for walk-in customers or phone orders. You\'ll need to enter their name and phone number manually.'
+    },
+    'helper.manualOrderNotInBot': {
+        uz: 'Qo\'lda buyurtma - mijoz botda ro\'yxatdan o\'tmagan',
+        ru: 'Ручной заказ - клиент не зарегистрирован в боте',
+        en: 'Manual order - customer not registered in bot'
+    },
+    'helper.legacySingleReceipt': {
+        uz: 'Eski bitta chek',
+        ru: 'Устаревший одиночный чек',
+        en: 'Legacy single receipt'
+    },
+    'helper.notAssignedToBranch': {
+        uz: 'Filialga tayinlanmagan',
+        ru: 'Не назначен филиалу',
+        en: 'Not assigned to branch'
+    },
+
+    // ========== MESSAGES ==========
+    'message.confirmed': {
+        uz: 'Tasdiqlangan',
+        ru: 'Подтверждено',
+        en: 'Confirmed'
+    },
+    'message.main': {
+        uz: 'Asosiy',
+        ru: 'Главный',
+        en: 'Main'
+    },
+    'message.master': {
+        uz: 'Bosh',
+        ru: 'Мастер',
+        en: 'Master'
+    },
+
+    // ========== EXPENSES ==========
+    'expense.currentFilter': {
+        uz: 'Joriy filtr',
+        ru: 'Текущий фильтр',
+        en: 'Current Filter'
+    },
+    'expense.filterInfo': {
+        uz: 'Filtrlash uchun URL parametrlaridan foydalaning: <code>?branch=ID</code> yoki <code>?center=ID</code>',
+        ru: 'Используйте параметры URL для фильтрации: <code>?branch=ID</code> или <code>?center=ID</code>',
+        en: 'Use URL parameters <code>?branch=ID</code> or <code>?center=ID</code> to filter.'
+    },
+    'expense.linkToProducts': {
+        uz: 'Bu xarajatni mahsulotlar bilan bog\'lash uchun mahsulot tahrirlash sahifasiga o\'ting.',
+        ru: 'Свяжите этот расход с продуктами на странице редактирования продукта.',
+        en: 'Link this expense to products from the product edit page.'
+    },
+
+    // ========== PRODUCTS/SERVICES ==========
+    'product.deleteConfirm': {
+        uz: 'Ushbu mahsulotni o\'chirmoqchimisiz?',
+        ru: 'Вы уверены, что хотите удалить этот продукт?',
+        en: 'Are you sure you want to delete this product?'
+    },
+    'product.deleteProduct': {
+        uz: 'Mahsulotni o\'chirish',
+        ru: 'Удалить продукт',
+        en: 'Delete Product'
+    },
+    'product.agencySaves': {
+        uz: 'Agentlik tejaydi',
+        ru: 'Агентство экономит',
+        en: 'Agency saves'
+    },
+    'product.descriptionBot': {
+        uz: 'Tavsif (Bot)',
+        ru: 'Описание (Бот)',
+        en: 'Description (Bot)'
+    },
+
+    // ========== DETAIL PAGES ==========
+    'detail.editProduct': {
+        uz: 'Mahsulotni tahrirlash',
+        ru: 'Редактировать продукт',
+        en: 'Edit Product'
+    },
+    'detail.deleteProduct': {
+        uz: 'Mahsulotni o\'chirish',
+        ru: 'Удалить продукт',
+        en: 'Delete Product'
+    },
+    'detail.agencySaves': {
+        uz: 'Agentlik tejaydi',
+        ru: 'Агентство экономит',
+        en: 'Agency saves'
+    },
+    'detail.basicInformation': {
+        uz: 'Asosiy ma\'lumotlar',
+        ru: 'Основная информация',
+        en: 'Basic Information'
+    },
+    'detail.locationTimestamps': {
+        uz: 'Joylashuv va vaqt belgilari',
+        ru: 'Местоположение и временные метки',
+        en: 'Location & Timestamps'
+    },
+
+
     'period.yearly': {
         uz: 'Yillik',
         ru: 'Годовой',
