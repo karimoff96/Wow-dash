@@ -407,7 +407,7 @@ msgid "Order Completed"
 msgstr ""
 
 #: core/models.py:191 orders/models.py:35
-msgid "Payment Confirmed"
+msgid "Confirmed"
 msgstr ""
 
 #: core/models.py:192
@@ -940,15 +940,15 @@ msgid "Order media"
 msgstr ""
 
 #: orders/models.py:33
-msgid "Payment Pending"
+msgid "Awaiting"
 msgstr ""
 
 #: orders/models.py:34
-msgid "Payment Received"
+msgid "Received"
 msgstr ""
 
 #: orders/models.py:36
-msgid "In Progress"
+msgid "In Process"
 msgstr ""
 
 #: orders/models.py:37
@@ -956,7 +956,7 @@ msgid "Ready"
 msgstr ""
 
 #: orders/models.py:38
-msgid "Completed"
+msgid "Done"
 msgstr ""
 
 #: orders/models.py:43

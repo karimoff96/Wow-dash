@@ -275,17 +275,17 @@
                                     {% if order.status == 'pending' %}
                                         <span class="badge bg-warning-focus text-warning-600" data-i18n="status.pending">Pending</span>
                                     {% elif order.status == 'payment_pending' %}
-                                        <span class="badge bg-info-focus text-info-600" data-i18n="status.paymentPending">Payment Pending</span>
+                                        <span class="badge bg-info-focus text-info-600" data-i18n="status.paymentPending">Awaiting</span>
                                     {% elif order.status == 'payment_received' %}
-                                        <span class="badge bg-primary-focus text-primary-600" data-i18n="status.paymentReceived">Payment Received</span>
+                                        <span class="badge bg-primary-focus text-primary-600" data-i18n="status.paymentReceived">Received</span>
                                     {% elif order.status == 'payment_confirmed' %}
-                                        <span class="badge bg-success-focus text-success-600" data-i18n="status.paymentConfirmed">Payment Confirmed</span>
+                                        <span class="badge bg-success-focus text-success-600" data-i18n="status.paymentConfirmed">Confirmed</span>
                                     {% elif order.status == 'in_progress' %}
-                                        <span class="badge bg-info-focus text-info-600" data-i18n="status.inProgress">In Progress</span>
+                                        <span class="badge bg-info-focus text-info-600" data-i18n="status.inProgress">In Process</span>
                                     {% elif order.status == 'ready' %}
                                         <span class="badge bg-primary-focus text-primary-600" data-i18n="status.ready">Ready</span>
                                     {% elif order.status == 'completed' %}
-                                        <span class="badge bg-success-focus text-success-600" data-i18n="status.completed">Completed</span>
+                                        <span class="badge bg-success-focus text-success-600" data-i18n="status.completed">Done</span>
                                     {% elif order.status == 'cancelled' %}
                                         <span class="badge bg-danger-focus text-danger-600" data-i18n="status.cancelled">Cancelled</span>
                                     {% else %}

@@ -290,17 +290,17 @@
                     {% if order.status == 'pending' %}
                         <span class="bg-warning-focus text-warning-600 px-16 py-6 radius-4 fw-medium text-sm">Pending</span>
                     {% elif order.status == 'payment_pending' %}
-                        <span class="bg-info-focus text-info-600 px-16 py-6 radius-4 fw-medium text-sm">Payment Pending</span>
+                        <span class="bg-info-focus text-info-600 px-16 py-6 radius-4 fw-medium text-sm">Awaiting</span>
                     {% elif order.status == 'payment_received' %}
-                        <span class="bg-primary-focus text-primary-600 px-16 py-6 radius-4 fw-medium text-sm">Payment Received</span>
+                        <span class="bg-primary-focus text-primary-600 px-16 py-6 radius-4 fw-medium text-sm">Received</span>
                     {% elif order.status == 'payment_confirmed' %}
-                        <span class="bg-cyan-focus text-cyan px-16 py-6 radius-4 fw-medium text-sm">Payment Confirmed</span>
+                        <span class="bg-cyan-focus text-cyan px-16 py-6 radius-4 fw-medium text-sm">Confirmed</span>
                     {% elif order.status == 'in_progress' %}
-                        <span class="bg-lilac-focus text-lilac-600 px-16 py-6 radius-4 fw-medium text-sm">In Progress</span>
+                        <span class="bg-lilac-focus text-lilac-600 px-16 py-6 radius-4 fw-medium text-sm">In Process</span>
                     {% elif order.status == 'ready' %}
                         <span class="bg-success-focus text-success-600 px-16 py-6 radius-4 fw-medium text-sm">Ready</span>
                     {% elif order.status == 'completed' %}
-                        <span class="bg-success-focus text-success-600 px-16 py-6 radius-4 fw-medium text-sm">Completed</span>
+                        <span class="bg-success-focus text-success-600 px-16 py-6 radius-4 fw-medium text-sm">Done</span>
                     {% elif order.status == 'cancelled' %}
                         <span class="bg-danger-focus text-danger-600 px-16 py-6 radius-4 fw-medium text-sm">Cancelled</span>
                     {% endif %}

@@ -3,6 +3,34 @@
 {% load permission_tags %}
 
 {% block content %}
+<style>
+    /* Optimize column widths for better fit */
+    .table th, .table td {
+        padding: 12px 8px !important;
+        white-space: nowrap;
+    }
+    .table th:first-child, .table td:first-child {
+        width: 120px;
+    }
+    .table .col-status {
+        width: 90px;
+    }
+    .table .col-action {
+        width: 100px;
+    }
+    /* Ensure truncation works */
+    .truncate-120 {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    /* Compact badges */
+    .badge-compact {
+        padding: 2px 6px !important;
+        font-size: 10px !important;
+    }
+</style>
 <!-- View Mode Toggle -->
 <div class="d-flex align-items-center justify-content-between mb-16">
     {% can_do 'orders.view_all' as can_view_all_orders %}
@@ -245,7 +273,8 @@
                         <th scope="col" class="hide-mobile" data-i18n="common.location">Location</th>
                         {% endif %}
                         <th scope="col" data-i18n="orders.customer">Customer</th>
-                        <th scope="col" class="hide-mobile" data-i18n="common.details">Details</th>
+                        <th scope="col" class="hide-mobile" data-i18n="common.category">Category</th>
+                        <th scope="col" class="hide-mobile" data-i18n="common.details">Product</th>
                         <th scope="col" data-i18n="common.payment">Payment</th>
                         <th scope="col" class="hide-mobile" data-i18n="orders.assignedTo">Assigned</th>
                         <th scope="col" class="text-center col-status" data-i18n="orders.status">Status</th>
@@ -293,13 +322,17 @@
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="w-32-px h-32-px rounded-circle flex-shrink-0 me-8 overflow-hidden bg-primary-100 d-flex align-items-center justify-content-center">
-                                    <span class="text-primary-600 fw-semibold text-xs">{{ order.bot_user.name|slice:":1"|upper }}</span>
+                                    <span class="text-primary-600 fw-semibold text-xs">{{ order.get_customer_display_name|slice:":1"|upper }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-sm fw-medium text-secondary-light d-block" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ order.bot_user.name }}</span>
-                                    <small class="text-secondary-light" style="font-size: 11px;">{{ order.bot_user.phone }}</small>
+                                    <span class="text-sm fw-medium text-secondary-light d-block" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ order.get_customer_display_name }}</span>
+                                    <small class="text-secondary-light" style="font-size: 11px;">{{ order.get_customer_phone }}</small>
                                 </div>
                             </div>
+                        </td>
+                          <!-- Category -->
+                        <td class="hide-mobile">
+                            <span class="text-sm text-secondary-light">{{ order.product.category.name|truncatechars:12 }}</span>
                         </td>
                         <!-- Details: Product + Pages + Copies (combined) -->
                         <td class="hide-mobile">
@@ -316,6 +349,7 @@
                                 </div>
                             </div>
                         </td>
+                      
                         <!-- Payment: Total + Type + Status -->
                         <td>
                             <div class="d-flex flex-column">
@@ -350,13 +384,13 @@
                             {% if order.status == 'pending' %}
                                 <span class="bg-warning-focus text-warning-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="orders.pending">Pending</span>
                             {% elif order.status == 'payment_pending' %}
-                                <span class="bg-info-focus text-info-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentPending">Pay Pend</span>
+                                <span class="bg-info-focus text-info-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentPending">Awaiting</span>
                             {% elif order.status == 'payment_received' %}
-                                <span class="bg-primary-focus text-primary-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentReceived">Pay Recv</span>
+                                <span class="bg-primary-focus text-primary-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentReceived">Received</span>
                             {% elif order.status == 'payment_confirmed' %}
-                                <span class="bg-cyan-focus text-cyan px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentConfirmed">Pay Conf</span>
+                                <span class="bg-cyan-focus text-cyan px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.paymentConfirmed">Confirmed</span>
                             {% elif order.status == 'in_progress' %}
-                                <span class="bg-lilac-focus text-lilac-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="orders.inProgress">Progress</span>
+                                <span class="bg-lilac-focus text-lilac-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="orders.inProgress">In Process</span>
                             {% elif order.status == 'ready' %}
                                 <span class="bg-success-focus text-success-600 px-8 py-2 radius-4 fw-medium text-xs" data-i18n="status.ready">Ready</span>
                             {% elif order.status == 'completed' %}

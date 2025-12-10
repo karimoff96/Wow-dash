@@ -397,7 +397,7 @@
                         <td class="bg-info-focus">
                             <a href="{% url 'orders:orderDetail' order.id %}" class="fw-medium text-primary-600">#{{ order.id }}</a>
                         </td>
-                        <td class="bg-info-focus">{{ order.bot_user.name|default:order.bot_user.user_id }}</td>
+                        <td class="bg-info-focus">{% if order.bot_user %}{{ order.bot_user.name|default:order.bot_user.user_id }}{% else %}N/A{% endif %}</td>
                         <td class="bg-info-focus">
                             <a href="{% url 'branch_detail' order.branch.id %}" class="text-primary-600">{{ order.branch.name }}</a>
                         </td>

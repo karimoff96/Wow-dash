@@ -57,12 +57,12 @@ from organizations.rbac import get_user_orders, get_user_customers, get_user_bra
 # Status display mappings
 STATUS_LABELS = {
     "pending": "Pending",
-    "payment_pending": "Payment Pending",
-    "payment_received": "Payment Received",
-    "payment_confirmed": "Payment Confirmed",
-    "in_progress": "In Progress",
+    "payment_pending": "Awaiting",
+    "payment_received": "Received",
+    "payment_confirmed": "Confirmed",
+    "in_progress": "In Process",
     "ready": "Ready",
-    "completed": "Completed",
+    "completed": "Done",
     "cancelled": "Cancelled",
 }
 

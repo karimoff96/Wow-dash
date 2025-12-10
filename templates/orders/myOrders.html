@@ -131,17 +131,17 @@
                                     {% if order.status == 'pending' %}
                                         <span class="badge bg-warning-focus text-warning-600">Pending</span>
                                     {% elif order.status == 'payment_pending' %}
-                                        <span class="badge bg-info-focus text-info-600">Payment Pending</span>
+                                        <span class="badge bg-info-focus text-info-600">Awaiting</span>
                                     {% elif order.status == 'payment_received' %}
-                                        <span class="badge bg-primary-focus text-primary-600">Payment Received</span>
+                                        <span class="badge bg-primary-focus text-primary-600">Received</span>
                                     {% elif order.status == 'payment_confirmed' %}
-                                        <span class="badge bg-cyan-focus text-cyan">Payment Confirmed</span>
+                                        <span class="badge bg-cyan-focus text-cyan">Confirmed</span>
                                     {% elif order.status == 'in_progress' %}
-                                        <span class="badge bg-lilac-focus text-lilac-600">In Progress</span>
+                                        <span class="badge bg-lilac-focus text-lilac-600">In Process</span>
                                     {% elif order.status == 'ready' %}
                                         <span class="badge bg-success-focus text-success-600">Ready</span>
                                     {% elif order.status == 'completed' %}
-                                        <span class="badge bg-success-focus text-success-600">Completed</span>
+                                        <span class="badge bg-success-focus text-success-600">Done</span>
                                     {% elif order.status == 'cancelled' %}
                                         <span class="badge bg-danger-focus text-danger-600">Cancelled</span>
                                     {% endif %}

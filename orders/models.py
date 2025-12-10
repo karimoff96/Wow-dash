@@ -30,12 +30,12 @@ class OrderMedia(models.Model):
 class Order(models.Model):
     STATUS_CHOICES = (
         ("pending", _("Pending")),  # Order created, awaiting payment
-        ("payment_pending", _("Payment Pending")),  # Card payment, waiting for receipt
-        ("payment_received", _("Payment Received")),  # Receipt uploaded
-        ("payment_confirmed", _("Payment Confirmed")),  # Payment verified by admin
-        ("in_progress", _("In Progress")),  # Order being processed
+        ("payment_pending", _("Awaiting")),  # Card payment, waiting for receipt
+        ("payment_received", _("Received")),  # Receipt uploaded
+        ("payment_confirmed", _("Confirmed")),  # Payment verified by admin
+        ("in_progress", _("In Process")),  # Order being processed
         ("ready", _("Ready")),  # Order completed, ready for pickup
-        ("completed", _("Completed")),  # Order delivered
+        ("completed", _("Done")),  # Order delivered
         ("cancelled", _("Cancelled")),  # Order cancelled
     )
 
@@ -223,8 +223,8 @@ class Order(models.Model):
     def get_customer_phone(self):
         """Get customer phone from bot_user or manual field"""
         if self.bot_user:
-            return self.bot_user.phone_number
-        return self.manual_phone
+            return self.bot_user.phone
+        return self.manual_phone or "N/A"
     
     @property
     def is_manual_order(self):

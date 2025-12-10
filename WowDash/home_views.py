@@ -368,12 +368,12 @@ def sales(request):
     # Status choices from model
     STATUS_LABELS = {
         "pending": "Pending",
-        "payment_pending": "Payment Pending",
-        "payment_received": "Payment Received",
-        "payment_confirmed": "Payment Confirmed",
-        "in_progress": "In Progress",
+        "payment_pending": "Awaiting",
+        "payment_received": "Received",
+        "payment_confirmed": "Confirmed",
+        "in_progress": "In Process",
         "ready": "Ready",
-        "completed": "Completed",
+        "completed": "Done",
         "cancelled": "Cancelled",
     }
 
