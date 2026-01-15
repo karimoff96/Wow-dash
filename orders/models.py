@@ -208,7 +208,7 @@ class Order(models.Model):
 
     def __str__(self):
         customer_name = self.get_customer_display_name()
-        return f"Order {self.id} - {customer_name} - {self.product} ({self.total_pages} pages)"
+        return f"Order #{self.id} - {customer_name} - {self.product} ({self.total_pages} pages)"
     
     def get_customer_display_name(self):
         """Get customer name from bot_user or manual fields"""

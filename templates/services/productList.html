@@ -80,14 +80,22 @@
                         </td>
                         {% if user.is_superuser or is_owner %}
                         <td class="hide-mobile">
-                            {% if user.is_superuser %}
-                            <span class="text-info-600 d-block text-sm">{{ product.category.branch.center.name|truncatechars:12 }}</span>
+                            {% if product.category and product.category.branch %}
+                                {% if user.is_superuser and product.category.branch.center %}
+                                <span class="text-info-600 d-block text-sm">{{ product.category.branch.center.name|truncatechars:12 }}</span>
+                                {% endif %}
+                                <span class="text-secondary-light text-xs">{{ product.category.branch.name|truncatechars:15 }}</span>
+                            {% else %}
+                                <span class="text-secondary-light">-</span>
                             {% endif %}
-                            <span class="text-secondary-light text-xs">{{ product.category.branch.name|truncatechars:15 }}</span>
                         </td>
                         {% endif %}
                         <td class="hide-mobile">
+                            {% if product.category %}
                             <a href="{% url 'categoryDetail' product.category.id %}" class="text-primary-600 text-sm">{{ product.category.name|truncatechars:15 }}</a>
+                            {% else %}
+                            <span class="text-secondary-light">-</span>
+                            {% endif %}
                         </td>
                         <td>
                             <div class="text-sm">

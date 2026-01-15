@@ -2,6 +2,171 @@
 {% load static %}
 
 {% block content %}
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    /* Select2 styling to exactly match native .form-select elements */
+    .select2-container {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Ensure the container spans full width */
+    .select2-container--default {
+        width: 100% !important;
+    }
+    
+    /* Ensure all nested wrappers are full width */
+    .select2-container .selection,
+    .select2-container .select2-selection {
+        width: 100% !important;
+        display: block !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Main select box - match .form-select exactly */
+    .select2-container .select2-selection--single {
+        height: 46px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+        color: inherit !important;
+        background-color: transparent !important;
+        background-clip: padding-box !important;
+        border: 1px solid var(--border-neutral-300, #d5d5d5) !important;
+        border-radius: 8px !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+        box-shadow: none !important;
+        display: block !important;
+    }
+    
+    /* Selected text styling */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        display: block !important;
+        padding-left: 16px !important;
+        padding-right: 40px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        line-height: 44px !important;
+        font-size: 14px !important;
+        color: var(--text-primary, inherit) !important;
+        margin: 0 !important;
+    }
+    
+    /* Placeholder text */
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: var(--text-tertiary, #9ca3af) !important;
+        opacity: 0.7 !important;
+    }
+    
+    /* Dropdown arrow */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 46px !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 10px !important;
+        width: 20px !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: var(--text-secondary, #6c757d) transparent transparent transparent !important;
+        border-style: solid !important;
+        border-width: 5px 4px 0 4px !important;
+        height: 0 !important;
+        left: 50% !important;
+        margin-left: -4px !important;
+        margin-top: -2px !important;
+        position: absolute !important;
+        top: 50% !important;
+        width: 0 !important;
+    }
+    
+    /* Focus and open states */
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--single {
+        border-color: #487fff !important;
+        outline: 0 !important;
+        box-shadow: 0 0 0 0.2rem rgba(72, 127, 255, 0.15) !important;
+    }
+    
+    /* Disabled state */
+    .select2-container--default.select2-container--disabled .select2-selection--single {
+        background-color: var(--bg-neutral-100, #f5f5f5) !important;
+        cursor: not-allowed !important;
+        opacity: 0.6 !important;
+    }
+    
+    /* Dropdown container - solid background */
+    .select2-dropdown {
+        background-color: #2e3650 !important;
+        border: 1px solid var(--border-neutral-300, #d5d5d5) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+        margin-top: 4px !important;
+        z-index: 9999 !important;
+    }
+    
+    /* Dropdown results container */
+    .select2-results {
+        background-color: #2e3650 !important;
+    }
+    
+    /* Dropdown options */
+    .select2-container--default .select2-results__option {
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+        color: inherit !important;
+        background-color: #2e3650 !important;
+        cursor: pointer !important;
+    }
+    
+    /* Highlighted option */
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #487fff !important;
+        color: #ffffff !important;
+    }
+    
+    /* Selected option */
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: var(--bg-neutral-100, rgba(0, 0, 0, 0.05)) !important;
+        color: var(--text-primary, inherit) !important;
+    }
+    
+    /* Search box in dropdown */
+    .select2-search--dropdown {
+        padding: 8px !important;
+        background-color: #2e3650 !important;
+    }
+    
+    .select2-search--dropdown .select2-search__field {
+        padding: 8px 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        border: 1px solid var(--border-neutral-300, #d5d5d5) !important;
+        border-radius: 6px !important;
+        background-color: #3d4563 !important;
+        color: inherit !important;
+        font-size: 14px !important;
+    }
+    
+    .select2-search--dropdown .select2-search__field:focus {
+        border-color: #487fff !important;
+        outline: 0 !important;
+        box-shadow: 0 0 0 0.15rem rgba(72, 127, 255, 0.1) !important;
+    }
+    
+    /* No results message */
+    .select2-container--default .select2-results__message {
+        color: var(--text-secondary, #6c757d) !important;
+        padding: 10px 16px !important;
+    }
+</style>
+
 <div class="row gy-4">
     <div class="col-lg-8">
         <div class="card h-100 p-0 radius-12">
@@ -74,53 +239,50 @@
                         </div>
                     </div>
                     
-                    <!-- Product -->
-                    <div class="mb-20">
-                        <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="detail.productService">Product / Service</label>
-                        <select name="product" class="form-select radius-8" required>
-                            {% for product in products %}
-                            <option value="{{ product.id }}" {% if order.product.id == product.id %}selected{% endif %}>
-                                {{ product.name }} ({{ product.price|floatformat:0 }} UZS/page)
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
-                    <!-- Language -->
-                    <div class="mb-20">
-                        <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.language">Language</label>
-                        <select name="language" class="form-select radius-8">
-                            <option value="">-- No language --</option>
-                            {% for language in languages %}
-                            <option value="{{ language.id }}" {% if order.language and order.language.id == language.id %}selected{% endif %}>
-                                {{ language.name }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    
+                    <!-- Product and Language -->
                     <div class="row">
-                        <!-- Total Pages -->
-                        <div class="col-md-6 mb-20">
+                        <div class="col-md-8 mb-20">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="detail.productService">Product / Service</label>
+                            <select name="product" class="form-select radius-8" required>
+                                {% for product in products %}
+                                <option value="{{ product.id }}" {% if order.product.id == product.id %}selected{% endif %}>
+                                    {{ product.name }} ({{ product.price|floatformat:0 }} UZS/page)
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-20">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.language">Language</label>
+                            <select name="language" class="form-select radius-8">
+                                <option value="">-- Optional --</option>
+                                {% for language in languages %}
+                                <option value="{{ language.id }}" {% if order.language and order.language.id == language.id %}selected{% endif %}>
+                                    {{ language.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Total Pages, Copies, and Payment Type -->
+                    <div class="row">
+                        <div class="col-md-4 mb-20">
                             <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="detail.totalPages">Total Pages</label>
                             <input type="number" name="total_pages" class="form-control radius-8" value="{{ order.total_pages }}" min="1" required>
                         </div>
-                        
-                        <!-- Copies -->
-                        <div class="col-md-6 mb-20">
+                        <div class="col-md-4 mb-20">
                             <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="detail.copies">Copies</label>
                             <input type="number" name="copy_number" class="form-control radius-8" value="{{ order.copy_number }}" min="0">
+                            <small class="text-primary-light d-block mt-4">0 = original only</small>
                         </div>
-                    </div>
-                    
-                    <!-- Payment Type -->
-                    <div class="mb-20">
-                        <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="table.payment">Payment Type</label>
-                        <select name="payment_type" class="form-select radius-8" required>
-                            {% for value, label in payment_choices %}
-                            <option value="{{ value }}" {% if order.payment_type == value %}selected{% endif %}>{{ label }}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="col-md-4 mb-20">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="table.payment">Payment Type</label>
+                            <select name="payment_type" class="form-select radius-8" required>
+                                {% for value, label in payment_choices %}
+                                <option value="{{ value }}" {% if order.payment_type == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                     
                     <!-- Description -->
@@ -320,9 +482,47 @@
     </div>
 </div>
 
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script>
 // Manual order toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Select2 for customer search
+    $('#customerSelect').select2({
+        ajax: {
+            url: "{% url 'orders:search_customers' %}",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term // search term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.results
+                };
+            },
+            cache: true
+        },
+        placeholder: '-- Select Customer --',
+        allowClear: true,
+        minimumInputLength: 0,
+        width: '100%'
+    });
+    
+    // Set initial selection if there's a current customer
+    {% if order.bot_user %}
+    var currentCustomer = new Option(
+        '{{ order.bot_user.display_name }}{% if order.bot_user.phone %} ({{ order.bot_user.phone }}){% endif %}',
+        '{{ order.bot_user.id }}',
+        true,
+        true
+    );
+    $('#customerSelect').append(currentCustomer).trigger('change');
+    {% endif %}
+    
     const manualOrderToggle = document.getElementById('manualOrderToggle');
     const botUserSection = document.getElementById('botUserSection');
     const manualCustomerSection = document.getElementById('manualCustomerSection');

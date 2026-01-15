@@ -8,7 +8,7 @@ from .views import (
     assignOrder, unassignOrder, receivePayment, completeOrder,
     api_order_stats, api_branch_staff, myOrders, orderCreate,
     record_order_payment, add_order_extra_fee, get_order_payment_info,
-    bulk_delete_orders
+    bulk_delete_orders, search_customers
 )
 
 app_name = 'orders'
@@ -38,4 +38,5 @@ urlpatterns = [
     # API endpoints
     path("api/stats/", api_order_stats, name="api_order_stats"),
     path("api/branch/<int:branch_id>/staff/", api_branch_staff, name="api_branch_staff"),
+    path("api/search-customers/", search_customers, name="search_customers"),
 ]

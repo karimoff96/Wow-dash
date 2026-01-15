@@ -301,6 +301,7 @@
                                 </div>
                                 <div>
                                     <span class="fw-semibold text-primary-600">#{{ order.id }}</span>
+                                </div>
                                     {% with pending_count=order.receipts.all|length %}
                                     {% if pending_count > 0 %}
                                     <span class="badge bg-warning-focus text-warning-600 ms-4" title="Pending receipts">
@@ -331,11 +332,11 @@
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="w-32-px h-32-px rounded-circle flex-shrink-0 me-8 overflow-hidden bg-primary-100 d-flex align-items-center justify-content-center">
-                                    <span class="text-primary-600 fw-semibold text-xs">{{ order.bot_user.name|slice:":1"|upper }}</span>
+                                    <span class="text-primary-600 fw-semibold text-xs">{{ order.get_customer_display_name|slice:":1"|upper }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-sm fw-medium text-secondary-light d-block" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ order.bot_user.name }}</span>
-                                    <small class="text-secondary-light" style="font-size: 11px;">{{ order.bot_user.phone }}</small>
+                                    <span class="text-sm fw-medium text-secondary-light d-block" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ order.get_customer_display_name }}</span>
+                                    <small class="text-secondary-light" style="font-size: 11px;">{{ order.get_customer_phone }}</small>
                                 </div>
                             </div>
                         </td>

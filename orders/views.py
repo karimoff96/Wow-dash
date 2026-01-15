@@ -1328,3 +1328,53 @@ def get_order_payment_info(request, order_id):
         'status': order.status,
         'payment_type': order.payment_type,
     })
+
+
+@login_required(login_url='admin_login')
+def search_customers(request):
+    """
+    API endpoint to search for customers (BotUsers) by name or phone
+    Returns JSON list of customers matching the search query
+    """
+    from accounts.models import BotUser
+    
+    # Get search query parameter
+    search = request.GET.get('q', '').strip()
+    
+    # Base queryset - all bot users
+    customers = BotUser.objects.all()
+    
+    # Filter by admin's accessible centers/branches if not superuser
+    if not request.user.is_superuser and request.admin_profile:
+        accessible_branches = request.admin_profile.get_accessible_branches()
+        # Filter customers by accessible branches
+        customers = customers.filter(
+            Q(branch__in=accessible_branches) | Q(branch__isnull=True)
+        )
+    
+    # Apply search filter if search query provided
+    if search:
+        customers = customers.filter(
+            Q(name__icontains=search) | 
+            Q(phone__icontains=search) |
+            Q(username__icontains=search)
+        )
+    
+    # Limit results to 50 most recent matches
+    customers = customers.select_related('branch').order_by('-created_at')[:50]
+    
+    # Format response as Select2 expects
+    results = []
+    for customer in customers:
+        display_text = customer.name or customer.username or 'Unknown'
+        if customer.phone:
+            display_text += f" ({customer.phone})"
+        
+        results.append({
+            'id': customer.id,
+            'text': display_text
+        })
+    
+    return JsonResponse({
+        'results': results
+    })
