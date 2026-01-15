@@ -204,6 +204,16 @@
                     {% endfor %}
                 </select>
                 {% endif %}
+                {% if staff_members %}
+                <select name="staff" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
+                    <option value="" data-i18n="orders.allStaff">All Staff</option>
+                    {% for staff in staff_members %}
+                    <option value="{{ staff.id }}" {% if staff_filter == staff.id|stringformat:"i" %}selected{% endif %}>
+                        {{ staff.user.get_full_name|default:staff.user.username }}{% if staff.role %} ({{ staff.role.name }}){% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+                {% endif %}
                 {% if can_view_all %}
                 <select name="assignment" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
                     <option value="" data-i18n="orders.allOrders">All Orders</option>
@@ -300,7 +310,7 @@
                                     <input class="form-check-input radius-4 border border-neutral-400 order-checkbox" type="checkbox" name="order_ids" value="{{ order.id }}">
                                 </div>
                                 <div>
-                                    <span class="fw-semibold text-primary-600">#{{ order.id }}</span>
+                                    <span class="fw-semibold text-primary-600">#{{ order.get_order_number }}</span>
                                 </div>
                                     {% with pending_count=order.receipts.all|length %}
                                     {% if pending_count > 0 %}
@@ -432,7 +442,7 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title"><span data-i18n="orders.delete">Delete Order</span> #{{ order.id }}</h5>
+                                            <h5 class="modal-title"><span data-i18n="orders.delete">Delete Order</span> #{{ order.get_order_number }}</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body" data-i18n="common.confirmDeleteOrder">

@@ -381,7 +381,7 @@
                                 {{ customer.full_name|default:customer.user_id }}
                             </a>
                         </td>
-                        <td class="bg-purple-focus">{{ customer.phone_number|default:"-" }}</td>
+                        <td class="bg-purple-focus">{{ customer.phone|default:"-" }}</td>
                         <td class="bg-purple-focus">
                             {% if customer.is_agency %}
                             <span class="badge bg-warning-focus text-warning-600">Agency</span>

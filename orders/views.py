@@ -168,7 +168,8 @@ def ordersList(request):
         orders = orders.filter(branch_id=branch_filter)
     
     # Staff filter - assigned_to
-    assigned_to_filter = request.GET.get('assigned_to', '')
+    staff_filter = request.GET.get('staff', '')
+    assigned_to_filter = request.GET.get('assigned_to', '') or staff_filter  # Support both parameter names
     exclude_completed = request.GET.get('exclude_completed', '')
     if assigned_to_filter:
         orders = orders.filter(assigned_to_id=assigned_to_filter)
@@ -218,11 +219,21 @@ def ordersList(request):
     # Get accessible branches for filter dropdown
     branches = get_user_branches(request.user) if not request.user.is_superuser else None
     centers = None
+    staff_members = None
     
     if request.user.is_superuser:
-        from organizations.models import Branch, TranslationCenter
+        from organizations.models import Branch, TranslationCenter, AdminUser
         branches = Branch.objects.filter(is_active=True).select_related('center')
         centers = TranslationCenter.objects.filter(is_active=True)
+        staff_members = AdminUser.objects.filter(user__is_active=True).select_related('user', 'role', 'branch', 'center').order_by('user__first_name', 'user__last_name')
+    else:
+        # Non-superusers: get staff from accessible branches
+        from organizations.models import AdminUser
+        accessible_branches = get_user_branches(request.user)
+        staff_members = AdminUser.objects.filter(
+            branch__in=accessible_branches,
+            user__is_active=True
+        ).select_related('user', 'role', 'branch', 'center').order_by('user__first_name', 'user__last_name')
     
     # Get order statistics based on what user can see
     if request.user.is_superuser:
@@ -269,6 +280,7 @@ def ordersList(request):
         "center_filter": center_filter,
         "branch_filter": branch_filter,
         "assignment_filter": assignment_filter,
+        "staff_filter": staff_filter,
         "has_pending_receipts": has_pending_receipts,
         "pending_receipts_count": pending_receipts_count,
         "per_page": per_page,
@@ -277,6 +289,7 @@ def ordersList(request):
         "payment_choices": payment_choices,
         "centers": centers,
         "branches": branches,
+        "staff_members": staff_members,
         "stats": stats,
         "my_stats": my_stats,
         "can_view_all": can_view_all,

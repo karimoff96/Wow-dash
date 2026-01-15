@@ -205,10 +205,28 @@ class Order(models.Model):
     completed_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("Completed At")
     )
+    
+    # Center-specific order numbering
+    # SAFETY: This field is nullable so existing code won't break if migration isn't run
+    center_order_number = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        db_index=True,
+        verbose_name=_("Center Order Number"),
+        help_text=_("Sequential order number within the center (auto-generated)")
+    )
 
     def __str__(self):
         customer_name = self.get_customer_display_name()
-        return f"Order #{self.id} - {customer_name} - {self.product} ({self.total_pages} pages)"
+        order_num = self.get_order_number()
+        return f"Order #{order_num} - {customer_name} - {self.product} ({self.total_pages} pages)"
+    
+    def get_order_number(self):
+        """Get order number - uses center_order_number if available, falls back to id"""
+        # SAFETY: Fallback to id if center_order_number doesn't exist or is None
+        if hasattr(self, 'center_order_number') and self.center_order_number is not None:
+            return self.center_order_number
+        return self.id
     
     def get_customer_display_name(self):
         """Get customer name from bot_user or manual fields"""
@@ -225,6 +243,13 @@ class Order(models.Model):
         if self.bot_user:
             return self.bot_user.phone
         return self.manual_phone or "N/A"
+    
+    @property
+    def center(self):
+        """Get center from branch - safely handles missing branch"""
+        if self.branch and hasattr(self.branch, 'center'):
+            return self.branch.center
+        return None
     
     @property
     def is_manual_order(self):
@@ -582,6 +607,40 @@ class Receipt(models.Model):
         verbose_name = _("Receipt")
         verbose_name_plural = _("Receipts")
         ordering = ["-created_at"]
+
+
+@receiver(pre_save, sender=Order)
+def set_center_order_number(sender, instance, **kwargs):
+    """
+    Generate sequential order number per center.
+    SAFETY: Only runs for new orders and handles missing field gracefully.
+    """
+    # Only for new orders that don't have a number yet
+    if not instance.pk and hasattr(instance, 'center_order_number'):
+        try:
+            # Get the center from branch
+            if instance.branch and hasattr(instance.branch, 'center'):
+                center = instance.branch.center
+                if center:
+                    # Get the highest center_order_number for this center
+                    # SAFETY: Use filter to handle None values
+                    from django.db.models import Max
+                    max_number = Order.objects.filter(
+                        branch__center=center,
+                        center_order_number__isnull=False
+                    ).aggregate(Max('center_order_number'))['center_order_number__max']
+                    
+                    # Set the next number (start at 1 if no orders exist)
+                    instance.center_order_number = (max_number or 0) + 1
+                    logger.info(f"✅ Generated center order number {instance.center_order_number} for center {center.name}")
+                else:
+                    logger.warning(f"⚠️ Order has branch but no center - will use order.id as fallback")
+            else:
+                logger.warning(f"⚠️ Order has no branch - will use order.id as fallback")
+        except Exception as e:
+            # SAFETY: If anything goes wrong, log and continue (will use order.id as fallback)
+            logger.error(f"❌ Failed to generate center_order_number: {e}")
+            instance.center_order_number = None
 
 
 @receiver(pre_save, sender=Order)

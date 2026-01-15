@@ -8,7 +8,7 @@
     <div class="col-lg-8">
         <div class="card h-100 p-0 radius-12">
             <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
-                <h6 class="text-lg fw-semibold mb-0"><span data-i18n="sidebar.orders">Order</span> #{{ order.id }}</h6>
+                <h6 class="text-lg fw-semibold mb-0"><span data-i18n="sidebar.orders">Order</span> #{{ order.get_order_number }}</h6>
                 <div class="d-flex align-items-center gap-2">
                     {% if order.status == 'pending' %}
                         <span class="bg-warning-focus text-warning-600 border border-warning-main px-16 py-6 radius-4 fw-medium text-sm" data-i18n="status.pending">Pending</span>
@@ -526,7 +526,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><span data-i18n="detail.deleteOrder">Delete Order</span> #{{ order.id }}</h5>
+                <h5 class="modal-title"><span data-i18n="detail.deleteOrder">Delete Order</span> #{{ order.get_order_number }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -551,7 +551,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">
                     <iconify-icon icon="mdi:cash" class="me-2"></iconify-icon>
-                    Payment Management - Order #{{ order.id }}
+                    Payment Management - Order #{{ order.get_order_number }}
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

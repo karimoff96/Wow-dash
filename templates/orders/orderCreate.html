@@ -270,7 +270,7 @@
                                 <option value="">-- Select Product --</option>
                                 {% for product in products %}
                                 <option value="{{ product.id }}" data-price="{{ product.price|default:'0' }}">
-                                    {{ product.name }} ({{ product.price|floatformat:0 }} UZS/page)
+                                    {{ product.category.branch.center.name }} - {{ product.category.name }} | {{ product.name }} ({{ product.price|floatformat:0 }} UZS/page)
                                 </option>
                                 {% endfor %}
                             </select>

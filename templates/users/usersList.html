@@ -36,7 +36,7 @@
                 <select name="branch" class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px" onchange="this.form.submit()">
                     <option value="" data-i18n="common.allBranches">All Branches</option>
                     {% for branch in branches %}
-                    <option value="{{ branch.id }}" {% if branch_filter == branch.id|stringformat:"i" %}selected{% endif %}>{{ branch.name }}</option>
+                    <option value="{{ branch.id }}" {% if branch_filter == branch.id|stringformat:"i" %}selected{% endif %}>{{ branch.center.name }} - {{ branch.name }}</option>
                     {% endfor %}
                 </select>
                 {% endif %}
