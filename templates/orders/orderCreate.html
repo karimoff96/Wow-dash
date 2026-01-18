@@ -640,24 +640,54 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculatePrice() {
         const totalPages = parseInt(document.getElementById('totalPages').value) || 1;
         const copyNumber = parseInt(document.getElementById('copyNumber').value) || 0;
+
+        // Determine customer type (manual orders are treated as non-agency)
+        const isManualOrder = document.getElementById('manualOrderToggle')?.checked;
+        const customerData = $('#customerSelect').select2('data')[0];
+        const isAgency = !isManualOrder && !!(customerData && customerData.is_agency);
         
         // Get selected product data from Select2
         const productData = $('#productSelect').select2('data')[0];
         
-        if (productData && productData.price_first !== undefined && productData.price_other !== undefined) {
-            const priceFirst = parseFloat(productData.price_first) || 0;
-            const priceOther = parseFloat(productData.price_other) || 0;
-            
-            // Calculate: first page + (remaining pages * other price)
-            const priceForOriginal = priceFirst + ((totalPages - 1) * priceOther);
-            
-            // Total copies = original + copies
-            const totalCopies = copyNumber + 1;
-            
-            // Total = original price * total copies
-            const estimatedTotal = priceForOriginal * totalCopies;
-            
-            document.getElementById('estimatedPrice').textContent = 
+        if (productData && productData.price_first !== undefined) {
+            const charging = productData.charging || 'dynamic';
+
+            // Pick base prices based on customer type
+            const priceFirst = parseFloat(
+                isAgency ? (productData.price_first_agency ?? productData.price_first) : productData.price_first
+            ) || 0;
+            const priceOther = parseFloat(
+                isAgency ? (productData.price_other_agency ?? productData.price_other) : productData.price_other
+            ) || 0;
+
+            // Base/original price
+            let basePrice = 0;
+            if (charging === 'dynamic') {
+                basePrice = priceFirst + ((Math.max(totalPages, 1) - 1) * priceOther);
+            } else {
+                basePrice = priceFirst;
+            }
+
+            // Copy charge: fixed per copy if available, else legacy percentage of base price
+            let copyCharge = 0;
+            if (copyNumber > 0) {
+                const fixedCopyPrice = parseFloat(
+                    isAgency ? productData.agency_copy_price_fixed : productData.user_copy_price_fixed
+                );
+
+                if (!Number.isNaN(fixedCopyPrice)) {
+                    copyCharge = fixedCopyPrice * copyNumber;
+                } else {
+                    const pct = parseFloat(
+                        isAgency ? productData.agency_copy_price_percentage : productData.user_copy_price_percentage
+                    ) || 0;
+                    copyCharge = (basePrice * pct * copyNumber) / 100;
+                }
+            }
+
+            const estimatedTotal = basePrice + copyCharge;
+
+            document.getElementById('estimatedPrice').textContent =
                 estimatedTotal.toLocaleString('en-US') + ' UZS';
         } else {
             document.getElementById('estimatedPrice').textContent = '0 UZS';

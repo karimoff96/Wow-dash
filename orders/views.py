@@ -554,8 +554,8 @@ def orderEdit(request, order_id):
                 )
                 order.files.add(order_media)
             
-            # Recalculate price using the order's calculated_price property
-            order.total_price = order.calculated_price
+            # Recalculate price using the order's calculated_price() method
+            order.total_price = order.calculated_price()
             
             # Update extra fee
             try:
@@ -1161,9 +1161,16 @@ def orderCreate(request):
             branch = Branch.objects.get(id=branch_id)
             language = Language.objects.get(id=language_id) if language_id else None
             
-            # Calculate price (base price * pages * copies)
-            base_price = product.price_per_page if hasattr(product, 'price_per_page') else 0
-            total_price = base_price * total_pages * max(1, copy_number + 1)
+            # Calculate total price using the Order model logic so it honors:
+            # - dynamic vs fixed pricing
+            # - agency vs ordinary pricing
+            # - new fixed per-copy price (if set) vs legacy percentage
+            total_price = Order(
+                bot_user=bot_user,
+                product=product,
+                total_pages=total_pages,
+                copy_number=copy_number,
+            ).calculated_price()
             
             # Create the order
             order = Order.objects.create(
@@ -1447,7 +1454,8 @@ def search_customers(request):
         
         results.append({
             'id': customer.id,
-            'text': display_text
+            'text': display_text,
+            'is_agency': bool(getattr(customer, 'is_agency', False)),
         })
     
     return JsonResponse({
@@ -1603,8 +1611,18 @@ def search_products(request):
         results.append({
             'id': product.id,
             'text': display_text,
+            # Base prices (both types) so the front-end can estimate correctly
+            'charging': getattr(product.category, 'charging', None),
             'price_first': float(product.ordinary_first_page_price),
-            'price_other': float(product.ordinary_other_page_price)
+            'price_other': float(product.ordinary_other_page_price),
+            'price_first_agency': float(product.agency_first_page_price),
+            'price_other_agency': float(product.agency_other_page_price),
+
+            # Copy pricing: new fixed per-copy fields (nullable) + legacy percentages
+            'agency_copy_price_fixed': float(product.agency_copy_price_decimal) if product.agency_copy_price_decimal is not None else None,
+            'user_copy_price_fixed': float(product.user_copy_price_decimal) if product.user_copy_price_decimal is not None else None,
+            'agency_copy_price_percentage': float(product.agency_copy_price_percentage),
+            'user_copy_price_percentage': float(product.user_copy_price_percentage),
         })
     
     return JsonResponse({

@@ -268,12 +268,22 @@ class Order(models.Model):
 
         # Add copy charges if copy_number > 0
         if self.copy_number > 0:
-            copy_percentage = (
-                self.product.agency_copy_price_percentage
-                if is_agency
-                else self.product.user_copy_price_percentage
-            )
-            copy_charge = (base_price * copy_percentage * self.copy_number) / 100
+            # Priority: Use new decimal field if available, otherwise fallback to percentage
+            if is_agency:
+                if self.product.agency_copy_price_decimal is not None:
+                    # New system: fixed price per copy
+                    copy_charge = self.product.agency_copy_price_decimal * self.copy_number
+                else:
+                    # Old system: percentage of base price
+                    copy_charge = (base_price * self.product.agency_copy_price_percentage * self.copy_number) / 100
+            else:
+                if self.product.user_copy_price_decimal is not None:
+                    # New system: fixed price per copy
+                    copy_charge = self.product.user_copy_price_decimal * self.copy_number
+                else:
+                    # Old system: percentage of base price
+                    copy_charge = (base_price * self.product.user_copy_price_percentage * self.copy_number) / 100
+            
             return base_price + copy_charge
 
         return base_price

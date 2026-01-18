@@ -1268,11 +1268,23 @@ def calculate_order_pricing(order, user):
     if user.is_agency:
         first_page_price = order.product.agency_first_page_price
         other_page_price = order.product.agency_other_page_price
-        copy_percentage = order.product.agency_copy_price_percentage
+        # Priority: Use new decimal field if available, otherwise fallback to percentage
+        if order.product.agency_copy_price_decimal is not None:
+            copy_multiplier = order.product.agency_copy_price_decimal
+            use_percentage = False
+        else:
+            copy_percentage = order.product.agency_copy_price_percentage
+            use_percentage = True
     else:
         first_page_price = order.product.ordinary_first_page_price
         other_page_price = order.product.ordinary_other_page_price
-        copy_percentage = order.product.user_copy_price_percentage
+        # Priority: Use new decimal field if available, otherwise fallback to percentage
+        if order.product.user_copy_price_decimal is not None:
+            copy_multiplier = order.product.user_copy_price_decimal
+            use_percentage = False
+        else:
+            copy_percentage = order.product.user_copy_price_percentage
+            use_percentage = True
 
     # Calculate base price
     if is_dynamic:
@@ -1286,11 +1298,18 @@ def calculate_order_pricing(order, user):
     # Calculate copy charge
     copy_charge = 0
     if order.copy_number > 0:
-        copy_charge = (base_price * copy_percentage * order.copy_number) / 100
+        if use_percentage:
+            # Old system: percentage of base price
+            copy_charge = (base_price * copy_percentage * order.copy_number) / 100
+            copy_display = copy_percentage  # For return value (percentage)
+        else:
+            # New system: fixed price per copy
+            copy_charge = copy_multiplier * order.copy_number
+            copy_display = copy_multiplier  # For return value (fixed price)
 
     total_price = base_price + copy_charge
 
-    return base_price, copy_charge, total_price, copy_percentage
+    return base_price, copy_charge, total_price, copy_display if order.copy_number > 0 else 0
 @bot.message_handler(commands=["start"])
 def start(message):
     import uuid as uuid_module

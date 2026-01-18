@@ -127,11 +127,15 @@
                                 <small class="text-secondary-light" data-i18n="form.forDynamicPricingOnly">For dynamic pricing only</small>
                             </div>
                             <div class="col-md-4 mb-20">
-                                <label for="user_copy_price_percentage" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.copyPricePercent">
-                                    Copy Price %
+                                <label for="user_copy_price_decimal" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span data-i18n="form.copyPriceFixed">Copy Price (Fixed)</span>
+                                    <small class="text-secondary-light ms-2">(UZS per copy)</small>
                                 </label>
-                                <input type="number" step="0.01" class="form-control radius-8" id="user_copy_price_percentage" 
-                                       name="user_copy_price_percentage" value="{{ product.user_copy_price_percentage|unlocalize|default:100 }}">
+                                <input type="number" step="0.01" min="0" class="form-control radius-8" id="user_copy_price_decimal" 
+                                       name="user_copy_price_decimal" value="{{ product.user_copy_price_decimal|unlocalize|default:'' }}" placeholder="25000">
+                                {% if product.user_copy_price_decimal is None %}
+                                <small class="text-warning-600">⚠ Old format: {{ product.user_copy_price_percentage }}% of base price (updating will convert to fixed price)</small>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -159,11 +163,15 @@
                                 <small class="text-secondary-light" data-i18n="form.forDynamicPricingOnly">For dynamic pricing only</small>
                             </div>
                             <div class="col-md-4 mb-20">
-                                <label for="agency_copy_price_percentage" class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.copyPricePercent">
-                                    Copy Price %
+                                <label for="agency_copy_price_decimal" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span data-i18n="form.copyPriceFixed">Copy Price (Fixed)</span>
+                                    <small class="text-secondary-light ms-2">(UZS per copy)</small>
                                 </label>
-                                <input type="number" step="0.01" class="form-control radius-8" id="agency_copy_price_percentage" 
-                                       name="agency_copy_price_percentage" value="{{ product.agency_copy_price_percentage|unlocalize|default:100 }}">
+                                <input type="number" step="0.01" min="0" class="form-control radius-8" id="agency_copy_price_decimal" 
+                                       name="agency_copy_price_decimal" value="{{ product.agency_copy_price_decimal|unlocalize|default:'' }}" placeholder="25000">
+                                {% if product.agency_copy_price_decimal is None %}
+                                <small class="text-warning-600">⚠ Old format: {{ product.agency_copy_price_percentage }}% of base price (updating will convert to fixed price)</small>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

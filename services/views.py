@@ -403,8 +403,9 @@ def addProduct(request):
         ordinary_other_page_price = request.POST.get('ordinary_other_page_price', '0')
         agency_first_page_price = request.POST.get('agency_first_page_price', '0')
         agency_other_page_price = request.POST.get('agency_other_page_price', '0')
-        user_copy_price_percentage = request.POST.get('user_copy_price_percentage', '100')
-        agency_copy_price_percentage = request.POST.get('agency_copy_price_percentage', '100')
+        # New decimal-based copy price fields
+        user_copy_price_decimal = request.POST.get('user_copy_price_decimal')
+        agency_copy_price_decimal = request.POST.get('agency_copy_price_decimal')
         
         # Other fields
         min_pages = request.POST.get('min_pages', '1')
@@ -434,8 +435,8 @@ def addProduct(request):
                     ordinary_other_page_price=ordinary_other_page_price or 0,
                     agency_first_page_price=agency_first_page_price or 0,
                     agency_other_page_price=agency_other_page_price or 0,
-                    user_copy_price_percentage=user_copy_price_percentage or 100,
-                    agency_copy_price_percentage=agency_copy_price_percentage or 100,
+                    user_copy_price_decimal=user_copy_price_decimal or None,
+                    agency_copy_price_decimal=agency_copy_price_decimal or None,
                     min_pages=min_pages or 1,
                     estimated_days=estimated_days or 1,
                     is_active=is_active,
@@ -514,8 +515,9 @@ def editProduct(request, product_id):
         ordinary_other_page_price = request.POST.get('ordinary_other_page_price', '0')
         agency_first_page_price = request.POST.get('agency_first_page_price', '0')
         agency_other_page_price = request.POST.get('agency_other_page_price', '0')
-        user_copy_price_percentage = request.POST.get('user_copy_price_percentage', '100')
-        agency_copy_price_percentage = request.POST.get('agency_copy_price_percentage', '100')
+        # New decimal-based copy price fields
+        user_copy_price_decimal = request.POST.get('user_copy_price_decimal')
+        agency_copy_price_decimal = request.POST.get('agency_copy_price_decimal')
         
         # Other fields
         min_pages = request.POST.get('min_pages', '1')
@@ -550,10 +552,11 @@ def editProduct(request, product_id):
                     product.agency_first_page_price = agency_first_page_price
                 if agency_other_page_price:
                     product.agency_other_page_price = agency_other_page_price
-                if user_copy_price_percentage:
-                    product.user_copy_price_percentage = user_copy_price_percentage
-                if agency_copy_price_percentage:
-                    product.agency_copy_price_percentage = agency_copy_price_percentage
+                # Use new decimal fields
+                if user_copy_price_decimal is not None and user_copy_price_decimal != '':
+                    product.user_copy_price_decimal = user_copy_price_decimal
+                if agency_copy_price_decimal is not None and agency_copy_price_decimal != '':
+                    product.agency_copy_price_decimal = agency_copy_price_decimal
                 if min_pages:
                     product.min_pages = min_pages
                 if estimated_days:

@@ -143,9 +143,17 @@
                                 <div class="bg-neutral-100 radius-8 p-16">
                                     <div class="d-flex justify-content-between align-items-center mb-8">
                                         <span class="text-secondary-light text-sm" data-i18n="detail.copyPrice">Copy Price</span>
-                                        <span class="badge bg-secondary-focus text-secondary-600" data-i18n="detail.percentage">Percentage</span>
+                                        {% if product.user_copy_price_decimal is not None %}
+                                        <span class="badge bg-primary-focus text-primary-600">Fixed Price</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary-focus text-secondary-600" data-i18n="detail.percentage">Percentage (Legacy)</span>
+                                        {% endif %}
                                     </div>
-                                    <h4 class="mb-0 text-secondary-600">{{ product.user_copy_price_percentage|floatformat:0|default:"0" }}%</h4>
+                                    {% if product.user_copy_price_decimal is not None %}
+                                    <h4 class="mb-0 text-secondary-600">{{ product.user_copy_price_decimal|floatformat:0 }} <small class="text-secondary-light text-sm">UZS/copy</small></h4>
+                                    {% else %}
+                                    <h4 class="mb-0 text-secondary-600">{{ product.user_copy_price_percentage|floatformat:0|default:"0" }}% <small class="text-secondary-light text-sm">of base price</small></h4>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -188,9 +196,17 @@
                                 <div class="bg-neutral-100 radius-8 p-16">
                                     <div class="d-flex justify-content-between align-items-center mb-8">
                                         <span class="text-secondary-light text-sm" data-i18n="detail.copyPrice">Copy Price</span>
-                                        <span class="badge bg-secondary-focus text-secondary-600" data-i18n="detail.percentage">Percentage</span>
+                                        {% if product.agency_copy_price_decimal is not None %}
+                                        <span class="badge bg-primary-focus text-primary-600">Fixed Price</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary-focus text-secondary-600" data-i18n="detail.percentage">Percentage (Legacy)</span>
+                                        {% endif %}
                                     </div>
-                                    <h4 class="mb-0 text-secondary-600">{{ product.agency_copy_price_percentage|floatformat:0|default:"0" }}%</h4>
+                                    {% if product.agency_copy_price_decimal is not None %}
+                                    <h4 class="mb-0 text-secondary-600">{{ product.agency_copy_price_decimal|floatformat:0 }} <small class="text-secondary-light text-sm">UZS/copy</small></h4>
+                                    {% else %}
+                                    <h4 class="mb-0 text-secondary-600">{{ product.agency_copy_price_percentage|floatformat:0|default:"0" }}% <small class="text-secondary-light text-sm">of base price</small></h4>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -253,11 +269,31 @@
                                     </tr>
                                     {% endif %}
                                     <tr>
-                                        <td class="fw-medium"><span data-i18n="detail.copyPrice">Copy Price</span> %</td>
-                                        <td class="text-center">{{ product.user_copy_price_percentage|floatformat:0|default:"0" }}%</td>
-                                        <td class="text-center">{{ product.agency_copy_price_percentage|floatformat:0|default:"0" }}%</td>
+                                        <td class="fw-medium"><span data-i18n="detail.copyPrice">Copy Price</span></td>
                                         <td class="text-center">
-                                            {% if product.agency_copy_price_percentage < product.user_copy_price_percentage %}
+                                            {% if product.user_copy_price_decimal is not None %}
+                                            {{ product.user_copy_price_decimal|floatformat:0 }} UZS/copy
+                                            {% else %}
+                                            {{ product.user_copy_price_percentage|floatformat:0|default:"0" }}%
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if product.agency_copy_price_decimal is not None %}
+                                            {{ product.agency_copy_price_decimal|floatformat:0 }} UZS/copy
+                                            {% else %}
+                                            {{ product.agency_copy_price_percentage|floatformat:0|default:"0" }}%
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if product.agency_copy_price_decimal is not None and product.user_copy_price_decimal is not None %}
+                                                {% if product.agency_copy_price_decimal < product.user_copy_price_decimal %}
+                                                <span class="text-success-600" data-i18n="detail.agencyAdvantage">Agency advantage</span>
+                                                {% elif product.agency_copy_price_decimal == product.user_copy_price_decimal %}
+                                                <span class="text-secondary-light" data-i18n="detail.equal">Equal</span>
+                                                {% else %}
+                                                <span class="text-danger-600">User cheaper</span>
+                                                {% endif %}
+                                            {% elif product.agency_copy_price_percentage < product.user_copy_price_percentage %}
                                             <span class="text-success-600" data-i18n="detail.agencyAdvantage">Agency advantage</span>
                                             {% else %}
                                             <span class="text-secondary-light" data-i18n="detail.equal">Equal</span>

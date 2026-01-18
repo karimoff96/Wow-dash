@@ -238,6 +238,27 @@ class Product(models.Model):
         help_text="Percentage of total price for a copy of the document for user",
         default=100,
     )
+    
+    # New decimal-based copy price fields (replaces percentage calculation)
+    agency_copy_price_decimal = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        default=None,
+        help_text="Fixed price per copy for agencies (e.g., 25000 = 25,000 UZS per copy). If set, this overrides agency_copy_price_percentage.",
+        verbose_name=_("Agency Copy Price (Fixed)"),
+    )
+    user_copy_price_decimal = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        default=None,
+        help_text="Fixed price per copy for users (e.g., 30000 = 30,000 UZS per copy). If set, this overrides user_copy_price_percentage.",
+        verbose_name=_("User Copy Price (Fixed)"),
+    )
+    
     min_pages = models.PositiveIntegerField(default=1, verbose_name=_("Minimum Pages"))
     estimated_days = models.PositiveIntegerField(
         default=1, verbose_name=_("Estimated Days")
