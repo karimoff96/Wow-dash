@@ -887,6 +887,7 @@ def export_report(request, report_type):
     - customers: Customer analytics
     - unit_economy: Remaining balances/debts
     - my_statistics: Personal staff statistics
+    - expense_analytics: Expense analytics by branch and type
     """
     from core.export_service import ReportExporter
     from django.http import HttpResponse
@@ -903,12 +904,13 @@ def export_report(request, report_type):
         'product_id': request.GET.get('product'),
         'staff_id': request.GET.get('staff'),
         'language': request.GET.get('language'),
+        'expense_type': request.GET.get('expense_type'),
     }
     
     # Validate report type
     valid_types = [
         'orders', 'financial', 'staff_performance', 
-        'branch_comparison', 'customers', 'unit_economy', 'my_statistics'
+        'branch_comparison', 'customers', 'unit_economy', 'my_statistics', 'expense_analytics'
     ]
     if report_type not in valid_types:
         return JsonResponse({'error': f'Invalid report type. Valid types: {", ".join(valid_types)}'}, status=400)

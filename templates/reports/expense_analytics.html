@@ -12,6 +12,10 @@
                 <span data-i18n="reports.expenseAnalytics">Expense Analytics Report</span>
             </h6>
             <div class="d-flex align-items-center gap-2">
+                <a href="{% url 'export_report' 'expense_analytics' %}?period={{ period }}&date_from={{ date_from }}&date_to={{ date_to }}{% if expense_type_filter %}&expense_type={{ expense_type_filter }}{% endif %}{% if selected_branch %}&branch={{ selected_branch }}{% endif %}{% if selected_center %}&center={{ selected_center }}{% endif %}" class="btn btn-outline-success d-inline-flex align-items-center gap-2">
+                    <iconify-icon icon="solar:download-bold" class="icon"></iconify-icon>
+                    Export to Excel
+                </a>
                 <a href="{% url 'expenseList' %}" class="btn btn-outline-secondary btn-sm">
                     <iconify-icon icon="solar:wallet-bold" class="me-1"></iconify-icon>
                     Manage Expenses
