@@ -152,6 +152,35 @@ def permission_required(*permissions):
     return decorator
 
 
+def require_permission(permission_check_func, error_message=None):
+    """
+    Decorator that requires custom permission check function to return True.
+    
+    Args:
+        permission_check_func: A function that takes (user) and returns True/False
+        error_message: Custom error message to display if permission denied
+    
+    Usage:
+        def can_manage_payments(user):
+            return user.is_superuser or (hasattr(user, 'admin_profile') and user.admin_profile.is_owner)
+        
+        @require_permission(can_manage_payments, 'Only owners can manage payments')
+        def my_view(request):
+            ...
+    """
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+            if not permission_check_func(request.user):
+                msg = error_message or "You don't have permission to access this page."
+                messages.error(request, msg)
+                return redirect('index')
+            
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
 def any_permission_required(*permissions):
     """
     Decorator that requires user to have ANY ONE of the specified permissions.

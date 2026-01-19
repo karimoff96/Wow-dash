@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import reverse
-from .models import Order, OrderMedia, Receipt
+from .models import Order, OrderMedia, Receipt, BulkPayment, PaymentOrderLink
 from django.utils.html import format_html
 
 
@@ -189,3 +189,91 @@ class ReceiptAdmin(admin.ModelAdmin):
             {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
         ),
     )
+
+
+@admin.register(BulkPayment)
+class BulkPaymentAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "bot_user_name",
+        "amount",
+        "payment_method",
+        "orders_count",
+        "fully_paid_orders",
+        "processed_by_name",
+        "created_at",
+    )
+    list_filter = ("payment_method", "created_at", "branch")
+    search_fields = ("bot_user__name", "bot_user__phone", "receipt_note")
+    readonly_fields = ("created_at", "orders_count", "fully_paid_orders", "remaining_debt_after")
+    ordering = ("-created_at",)
+    
+    fieldsets = (
+        (
+            "Payment Information",
+            {
+                "fields": (
+                    "bot_user",
+                    "amount",
+                    "payment_method",
+                    "receipt_note",
+                )
+            },
+        ),
+        (
+            "Processing Details",
+            {
+                "fields": (
+                    "processed_by",
+                    "branch",
+                    "created_at",
+                )
+            },
+        ),
+        (
+            "Statistics",
+            {
+                "fields": (
+                    "orders_count",
+                    "fully_paid_orders",
+                    "remaining_debt_after",
+                )
+            },
+        ),
+    )
+    
+    def bot_user_name(self, obj):
+        return obj.bot_user.name if obj.bot_user else "N/A"
+    bot_user_name.short_description = "Customer"
+    
+    def processed_by_name(self, obj):
+        if obj.processed_by:
+            return obj.processed_by.user.get_full_name() or obj.processed_by.user.username
+        return "N/A"
+    processed_by_name.short_description = "Processed By"
+
+
+@admin.register(PaymentOrderLink)
+class PaymentOrderLinkAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "bulk_payment_id",
+        "order_id",
+        "amount_applied",
+        "previous_received",
+        "new_received",
+        "fully_paid",
+        "created_at",
+    )
+    list_filter = ("fully_paid", "created_at")
+    search_fields = ("bulk_payment__id", "order__id")
+    readonly_fields = ("created_at",)
+    ordering = ("-created_at",)
+    
+    def bulk_payment_id(self, obj):
+        return f"Payment #{obj.bulk_payment.id}"
+    bulk_payment_id.short_description = "Bulk Payment"
+    
+    def order_id(self, obj):
+        return f"Order #{obj.order.get_order_number()}"
+    order_id.short_description = "Order"

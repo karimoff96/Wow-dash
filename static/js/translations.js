@@ -183,6 +183,11 @@ const translations = {
         ru: 'Юнит-экономика',
         en: 'Unit Economy'
     },
+    'sidebar.bulkPayments': {
+        uz: 'Ommaviy to\'lovlar',
+        ru: 'Массовые платежи',
+        en: 'Bulk Payments'
+    },
     'sidebar.organization': {
         uz: 'Tashkilot',
         ru: 'Организация',

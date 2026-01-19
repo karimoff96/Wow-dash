@@ -173,6 +173,9 @@
                     <li>
                         <a href="{% url 'unit_economy' %}"><i class="ri-circle-fill circle-icon text-danger-main w-auto"></i> <span data-i18n="sidebar.unitEconomy">Unit Economy</span></a>
                     </li>
+                    <li>
+                        <a href="{% url 'orders:bulk_payment_page' %}"><i class="ri-circle-fill circle-icon text-purple-main w-auto"></i> <span data-i18n="sidebar.bulkPayments">Bulk Payments</span></a>
+                    </li>
                     {% endif %}
                     {% has_any_perm 'can_view_expenses,can_manage_expenses,can_view_financial_reports' as can_expense_analytics %}
                     {% if can_expense_analytics %}

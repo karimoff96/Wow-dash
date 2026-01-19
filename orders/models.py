@@ -749,3 +749,189 @@ def create_receipt_notification(sender, instance, created, **kwargs):
             logger.error(f" Failed to create receipt notification: {e}")
             import traceback
             traceback.print_exc()
+
+
+class BulkPayment(models.Model):
+    """
+    Track bulk payments from customers/agencies that cover multiple orders.
+    This model provides an audit trail for payment operations.
+    
+    MIGRATION SAFETY: All fields are nullable/optional to ensure backward compatibility
+    with existing production data.
+    """
+    
+    PAYMENT_METHOD_CHOICES = (
+        ('cash', _('Cash')),
+        ('bank_transfer', _('Bank Transfer')),
+        ('card', _('Card Payment')),
+        ('other', _('Other')),
+    )
+    
+    # Customer who made the payment
+    bot_user = models.ForeignKey(
+        BotUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='bulk_payments',
+        verbose_name=_('Customer'),
+        help_text=_('The customer/agency who made the payment')
+    )
+    
+    # Payment details
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        verbose_name=_('Payment Amount'),
+        help_text=_('Total amount received from customer')
+    )
+    
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHOD_CHOICES,
+        default='cash',
+        verbose_name=_('Payment Method')
+    )
+    
+    # Optional receipt/note
+    receipt_note = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Receipt/Note'),
+        help_text=_('Transaction ID, receipt number, or any additional notes')
+    )
+    
+    # Admin who processed the payment
+    processed_by = models.ForeignKey(
+        AdminUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='processed_bulk_payments',
+        verbose_name=_('Processed By'),
+        help_text=_('Admin user who recorded this payment')
+    )
+    
+    # Branch context (for audit and filtering)
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='bulk_payments',
+        verbose_name=_('Branch'),
+        help_text=_('Branch where payment was processed')
+    )
+    
+    # Timestamps
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Created At')
+    )
+    
+    # Statistics (calculated at time of payment)
+    orders_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Orders Paid'),
+        help_text=_('Number of orders this payment was applied to')
+    )
+    
+    fully_paid_orders = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_('Fully Paid Orders'),
+        help_text=_('Number of orders that were fully paid by this transaction')
+    )
+    
+    remaining_debt_after = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Remaining Debt After'),
+        help_text=_('Customer remaining debt after this payment')
+    )
+    
+    class Meta:
+        verbose_name = _('Bulk Payment')
+        verbose_name_plural = _('Bulk Payments')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['bot_user', '-created_at']),
+            models.Index(fields=['branch', '-created_at']),
+        ]
+    
+    def __str__(self):
+        customer_name = self.bot_user.name if self.bot_user else "Unknown"
+        return f"Payment #{self.id} - {customer_name} - {self.amount} ({self.created_at.strftime('%Y-%m-%d')})"
+
+
+class PaymentOrderLink(models.Model):
+    """
+    Link table between BulkPayment and Orders to track which orders
+    were paid by which bulk payment.
+    
+    MIGRATION SAFETY: All fields properly nullable for backward compatibility.
+    """
+    
+    bulk_payment = models.ForeignKey(
+        BulkPayment,
+        on_delete=models.CASCADE,
+        related_name='order_links',
+        verbose_name=_('Bulk Payment')
+    )
+    
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='payment_links',
+        verbose_name=_('Order')
+    )
+    
+    # Amount from this bulk payment applied to this specific order
+    amount_applied = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        verbose_name=_('Amount Applied'),
+        help_text=_('Portion of bulk payment applied to this order')
+    )
+    
+    # Order state before payment
+    previous_received = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('Previous Amount Received'),
+        help_text=_('Order received amount before this payment')
+    )
+    
+    # Order state after payment
+    new_received = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        verbose_name=_('New Amount Received'),
+        help_text=_('Order received amount after this payment')
+    )
+    
+    fully_paid = models.BooleanField(
+        default=False,
+        verbose_name=_('Fully Paid'),
+        help_text=_('Whether this order was fully paid by this transaction')
+    )
+    
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Created At')
+    )
+    
+    class Meta:
+        verbose_name = _('Payment-Order Link')
+        verbose_name_plural = _('Payment-Order Links')
+        ordering = ['bulk_payment', 'order']
+        indexes = [
+            models.Index(fields=['bulk_payment']),
+            models.Index(fields=['order']),
+        ]
+    
+    def __str__(self):
+        return f"Payment #{self.bulk_payment.id} → Order #{self.order.id} ({self.amount_applied})"

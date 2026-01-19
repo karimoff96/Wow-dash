@@ -305,6 +305,12 @@ class Role(models.Model):
         help_text=_("Can export audit log data to CSV/Excel"))
     can_grant_audit_permissions = models.BooleanField(_("Can grant audit permissions"), default=False,
         help_text=_("Can assign audit log permissions to lower-level users"))
+    
+    # Permissions - Bulk Payments (Debt Management)
+    can_manage_bulk_payments = models.BooleanField(_("Can manage bulk payments"), default=False,
+        help_text=_("Can process bulk payments for customer/agency debts across multiple orders"))
+    can_assign_bulk_payment_permission = models.BooleanField(_("Can assign bulk payment permission"), default=False,
+        help_text=_("Can grant the bulk payment permission to other users"))
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True, null=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True, null=True)

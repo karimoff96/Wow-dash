@@ -147,6 +147,15 @@ class RoleAdmin(admin.ModelAdmin):
             ),
             'classes': ('collapse',),
         }),
+        ('Bulk Payments (Debt Management)', {
+            'fields': (
+                'can_manage_bulk_payments',
+                'can_assign_bulk_payment_permission',
+            ),
+            'classes': ('collapse',),
+            'description': 'Permissions for processing bulk payments across multiple orders. '
+                          'can_assign_bulk_payment_permission allows granting this permission to other roles.'
+        }),
     )
 
 

@@ -842,6 +842,38 @@
                                     <div class="perm-hint text-secondary-light">Can assign audit permissions to other users</div>
                                 </div>
                             </div>
+
+                            <!-- Bulk Payments (Debt Management) -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="permission-card border border-warning-100 bg-warning-50">
+                                    <h6 class="text-sm fw-semibold text-warning-main permission-section-header">
+                                        <iconify-icon icon="lucide:banknote"></iconify-icon>
+                                        <span>Bulk Payments</span>
+                                    </h6>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="can_manage_bulk_payments" id="can_manage_bulk_payments"
+                                               {% if role.can_manage_bulk_payments %}checked{% endif %}>
+                                        <label class="form-check-label fw-semibold" for="can_manage_bulk_payments">
+                                            <iconify-icon icon="lucide:wallet" class="me-1"></iconify-icon>
+                                            Process Bulk Payments
+                                        </label>
+                                    </div>
+                                    <div class="perm-hint text-secondary-light">Can process bulk payments for agency/customer debts across multiple orders</div>
+                                    
+                                    <hr class="my-12">
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="can_assign_bulk_payment_permission" id="can_assign_bulk_payment_permission"
+                                               {% if role.can_assign_bulk_payment_permission %}checked{% endif %}>
+                                        <label class="form-check-label text-danger-600 fw-semibold" for="can_assign_bulk_payment_permission">
+                                            <iconify-icon icon="lucide:shield-check" class="me-1"></iconify-icon>
+                                            Assign Bulk Payment Access
+                                        </label>
+                                    </div>
+                                    <div class="perm-hint text-danger-light">⚠️ Can grant bulk payment permission to other roles. Grant with caution.</div>
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Quick Permission Templates -->
@@ -970,7 +1002,9 @@ const allPermissions = [
     // Agencies
     'can_manage_agencies', 'can_view_agencies', 'can_create_agencies', 'can_edit_agencies', 'can_delete_agencies',
     // Audit Logs
-    'can_manage_audit_logs', 'can_view_audit_logs', 'can_export_audit_logs', 'can_grant_audit_permissions'
+    'can_manage_audit_logs', 'can_view_audit_logs', 'can_export_audit_logs', 'can_grant_audit_permissions',
+    // Bulk Payments
+    'can_manage_bulk_payments', 'can_assign_bulk_payment_permission'
 ];
 
 // Define child permissions for each master permission
@@ -1013,7 +1047,9 @@ const templates = {
         'can_create_marketing_posts': true, 'can_send_branch_broadcasts': true, 'can_send_center_broadcasts': true, 'can_view_broadcast_stats': true,
         'can_manage_branch_settings': true, 'can_view_branch_settings': true,
         'can_view_agencies': true, 'can_create_agencies': true, 'can_edit_agencies': true, 'can_delete_agencies': true,
-        'can_view_audit_logs': true, 'can_export_audit_logs': true, 'can_grant_audit_permissions': true
+        'can_view_audit_logs': true, 'can_export_audit_logs': true, 'can_grant_audit_permissions': true,
+        // Bulk payment permissions (Owner has full access)
+        'can_manage_bulk_payments': true, 'can_assign_bulk_payment_permission': true
     },
     'manager': {
         'can_manage_centers': false, 'can_manage_branches': false, 'can_manage_staff': false,
@@ -1030,7 +1066,9 @@ const templates = {
         'can_create_marketing_posts': true, 'can_send_branch_broadcasts': true, 'can_send_center_broadcasts': false, 'can_view_broadcast_stats': true,
         'can_view_branch_settings': true,
         'can_view_agencies': true, 'can_create_agencies': true,
-        'can_view_audit_logs': true, 'can_export_audit_logs': false, 'can_grant_audit_permissions': false
+        'can_view_audit_logs': true, 'can_export_audit_logs': false, 'can_grant_audit_permissions': false,
+        // Bulk payment permissions (Manager can process but not assign)
+        'can_manage_bulk_payments': true, 'can_assign_bulk_payment_permission': false
     },
     'staff': {
         'can_manage_centers': false, 'can_manage_branches': false, 'can_manage_staff': false,
@@ -1040,7 +1078,9 @@ const templates = {
         'can_view_own_orders': true, 'can_update_order_status': true, 'can_complete_orders': true,
         'can_receive_payments': true,
         'can_view_customers': true, 'can_view_products': true,
-        'can_view_audit_logs': false, 'can_export_audit_logs': false, 'can_grant_audit_permissions': false
+        'can_view_audit_logs': false, 'can_export_audit_logs': false, 'can_grant_audit_permissions': false,
+        // Bulk payment permissions (Staff has no access by default)
+        'can_manage_bulk_payments': false, 'can_assign_bulk_payment_permission': false
     },
     'none': {}  // All false
 };
