@@ -340,7 +340,7 @@ def get_customer_debt_details(request, customer_id):
     orders = get_user_orders(request.user).filter(
         bot_user=customer
     ).exclude(status='cancelled').select_related(
-        'product', 'branch', 'language'
+        'product', 'branch', 'language', 'payment_received_by__user'
     )
     
     # Calculate remaining balance using annotation with different name
@@ -373,6 +373,23 @@ def get_customer_debt_details(request, customer_id):
     for order in orders_with_debt:
         days_old = (timezone.now() - order.created_at).days
         
+        # Get payment info
+        payment_info = None
+        if order.payment_received_by and order.payment_received_at:
+            # Try different ways to get the name
+            received_by_name = 'Unknown'
+            try:
+                if hasattr(order.payment_received_by, 'user') and order.payment_received_by.user:
+                    user = order.payment_received_by.user
+                    received_by_name = user.get_full_name() or user.username or user.email or 'Unknown'
+            except Exception:
+                received_by_name = 'Unknown'
+            
+            payment_info = {
+                'received_by': received_by_name,
+                'received_at': order.payment_received_at.strftime('%Y-%m-%d %H:%M')
+            }
+        
         orders_list.append({
             'id': order.id,
             'order_number': order.get_order_number(),
@@ -386,6 +403,7 @@ def get_customer_debt_details(request, customer_id):
             'remaining': float(order.remaining_balance),
             'days_old': days_old,
             'status': order.status,
+            'payment_info': payment_info,
         })
     
     return JsonResponse({
@@ -466,7 +484,7 @@ def preview_payment_distribution(request):
             remaining_payment -= amount_to_apply
         
         # Calculate remaining debt after payment
-        total_debt = orders.aggregate(total=Sum('remaining'))['total'] or Decimal('0')
+        total_debt = orders.aggregate(total=Sum('remaining_balance'))['total'] or Decimal('0')
         remaining_debt_after = max(Decimal('0'), total_debt - payment_amount)
         
         return JsonResponse({
@@ -534,11 +552,24 @@ def process_bulk_payment(request):
         except BotUser.DoesNotExist:
             return JsonResponse({'error': 'Customer not found'}, status=404)
         
-        # Get admin profile
-        try:
-            admin_profile = request.user.admin_profile
-        except AttributeError:
-            return JsonResponse({'error': 'Admin profile not found. Please contact system administrator.'}, status=400)
+        # Get admin profile (superusers can process without admin_profile)
+        admin_profile = None
+        if not request.user.is_superuser:
+            admin_profile = request.user.admin_profile if hasattr(request.user, 'admin_profile') else None
+            if not admin_profile:
+                return JsonResponse({'error': 'Admin profile not found. Please contact system administrator.'}, status=400)
+        else:
+            # Superuser - try to get admin_profile, if not exists, create a temporary one
+            admin_profile = request.user.admin_profile if hasattr(request.user, 'admin_profile') else None
+            if not admin_profile:
+                # Create or get admin profile for superuser
+                from organizations.models import AdminUser
+                admin_profile, created = AdminUser.objects.get_or_create(
+                    user=request.user,
+                    defaults={
+                        'is_active': True,
+                    }
+                )
         
         # Get customer's orders with debt (FIFO order)
         orders = get_user_orders(request.user).filter(
@@ -558,7 +589,7 @@ def process_bulk_payment(request):
             return JsonResponse({'error': 'No outstanding orders found for this customer'}, status=400)
         
         # Get admin's branch (for audit trail)
-        admin_branch = admin_profile.branch if hasattr(admin_profile, 'branch') else None
+        admin_branch = admin_profile.branch if (admin_profile and hasattr(admin_profile, 'branch')) else None
         
         # Create bulk payment record
         bulk_payment = BulkPayment.objects.create(
@@ -566,7 +597,7 @@ def process_bulk_payment(request):
             amount=payment_amount,
             payment_method=payment_method,
             receipt_note=receipt_note,
-            processed_by=admin_profile,
+            processed_by=admin_profile,  # Can be None for superuser without admin_profile
             branch=admin_branch,
         )
         
@@ -590,17 +621,15 @@ def process_bulk_payment(request):
             # Store previous state
             previous_received = order.received
             
-            # Update order
-            order.received = F('received') + amount_to_apply
+            # Update order received amount
+            new_received = previous_received + amount_to_apply
+            order.received = new_received
             order.payment_received_by = admin_profile
             order.payment_received_at = timezone.now()
             order.save(update_fields=['received', 'payment_received_by', 'payment_received_at', 'updated_at'])
             
-            # Refresh to get updated values
-            order.refresh_from_db()
-            
             # Check if fully paid
-            new_remaining = (order.total_price + order.extra_fee) - order.received
+            new_remaining = (order.total_price + order.extra_fee) - new_received
             fully_paid = new_remaining <= Decimal('0.01')  # Small threshold for floating point
             
             if fully_paid:
@@ -616,7 +645,7 @@ def process_bulk_payment(request):
                 order=order,
                 amount_applied=amount_to_apply,
                 previous_received=previous_received,
-                new_received=order.received,
+                new_received=new_received,
                 fully_paid=fully_paid,
             )
             
@@ -691,13 +720,14 @@ def payment_history(request):
     
     # Filter based on user role
     if not request.user.is_superuser:
-        admin_profile = request.user.admin_profile
-        if admin_profile.is_owner:
-            # Owner sees center payments
-            payments = payments.filter(branch__center=admin_profile.center)
-        elif admin_profile.is_manager:
-            # Manager sees branch payments
-            payments = payments.filter(branch=admin_profile.branch)
+        admin_profile = request.user.admin_profile if hasattr(request.user, 'admin_profile') else None
+        if admin_profile:
+            if admin_profile.is_owner:
+                # Owner sees center payments
+                payments = payments.filter(branch__center=admin_profile.center)
+            elif admin_profile.is_manager:
+                # Manager sees branch payments
+                payments = payments.filter(branch=admin_profile.branch)
     
     # Apply filters from query params
     customer_id = request.GET.get('customer_id')

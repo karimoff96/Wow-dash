@@ -269,31 +269,10 @@
             </div>
         </div>
 
-        <!-- Outstanding Orders List -->
+        <!-- Payment Form and Orders Side-by-Side -->
         <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">
-                            <i class="fas fa-file-invoice-dollar me-2"></i>
-                            {% trans "Outstanding Orders" %}
-                        </h5>
-                        <p class="mb-0 small text-muted mt-1">
-                            {% trans "Orders will be paid in FIFO order (oldest first)" %}
-                        </p>
-                    </div>
-                    <div class="card-body">
-                        <div id="outstandingOrdersList" class="row">
-                            <!-- Orders populated via JavaScript -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Payment Input Section -->
-        <div class="row mb-4">
-            <div class="col-md-6">
+            <!-- Payment Input Section -->
+            <div class="col-md-5">
                 <div class="card payment-input-section">
                     <div class="card-body">
                         <h5 class="mb-4">
@@ -369,14 +348,39 @@
                 </div>
             </div>
             
-            <!-- Payment Preview -->
-            <div class="col-md-6">
+            <!-- Outstanding Orders List -->
+            <div class="col-md-7">
+                <div class="card" style="max-height: 600px; overflow-y: auto;">
+                    <div class="card-header bg-light sticky-top">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">
+                                    <iconify-icon icon="solar:file-text-bold" class="me-2"></iconify-icon>
+                                    {% trans "Outstanding Orders" %}
+                                </h6>
+                                <small class="text-muted">{% trans "Orders will be paid in FIFO order (oldest first)" %}</small>
+                            </div>
+                            <span class="badge bg-primary" id="ordersCount">0</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-2">
+                        <div id="outstandingOrdersList">
+                            <!-- Orders populated via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Preview (Full Width Below) -->
+        <div class="row mb-4">
+            <div class="col-12">
                 <div id="paymentPreviewCard" class="card payment-preview-card" style="display: none;">
                     <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-chart-line me-2"></i>
+                        <h6 class="mb-0">
+                            <iconify-icon icon="solar:chart-bold" class="me-2"></iconify-icon>
                             {% trans "Payment Distribution Preview" %}
-                        </h5>
+                        </h6>
                     </div>
                     <div class="card-body">
                         <div id="paymentPreviewContent">
@@ -638,53 +642,53 @@
         $('#totalDebtAmount').text('$' + data.debt_summary.total_debt.toFixed(2));
         $('#debtOrderCount').text(data.debt_summary.order_count);
         $('#oldestDebtDays').text(data.debt_summary.oldest_debt_days || '-');
+        $('#ordersCount').text(data.debt_summary.order_count);
         
-        // Display orders
+        // Display orders in compact format
         const $ordersList = $('#outstandingOrdersList');
         $ordersList.empty();
         
-        data.orders.forEach(order => {
+        data.orders.forEach((order, index) => {
+            // Build payment info badge if available
+            let paymentInfoHtml = '';
+            if (order.payment_info) {
+                paymentInfoHtml = `
+                    <div class="small text-success mt-1">
+                        <iconify-icon icon="solar:user-check-bold-duotone" style="font-size: 12px;"></iconify-icon>
+                        <strong>Paid by:</strong> ${order.payment_info.received_by}
+                        <br>
+                        <iconify-icon icon="solar:calendar-check-bold-duotone" style="font-size: 12px;"></iconify-icon>
+                        ${order.payment_info.received_at}
+                    </div>
+                `;
+            }
+            
             const orderHtml = `
-                <div class="col-md-6 mb-3">
-                    <div class="card order-debt-card h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <h6 class="mb-1">
-                                        <i class="fas fa-file-alt me-1"></i>
-                                        {% trans "Order" %} #${order.order_number}
-                                    </h6>
-                                    <small class="text-muted">
-                                        <i class="fas fa-calendar me-1"></i>${order.created_at}
-                                        <span class="ms-2">
-                                            <i class="fas fa-clock me-1"></i>${order.days_old} {% trans "days old" %}
-                                        </span>
-                                    </small>
+                <div class="card mb-2 order-debt-card">
+                    <div class="card-body p-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="badge bg-secondary me-2">#${index + 1}</span>
+                                    <strong class="small">{% trans "Order" %} #${order.order_number}</strong>
+                                    <span class="badge bg-warning ms-2 small">${order.status}</span>
                                 </div>
-                                <span class="badge bg-warning">${order.status}</span>
+                                <div class="small text-muted mb-1">
+                                    <iconify-icon icon="solar:calendar-bold-duotone" style="font-size: 12px;"></iconify-icon> ${order.created_at}
+                                    <span class="ms-2">
+                                        <iconify-icon icon="solar:clock-circle-bold-duotone" style="font-size: 12px;"></iconify-icon> ${order.days_old} days
+                                    </span>
+                                </div>
+                                <div class="small">
+                                    <strong>${order.product}</strong> • ${order.branch}
+                                </div>
+                                ${paymentInfoHtml}
                             </div>
-                            <hr class="my-2">
-                            <div class="row small">
-                                <div class="col-6">
-                                    <strong>{% trans "Product" %}:</strong><br>
-                                    ${order.product}
-                                </div>
-                                <div class="col-6">
-                                    <strong>{% trans "Branch" %}:</strong><br>
-                                    ${order.branch}
-                                </div>
-                            </div>
-                            <hr class="my-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <small class="text-muted">{% trans "Total" %}:</small> $${order.total_price.toFixed(2)}<br>
-                                    <small class="text-muted">{% trans "Received" %}:</small> $${order.received.toFixed(2)}
-                                </div>
-                                <div class="text-end">
-                                    <div class="badge bg-danger fs-6 px-3 py-2">
-                                        <strong>$${order.remaining.toFixed(2)}</strong><br>
-                                        <small>{% trans "remaining" %}</small>
-                                    </div>
+                            <div class="text-end ms-2">
+                                <div class="small text-muted">Total: $${order.total_price.toFixed(2)}</div>
+                                <div class="small text-muted">Paid: $${order.received.toFixed(2)}</div>
+                                <div class="badge bg-danger mt-1">
+                                    <strong>$${order.remaining.toFixed(2)}</strong>
                                 </div>
                             </div>
                         </div>
