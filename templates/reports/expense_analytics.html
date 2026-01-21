@@ -495,7 +495,12 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-secondary-light">{{ item.expense.branch.name }}</td>
-                                <td class="text-end text-secondary-light">{{ item.expense.price|format_number }}</td>
+                                <td class="text-end">
+                                    <div class="d-flex flex-column align-items-end">
+                                        <span class="text-success-600">{{ item.expense.price_for_original|format_number }}</span>
+                                        <small class="text-info-600">{{ item.expense.price_for_copy|format_number }}/copy</small>
+                                    </div>
+                                </td>
                                 <td class="text-end">
                                     <span class="badge bg-primary-100 text-primary-600">{{ item.order_count }}</span>
                                 </td>

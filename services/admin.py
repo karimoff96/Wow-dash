@@ -13,7 +13,8 @@ class LanguageAdmin(admin.ModelAdmin):
 class ExpenseAdmin(admin.ModelAdmin):
     list_display = (
         "name",
-        "price_display",
+        "price_original_display",
+        "price_copy_display",
         "expense_type",
         "branch",
         "center_display",
@@ -29,7 +30,7 @@ class ExpenseAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             "Basic Information",
-            {"fields": ("name", "price", "expense_type", "description", "is_active")},
+            {"fields": ("name", "price_for_original", "price_for_copy", "expense_type", "description", "is_active")},
         ),
         (
             "Multi-tenant",
@@ -42,10 +43,15 @@ class ExpenseAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("created_at", "updated_at")
     
-    def price_display(self, obj):
-        return format_html('<span style="color: #28a745; font-weight: bold;">{}</span>', f"{obj.price:,.2f}")
-    price_display.short_description = "Price"
-    price_display.admin_order_field = "price"
+    def price_original_display(self, obj):
+        return format_html('<span style="color: #28a745; font-weight: bold;">{}</span>', f"{obj.price_for_original:,.2f}")
+    price_original_display.short_description = "Price (Original)"
+    price_original_display.admin_order_field = "price_for_original"
+    
+    def price_copy_display(self, obj):
+        return format_html('<span style="color: #17a2b8; font-weight: bold;">{}</span>', f"{obj.price_for_copy:,.2f}")
+    price_copy_display.short_description = "Price (Copy)"
+    price_copy_display.admin_order_field = "price_for_copy"
     
     def center_display(self, obj):
         return obj.branch.center.name if obj.branch else "-"

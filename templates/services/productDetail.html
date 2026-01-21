@@ -352,7 +352,12 @@
                                                 {{ expense.get_expense_type_display }}
                                             </span>
                                         </td>
-                                        <td class="text-end fw-semibold">{{ expense.price|format_number }} UZS</td>
+                                        <td class="text-end">
+                                            <div class="d-flex flex-column align-items-end">
+                                                <span class="fw-semibold text-success-600">{{ expense.price_for_original|format_number }} UZS</span>
+                                                <small class="text-info-600">{{ expense.price_for_copy|format_number }} UZS/copy</small>
+                                            </div>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

@@ -123,7 +123,10 @@
                         </td>
                         {% endif %}
                         <td class="col-amount">
-                            <span class="text-success-600 fw-semibold nowrap">{{ expense.price|format_number }}</span>
+                            <div class="d-flex flex-column gap-1">
+                                <span class="text-success-600 fw-semibold nowrap" title="Price for Original">{{ expense.price_for_original|format_number }}</span>
+                                <small class="text-info-600 nowrap" title="Price per Copy">{{ expense.price_for_copy|format_number }}/copy</small>
+                            </div>
                         </td>
                         <td class="hide-mobile">
                             {% if expense.expense_type == 'b2b' %}

@@ -664,9 +664,9 @@ def expenseList(request):
     
     # Calculate aggregates for current filtered set
     aggregates = expenses.aggregate(
-        total_expenses=Sum('price'),
-        b2b_total=Sum('price', filter=Q(expense_type__in=['b2b', 'both'])),
-        b2c_total=Sum('price', filter=Q(expense_type__in=['b2c', 'both'])),
+        total_expenses=Sum('price_for_original'),
+        b2b_total=Sum('price_for_original', filter=Q(expense_type__in=['b2b', 'both'])),
+        b2c_total=Sum('price_for_original', filter=Q(expense_type__in=['b2c', 'both'])),
     )
     
     # Pagination
@@ -740,27 +740,37 @@ def addExpense(request):
     
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        price = request.POST.get('price', '0')
+        price_for_original = request.POST.get('price_for_original', '0')
+        price_for_copy = request.POST.get('price_for_copy', '0')
         expense_type = request.POST.get('expense_type', 'both')
         branch_id = request.POST.get('branch', '')
         description = request.POST.get('description', '').strip()
         is_active = request.POST.get('is_active') == 'on'
         
-        # Validate price doesn't exceed max_digits=12
+        # Validate prices don't exceed max_digits=12
         try:
-            price_decimal = Decimal(price or '0')
-            if price_decimal >= Decimal('10000000000'):  # 10^10, max safe value for 12 digits with 2 decimals
-                messages.error(request, 'Price value is too large. Maximum is 9,999,999,999.99')
-                price_decimal = None
+            price_original_decimal = Decimal(price_for_original or '0')
+            if price_original_decimal >= Decimal('10000000000'):  # 10^10, max safe value for 12 digits with 2 decimals
+                messages.error(request, 'Price for original is too large. Maximum is 9,999,999,999.99')
+                price_original_decimal = None
         except (InvalidOperation, ValueError):
-            messages.error(request, 'Invalid price value.')
-            price_decimal = None
+            messages.error(request, 'Invalid price for original value.')
+            price_original_decimal = None
+        
+        try:
+            price_copy_decimal = Decimal(price_for_copy or '0')
+            if price_copy_decimal >= Decimal('10000000000'):
+                messages.error(request, 'Price for copy is too large. Maximum is 9,999,999,999.99')
+                price_copy_decimal = None
+        except (InvalidOperation, ValueError):
+            messages.error(request, 'Invalid price for copy value.')
+            price_copy_decimal = None
         
         if not name:
             messages.error(request, 'Expense name is required.')
         elif not branch_id:
             messages.error(request, 'Please select a branch.')
-        elif price_decimal is None:
+        elif price_original_decimal is None or price_copy_decimal is None:
             pass  # Error already shown above
         else:
             try:
@@ -768,7 +778,8 @@ def addExpense(request):
                 branch = get_object_or_404(accessible_branches, id=branch_id)
                 expense = Expense.objects.create(
                     name=name,
-                    price=price_decimal,
+                    price_for_original=price_original_decimal,
+                    price_for_copy=price_copy_decimal,
                     expense_type=expense_type,
                     branch=branch,
                     description=description or None,
@@ -804,34 +815,45 @@ def editExpense(request, expense_id):
     
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
-        price = request.POST.get('price', '0')
+        price_for_original = request.POST.get('price_for_original', '0')
+        price_for_copy = request.POST.get('price_for_copy', '0')
         expense_type = request.POST.get('expense_type', 'both')
         branch_id = request.POST.get('branch', '')
         description = request.POST.get('description', '').strip()
         is_active = request.POST.get('is_active') == 'on'
         
-        # Validate price doesn't exceed max_digits=12
+        # Validate prices don't exceed max_digits=12
         try:
-            price_decimal = Decimal(price or '0')
-            if price_decimal >= Decimal('10000000000'):  # 10^10, max safe value for 12 digits with 2 decimals
-                messages.error(request, 'Price value is too large. Maximum is 9,999,999,999.99')
-                price_decimal = None
+            price_original_decimal = Decimal(price_for_original or '0')
+            if price_original_decimal >= Decimal('10000000000'):
+                messages.error(request, 'Price for original is too large. Maximum is 9,999,999,999.99')
+                price_original_decimal = None
         except (InvalidOperation, ValueError):
-            messages.error(request, 'Invalid price value.')
-            price_decimal = None
+            messages.error(request, 'Invalid price for original value.')
+            price_original_decimal = None
+        
+        try:
+            price_copy_decimal = Decimal(price_for_copy or '0')
+            if price_copy_decimal >= Decimal('10000000000'):
+                messages.error(request, 'Price for copy is too large. Maximum is 9,999,999,999.99')
+                price_copy_decimal = None
+        except (InvalidOperation, ValueError):
+            messages.error(request, 'Invalid price for copy value.')
+            price_copy_decimal = None
         
         if not name:
             messages.error(request, 'Expense name is required.')
         elif not branch_id:
             messages.error(request, 'Please select a branch.')
-        elif price_decimal is None:
+        elif price_original_decimal is None or price_copy_decimal is None:
             pass  # Error already shown above
         else:
             try:
                 # Validate branch access
                 branch = get_object_or_404(branches, id=branch_id)
                 expense.name = name
-                expense.price = price_decimal
+                expense.price_for_original = price_original_decimal
+                expense.price_for_copy = price_copy_decimal
                 expense.expense_type = expense_type
                 expense.branch = branch
                 expense.description = description or None
@@ -937,7 +959,8 @@ def createExpenseInline(request):
             data = request.POST
         
         name = data.get('name', '').strip()
-        price = data.get('price', '0')
+        price_for_original = data.get('price_for_original', '0')
+        price_for_copy = data.get('price_for_copy', '0')
         expense_type = data.get('expense_type', 'both')
         branch_id = data.get('branch', '')
         description = data.get('description', '').strip()
@@ -958,7 +981,8 @@ def createExpenseInline(request):
         # Create the expense
         expense = Expense.objects.create(
             name=name,
-            price=Decimal(str(price)) if price else Decimal('0'),
+            price_for_original=Decimal(str(price_for_original)) if price_for_original else Decimal('0'),
+            price_for_copy=Decimal(str(price_for_copy)) if price_for_copy else Decimal('0'),
             expense_type=expense_type,
             branch=branch,
             description=description,
@@ -970,7 +994,8 @@ def createExpenseInline(request):
             'expense': {
                 'id': expense.id,
                 'name': expense.name,
-                'price': str(expense.price),
+                'price_for_original': str(expense.price_for_original),
+                'price_for_copy': str(expense.price_for_copy),
                 'expense_type': expense.expense_type,
                 'expense_type_display': expense.get_expense_type_display(),
                 'branch_name': branch.name,

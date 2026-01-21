@@ -19,11 +19,19 @@ class Expense(models.Model):
     )
     
     name = models.CharField(max_length=200, verbose_name=_("Expense Name"))
-    price = models.DecimalField(
+    price_for_original = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        verbose_name=_("Price"),
-        help_text=_("Cost of this expense")
+        verbose_name=_("Price for Original"),
+        help_text=_("Cost of this expense for the original document"),
+        default=0
+    )
+    price_for_copy = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        verbose_name=_("Price for Copy"),
+        help_text=_("Cost of this expense per copy document"),
+        default=0
     )
     expense_type = models.CharField(
         max_length=10,
@@ -55,7 +63,24 @@ class Expense(models.Model):
         unique_together = ('branch', 'name')
     
     def __str__(self):
-        return f"{self.name} ({self.price})"
+        return f"{self.name} (Original: {self.price_for_original}, Copy: {self.price_for_copy})"
+    
+    @property
+    def total_price_per_order(self):
+        """Calculate total expense for a single order (always includes original)"""
+        return self.price_for_original
+    
+    def calculate_total_for_order(self, copy_number=0):
+        """
+        Calculate total expense cost for an order with given copy number.
+        
+        Args:
+            copy_number: Number of copies for the order
+            
+        Returns:
+            Decimal: Total expense (original + copies)
+        """
+        return self.price_for_original + (self.price_for_copy * copy_number)
     
     @property
     def center(self):
@@ -365,13 +390,14 @@ class Product(models.Model):
 
     def get_expenses_total(self, expense_type=None):
         """
-        Get total expenses for this product.
+        Get total expenses for this product (original price only).
+        Note: This doesn't include per-copy costs as those depend on copy_number.
         
         Args:
             expense_type: 'b2b', 'b2c', or None for all
         
         Returns:
-            Decimal total of expenses
+            Decimal total of expenses for original documents
         """
         queryset = self.expenses.filter(is_active=True)
         
@@ -381,7 +407,7 @@ class Product(models.Model):
             elif expense_type == 'b2c':
                 queryset = queryset.filter(expense_type__in=['b2c', 'both'])
         
-        return queryset.aggregate(total=Sum('price'))['total'] or Decimal('0.00')
+        return queryset.aggregate(total=Sum('price_for_original'))['total'] or Decimal('0.00')
     
     def get_profit_margin(self, is_agency=False, pages=1):
         """

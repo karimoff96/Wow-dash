@@ -232,7 +232,7 @@
                                                 <label class="form-check-label cursor-pointer" for="expense_{{ expense.id }}">
                                                     <span class="fw-semibold text-primary-light">{{ expense.name }}</span>
                                                     <span class="text-secondary-light ms-8">
-                                                        ({{ expense.price|format_number }} UZS)
+                                                        ({{ expense.price_for_original|format_number }} + {{ expense.price_for_copy|format_number }}/copy UZS)
                                                     </span>
                                                 </label>
                                             </div>
@@ -296,12 +296,22 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-20">
-                            <label for="expense_price" class="form-label fw-semibold text-primary-light text-sm mb-8">
-                                <span data-i18n="form.price">Price (UZS)</span> <span class="text-danger-600">*</span>
+                            <label for="expense_price_original" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.priceOriginal">Price for Original (UZS)</span> <span class="text-danger-600">*</span>
                             </label>
-                            <input type="number" step="0.01" class="form-control radius-8" id="expense_price" name="expense_price" value="0" required>
+                            <input type="number" step="0.01" class="form-control radius-8" id="expense_price_original" name="expense_price_original" value="0" required>
+                            <small class="text-secondary-light">Cost for the original document</small>
                         </div>
                         <div class="col-md-6 mb-20">
+                            <label for="expense_price_copy" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.priceCopy">Price per Copy (UZS)</span> <span class="text-danger-600">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control radius-8" id="expense_price_copy" name="expense_price_copy" value="0" required>
+                            <small class="text-secondary-light">Cost per copy document</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-20">
                             <label for="expense_type" class="form-label fw-semibold text-primary-light text-sm mb-8">
                                 <span data-i18n="form.expenseType">Expense Type</span> <span class="text-danger-600">*</span>
                             </label>
@@ -420,7 +430,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Save expense via AJAX
     saveExpenseBtn.addEventListener('click', function() {
         const name = document.getElementById('expense_name').value.trim();
-        const price = document.getElementById('expense_price').value;
+        const priceOriginal = document.getElementById('expense_price_original').value;
+        const priceCopy = document.getElementById('expense_price_copy').value;
         const expenseType = document.getElementById('expense_type').value;
         const branchId = document.getElementById('expense_branch').value;
         const description = document.getElementById('expense_description').value.trim();
@@ -450,7 +461,8 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 name: name,
-                price: price,
+                price_for_original: priceOriginal,
+                price_for_copy: priceCopy,
                 expense_type: expenseType,
                 branch: branchId,
                 description: description
@@ -478,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <label class="form-check-label cursor-pointer" for="expense_${expense.id}">
                                 <span class="fw-semibold text-primary-light">${expense.name}</span>
                                 <span class="text-secondary-light ms-8">
-                                    (${parseFloat(expense.price).toLocaleString()} UZS)
+                                    (${parseFloat(expense.price_for_original).toLocaleString()} + ${parseFloat(expense.price_for_copy).toLocaleString()}/copy UZS)
                                 </span>
                             </label>
                         </div>

@@ -1543,11 +1543,15 @@ def expense_analytics_report(request):
         # Get products that use this expense
         products_with_expense = expense.products.all()
         
-        # Count orders that use these products
-        order_count = orders_base.filter(product__in=products_with_expense).count()
+        # Get orders that use these products
+        related_orders = orders_base.filter(product__in=products_with_expense)
+        order_count = related_orders.count()
         
-        # Calculate total cost for this expense
-        expense_total = expense.price * order_count
+        # Calculate total cost for this expense using new pricing model:
+        # Each order gets: price_for_original + (price_for_copy * copy_number)
+        expense_total = Decimal('0')
+        for order in related_orders:
+            expense_total += expense.price_for_original + (expense.price_for_copy * (order.copy_number or 0))
         
         expense_usage[expense.id] = {
             'expense': expense,
@@ -1598,8 +1602,10 @@ def expense_analytics_report(request):
             # Calculate center expense totals
             for expense in center_expenses:
                 products_with_expense = expense.products.all()
-                order_count = center_orders.filter(product__in=products_with_expense).count()
-                center_total += expense.price * order_count
+                related_orders = center_orders.filter(product__in=products_with_expense)
+                order_count = related_orders.count()
+                for order in related_orders:
+                    center_total += expense.price_for_original + (expense.price_for_copy * (order.copy_number or 0))
                 center_count += order_count
             
             # Get branch breakdown for this center
@@ -1616,8 +1622,11 @@ def expense_analytics_report(request):
                 
                 for expense in branch_expenses:
                     products_with_expense = expense.products.all()
-                    order_count = branch_orders.filter(product__in=products_with_expense).count()
-                    expense_total = expense.price * order_count
+                    related_orders = branch_orders.filter(product__in=products_with_expense)
+                    order_count = related_orders.count()
+                    expense_total = Decimal('0')
+                    for order in related_orders:
+                        expense_total += expense.price_for_original + (expense.price_for_copy * (order.copy_number or 0))
                     
                     branch_total += expense_total
                     branch_count += order_count
@@ -1663,8 +1672,11 @@ def expense_analytics_report(request):
         
         for expense in branch_expenses:
             products_with_expense = expense.products.all()
-            order_count = branch_orders.filter(product__in=products_with_expense).count()
-            expense_total = expense.price * order_count
+            related_orders = branch_orders.filter(product__in=products_with_expense)
+            order_count = related_orders.count()
+            expense_total = Decimal('0')
+            for order in related_orders:
+                expense_total += expense.price_for_original + (expense.price_for_copy * (order.copy_number or 0))
             
             branch_total += expense_total
             branch_count += order_count
@@ -1760,11 +1772,19 @@ def expense_analytics_report(request):
             from services.models import Product
             try:
                 product = Product.objects.get(id=product_id)
+                # Get orders for this month/product to calculate copy-aware expense
+                month_orders = orders_base.filter(
+                    product_id=product_id,
+                    created_at__year=month.year,
+                    created_at__month=month.month
+                )
                 for expense in product.expenses.all():
                     if expense.id in expense_usage:
                         if month not in monthly_data:
                             monthly_data[month] = Decimal('0')
-                        monthly_data[month] += expense.price * order_count
+                        # Calculate with copy-aware pricing
+                        for order in month_orders:
+                            monthly_data[month] += expense.price_for_original + (expense.price_for_copy * (order.copy_number or 0))
             except Product.DoesNotExist:
                 pass
         

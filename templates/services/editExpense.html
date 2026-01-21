@@ -53,20 +53,30 @@
                             </div>
                         </div>
                         
+                        <div class="mb-20">
+                            <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span>Expense Name</span> <span class="text-danger-600">*</span>
+                            </label>
+                            <input type="text" class="form-control radius-8" id="name" name="name" 
+                                   value="{{ expense.name }}" placeholder="e.g., Paper Cost, Notarization Fee" required>
+                        </div>
+                        
                         <div class="row">
-                            <div class="col-md-8 mb-20">
-                                <label for="name" class="form-label fw-semibold text-primary-light text-sm mb-8">
-                                    <span>Expense Name</span> <span class="text-danger-600">*</span>
+                            <div class="col-md-6 mb-20">
+                                <label for="price_for_original" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span>Price for Original (UZS)</span> <span class="text-danger-600">*</span>
                                 </label>
-                                <input type="text" class="form-control radius-8" id="name" name="name" 
-                                       value="{{ expense.name }}" placeholder="e.g., Paper Cost, Notarization Fee" required>
+                                <input type="number" step="0.01" class="form-control radius-8" id="price_for_original" 
+                                       name="price_for_original" value="{{ expense.price_for_original }}" placeholder="0" required>
+                                <small class="text-secondary-light">Cost for the original document</small>
                             </div>
-                            <div class="col-md-4 mb-20">
-                                <label for="price" class="form-label fw-semibold text-primary-light text-sm mb-8">
-                                    <span>Price (UZS)</span> <span class="text-danger-600">*</span>
+                            <div class="col-md-6 mb-20">
+                                <label for="price_for_copy" class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span>Price per Copy (UZS)</span> <span class="text-danger-600">*</span>
                                 </label>
-                                <input type="number" step="0.01" class="form-control radius-8" id="price" 
-                                       name="price" value="{{ expense.price }}" placeholder="0" required>
+                                <input type="number" step="0.01" class="form-control radius-8" id="price_for_copy" 
+                                       name="price_for_copy" value="{{ expense.price_for_copy }}" placeholder="0" required>
+                                <small class="text-secondary-light">Cost per copy document</small>
                             </div>
                         </div>
                         

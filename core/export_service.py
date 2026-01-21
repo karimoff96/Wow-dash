@@ -2059,8 +2059,11 @@ def export_expense_analytics(
     
     for expense in expenses:
         products_with_expense = expense.products.all()
-        order_count = orders_base.filter(product__in=products_with_expense).count()
-        expense_total = expense.price * order_count
+        related_orders = orders_base.filter(product__in=products_with_expense)
+        order_count = related_orders.count()
+        expense_total = Decimal('0')
+        for order in related_orders:
+            expense_total += expense.price_for_original + (expense.price_for_copy * (order.copy_number or 0))
         
         expense_usage[expense.id] = {
             'expense': expense,
@@ -2152,7 +2155,8 @@ def export_expense_analytics(
             expense.name,
             expense.description or "",
             type_label,
-            float(expense.price),
+            float(expense.price_for_original),
+            float(expense.price_for_copy),
             data['order_count'],
             float(data['total_cost']),
             float(data['total_cost'] / data['order_count']) if data['order_count'] > 0 else 0,
@@ -2165,7 +2169,7 @@ def export_expense_analytics(
     exporter.add_sheet(SheetConfig(
         name="All Expenses Detail",
         headers=[
-            "Expense Name", "Description", "Type", "Unit Price", 
+            "Expense Name", "Description", "Type", "Price (Original)", "Price (Per Copy)",
             "Orders", "Total Cost", "Avg Cost/Order", 
             "Branch", "Center", "Products Using", "Status"
         ],
@@ -2188,8 +2192,11 @@ def export_expense_analytics(
         
         for expense in branch_expenses:
             products_with_expense = expense.products.all()
-            order_count = branch_orders.filter(product__in=products_with_expense).count()
-            expense_total = expense.price * order_count
+            related_orders = branch_orders.filter(product__in=products_with_expense)
+            order_count = related_orders.count()
+            expense_total = Decimal('0')
+            for order in related_orders:
+                expense_total += expense.price_for_original + (expense.price_for_copy * (order.copy_number or 0))
             
             if order_count > 0:
                 unique_branch_expenses += 1
@@ -2249,7 +2256,8 @@ def export_expense_analytics(
             rank,
             expense.name,
             type_label,
-            float(expense.price),
+            float(expense.price_for_original),
+            float(expense.price_for_copy),
             data['order_count'],
             float(data['total_cost']),
             f"{cost_pct:.1f}%",
@@ -2262,7 +2270,7 @@ def export_expense_analytics(
     exporter.add_sheet(SheetConfig(
         name="Top 30 Expenses",
         headers=[
-            "Rank", "Expense Name", "Type", "Unit Price", 
+            "Rank", "Expense Name", "Type", "Price (Original)", "Price (Per Copy)",
             "Orders", "Total Cost", "% of Total", "Avg/Order", 
             "Branch", "Description"
         ],
@@ -2332,8 +2340,11 @@ def export_expense_analytics(
         
         for expense in expenses:
             products_with_expense = expense.products.all()
-            order_count = daily_orders.filter(product__in=products_with_expense).count()
-            expense_cost = expense.price * order_count
+            related_orders = daily_orders.filter(product__in=products_with_expense)
+            order_count = related_orders.count()
+            expense_cost = Decimal('0')
+            for order in related_orders:
+                expense_cost += expense.price_for_original + (expense.price_for_copy * (order.copy_number or 0))
             daily_cost += expense_cost
             
             if expense.expense_type == 'b2b':
