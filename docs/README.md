@@ -9,6 +9,11 @@ This folder contains technical documentation and implementation guides for the W
 - **[BOT_SYNC_SUMMARY.md](BOT_SYNC_SUMMARY.md)** - Telegram bot synchronization with pricing model updates
 - **[EXPENSE_PRICE_SPLIT_MIGRATION.md](EXPENSE_PRICE_SPLIT_MIGRATION.md)** - Expense pricing model split implementation
 
+### Styling and Internationalization
+
+- **[STYLING_AND_TRANSLATION_SUMMARY.md](STYLING_AND_TRANSLATION_SUMMARY.md)** - Comprehensive styling and i18n overhaul summary
+- **[TRANSLATION_KEYS.md](TRANSLATION_KEYS.md)** - Complete translation keys reference guide
+
 ### Bulk Payment System
 
 - **[BULK_PAYMENT_ENHANCEMENTS.md](BULK_PAYMENT_ENHANCEMENTS.md)** - Overview of bulk payment page enhancements

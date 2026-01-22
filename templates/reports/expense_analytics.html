@@ -199,12 +199,12 @@
                         <table class="table bordered-table mb-0">
                             <thead>
                                 <tr class="bg-neutral-50">
-                                    <th class="text-sm">Branch</th>
-                                    <th class="text-sm text-end">B2B</th>
-                                    <th class="text-sm text-end">B2C</th>
-                                    <th class="text-sm text-end">Both</th>
-                                    <th class="text-sm text-end">Total</th>
-                                    <th class="text-sm text-center">Count</th>
+                                    <th class="text-sm" data-i18n="common.branch">Branch</th>
+                                    <th class="text-sm text-end" data-i18n="expense.b2b">B2B</th>
+                                    <th class="text-sm text-end" data-i18n="expense.b2c">B2C</th>
+                                    <th class="text-sm text-end" data-i18n="expense.both">Both</th>
+                                    <th class="text-sm text-end" data-i18n="common.total">Total</th>
+                                    <th class="text-sm text-center" data-i18n="common.count">Count</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -251,13 +251,13 @@
                     <table class="table bordered-table mb-0">
                         <thead>
                             <tr>
-                                <th>Branch</th>
-                                {% if is_superuser %}<th>Center</th>{% endif %}
-                                <th class="text-end">B2B</th>
-                                <th class="text-end">B2C</th>
-                                <th class="text-end">Both</th>
-                                <th class="text-end">Total</th>
-                                <th class="text-center">Count</th>
+                                <th data-i18n="common.branch">Branch</th>
+                                {% if is_superuser %}<th data-i18n="common.center">Center</th>{% endif %}
+                                <th class="text-end" data-i18n="expense.b2b">B2B</th>
+                                <th class="text-end" data-i18n="expense.b2c">B2C</th>
+                                <th class="text-end" data-i18n="expense.both">Both</th>
+                                <th class="text-end" data-i18n="common.total">Total</th>
+                                <th class="text-center" data-i18n="common.count">Count</th>
                                 <th class="text-end">Avg</th>
                                 <th class="text-end">% of Total</th>
                             </tr>

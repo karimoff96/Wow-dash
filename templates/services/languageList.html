@@ -25,7 +25,7 @@
                 <form method="get" class="mb-20">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <input type="text" name="search" class="form-control" placeholder="Search by language name or code..." value="{{ search_query }}">
+                            <input type="text" name="search" class="form-control" data-i18n-placeholder="form.searchLanguage" placeholder="Search by language name or code..." value="{{ search_query }}">
                         </div>
                         <div class="col-md-2">
                             <select name="per_page" class="form-select">
@@ -53,11 +53,11 @@
                     <table class="table bordered-table mb-0">
                         <thead>
                             <tr>
-                                <th>Language</th>
-                                <th>Short Code</th>
-                                <th class="text-center" colspan="3">Agency Pricing (UZS)</th>
-                                <th class="text-center" colspan="3">Ordinary User Pricing (UZS)</th>
-                                <th class="text-center">Actions</th>
+                                <th data-i18n="table.language">Language</th>
+                                <th data-i18n="table.shortCode">Short Code</th>
+                                <th class="text-center" colspan="3" data-i18n="pricing.agencyPricing">Agency Pricing (UZS)</th>
+                                <th class="text-center" colspan="3" data-i18n="pricing.ordinaryPricing">Ordinary User Pricing (UZS)</th>
+                                <th class="text-center" data-i18n="table.action">Actions</th>
                             </tr>
                             <tr class="bg-neutral-50">
                                 <th colspan="2"></th>
@@ -164,13 +164,13 @@
                 <form id="addLanguageForm">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="languageName" class="form-label fw-semibold">Language Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control radius-8" id="languageName" required placeholder="e.g., English, French, Spanish">
+                        <label for="languageName" class="form-label fw-semibold" data-i18n="form.languageName">Language Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control radius-8" id="languageName" required data-i18n-placeholder="form.languageNamePlaceholder" placeholder="e.g., English, French, Spanish">
                     </div>
                     <div class="mb-3">
-                        <label for="languageShortName" class="form-label fw-semibold">Short Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control radius-8" id="languageShortName" required placeholder="e.g., EN, FR, ES" maxlength="10">
-                        <small class="text-secondary-light">2-3 letter code (will be auto-capitalized)</small>
+                        <label for="languageShortName" class="form-label fw-semibold" data-i18n="form.shortName">Short Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control radius-8" id="languageShortName" required data-i18n-placeholder="form.shortNamePlaceholder" placeholder="e.g., EN, FR, ES" maxlength="10">
+                        <small class="text-secondary-light" data-i18n="form.shortNameHint">2-3 letter code (will be auto-capitalized)</small>
                     </div>
                     
                     <h6 class="text-md fw-semibold mt-20 mb-12 text-primary-600">

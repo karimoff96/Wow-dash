@@ -219,19 +219,19 @@
                             <div class="col-md-6 mb-20">
                                 <label class="form-label fw-semibold text-primary-light text-sm mb-8">First Name *</label>
                                 <input type="text" name="manual_first_name" id="manualFirstName" class="form-control radius-8" 
-                                       value="{{ order.manual_first_name|default:'' }}" placeholder="Customer's first name"
+                                       value="{{ order.manual_first_name|default:'' }}" data-i18n-placeholder="form.customerFirstName" placeholder="Customer's first name"
                                        {% if order.is_manual_order %}required{% endif %}>
                             </div>
                             <div class="col-md-6 mb-20">
                                 <label class="form-label fw-semibold text-primary-light text-sm mb-8">Last Name</label>
                                 <input type="text" name="manual_last_name" id="manualLastName" class="form-control radius-8" 
-                                       value="{{ order.manual_last_name|default:'' }}" placeholder="Customer's last name">
+                                       value="{{ order.manual_last_name|default:'' }}" data-i18n-placeholder="form.customerLastName" placeholder="Customer's last name">
                             </div>
                         </div>
                         <div class="mb-20">
                             <label class="form-label fw-semibold text-primary-light text-sm mb-8">Phone Number *</label>
                             <input type="tel" name="manual_phone" id="manualPhone" class="form-control radius-8" 
-                                   value="{{ order.manual_phone|default:'' }}" placeholder="+998 XX XXX XX XX"
+                                   value="{{ order.manual_phone|default:'' }}" data-i18n-placeholder="form.phoneNumber" placeholder="+998 XX XXX XX XX"
                                    {% if order.is_manual_order %}required{% endif %}>
                             <small class="text-primary-light">Customer's contact number</small>
                         </div>
@@ -354,7 +354,7 @@
                     <!-- Description -->
                     <div class="mb-20">
                         <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.description">Description</label>
-                        <textarea name="description" class="form-control radius-8" rows="3" placeholder="Optional description...">{{ order.description|default:'' }}</textarea>
+                        <textarea name="description" class="form-control radius-8" rows="3" data-i18n-placeholder="form.optionalDescription" placeholder="Optional description...">{{ order.description|default:'' }}</textarea>
                     </div>
                     
                     <!-- Existing Files -->

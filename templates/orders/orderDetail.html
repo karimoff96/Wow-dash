@@ -211,10 +211,10 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                        <th>File</th>
+                                        <th data-i18n="table.amount">Amount</th>
+                                        <th data-i18n="table.status">Status</th>
+                                        <th data-i18n="table.date">Date</th>
+                                        <th data-i18n="detail.file">File</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -269,12 +269,12 @@
                         <table class="table bordered-table sm-table mb-0">
                             <thead class="bg-neutral-100">
                                 <tr>
-                                    <th>Component</th>
-                                    <th class="text-end">Product Price</th>
+                                    <th data-i18n="detail.component">Component</th>
+                                    <th class="text-end" data-i18n="detail.productPrice">Product Price</th>
                                     {% if price_breakdown.language_name %}
-                                    <th class="text-end">Language Price ({{ price_breakdown.language_name }})</th>
+                                    <th class="text-end" data-i18n="detail.languagePrice">Language Price ({{ price_breakdown.language_name }})</th>
                                     {% endif %}
-                                    <th class="text-end">Combined Price</th>
+                                    <th class="text-end" data-i18n="detail.combinedPrice">Combined Price</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -634,6 +634,17 @@
 
 {% block script %}
 <script>
+    // Translation strings for JavaScript
+    const translations = {
+        paidBy: "{% trans 'Paid by' %}",
+        order: "{% trans 'Order' %}",
+        days: "{% trans 'days' %}",
+        total: "{% trans 'Total' %}",
+        paid: "{% trans 'Paid' %}",
+        remaining: "{% trans 'Remaining' %}",
+        uzs: "{% trans 'UZS' %}"
+    };
+
     let selectedCustomerId = null;
     let customerDebtData = null;
     let paymentPreviewData = null;
@@ -890,7 +901,7 @@
                 paymentInfoHtml = `
                     <div class="small text-success mt-1">
                         <iconify-icon icon="solar:user-check-bold-duotone" style="font-size: 12px;"></iconify-icon>
-                        <strong>Paid by:</strong> ${order.payment_info.received_by}
+                        <strong>${translations.paidBy}:</strong> ${order.payment_info.received_by}
                         <br>
                         <iconify-icon icon="solar:calendar-check-bold-duotone" style="font-size: 12px;"></iconify-icon>
                         ${order.payment_info.received_at}
@@ -905,13 +916,13 @@
                             <div class="flex-grow-1">
                                 <div class="d-flex align-items-center mb-1">
                                     <span class="badge bg-secondary me-2">#${index + 1}</span>
-                                    <strong class="small">{% trans "Order" %} #${order.order_number}</strong>
+                                    <strong class="small">${translations.order} #${order.order_number}</strong>
                                     <span class="badge bg-warning ms-2 small">${order.status}</span>
                                 </div>
                                 <div class="small text-muted mb-1">
                                     <iconify-icon icon="solar:calendar-bold-duotone" style="font-size: 12px;"></iconify-icon> ${order.created_at}
                                     <span class="ms-2">
-                                        <iconify-icon icon="solar:clock-circle-bold-duotone" style="font-size: 12px;"></iconify-icon> ${order.days_old} days
+                                        <iconify-icon icon="solar:clock-circle-bold-duotone" style="font-size: 12px;"></iconify-icon> ${order.days_old} ${translations.days}
                                     </span>
                                 </div>
                                 <div class="small">
@@ -920,10 +931,10 @@
                                 ${paymentInfoHtml}
                             </div>
                             <div class="text-end ms-2">
-                                <div class="small text-muted">Total: $${order.total_price.toFixed(2)}</div>
-                                <div class="small text-muted">Paid: $${order.received.toFixed(2)}</div>
+                                <div class="small text-muted">${translations.total}: ${order.total_price.toFixed(2)} ${translations.uzs}</div>
+                                <div class="small text-muted">${translations.paid}: ${order.received.toFixed(2)} ${translations.uzs}</div>
                                 <div class="badge bg-danger mt-1">
-                                    <strong>$${order.remaining.toFixed(2)}</strong>
+                                    <strong>${order.remaining.toFixed(2)} ${translations.uzs}</strong>
                                 </div>
                             </div>
                         </div>

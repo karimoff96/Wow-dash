@@ -1173,6 +1173,21 @@ const translations = {
         ru: 'Цена',
         en: 'Price'
     },
+    'table.shortCode': {
+        uz: 'Qisqa kod',
+        ru: 'Краткий код',
+        en: 'Short Code'
+    },
+    'table.language': {
+        uz: 'Til',
+        ru: 'Язык',
+        en: 'Language'
+    },
+    'table.rate': {
+        uz: 'Stavka',
+        ru: 'Ставка',
+        en: 'Rate'
+    },
 
     // ========== COMMON LABELS ==========
     'common.show': {
@@ -1718,6 +1733,66 @@ const translations = {
         uz: 'Sabab',
         ru: 'Причина',
         en: 'Reason'
+    },
+    'form.customerFirstName': {
+        uz: 'Mijoz ismi',
+        ru: 'Имя клиента',
+        en: "Customer's first name"
+    },
+    'form.customerLastName': {
+        uz: 'Mijoz familiyasi',
+        ru: 'Фамилия клиента',
+        en: "Customer's last name"
+    },
+    'form.optionalNotes': {
+        uz: 'Ixtiyoriy izoh yoki maxsus ko\'rsatmalar...',
+        ru: 'Необязательные заметки или специальные инструкции...',
+        en: 'Optional notes or special instructions...'
+    },
+    'form.optionalDescription': {
+        uz: 'Ixtiyoriy tavsif...',
+        ru: 'Необязательное описание...',
+        en: 'Optional description...'
+    },
+    'form.telegramUsername': {
+        uz: 'telegram_username',
+        ru: 'telegram_username',
+        en: 'telegram_username'
+    },
+    'form.telegramUserIdPlaceholder': {
+        uz: '123456789',
+        ru: '123456789',
+        en: '123456789'
+    },
+    'form.languageName': {
+        uz: 'Til nomi',
+        ru: 'Название языка',
+        en: 'Language Name'
+    },
+    'form.languageNamePlaceholder': {
+        uz: 'masalan, Ingliz tili, Fransuz tili, Ispaniya tili',
+        ru: 'например, Английский, Французский, Испанский',
+        en: 'e.g., English, French, Spanish'
+    },
+    'form.shortName': {
+        uz: 'Qisqartma',
+        ru: 'Краткое название',
+        en: 'Short Name'
+    },
+    'form.shortNamePlaceholder': {
+        uz: 'masalan, EN, FR, ES',
+        ru: 'например, EN, FR, ES',
+        en: 'e.g., EN, FR, ES'
+    },
+    'form.shortNameHint': {
+        uz: '2-3 harfli kod (avtomatik ravishda katta harflarga aylanadi)',
+        ru: 'Код из 2-3 букв (автоматически преобразуется в заглавные)',
+        en: '2-3 letter code (will be auto-capitalized)'
+    },
+    'form.searchLanguage': {
+        uz: 'Til nomi yoki kodi bo\'yicha qidirish...',
+        ru: 'Поиск по названию или коду языка...',
+        en: 'Search by language name or code...'
     },
     'form.cancel': {
         uz: 'Bekor qilish',
@@ -2353,6 +2428,31 @@ const translations = {
         uz: 'foydalanuvchilar',
         ru: 'пользователей',
         en: 'users'
+    },
+    'common.location': {
+        uz: 'Joylashuv',
+        ru: 'Местоположение',
+        en: 'Location'
+    },
+    'common.branch': {
+        uz: 'Filial',
+        ru: 'Филиал',
+        en: 'Branch'
+    },
+    'common.center': {
+        uz: 'Markaz',
+        ru: 'Центр',
+        en: 'Center'
+    },
+    'common.staff': {
+        uz: 'Xodimlar',
+        ru: 'Персонал',
+        en: 'Staff'
+    },
+    'common.count': {
+        uz: 'Soni',
+        ru: 'Количество',
+        en: 'Count'
     },
     'common.recentOrders': {
         uz: 'So\'nggi buyurtmalar',
@@ -3196,6 +3296,31 @@ const translations = {
         ru: 'Загружено',
         en: 'Uploaded'
     },
+    'detail.component': {
+        uz: 'Komponent',
+        ru: 'Компонент',
+        en: 'Component'
+    },
+    'detail.productPrice': {
+        uz: 'Mahsulot narxi',
+        ru: 'Цена продукта',
+        en: 'Product Price'
+    },
+    'detail.languagePrice': {
+        uz: 'Til narxi',
+        ru: 'Цена языка',
+        en: 'Language Price'
+    },
+    'detail.combinedPrice': {
+        uz: 'Birlashtirilgan narx',
+        ru: 'Итоговая цена',
+        en: 'Combined Price'
+    },
+    'detail.deleteOrder': {
+        uz: 'Buyurtmani o\'chirish',
+        ru: 'Удалить заказ',
+        en: 'Delete Order'
+    },
     'detail.updateStatus': {
         uz: 'Holatni yangilash',
         ru: 'Обновить статус',
@@ -3892,6 +4017,31 @@ const translations = {
         ru: 'Доход',
         en: 'Revenue'
     },
+    'report.debt': {
+        uz: 'Qarz',
+        ru: 'Долг',
+        en: 'Debt'
+    },
+    'report.expected': {
+        uz: 'Kutilayotgan',
+        ru: 'Ожидается',
+        en: 'Expected'
+    },
+    'report.received': {
+        uz: 'Olingan',
+        ru: 'Получено',
+        en: 'Received'
+    },
+    'report.avgValue': {
+        uz: 'O\'rtacha qiymat',
+        ru: 'Средняя стоимость',
+        en: 'Avg Value'
+    },
+    'report.totalSpent': {
+        uz: 'Jami sarflangan',
+        ru: 'Всего потрачено',
+        en: 'Total Spent'
+    },
     'report.revenueByBranch': {
         uz: 'Filial bo\'yicha daromad',
         ru: 'Доход по филиалам',
@@ -4052,6 +4202,35 @@ const translations = {
         uz: 'Bu davr uchun jalb qilish ma\'lumotlari yo\'q',
         ru: 'Нет данных о привлечении за этот период',
         en: 'No acquisition data for this period'
+    },
+
+    // ========== EXPENSE KEYS ==========
+    'expense.b2b': {
+        uz: 'B2B',
+        ru: 'B2B',
+        en: 'B2B'
+    },
+    'expense.b2c': {
+        uz: 'B2C',
+        ru: 'B2C',
+        en: 'B2C'
+    },
+    'expense.both': {
+        uz: 'Ikkalasi',
+        ru: 'Оба',
+        en: 'Both'
+    },
+
+    // ========== PRICING KEYS ==========
+    'pricing.agencyPricing': {
+        uz: 'Agentlik narxlari (UZS)',
+        ru: 'Цены для агентств (UZS)',
+        en: 'Agency Pricing (UZS)'
+    },
+    'pricing.ordinaryPricing': {
+        uz: 'Oddiy foydalanuvchi narxlari (UZS)',
+        ru: 'Цены для обычных пользователей (UZS)',
+        en: 'Ordinary User Pricing (UZS)'
     },
 
     // ========== UNIT ECONOMY ==========
