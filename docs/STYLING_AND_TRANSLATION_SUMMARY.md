@@ -205,6 +205,7 @@ const translations = {
 #### Report Keys (lines 4027-4052)
 ```javascript
 'report.debt': { uz: 'Qarz', ru: 'Долг', en: 'Debt' }
+'report.countt': { uz: 'Soni', ru: 'Кол-во', en: 'Count' }
 'report.expected': { uz: 'Kutilayotgan', ru: 'Ожидается', en: 'Expected' }
 'report.received': { uz: 'Olingan', ru: 'Получено', en: 'Received' }
 'report.avgValue': { uz: 'O\'rtacha qiymat', ru: 'Средняя стоимость', en: 'Avg Value' }

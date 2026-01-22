@@ -297,17 +297,17 @@
                     </h6>
                     <small class="text-muted">{% trans "Click to select for payment" %}</small>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body p-24">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
+                        <table class="table bordered-table sm-table mb-0">
+                            <thead>
                                 <tr>
-                                    <th style="width: 40px;">#</th>
-                                    <th>{% trans "Customer" %}</th>
-                                    <th>{% trans "Type" %}</th>
-                                    <th class="text-end">{% trans "Total Debt" %}</th>
-                                    <th class="text-center">{% trans "Orders" %}</th>
-                                    <th class="text-center">{% trans "Action" %}</th>
+                                    <th scope="col" style="width: 40px;">#</th>
+                                    <th scope="col">{% trans "Customer" %}</th>
+                                    <th scope="col">{% trans "Type" %}</th>
+                                    <th scope="col" class="text-end">{% trans "Total Debt" %}</th>
+                                    <th scope="col" class="text-center">{% trans "Orders" %}</th>
+                                    <th scope="col" class="text-center">{% trans "Action" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -634,6 +634,9 @@
 
 {% block script %}
 <script>
+(function() {
+    'use strict';
+    
     // Translation strings for JavaScript
     const translations = {
         paidBy: "{% trans 'Paid by' %}",
@@ -649,23 +652,27 @@
     let customerDebtData = null;
     let paymentPreviewData = null;
 
-    $(document).ready(function() {
-        console.log('Document ready - jQuery is working');
-        console.log('Search input exists:', $('#customerSearch').length);
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Document ready - initializing');
+        
+        const customerSearchInput = document.getElementById('customerSearch');
+        const searchResults = document.getElementById('searchResults');
+        
+        console.log('Search input exists:', customerSearchInput !== null);
         
         // Hide customer search section and show no customer message initially
-        $('#customerSearchSection').show();
-        $('#noCustomerMessage').show();
-        $('#paymentSection').hide();
+        document.getElementById('customerSearchSection').style.display = 'block';
+        document.getElementById('noCustomerMessage').style.display = 'block';
+        document.getElementById('paymentSection').style.display = 'none';
         
         // Auto-select customer if coming from debtors report
         {% if preselected_customer_id %}
         const preselectedCustomerId = '{{ preselected_customer_id }}';
         if (preselectedCustomerId) {
             console.log('Auto-selecting customer:', preselectedCustomerId);
-            $('#customerSearchSection').hide();
-            $('#noCustomerMessage').hide();
-            $('#summaryStatistics').hide();
+            document.getElementById('customerSearchSection').style.display = 'none';
+            document.getElementById('noCustomerMessage').style.display = 'none';
+            document.getElementById('summaryStatistics').style.display = 'none';
             setTimeout(function() {
                 selectCustomer(parseInt(preselectedCustomerId));
             }, 500);
@@ -673,226 +680,268 @@
         {% endif %}
         
         // Handle clicks on top debtors table
-        $('.select-debtor-btn').on('click', function(e) {
-            e.stopPropagation();
-            const customerId = $(this).data('customer-id');
-            console.log('Selecting debtor from top 10:', customerId);
-            $('#customerSearchSection').hide();
-            $('#noCustomerMessage').hide();
-            $('#summaryStatistics').hide();
-            selectCustomer(customerId);
-            // Scroll to payment section
-            setTimeout(() => {
-                $('html, body').animate({
-                    scrollTop: $('#paymentSection').offset().top - 100
-                }, 500);
-            }, 300);
+        const selectDebtorBtns = document.querySelectorAll('.select-debtor-btn');
+        selectDebtorBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const customerId = this.getAttribute('data-customer-id');
+                console.log('Selecting debtor from top 10:', customerId);
+                document.getElementById('customerSearchSection').style.display = 'none';
+                document.getElementById('noCustomerMessage').style.display = 'none';
+                document.getElementById('summaryStatistics').style.display = 'none';
+                selectCustomer(customerId);
+                // Scroll to payment section
+                setTimeout(() => {
+                    const paymentSection = document.getElementById('paymentSection');
+                    window.scrollTo({
+                        top: paymentSection.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }, 300);
+            });
         });
         
         // Handle clicks on debtor row (anywhere except button)
-        $('.debtor-row').on('click', function(e) {
-            if (!$(e.target).hasClass('select-debtor-btn')) {
-                $(this).find('.select-debtor-btn').click();
-            }
+        const debtorRows = document.querySelectorAll('.debtor-row');
+        debtorRows.forEach(row => {
+            row.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('select-debtor-btn')) {
+                    this.querySelector('.select-debtor-btn').click();
+                }
+            });
         });
         
         // Customer search with debounce
         let searchTimeout;
         
         function performSearch() {
-            const query = $('#customerSearch').val().trim();
+            const query = customerSearchInput.value.trim();
             console.log('Performing search with query:', query);
             
             if (query.length < 2) {
                 console.log('Query too short, clearing results');
-                $('#searchResults').empty();
+                searchResults.innerHTML = '';
                 return;
             }
             
             searchCustomers(query);
         }
         
-        $('#customerSearch').on('input', function() {
+        customerSearchInput.addEventListener('input', function() {
+            console.log('Input event fired, value:', this.value);
             clearTimeout(searchTimeout);
-            const query = $(this).val().trim();
+            const query = this.value.trim();
             
             if (query.length < 2) {
-                $('#searchResults').empty();
+                console.log('Query too short, clearing results');
+                searchResults.innerHTML = '';
                 return;
             }
             
+            console.log('Setting timeout for search');
             searchTimeout = setTimeout(() => {
+                console.log('Timeout fired, calling searchCustomers');
                 searchCustomers(query);
             }, 300);
         });
         
         // Enter key to search
-        $('#customerSearch').on('keypress', function(e) {
-            if (e.which === 13) {
+        customerSearchInput.addEventListener('keypress', function(e) {
+            if (e.which === 13 || e.keyCode === 13) {
                 e.preventDefault();
                 console.log('Enter key pressed');
                 performSearch();
             }
         });
-        
-        // Click on search result to select customer
-        $(document).on('click', '.search-result-item', function(e) {
-            e.preventDefault();
-            const customerId = $(this).data('customer-id');
-            selectCustomer(customerId);
-        });
 
         // Preview payment button
-        $('#previewPaymentBtn').on('click', function() {
-            previewPayment();
-        });
+        const previewBtn = document.getElementById('previewPaymentBtn');
+        if (previewBtn) {
+            previewBtn.addEventListener('click', function() {
+                previewPayment();
+            });
+        }
 
         // Process payment form submission
-        $('#paymentForm').on('submit', function(e) {
-            e.preventDefault();
-            processPayment();
-        });
+        const paymentForm = document.getElementById('paymentForm');
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                processPayment();
+            });
+        }
         
         // Change customer button
-        $('#changeCustomerBtn').on('click', function() {
-            $('#paymentSection').slideUp();
-            $('#customerSearchSection').slideDown();
-            $('#noCustomerMessage').slideDown();
-            $('#summaryStatistics').slideDown();
-            $('#customerSearch').val('').focus();
-            $('#searchResults').empty();
-            selectedCustomerId = null;
-            customerDebtData = null;
-            paymentPreviewData = null;
-            // Scroll to top
-            $('html, body').animate({
-                scrollTop: 0
-            }, 500);
-        });
+        const changeCustomerBtn = document.getElementById('changeCustomerBtn');
+        if (changeCustomerBtn) {
+            changeCustomerBtn.addEventListener('click', function() {
+                document.getElementById('paymentSection').style.display = 'none';
+                document.getElementById('customerSearchSection').style.display = 'block';
+                document.getElementById('noCustomerMessage').style.display = 'block';
+                document.getElementById('summaryStatistics').style.display = 'block';
+                customerSearchInput.value = '';
+                customerSearchInput.focus();
+                searchResults.innerHTML = '';
+                selectedCustomerId = null;
+                customerDebtData = null;
+                paymentPreviewData = null;
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
     });
 
     function searchCustomers(query) {
         console.log('Searching customers with query:', query);
-        $.ajax({
-            url: '{% url "orders:search_customers_with_debt" %}',
-            data: { q: query },
-            success: function(response) {
-                console.log('Search successful:', response);
-                displaySearchResults(response.customers);
-            },
-            error: function(xhr, status, error) {
-                console.error('Search error:', status, error);
+        const url = '{% url "orders:search_customers_with_debt" %}?q=' + encodeURIComponent(query);
+        console.log('Fetching URL:', url);
+        
+        fetch(url)
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Search successful:', data);
+                console.log('Number of customers:', data.customers ? data.customers.length : 0);
+                displaySearchResults(data.customers);
+            })
+            .catch(error => {
+                console.error('Search error:', error);
                 showError('{% trans "Failed to search customers" %}');
-            }
-        });
+            });
     }
 
     function displaySearchResults(customers) {
-        const $results = $('#searchResults');
-        $results.empty();
+        console.log('displaySearchResults called with:', customers);
+        const searchResults = document.getElementById('searchResults');
+        console.log('searchResults element:', searchResults);
         
-        if (customers.length === 0) {
-            $results.html('<p class="text-muted small m-2">{% trans "No customers found" %}</p>');
+        if (!searchResults) {
+            console.error('searchResults element not found!');
             return;
         }
         
-        const $list = $('<div class="list-group" style="margin: 0 !important;"></div>');
+        searchResults.innerHTML = '';
+        
+        if (!customers || customers.length === 0) {
+            searchResults.innerHTML = '<p class="text-muted small m-2">{% trans "No customers found" %}</p>';
+            return;
+        }
+        
+        const listGroup = document.createElement('div');
+        listGroup.className = 'list-group';
+        listGroup.style.margin = '0';
+        
         customers.forEach(customer => {
             const typeClass = customer.is_agency ? 'primary' : 'info';
             const typeIcon = customer.is_agency ? 'building' : 'user';
             
-            const $item = $(`
-                <a href="#" class="list-group-item list-group-item-action search-result-item" 
-                   data-customer-id="${customer.id}">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>${customer.name}</strong>
-                            <br>
-                            <small class="text-muted">
-                                <i class="fas fa-phone me-1"></i>${customer.phone}
-                            </small>
-                            <span class="badge bg-${typeClass} ms-2">
-                                <i class="fas fa-${typeIcon} me-1"></i>${customer.customer_type}
-                            </span>
-                        </div>
-                        <div class="text-end">
-                            <strong class="text-danger">$${customer.total_debt.toFixed(2)}</strong>
-                            <br>
-                            <small class="text-muted">${customer.order_count} {% trans "orders" %}</small>
-                        </div>
+            const item = document.createElement('a');
+            item.href = '#';
+            item.className = 'list-group-item list-group-item-action search-result-item';
+            item.setAttribute('data-customer-id', customer.id);
+            item.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${customer.name}</strong>
+                        <br>
+                        <small class="text-muted">
+                            <i class="fas fa-phone me-1"></i>${customer.phone}
+                        </small>
+                        <span class="badge bg-${typeClass} ms-2">
+                            <i class="fas fa-${typeIcon} me-1"></i>${customer.customer_type}
+                        </span>
                     </div>
-                </a>
-            `);
+                    <div class="text-end">
+                        <strong class="text-danger">$${customer.total_debt.toFixed(2)}</strong>
+                        <br>
+                        <small class="text-muted">${customer.order_count} {% trans "orders" %}</small>
+                    </div>
+                </div>
+            `;
             
-            $item.on('click', function(e) {
+            item.addEventListener('click', function(e) {
                 e.preventDefault();
                 selectCustomer(customer.id);
-                $results.empty();
-                $('#customerSearch').val('');
+                searchResults.innerHTML = '';
+                document.getElementById('customerSearch').value = '';
             });
             
-            $list.append($item);
+            listGroup.appendChild(item);
         });
         
-        $results.append($list);
+        searchResults.appendChild(listGroup);
     }
 
     function selectCustomer(customerId) {
         selectedCustomerId = customerId;
         
         // Highlight selected row in table
-        $('.debtor-row').removeClass('selected');
-        $(`.debtor-row[data-customer-id="${customerId}"]`).addClass('selected');
+        document.querySelectorAll('.debtor-row').forEach(row => row.classList.remove('selected'));
+        const selectedRow = document.querySelector(`.debtor-row[data-customer-id="${customerId}"]`);
+        if (selectedRow) {
+            selectedRow.classList.add('selected');
+        }
         
         // Scroll to payment section
-        $('html, body').animate({
-            scrollTop: $('#paymentSection').offset().top - 100
-        }, 500);
+        const paymentSection = document.getElementById('paymentSection');
+        window.scrollTo({
+            top: paymentSection.offsetTop - 100,
+            behavior: 'smooth'
+        });
         
         // Load customer debt details
         loadCustomerDebt(customerId);
     }
 
     function loadCustomerDebt(customerId) {
-        $.ajax({
-            url: `{% url 'orders:get_customer_debt_details' 0 %}`.replace('/0/', `/${customerId}/`),
-            success: function(response) {
-                customerDebtData = response;
-                displayCustomerDebt(response);
+        const url = '{% url "orders:get_customer_debt_details" 0 %}'.replace('/0/', `/${customerId}/`);
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                customerDebtData = data;
+                displayCustomerDebt(data);
                 // Hide search section and show payment section
-                $('#customerSearchSection').slideUp();
-                $('#noCustomerMessage').slideUp();
-                $('#paymentSection').slideDown();
+                document.getElementById('customerSearchSection').style.display = 'none';
+                document.getElementById('noCustomerMessage').style.display = 'none';
+                document.getElementById('paymentSection').style.display = 'block';
                 // Scroll to payment section
-                $('html, body').animate({
-                    scrollTop: $('#paymentSection').offset().top - 100
-                }, 500);
-            },
-            error: function() {
+                window.scrollTo({
+                    top: document.getElementById('paymentSection').offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            })
+            .catch(error => {
+                console.error('Error loading customer debt:', error);
                 showError('{% trans "Failed to load customer debt details" %}');
-            }
-        });
+            });
     }
 
     function displayCustomerDebt(data) {
         // Update customer info
-        $('#selectedCustomerId').val(data.customer.id);
-        $('#selectedCustomerName').text(data.customer.name);
-        $('#selectedCustomerPhone').text(data.customer.phone);
+        document.getElementById('selectedCustomerId').value = data.customer.id;
+        document.getElementById('selectedCustomerName').textContent = data.customer.name;
+        document.getElementById('selectedCustomerPhone').textContent = data.customer.phone;
         
         const typeClass = data.customer.is_agency ? 'primary' : 'info';
-        $('#selectedCustomerType').removeClass().addClass('badge mt-2 bg-' + typeClass)
-            .html(`<i class="fas fa-${data.customer.is_agency ? 'building' : 'user'} me-1"></i>${data.customer.customer_type}`);
+        const selectedCustomerType = document.getElementById('selectedCustomerType');
+        selectedCustomerType.className = 'badge mt-2 bg-' + typeClass;
+        selectedCustomerType.innerHTML = `<i class="fas fa-${data.customer.is_agency ? 'building' : 'user'} me-1"></i>${data.customer.customer_type}`;
         
         // Update debt summary
-        $('#totalDebtAmount').text('$' + data.debt_summary.total_debt.toFixed(2));
-        $('#debtOrderCount').text(data.debt_summary.order_count);
-        $('#oldestDebtDays').text(data.debt_summary.oldest_debt_days || '-');
-        $('#ordersCount').text(data.debt_summary.order_count);
+        document.getElementById('totalDebtAmount').textContent = '$' + data.debt_summary.total_debt.toFixed(2);
+        document.getElementById('debtOrderCount').textContent = data.debt_summary.order_count;
+        document.getElementById('oldestDebtDays').textContent = data.debt_summary.oldest_debt_days || '-';
+        document.getElementById('ordersCount').textContent = data.debt_summary.order_count;
         
         // Display orders in compact format
-        const $ordersList = $('#outstandingOrdersList');
-        $ordersList.empty();
+        const ordersList = document.getElementById('outstandingOrdersList');
+        ordersList.innerHTML = '';
         
         data.orders.forEach((order, index) => {
             // Build payment info badge if available
@@ -941,12 +990,12 @@
                     </div>
                 </div>
             `;
-            $ordersList.append(orderHtml);
+            ordersList.insertAdjacentHTML('beforeend', orderHtml);
         });
     }
 
     function previewPayment() {
-        const amount = parseFloat($('#paymentAmount').val());
+        const amount = parseFloat(document.getElementById('paymentAmount').value);
         
         if (!amount || amount <= 0) {
             showError('{% trans "Please enter a valid payment amount" %}');
@@ -958,28 +1007,29 @@
             return;
         }
         
-        $.ajax({
-            url: '{% url "orders:preview_payment_distribution" %}',
+        const formData = new FormData();
+        formData.append('customer_id', selectedCustomerId);
+        formData.append('payment_amount', amount);
+        formData.append('csrfmiddlewaretoken', document.querySelector('input[name=csrfmiddlewaretoken]').value);
+        
+        fetch('{% url "orders:preview_payment_distribution" %}', {
             method: 'POST',
-            data: {
-                customer_id: selectedCustomerId,
-                payment_amount: amount,
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-            },
-            success: function(response) {
-                paymentPreviewData = response;
-                displayPaymentPreview(response);
-            },
-            error: function(xhr) {
-                const error = xhr.responseJSON?.error || '{% trans "Failed to preview payment" %}';
-                showError(error);
-            }
-        });
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                paymentPreviewData = data;
+                displayPaymentPreview(data);
+            })
+            .catch(error => {
+                console.error('Error previewing payment:', error);
+                showError('{% trans "Failed to preview payment" %}');
+            });
     }
 
     function displayPaymentPreview(data) {
-        const $preview = $('#paymentPreviewContent');
-        $preview.empty();
+        const preview = document.getElementById('paymentPreviewContent');
+        preview.innerHTML = '';
         
         // Summary
         let summaryHtml = `
@@ -1025,14 +1075,18 @@
             `;
         });
         
-        $preview.html(summaryHtml + distributionHtml);
-        $('#paymentPreviewCard').slideDown();
-        $('#processPaymentBtn').slideDown();
+        preview.innerHTML = summaryHtml + distributionHtml;
+        
+        const paymentPreviewCard = document.getElementById('paymentPreviewCard');
+        const processPaymentBtn = document.getElementById('processPaymentBtn');
+        paymentPreviewCard.style.display = 'block';
+        processPaymentBtn.style.display = 'block';
         
         // Scroll to preview
-        $('html, body').animate({
-            scrollTop: $('#paymentPreviewCard').offset().top - 100
-        }, 500);
+        window.scrollTo({
+            top: paymentPreviewCard.offsetTop - 100,
+            behavior: 'smooth'
+        });
     }
 
     function processPayment() {
@@ -1041,23 +1095,29 @@
             return;
         }
         
-        const $btn = $('#processPaymentBtn');
-        $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>{% trans "Processing..." %}');
+        const btn = document.getElementById('processPaymentBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>{% trans "Processing..." %}';
         
-        $.ajax({
-            url: '{% url "orders:process_bulk_payment" %}',
+        const paymentForm = document.getElementById('paymentForm');
+        const formData = new FormData(paymentForm);
+        
+        fetch('{% url "orders:process_bulk_payment" %}', {
             method: 'POST',
-            data: $('#paymentForm').serialize(),
-            success: function(response) {
-                displaySuccessModal(response);
-                $btn.prop('disabled', false).html('<i class="fas fa-check-circle me-2"></i>{% trans "Process Payment" %}');
-            },
-            error: function(xhr) {
-                const error = xhr.responseJSON?.error || '{% trans "Failed to process payment" %}';
-                showError(error);
-                $btn.prop('disabled', false).html('<i class="fas fa-check-circle me-2"></i>{% trans "Process Payment" %}');
-            }
-        });
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                displaySuccessModal(data);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>{% trans "Process Payment" %}';
+            })
+            .catch(error => {
+                console.error('Error processing payment:', error);
+                showError('{% trans "Failed to process payment" %}');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>{% trans "Process Payment" %}';
+            });
     }
 
     function displaySuccessModal(response) {
@@ -1085,7 +1145,7 @@
             </div>
         `;
         
-        $('#successModalContent').html(content);
+        document.getElementById('successModalContent').innerHTML = content;
         const modal = new bootstrap.Modal(document.getElementById('successModal'));
         modal.show();
     }
@@ -1094,5 +1154,6 @@
         // You can use your existing toast/alert system
         alert(message);
     }
+})();
 </script>
 {% endblock %}

@@ -384,11 +384,143 @@ msgstr ""
 
 #: core/models.py:158
 msgid "Audit Log"
-msgstr ""
+msgstr "Журнал аудита"
 
 #: core/models.py:159 core/views.py:219
 msgid "Audit Logs"
-msgstr ""
+msgstr "Журналы аудита"
+
+#: core/views.py:220
+msgid "System activity and audit trail"
+msgstr "Системная активность и журнал аудита"
+
+#: templates/reports/audit_logs.html
+msgid "Total Logs"
+msgstr "Всего записей"
+
+#: templates/reports/audit_logs.html
+msgid "Period"
+msgstr "Период"
+
+#: templates/reports/audit_logs.html
+msgid "From"
+msgstr "С"
+
+#: templates/reports/audit_logs.html
+msgid "To"
+msgstr "До"
+
+#: templates/reports/audit_logs.html
+msgid "Action Type"
+msgstr "Тип действия"
+
+#: templates/reports/audit_logs.html
+msgid "All Actions"
+msgstr "Все действия"
+
+#: templates/reports/audit_logs.html
+msgid "User"
+msgstr "Пользователь"
+
+#: templates/reports/audit_logs.html
+msgid "All Users"
+msgstr "Все пользователи"
+
+#: templates/reports/audit_logs.html
+msgid "Center"
+msgstr "Центр"
+
+#: templates/reports/audit_logs.html
+msgid "All Centers"
+msgstr "Все центры"
+
+#: templates/reports/audit_logs.html
+msgid "Branch"
+msgstr "Филиал"
+
+#: templates/reports/audit_logs.html
+msgid "All Branches"
+msgstr "Все филиалы"
+
+#: templates/reports/audit_logs.html
+msgid "Search"
+msgstr "Поиск"
+
+#: templates/reports/audit_logs.html
+msgid "Search logs..."
+msgstr "Поиск записей..."
+
+#: templates/reports/audit_logs.html
+msgid "Apply Filters"
+msgstr "Применить фильтры"
+
+#: templates/reports/audit_logs.html
+msgid "Reset"
+msgstr "Сбросить"
+
+#: templates/reports/audit_logs.html
+msgid "Activity Timeline"
+msgstr "Лента активности"
+
+#: templates/reports/audit_logs.html
+msgid "of"
+msgstr "из"
+
+#: templates/reports/audit_logs.html
+msgid "System"
+msgstr "Система"
+
+#: templates/reports/audit_logs.html
+msgid "Created"
+msgstr "Создано"
+
+#: templates/reports/audit_logs.html
+msgid "Updated"
+msgstr "Обновлено"
+
+#: templates/reports/audit_logs.html
+msgid "Deleted"
+msgstr "Удалено"
+
+#: templates/reports/audit_logs.html
+msgid "Logged In"
+msgstr "Вошел в систему"
+
+#: templates/reports/audit_logs.html
+msgid "Logged Out"
+msgstr "Вышел из системы"
+
+#: templates/reports/audit_logs.html
+msgid "Payment"
+msgstr "Платеж"
+
+#: templates/reports/audit_logs.html
+msgid "Status Changed"
+msgstr "Статус изменен"
+
+#: templates/reports/audit_logs.html
+msgid "Assigned"
+msgstr "Назначено"
+
+#: templates/reports/audit_logs.html
+msgid "at"
+msgstr "в"
+
+#: templates/reports/audit_logs.html
+msgid "View Changes"
+msgstr "Посмотреть изменения"
+
+#: templates/reports/audit_logs.html
+msgid "Field"
+msgstr "Поле"
+
+#: templates/reports/audit_logs.html
+msgid "Previous"
+msgstr "Предыдущее"
+
+#: templates/reports/audit_logs.html
+msgid "Updated"
+msgstr "Обновлено"
 
 #: core/models.py:187
 msgid "Receipt Pending Verification"

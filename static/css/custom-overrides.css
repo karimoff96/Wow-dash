@@ -5,28 +5,9 @@
  */
 
 /* ========================================
-   1. Consistent Color System Overrides
+   1. Card Styling
    ======================================== */
 
-/* Light Background Classes - Use Dark Text */
-.bg-light,
-.bg-white,
-.bg-neutral-50,
-.bg-base {
-    background-color: var(--base) !important;
-    color: var(--text-primary-light) !important;
-}
-
-.bg-light * h1,
-.bg-light * h2,
-.bg-light * h3,
-.bg-light * h4,
-.bg-light * h5,
-.bg-light * h6 {
-    color: var(--text-primary-light) !important;
-}
-
-/* Card Headers - Consistent Style */
 .card-header {
     background-color: var(--neutral-50) !important;
     border-bottom: 1px solid var(--border-color) !important;
@@ -49,7 +30,6 @@
     color: var(--white) !important;
 }
 
-/* Card Footers */
 .card-footer {
     background-color: var(--neutral-50) !important;
     border-top: 1px solid var(--border-color) !important;
@@ -57,10 +37,9 @@
 }
 
 /* ========================================
-   2. Badge System - Consistent Colors
+   2. Badge System
    ======================================== */
 
-/* Status Badges */
 .badge {
     font-weight: 500;
     padding: 0.35rem 0.75rem;
@@ -96,8 +75,6 @@
     background-color: var(--neutral-500) !important;
     color: var(--white) !important;
 }
-
-/* Subtle Badges - Light Backgrounds with Dark Text */
 .badge.bg-primary-subtle {
     background-color: var(--primary-50) !important;
     color: var(--primary-700) !important;
@@ -124,17 +101,8 @@
 }
 
 /* ========================================
-   3. Statistics Cards - Text Colors for Both Themes
+   3. Statistics Cards - Gradient Text Colors
    ======================================== */
-
-/* Theme-aware text color class for gradient cards */
-.text-gradient-card {
-    color: #1F2937 !important;
-}
-
-html[data-theme="dark"] .text-gradient-card {
-    color: #FFFFFF !important;
-}
 
 /* Light mode: black text on gradient backgrounds */
 .bg-gradient-end-1 h1, .bg-gradient-end-1 h2, .bg-gradient-end-1 h3, .bg-gradient-end-1 h4, .bg-gradient-end-1 h5, .bg-gradient-end-1 h6,
@@ -180,49 +148,8 @@ html[data-theme="dark"] .bg-gradient-end-6 .fw-bold, html[data-theme="dark"] .bg
     color: #FFFFFF !important;
 }
 
-/* Icon Containers */
-.avatar-xs,
-.avatar-sm,
-.avatar-md,
-.avatar-lg {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
-
-.bg-primary-subtle.avatar-xs,
-.bg-primary-subtle.avatar-sm {
-    background-color: var(--primary-50) !important;
-    color: var(--primary-600) !important;
-}
-
-.bg-success-subtle.avatar-xs,
-.bg-success-subtle.avatar-sm {
-    background-color: var(--success-50) !important;
-    color: var(--success-600) !important;
-}
-
-.bg-danger-subtle.avatar-xs,
-.bg-danger-subtle.avatar-sm {
-    background-color: var(--danger-50) !important;
-    color: var(--danger-600) !important;
-}
-
-.bg-warning-subtle.avatar-xs,
-.bg-warning-subtle.avatar-sm {
-    background-color: var(--warning-50) !important;
-    color: var(--warning-600) !important;
-}
-
-.bg-info-subtle.avatar-xs,
-.bg-info-subtle.avatar-sm {
-    background-color: var(--info-50) !important;
-    color: var(--info-600) !important;
-}
-
 /* ========================================
-   4. Table Styling - Consistent Design
+   4. Table Styling
    ======================================== */
 
 .table thead th {
@@ -352,36 +279,7 @@ html[data-theme="dark"] .bg-gradient-end-6 .fw-bold, html[data-theme="dark"] .bg
 }
 
 /* ========================================
-   8. Focus/Hover States
-   ======================================== */
-
-.bg-primary-focus {
-    background-color: var(--primary-50) !important;
-    color: var(--primary-700) !important;
-}
-
-.bg-success-focus {
-    background-color: var(--success-50) !important;
-    color: var(--success-700) !important;
-}
-
-.bg-danger-focus {
-    background-color: var(--danger-50) !important;
-    color: var(--danger-700) !important;
-}
-
-.bg-warning-focus {
-    background-color: var(--warning-50) !important;
-    color: var(--warning-700) !important;
-}
-
-.bg-info-focus {
-    background-color: var(--info-50) !important;
-    color: var(--info-700) !important;
-}
-
-/* ========================================
-   9. Text Color Utilities
+   8. Text Color Utilities
    ======================================== */
 
 .text-primary {
@@ -414,36 +312,7 @@ html[data-theme="dark"] .bg-gradient-end-6 .fw-bold, html[data-theme="dark"] .bg
 }
 
 /* ========================================
-   10. Background Opacity Classes
-   ======================================== */
-
-.bg-primary.bg-opacity-10 {
-    background-color: var(--primary-50) !important;
-    color: var(--primary-700) !important;
-}
-
-.bg-success.bg-opacity-10 {
-    background-color: var(--success-50) !important;
-    color: var(--success-700) !important;
-}
-
-.bg-danger.bg-opacity-10 {
-    background-color: var(--danger-50) !important;
-    color: var(--danger-700) !important;
-}
-
-.bg-warning.bg-opacity-10 {
-    background-color: var(--warning-50) !important;
-    color: var(--warning-700) !important;
-}
-
-.bg-info.bg-opacity-10 {
-    background-color: var(--info-50) !important;
-    color: var(--info-700) !important;
-}
-
-/* ========================================
-   11. Dark Theme Adjustments
+   9. Dark Theme Adjustments
    ======================================== */
 /* Removed all custom dark theme dropdown and select overrides */
 /* Using original template styles from style.css for better compatibility */
@@ -453,17 +322,21 @@ html[data-theme="dark"] .bg-gradient-end-6 .fw-bold, html[data-theme="dark"] .bg
 [data-theme="dark"] .modal-header,
 [data-theme="dark"] .modal-footer {
     background-color: var(--dark-2) !important;
-    color: var(--text-secondary-dark) !important;
+    color: #FFFFFF !important;
     border-color: var(--dark-3) !important;
 }
 
 [data-theme="dark"] .table thead th {
     background-color: var(--dark-2) !important;
-    color: var(--text-secondary-dark) !important;
+    color: #FFFFFF !important;
 }
 
 [data-theme="dark"] .table tbody tr:hover {
     background-color: var(--dark-3) !important;
+}
+
+[data-theme="dark"] .table tbody tr {
+    color: #FFFFFF !important;
 }
 
 /* Dark theme for bootstrap select (if used) */

@@ -23,9 +23,10 @@
 
                 <!-- Filters Form -->
                 <form method="GET" id="filtersForm">
+                    <!-- First Row: Main Filters -->
                     <div class="row g-3 mb-3">
                         <!-- Period Filter -->
-                        <div class="col-xl col-lg-3 col-md-4 col-sm-6">
+                        <div class="col-lg-2 col-md-3 col-sm-6">
                             <label class="form-label text-sm mb-1">Period</label>
                             <select name="period" id="periodSelect" class="form-select form-select-sm">
                                 {% for value, label in period_choices %}
@@ -34,16 +35,16 @@
                             </select>
                         </div>
                         <!-- Custom Date Range -->
-                        <div id="customDateRange" class="col-xl col-lg-3 col-md-4 col-sm-6" style="{% if period != 'custom' %}display: none;{% endif %}">
+                        <div id="customDateRange" class="col-lg-2 col-md-3 col-sm-6" style="{% if period != 'custom' %}display: none;{% endif %}">
                             <label class="form-label text-sm mb-1">From</label>
                             <input type="date" name="date_from" class="form-control form-control-sm" value="{{ date_from }}">
                         </div>
-                        <div id="customDateRangeTo" class="col-xl col-lg-3 col-md-4 col-sm-6" style="{% if period != 'custom' %}display: none;{% endif %}">
+                        <div id="customDateRangeTo" class="col-lg-2 col-md-3 col-sm-6" style="{% if period != 'custom' %}display: none;{% endif %}">
                             <label class="form-label text-sm mb-1">To</label>
                             <input type="date" name="date_to" class="form-control form-control-sm" value="{{ date_to }}">
                         </div>
                         <!-- Client Type -->
-                        <div class="col-xl col-lg-3 col-md-4 col-sm-6">
+                        <div class="col-lg-2 col-md-3 col-sm-6">
                             <label class="form-label text-sm mb-1">Client Type</label>
                             <select name="client_type" class="form-select form-select-sm">
                                 <option value="">All Types</option>
@@ -53,7 +54,7 @@
                         </div>
                         {% if show_center and centers %}
                         <!-- Center -->
-                        <div class="col-xl col-lg-3 col-md-4 col-sm-6">
+                        <div class="col-lg-2 col-md-3 col-sm-6">
                             <label class="form-label text-sm mb-1">Center</label>
                             <select name="center" id="centerSelect" class="form-select form-select-sm">
                                 <option value="">All Centers</option>
@@ -65,7 +66,7 @@
                         {% endif %}
                         {% if show_branch and branches %}
                         <!-- Branch -->
-                        <div class="col-xl col-lg-3 col-md-4 col-sm-6">
+                        <div class="col-lg-2 col-md-3 col-sm-6">
                             <label class="form-label text-sm mb-1">Branch</label>
                             <select name="branch" id="branchSelect" class="form-select form-select-sm">
                                 <option value="">All Branches</option>
@@ -75,8 +76,12 @@
                             </select>
                         </div>
                         {% endif %}
+                    </div>
+                    
+                    <!-- Second Row: Additional Filters & Actions -->
+                    <div class="row g-3 mb-3">
                         <!-- Debt Range -->
-                        <div class="col-xl col-lg-3 col-md-4 col-sm-6">
+                        <div class="col-lg-2 col-md-3 col-sm-6">
                             <label class="form-label text-sm mb-1">Debt Range</label>
                             <select name="debt_range" class="form-select form-select-sm">
                                 <option value="">All Amounts</option>
@@ -87,7 +92,7 @@
                             </select>
                         </div>
                         <!-- Collection Rate -->
-                        <div class="col-xl col-lg-3 col-md-4 col-sm-6">
+                        <div class="col-lg-2 col-md-3 col-sm-6">
                             <label class="form-label text-sm mb-1">Collection Rate</label>
                             <select name="collection_rate" class="form-select form-select-sm">
                                 <option value="">All Rates</option>
@@ -97,7 +102,7 @@
                             </select>
                         </div>
                         <!-- Orders Count -->
-                        <div class="col-xl col-lg-3 col-md-4 col-sm-6">
+                        <div class="col-lg-2 col-md-3 col-sm-6">
                             <label class="form-label text-sm mb-1">Orders Count</label>
                             <select name="orders_count" class="form-select form-select-sm">
                                 <option value="">All Orders</option>
@@ -107,7 +112,7 @@
                             </select>
                         </div>
                         <!-- Sort By -->
-                        <div class="col-xl col-lg-3 col-md-4 col-sm-6">
+                        <div class="col-lg-2 col-md-3 col-sm-6">
                             <label class="form-label text-sm mb-1">Sort By</label>
                             <select name="sort_by" class="form-select form-select-sm">
                                 <option value="remaining-desc" {% if sort_by == 'remaining-desc' %}selected{% endif %}>Debt: High to Low</option>
@@ -118,15 +123,17 @@
                                 <option value="name-asc" {% if sort_by == 'name-asc' %}selected{% endif %}>Name: A to Z</option>
                             </select>
                         </div>
-                        <div class="col-xl-auto col-lg-3 col-md-4 col-sm-6">
-                            <label class="form-label text-sm mb-1">&nbsp;</label>
+                        <!-- Apply Button -->
+                        <div class="col-lg-2 col-md-3 col-sm-6">
+                            <label class="form-label text-sm mb-1 d-none d-md-block">&nbsp;</label>
                             <button type="submit" class="btn btn-sm btn-primary w-100">
                                 <iconify-icon icon="solar:filter-bold" class="me-1"></iconify-icon>
                                 Apply Filters
                             </button>
                         </div>
-                        <div class="col-xl-auto col-lg-3 col-md-4 col-sm-6">
-                            <label class="form-label text-sm mb-1">&nbsp;</label>
+                        <!-- Clear Button -->
+                        <div class="col-lg-2 col-md-3 col-sm-6">
+                            <label class="form-label text-sm mb-1 d-none d-md-block">&nbsp;</label>
                             <a href="{% url 'debtors_report' %}" class="btn btn-sm btn-outline-danger w-100">
                                 <iconify-icon icon="solar:close-circle-bold" class="me-1"></iconify-icon>
                                 Clear Filters
@@ -263,7 +270,7 @@
                                 <th class="text-center" style="width: 6%; white-space: nowrap;" data-i18n="table.type">Type</th>
                                 {% if show_center or show_branch %}<th class="text-center" style="width: 10%; white-space: nowrap;" data-i18n="common.location">Location</th>{% endif %}
                                 <th class="text-end" style="width: 11%; white-space: nowrap;" data-i18n="report.debt">Debt</th>
-                                <th class="text-center" style="width: 6%; white-space: nowrap;">#</th>
+                                <th class="text-center" style="width: 6%; white-space: nowrap;"data-i18n="report.countt">Count</th>
                                 <th class="text-end" style="width: 11%; white-space: nowrap;" data-i18n="report.expected">Expected</th>
                                 <th class="text-end" style="width: 11%; white-space: nowrap;" data-i18n="report.received">Received</th>
                                 <th class="text-center" style="width: 11%; white-space: nowrap;" data-i18n="table.rate">Rate</th>
@@ -313,7 +320,7 @@
                                     <span class="formatted-number">{{ debtor.remaining|floatformat:0|intcomma }}</span>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge bg-neutral-200 text-light px-2 py-1">{{ debtor.orders_with_debt }}</span>
+                                    <span class="badge bg-primary-600 text-white px-2 py-1 fw-medium">{{ debtor.orders_with_debt }}</span>
                                 </td>
                                 <td class="text-end" data-value="{{ debtor.total_expected }}">
                                     <span class="formatted-number">{{ debtor.total_expected|floatformat:0|intcomma }}</span>
@@ -332,32 +339,32 @@
                                 </td>
                                 <td class="text-center">
                                     <a href="{% url 'orders:bulk_payment_page' %}?customer_id={{ debtor.customer_id }}" 
-                                       class="btn btn-sm btn-primary-600 radius-8 px-2 py-1"
+                                       class="btn btn-primary-600 text-white radius-8 px-4 py-3 fw-semibold d-inline-flex align-items-center gap-2"
                                        title="Pay debt for {{ debtor.customer_name }}">
-                                        <iconify-icon icon="solar:wallet-money-bold" class="me-1"></iconify-icon>
-                                        Pay
+                                        <iconify-icon icon="solar:wallet-money-bold" class="text-xl"></iconify-icon>
+                                        <span>Pay</span>
                                     </a>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                         <tfoot>
-                            <tr class="border-top-2">
-                                <td colspan="{% if show_center or show_branch %}4{% else %}3{% endif %}" class="table basic-table text-secondary py-3">TOTALS:</td>
+                            <tr class="border-top-2 bg-neutral-50">
+                                <td colspan="{% if show_center or show_branch %}4{% else %}3{% endif %}" class="text-dark fw-bold py-3 ps-3">TOTALS:</td>
                                 <td class="text-end text-danger-main fw-bold py-3" data-value="{{ total_debt }}">
                                     <span class="formatted-number">{{ total_debt|floatformat:0|intcomma }}</span>
                                 </td>
                                 <td class="text-center py-3">
-                                    <span class="badge bg-neutral-200 text-light px-2 py-1">{{ total_orders_with_debt }}</span>
+                                    <span class="badge bg-primary-600 text-white px-2 py-1">{{ total_orders_with_debt }}</span>
                                 </td>
-                                <td class="text-end fw-semibold py-3" data-value="{{ total_expected }}">
+                                <td class="text-end text-dark fw-bold py-3" data-value="{{ total_expected }}">
                                     <span class="formatted-number">{{ total_expected|floatformat:0|intcomma }}</span>
                                 </td>
-                                <td class="text-end text-success-600 fw-bold py-3" data-value="{{ total_received }}">
+                                <td class="text-end text-success-main fw-bold py-3" data-value="{{ total_received }}">
                                     <span class="formatted-number">{{ total_received|floatformat:0|intcomma }}</span>
                                 </td>
                                 <td class="text-center py-3">
-                                    <span class="fw-semibold">{{ avg_collection_rate }}%</span>
+                                    <span class="badge {% if avg_collection_rate >= 80 %}bg-success-main{% elif avg_collection_rate >= 50 %}bg-warning-main{% else %}bg-danger-main{% endif %} text-white px-2 py-1">{{ avg_collection_rate }}%</span>
                                 </td>
                                 <td class="py-3"></td>
                             </tr>
@@ -368,7 +375,7 @@
                 <!-- Pagination -->
                 <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 py-3 px-2 bg-neutral-50 radius-8 gap-3">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="text-secondary-light">Showing <span class="fw-semibold text-dark">{{ page_obj.start_index }}</span> to <span class="fw-semibold text-dark">{{ page_obj.end_index }}</span> of <span class="fw-semibold text-dark">{{ paginator.count }}</span> entries</span>
+                        <span class="text-secondary-light">Showing <span class="fw-semibold">{{ page_obj.start_index }}</span> to <span class="fw-semibold">{{ page_obj.end_index }}</span> of <span class="fw-semibold">{{ paginator.count }}</span> entries</span>
                     </div>
                     
                     <nav aria-label="Page navigation">

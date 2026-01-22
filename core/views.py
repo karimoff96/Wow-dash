@@ -105,8 +105,8 @@ def get_period_dates(period, custom_from=None, custom_to=None):
         date_from = yesterday.replace(hour=0, minute=0, second=0, microsecond=0)
         date_to = yesterday.replace(hour=23, minute=59, second=59, microsecond=999999)
     elif period == "week":
-        start_of_week = today - timedelta(days=today.weekday())
-        date_from = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+        # Changed to last 7 days instead of current week (Monday-based)
+        date_from = today - timedelta(days=7)
         date_to = today
     elif period == "month":
         date_from = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -135,7 +135,7 @@ def audit_logs(request):
     from django.contrib.auth.models import User
     
     # Get filter parameters
-    period = request.GET.get('period', 'week')
+    period = request.GET.get('period', 'month')  # Changed default to 'month' to show more data
     custom_from = request.GET.get('date_from')
     custom_to = request.GET.get('date_to')
     action_filter = request.GET.get('action', '')

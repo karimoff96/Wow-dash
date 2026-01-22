@@ -382,11 +382,143 @@ msgstr ""
 
 #: core/models.py:158
 msgid "Audit Log"
-msgstr ""
+msgstr "Audit yozuvi"
 
 #: core/models.py:159 core/views.py:219
 msgid "Audit Logs"
-msgstr ""
+msgstr "Audit yozuvlari"
+
+#: core/views.py:220
+msgid "System activity and audit trail"
+msgstr "Tizim faoliyati va audit izi"
+
+#: templates/reports/audit_logs.html
+msgid "Total Logs"
+msgstr "Jami yozuvlar"
+
+#: templates/reports/audit_logs.html
+msgid "Period"
+msgstr "Davr"
+
+#: templates/reports/audit_logs.html
+msgid "From"
+msgstr "Dan"
+
+#: templates/reports/audit_logs.html
+msgid "To"
+msgstr "Gacha"
+
+#: templates/reports/audit_logs.html
+msgid "Action Type"
+msgstr "Harakat turi"
+
+#: templates/reports/audit_logs.html
+msgid "All Actions"
+msgstr "Barcha harakatlar"
+
+#: templates/reports/audit_logs.html
+msgid "User"
+msgstr "Foydalanuvchi"
+
+#: templates/reports/audit_logs.html
+msgid "All Users"
+msgstr "Barcha foydalanuvchilar"
+
+#: templates/reports/audit_logs.html
+msgid "Center"
+msgstr "Markaz"
+
+#: templates/reports/audit_logs.html
+msgid "All Centers"
+msgstr "Barcha markazlar"
+
+#: templates/reports/audit_logs.html
+msgid "Branch"
+msgstr "Filial"
+
+#: templates/reports/audit_logs.html
+msgid "All Branches"
+msgstr "Barcha filiallar"
+
+#: templates/reports/audit_logs.html
+msgid "Search"
+msgstr "Qidirish"
+
+#: templates/reports/audit_logs.html
+msgid "Search logs..."
+msgstr "Yozuvlarni qidirish..."
+
+#: templates/reports/audit_logs.html
+msgid "Apply Filters"
+msgstr "Filtrlarni qo'llash"
+
+#: templates/reports/audit_logs.html
+msgid "Reset"
+msgstr "Qayta o'rnatish"
+
+#: templates/reports/audit_logs.html
+msgid "Activity Timeline"
+msgstr "Faoliyat tarixi"
+
+#: templates/reports/audit_logs.html
+msgid "of"
+msgstr "dan"
+
+#: templates/reports/audit_logs.html
+msgid "System"
+msgstr "Tizim"
+
+#: templates/reports/audit_logs.html
+msgid "Created"
+msgstr "Yaratildi"
+
+#: templates/reports/audit_logs.html
+msgid "Updated"
+msgstr "Yangilandi"
+
+#: templates/reports/audit_logs.html
+msgid "Deleted"
+msgstr "O'chirildi"
+
+#: templates/reports/audit_logs.html
+msgid "Logged In"
+msgstr "Tizimga kirdi"
+
+#: templates/reports/audit_logs.html
+msgid "Logged Out"
+msgstr "Tizimdan chiqdi"
+
+#: templates/reports/audit_logs.html
+msgid "Payment"
+msgstr "To'lov"
+
+#: templates/reports/audit_logs.html
+msgid "Status Changed"
+msgstr "Holat o'zgartirildi"
+
+#: templates/reports/audit_logs.html
+msgid "Assigned"
+msgstr "Tayinlandi"
+
+#: templates/reports/audit_logs.html
+msgid "at"
+msgstr "soat"
+
+#: templates/reports/audit_logs.html
+msgid "View Changes"
+msgstr "O'zgarishlarni ko'rish"
+
+#: templates/reports/audit_logs.html
+msgid "Field"
+msgstr "Maydon"
+
+#: templates/reports/audit_logs.html
+msgid "Previous"
+msgstr "Oldingi"
+
+#: templates/reports/audit_logs.html
+msgid "Updated"
+msgstr "Yangilangan"
 
 #: core/models.py:187
 msgid "Receipt Pending Verification"
