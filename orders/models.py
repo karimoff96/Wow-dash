@@ -215,6 +215,17 @@ class Order(models.Model):
         verbose_name=_("Center Order Number"),
         help_text=_("Sequential order number within the center (auto-generated)")
     )
+    
+    # File archiving
+    archived_files = models.ForeignKey(
+        'core.FileArchive',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='orders',
+        verbose_name=_("Archived Files"),
+        help_text=_("Reference to archive containing this order's files")
+    )
 
     def __str__(self):
         customer_name = self.get_customer_display_name()

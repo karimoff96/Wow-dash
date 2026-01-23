@@ -458,3 +458,95 @@ class AdminNotification(models.Model):
                 return cls.objects.filter(is_read=False).count()
         except (AttributeError, AdminUser.DoesNotExist):
             return 0
+
+
+class FileArchive(models.Model):
+    """Model to track archived files uploaded to Telegram"""
+    
+    center = models.ForeignKey(
+        'organizations.TranslationCenter',
+        on_delete=models.CASCADE,
+        related_name='file_archives',
+        verbose_name=_("Center")
+    )
+    
+    archive_name = models.CharField(
+        max_length=255,
+        verbose_name=_("Archive Name"),
+        help_text=_("Name of the archive file")
+    )
+    
+    archive_path = models.CharField(
+        max_length=500,
+        blank=True,
+        null=True,
+        verbose_name=_("Local Archive Path"),
+        help_text=_("Path to archive file if still stored locally")
+    )
+    
+    telegram_message_id = models.BigIntegerField(
+        verbose_name=_("Telegram Message ID"),
+        help_text=_("Message ID in Telegram channel where archive is stored")
+    )
+    
+    telegram_channel_id = models.CharField(
+        max_length=100,
+        verbose_name=_("Telegram Channel ID"),
+        help_text=_("Channel ID where archive is uploaded")
+    )
+    
+    total_orders = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_("Total Orders"),
+        help_text=_("Number of orders included in archive")
+    )
+    
+    total_size_bytes = models.BigIntegerField(
+        default=0,
+        verbose_name=_("Total Size (bytes)"),
+        help_text=_("Total size of archived files in bytes")
+    )
+    
+    archive_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Archive Date"),
+        help_text=_("When the archive was created")
+    )
+    
+    created_by = models.ForeignKey(
+        'auth.User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='created_archives',
+        verbose_name=_("Created By")
+    )
+    
+    notes = models.TextField(
+        blank=True,
+        verbose_name=_("Notes"),
+        help_text=_("Additional notes about this archive")
+    )
+    
+    class Meta:
+        verbose_name = _("File Archive")
+        verbose_name_plural = _("File Archives")
+        ordering = ['-archive_date']
+        indexes = [
+            models.Index(fields=['center', '-archive_date']),
+            models.Index(fields=['telegram_message_id']),
+        ]
+    
+    def __str__(self):
+        return f"{self.archive_name} - {self.center.name}"
+    
+    @property
+    def size_mb(self):
+        """Get archive size in MB"""
+        return self.total_size_bytes / (1024 * 1024)
+    
+    @property
+    def telegram_file_url(self):
+        """Get Telegram file URL (for reference)"""
+        # Note: Actual file download requires bot API call
+        return f"https://t.me/c/{self.telegram_channel_id}/{self.telegram_message_id}"

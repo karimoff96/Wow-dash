@@ -55,7 +55,7 @@ class TranslationCenter(models.Model):
         max_length=50,
         blank=True,
         null=True,
-        help_text=_("Telegram channel ID for all company orders"),
+        help_text=_("Telegram channel ID for all company orders and file archives"),
     )
     is_active = models.BooleanField(_("Active"), default=True)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)

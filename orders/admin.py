@@ -88,12 +88,34 @@ class OrderAdmin(admin.ModelAdmin):
         ),
         ("Files", {"fields": ("files",), "classes": ("collapse",)}),
         (
+            "Archive Status",
+            {
+                "fields": ("archived_files", "archive_status_display"),
+                "classes": ("collapse",)
+            }
+        ),
+        (
             "Timestamps",
             {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
         ),
     )
 
-    readonly_fields = ("created_at", "updated_at", "total_pages", "total_price")
+    readonly_fields = ("created_at", "updated_at", "total_pages", "total_price", "archive_status_display")
+    
+    def archive_status_display(self, obj):
+        """Display archive status with link"""
+        if obj.archived_files:
+            url = reverse("admin:core_filearchive_change", args=[obj.archived_files.id])
+            return format_html(
+                '📦 <a href="{}" target="_blank">{}</a><br>'
+                '<small>Archived on: {}<br>Size: {:.2f} MB</small>',
+                url,
+                obj.archived_files.archive_name,
+                obj.archived_files.archive_date.strftime("%Y-%m-%d %H:%M"),
+                obj.archived_files.size_mb
+            )
+        return format_html('<span style="color: green;">✓ Files stored locally</span>')
+    archive_status_display.short_description = "Archive Status"
 
     def get_queryset(self, request):
         return (
