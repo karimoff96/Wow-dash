@@ -12,7 +12,8 @@ from .views import (
 )
 from .bulk_payment_views import (
     bulk_payment_page, search_customers_with_debt, get_customer_debt_details,
-    preview_payment_distribution, process_bulk_payment, payment_history, get_top_debtors_api
+    preview_payment_distribution, process_bulk_payment, payment_history, 
+    payment_history_full, get_payment_details, get_top_debtors_api
 )
 
 app_name = 'orders'
@@ -47,6 +48,8 @@ urlpatterns = [
     path("bulk-payment/preview/", preview_payment_distribution, name="preview_payment_distribution"),
     path("bulk-payment/process/", process_bulk_payment, name="process_bulk_payment"),
     path("bulk-payment/history/", payment_history, name="payment_history"),
+    path("bulk-payment/history/full/", payment_history_full, name="payment_history_full"),
+    path("bulk-payment/details/<int:payment_id>/", get_payment_details, name="get_payment_details"),
     
     # API endpoints
     path("api/stats/", api_order_stats, name="api_order_stats"),

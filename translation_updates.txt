@@ -1,0 +1,376 @@
+# Translation Updates - Comprehensive List
+# This file contains all new translation keys needed across the application
+# Format: key|en|ru|uz
+
+# Authentication Pages
+auth.forgotPassword|Forgot Password|Забыли пароль|Parolni unutdingizmi
+auth.forgotPasswordDesc|Enter the email address associated with your account and we will send you a link to reset your password|Введите адрес электронной почты, связанный с вашей учетной записью, и мы отправим вам ссылку для сброса пароля|Hisobingiz bilan bog'langan elektron pochta manzilini kiriting va biz sizga parolni tiklash havolasini yuboramiz
+auth.enterEmail|Enter Email|Введите Email|Emailni kiriting
+auth.sendResetLink|Send Reset Link|Отправить ссылку|Havola yuborish
+auth.backToSignIn|Back to Sign In|Назад к входу|Kirishga qaytish
+
+# Orders - General
+orders.orderId|Order ID|ID заказа|Buyurtma ID
+orders.customer|Customer|Клиент|Mijoz
+orders.product|Product|Товар|Mahsulot
+orders.pages|Pages|Страниц|Sahifalar
+orders.status|Status|Статус|Holat
+orders.price|Price|Цена|Narx
+orders.totalPrice|Total Price|Общая цена|Umumiy narx
+orders.received|Received|Получено|Qabul qilindi
+orders.remaining|Remaining|Осталось|Qoldiq
+orders.orderNumber|Order Number|Номер заказа|Buyurtma raqami
+orders.documents|Documents|Документы|Hujjatlar
+orders.assignedTo|Assigned To|Назначен|Tayinlangan
+orders.notAssigned|Not Assigned|Не назначен|Tayinlanmagan
+orders.assignedBy|Assigned By|Назначил|Kim tayinladi
+orders.paymentReceived|Payment Received|Платеж получен|To'lov qabul qilindi
+orders.paymentReceivedBy|Payment Received By|Платеж принят|To'lovni qabul qildi
+orders.paymentReceivedAt|Payment Received At|Платеж получен|To'lov qabul qilindi
+orders.clientName|Client Name|Имя клиента|Mijoz ismi
+orders.phoneNumber|Phone Number|Номер телефона|Telefon raqami
+orders.totalAmount|Total Amount|Общая сумма|Umumiy summa
+orders.extraFee|Extra Fee|Дополнительная плата|Qo'shimcha to'lov
+orders.extraFeeDesc|Extra Fee Description|Описание допплаты|Qo'shimcha to'lov tavsifi
+orders.copyNumber|Number of Copies|Количество копий|Nusxalar soni
+orders.additionalCopies|Additional copies needed (0 means only original)|Требуются дополнительные копии (0 означает только оригинал)|Qo'shimcha nusxalar kerak (0 faqat asl nusxani bildiradi)
+orders.translationLanguage|Translation Language|Язык перевода|Tarjima tili
+orders.description|Description|Описание|Tavsif
+
+# Orders - Status Labels
+status.pending|Pending|Ожидание|Kutilmoqda
+status.paymentPending|Awaiting|Ожидание оплаты|To'lov kutilmoqda
+status.paymentReceived|Received|Получено|Qabul qilindi
+status.paymentConfirmed|Confirmed|Подтверждено|Tasdiqlandi
+status.inProgress|In Process|В процессе|Jarayonda
+status.ready|Ready|Готово|Tayyor
+status.completed|Done|Выполнено|Bajarildi
+status.cancelled|Cancelled|Отменено|Bekor qilindi
+
+# Orders - Actions
+actions.view|View|Просмотр|Ko'rish
+actions.edit|Edit|Редактировать|Tahrirlash
+actions.delete|Delete|Удалить|O'chirish
+actions.assign|Assign|Назначить|Tayinlash
+actions.confirmPayment|Confirm Payment|Подтвердить оплату|To'lovni tasdiqlash
+actions.recordPayment|Record Payment|Записать оплату|To'lovni yozish
+actions.updateStatus|Update Status|Обновить статус|Holatni yangilash
+actions.downloadReceipt|Download Receipt|Скачать квитанцию|Kvitansiyani yuklash
+actions.viewDetails|View Details|Просмотр деталей|Tafsilotlarni ko'rish
+actions.cancel|Cancel|Отмена|Bekor qilish
+actions.save|Save|Сохранить|Saqlash
+actions.update|Update|Обновить|Yangilash
+actions.upload|Upload|Загрузить|Yuklash
+actions.download|Download|Скачать|Yuklab olish
+actions.print|Print|Печать|Chop etish
+actions.export|Export|Экспорт|Eksport
+actions.filter|Filter|Фильтр|Filtr
+actions.search|Search|Поиск|Qidirish
+actions.reset|Reset|Сбросить|Qayta tiklash
+actions.apply|Apply|Применить|Qo'llash
+actions.submit|Submit|Отправить|Yuborish
+actions.close|Close|Закрыть|Yopish
+actions.confirm|Confirm|Подтвердить|Tasdiqlash
+actions.back|Back|Назад|Orqaga
+
+# Orders - Filters
+filter.all|All|Все|Hammasi
+filter.status|Status|Статус|Holat
+filter.paymentStatus|Payment Status|Статус оплаты|To'lov holati
+filter.assignmentStatus|Assignment Status|Статус назначения|Tayinlash holati
+filter.search|Search|Поиск|Qidirish
+filter.searchPlaceholder|Search by order ID, customer name, phone|Поиск по номеру, имени, телефону|Raqam, ism, telefon bo'yicha qidirish
+filter.perPage|Per Page|На странице|Sahifada
+filter.branch|Branch|Филиал|Filial
+filter.center|Center|Центр|Markaz
+filter.staff|Staff Member|Сотрудник|Xodim
+filter.dateFrom|From Date|С даты|Sana dan
+filter.dateTo|To Date|До даты|Sana gacha
+filter.period|Period|Период|Davr
+filter.today|Today|Сегодня|Bugun
+filter.thisWeek|This Week|Эта неделя|Bu hafta
+filter.thisMonth|This Month|Этот месяц|Bu oy
+filter.thisYear|This Year|Этот год|Bu yil
+filter.custom|Custom Range|Пользовательский период|Maxsus davr
+filter.allPaymentMethods|All Payment Methods|Все способы оплаты|Barcha to'lov usullari
+filter.allCustomers|All Customers|Все клиенты|Barcha mijozlar
+
+# Payment Types
+payment.cash|Cash|Наличные|Naqd
+payment.card|Card|Карта|Karta
+payment.bankTransfer|Bank Transfer|Банковский перевод|Bank o'tkazmasi
+payment.other|Other|Другое|Boshqa
+payment.paymentMethod|Payment Method|Способ оплаты|To'lov usuli
+payment.paymentType|Payment Type|Тип оплаты|To'lov turi
+payment.paymentAmount|Payment Amount|Сумма оплаты|To'lov summasi
+payment.paymentDate|Payment Date|Дата оплаты|To'lov sanasi
+payment.paymentDetails|Payment Details|Детали оплаты|To'lov tafsilotlari
+payment.paymentHistory|Payment History|История платежей|To'lovlar tarixi
+payment.receiptNote|Receipt/Note|Квитанция/Примечание|Kvitansiya/Izoh
+payment.uploadReceipt|Upload Receipt|Загрузить квитанцию|Kvitansiyani yuklash
+payment.noReceiptUploaded|No receipt uploaded|Квитанция не загружена|Kvitansiya yuklanmagan
+payment.processPayment|Process Payment|Обработать платеж|To'lovni qayta ishlash
+payment.newPayment|New Payment|Новый платеж|Yangi to'lov
+payment.bulkPayment|Bulk Payment|Массовый платеж|Ommaviy to'lov
+payment.paidAmount|Paid Amount|Оплаченная сумма|To'langan summa
+payment.fully|Fully|Полностью|To'liq
+payment.partial|Partial|Частично|Qisman
+payment.unpaid|Unpaid|Неоплачено|To'lanmagan
+payment.fullyPaid|Fully Paid|Полностью оплачено|To'liq to'langan
+payment.partiallyPaid|Partially Paid|Частично оплачено|Qisman to'langan
+payment.pendingPayment|Pending Payment|Ожидание оплаты|To'lov kutilmoqda
+payment.acceptPayment|Accept Payment Fully|Принять оплату полностью|To'lovni to'liq qabul qilish
+
+# Customer Types
+customer.agency|Agency (B2B)|Агентство (B2B)|Agentlik (B2B)
+customer.individual|Individual (B2C)|Физлицо (B2C)|Jismoniy shaxs (B2C)
+customer.type|Customer Type|Тип клиента|Mijoz turi
+customer.name|Customer Name|Имя клиента|Mijoz ismi
+customer.phone|Phone|Телефон|Telefon
+customer.email|Email|Email|Email
+
+# Statistics
+stats.total|Total|Всего|Jami
+stats.totalPayments|Total Payments|Всего платежей|Jami to'lovlar
+stats.totalAmount|Total Amount|Общая сумма|Umumiy summa
+stats.totalOrders|Total Orders|Всего заказов|Jami buyurtmalar
+stats.ordersPaid|Orders Paid|Оплачено заказов|To'langan buyurtmalar
+stats.fullyPaid|fully paid|полностью оплачено|to'liq to'langan
+stats.uniqueCustomers|Unique Customers|Уникальных клиентов|Noyob mijozlar
+stats.customersServed|customers served|клиентов обслужено|mijozlarga xizmat ko'rsatildi
+stats.transactionsProcessed|transactions processed|транзакций обработано|tranzaksiyalar qayta ishlandi
+stats.avgPayment|avg payment|средний платеж|o'rtacha to'lov
+stats.averageAmount|Average Amount|Средняя сумма|O'rtacha summa
+
+# Table Headers
+table.id|#|№|#
+table.customer|Customer|Клиент|Mijoz
+table.phone|Phone|Телефон|Telefon
+table.service|Service|Услуга|Xizmat
+table.paymentMethod|Payment Method|Способ оплаты|To'lov usuli
+table.amount|Amount|Сумма|Summa
+table.dateTime|Date & Time|Дата и время|Sana va vaqt
+table.location|Location|Местоположение|Joylashuv
+table.branch|Branch|Филиал|Filial
+table.assigned|Assigned|Назначено|Tayinlangan
+table.unassigned|Unassigned|Не назначено|Tayinlanmagan
+table.noRecentOrders|No recent orders|Нет недавних заказов|Yaqinda buyurtmalar yo'q
+table.orders|Orders|Заказы|Buyurtmalar
+table.fullyPaid|Fully Paid|Полностью оплачено|To'liq to'langan
+table.date|Date|Дата|Sana
+table.processedBy|Processed By|Обработал|Kim qayta ishladi
+table.actions|Actions|Действия|Amallar
+table.status|Status|Статус|Holat
+table.product|Product|Товар|Mahsulot
+table.price|Price|Цена|Narx
+table.received|Received|Получено|Qabul qilindi
+table.remaining|Remaining|Осталось|Qoldiq
+table.assignedTo|Assigned To|Назначен|Tayinlangan
+table.createdAt|Created At|Создано|Yaratilgan
+
+# Form Fields
+form.username|Username|Логин|Foydalanuvchi nomi
+form.password|Password|Пароль|Parol
+form.email|Email|Email|Email
+form.firstName|First Name|Имя|Ism
+form.lastName|Last Name|Фамилия|Familiya
+form.phone|Phone Number|Номер телефона|Telefon raqami
+form.address|Address|Адрес|Manzil
+form.note|Note|Примечание|Izoh
+form.selectOption|Select an option|Выберите опцию|Variantni tanlang
+form.selectStatus|Select Status|Выберите статус|Holatni tanlang
+form.selectPaymentType|Select Payment Type|Выберите тип оплаты|To'lov turini tanlang
+form.selectBranch|Select Branch|Выберите филиал|Filialni tanlang
+form.selectStaff|Select Staff|Выберите сотрудника|Xodimni tanlang
+form.selectProduct|Select Product|Выберите товар|Mahsulotni tanlang
+form.selectLanguage|Select Language|Выберите язык|Tilni tanlang
+form.selectCustomer|Select Customer|Выберите клиента|Mijozni tanlang
+form.enterAmount|Enter Amount|Введите сумму|Summani kiriting
+form.enterDescription|Enter Description|Введите описание|Tavsifni kiriting
+form.required|Required|Обязательно|Majburiy
+form.optional|Optional|Необязательно|Ixtiyoriy
+form.chooseFile|Choose File|Выберите файл|Faylni tanlang
+form.noFileChosen|No file chosen|Файл не выбран|Fayl tanlanmagan
+form.dragDropFile|Drag and drop files here|Перетащите файлы сюда|Fayllarni bu yerga torting
+form.uploadFiles|Upload Files|Загрузить файлы|Fayllarni yuklash
+
+# Messages
+message.success|Success|Успешно|Muvaffaqiyatli
+message.error|Error|Ошибка|Xato
+message.warning|Warning|Предупреждение|Ogohlantirish
+message.info|Information|Информация|Ma'lumot
+message.loading|Loading|Загрузка|Yuklanmoqda
+message.noData|No data available|Нет данных|Ma'lumot yo'q
+message.confirmDelete|Are you sure you want to delete this item?|Вы уверены, что хотите удалить этот элемент?|Ushbu elementni o'chirmoqchimisiz?
+message.deleteSuccess|Item deleted successfully|Элемент успешно удален|Element muvaffaqiyatli o'chirildi
+message.updateSuccess|Updated successfully|Успешно обновлено|Muvaffaqiyatli yangilandi
+message.createSuccess|Created successfully|Успешно создано|Muvaffaqiyatli yaratildi
+message.saveSuccess|Saved successfully|Успешно сохранено|Muvaffaqiyatli saqlandi
+message.noResults|No results found|Результаты не найдены|Natijalar topilmadi
+message.tryDifferentFilters|Try adjusting your filters or date range|Попробуйте изменить фильтры или период|Filtrlarni yoki davrni o'zgartirib ko'ring
+
+# Common
+common.yes|Yes|Да|Ha
+common.no|No|Нет|Yo'q
+common.active|Active|Активно|Faol
+common.inactive|Inactive|Неактивно|Nofaol
+common.enabled|Enabled|Включено|Yoqilgan
+common.disabled|Disabled|Отключено|O'chirilgan
+common.default|Default|По умолчанию|Standart
+common.all|All|Все|Hammasi
+common.none|None|Нет|Yo'q
+common.select|Select|Выбрать|Tanlash
+common.selected|Selected|Выбрано|Tanlangan
+common.clear|Clear|Очистить|Tozalash
+common.refresh|Refresh|Обновить|Yangilash
+common.showing|Showing|Показано|Ko'rsatilmoqda
+common.of|of|из|dan
+common.entries|entries|записей|yozuvlar
+common.previous|Previous|Предыдущая|Oldingi
+common.next|Next|Следующая|Keyingi
+common.page|Page|Страница|Sahifa
+common.perPage|Per Page|На странице|Sahifada
+common.from|From|С|Dan
+common.to|To|До|Gacha
+common.language|Language|Язык|Til
+common.more|More|Еще|Ko'proq
+common.less|Less|Меньше|Kamroq
+common.show|Show|Показать|Ko'rsatish
+common.hide|Hide|Скрыть|Yashirish
+common.details|Details|Детали|Tafsilotlar
+common.close|Close|Закрыть|Yopish
+common.avgPayment|avg payment|средний платеж|o'rtacha to'lov
+
+# Empty States
+empty.noOrders|No orders found|Заказы не найдены|Buyurtmalar topilmadi
+empty.noPayments|No payments found|Платежи не найдены|To'lovlar topilmadi
+empty.noCustomers|No customers found|Клиенты не найдены|Mijozlar topilmadi
+empty.noData|No data available|Нет данных|Ma'lumot yo'q
+empty.noResults|No results found|Результаты не найдены|Natijalar topilmadi
+
+# Pagination
+pagination.showing|Showing|Показано|Ko'rsatilmoqda
+pagination.to|to|до|gacha
+pagination.of|of|из|dan
+pagination.entries|entries|записей|yozuvlar
+pagination.previous|Previous|Предыдущая|Oldingi
+pagination.next|Next|Следующая|Keyingi
+pagination.first|First|Первая|Birinchi
+pagination.last|Last|Последняя|Oxirgi
+
+# Assignment
+assignment.assignTo|Assign To|Назначить|Tayinlash
+assignment.reassign|Reassign|Переназначить|Qayta tayinlash
+assignment.unassigned|Unassigned|Не назначено|Tayinlanmagan
+assignment.assigned|Assigned|Назначено|Tayinlangan
+assignment.selectStaff|Select Staff Member|Выберите сотрудника|Xodimni tanlang
+assignment.assignmentDate|Assignment Date|Дата назначения|Tayinlash sanasi
+
+# Bulk Payment Specific
+bulk.selectCustomer|Select Customer|Выберите клиента|Mijozni tanlang
+bulk.customerWithDebt|Customer (with outstanding debt)|Клиент (с долгом)|Mijoz (qarzdor)
+bulk.paymentAmount|Payment Amount|Сумма платежа|To'lov summasi
+bulk.previewDistribution|Preview Distribution|Предпросмотр распределения|Taqsimotni ko'rish
+bulk.processPayment|Process Payment|Обработать платеж|To'lovni qayta ishlash
+bulk.ordersPaidCount|Orders that will be paid|Заказы к оплате|To'lanadigan buyurtmalar
+bulk.fullyPaidCount|Orders that will be fully paid|Полностью оплачено|To'liq to'lanadi
+bulk.remainingDebt|Remaining debt after payment|Остаток долга|Qoldiq qarz
+bulk.currentDebt|Current Remaining|Текущий остаток|Joriy qoldiq
+bulk.amountToApply|Amount to Apply|Сумма к применению|Qo'llaniladigan summa
+bulk.newRemaining|New Remaining|Новый остаток|Yangi qoldiq
+
+# Services Module
+services.product|Product|Товар|Mahsulot
+services.products|Products|Товары|Mahsulotlar
+services.category|Category|Категория|Kategoriya
+services.categories|Categories|Категории|Kategoriyalar
+services.language|Language|Язык|Til
+services.languages|Languages|Языки|Tillar
+services.expense|Expense|Расход|Xarajat
+services.expenses|Expenses|Расходы|Xarajatlar
+services.addProduct|Add Product|Добавить товар|Mahsulot qo'shish
+services.editProduct|Edit Product|Редактировать товар|Mahsulotni tahrirlash
+services.productName|Product Name|Название товара|Mahsulot nomi
+services.productPrice|Product Price|Цена товара|Mahsulot narxi
+services.productDescription|Product Description|Описание товара|Mahsulot tavsifi
+services.pricePerPage|Price per Page|Цена за страницу|Sahifa narxi
+services.basePrice|Base Price|Базовая цена|Asosiy narx
+services.additionalCopyPrice|Additional Copy Price|Цена доп. копии|Qo'shimcha nusxa narxi
+services.available|Available|Доступно|Mavjud
+services.notAvailable|Not Available|Недоступно|Mavjud emas
+
+# Users Module
+users.user|User|Пользователь|Foydalanuvchi
+users.users|Users|Пользователи|Foydalanuvchilar
+users.profile|Profile|Профиль|Profil
+users.role|Role|Роль|Rol
+users.permissions|Permissions|Разрешения|Ruxsatlar
+users.addUser|Add User|Добавить пользователя|Foydalanuvchi qo'shish
+users.editUser|Edit User|Редактировать|Tahrirlash
+users.viewProfile|View Profile|Просмотр профиля|Profilni ko'rish
+users.changePassword|Change Password|Изменить пароль|Parolni o'zgartirish
+users.lastLogin|Last Login|Последний вход|Oxirgi kirish
+users.dateJoined|Date Joined|Дата регистрации|Ro'yxatdan o'tgan sana
+
+# Organizations Module
+org.center|Center|Центр|Markaz
+org.centers|Centers|Центры|Markazlar
+org.branch|Branch|Филиал|Filial
+org.branches|Branches|Филиалы|Filiallar
+org.addCenter|Add Center|Добавить центр|Markaz qo'shish
+org.addBranch|Add Branch|Добавить филиал|Filial qo'shish
+org.editCenter|Edit Center|Редактировать центр|Markazni tahrirlash
+org.editBranch|Edit Branch|Редактировать филиал|Filialni tahrirlash
+org.centerName|Center Name|Название центра|Markaz nomi
+org.branchName|Branch Name|Название филиала|Filial nomi
+org.address|Address|Адрес|Manzil
+org.contactInfo|Contact Information|Контактная информация|Aloqa ma'lumoti
+
+# Marketing Module
+marketing.broadcast|Broadcast|Рассылка|Xabar yuborish
+marketing.campaign|Campaign|Кампания|Kampaniya
+marketing.message|Message|Сообщение|Xabar
+marketing.recipients|Recipients|Получатели|Qabul qiluvchilar
+marketing.send|Send|Отправить|Yuborish
+marketing.scheduled|Scheduled|Запланировано|Rejalashtirilgan
+marketing.sent|Sent|Отправлено|Yuborildi
+marketing.failed|Failed|Ошибка|Xato
+
+# Reports Module
+reports.financial|Financial Report|Финансовый отчет|Moliyaviy hisobot
+reports.debt|Debt Report|Отчет по долгам|Qarz hisoboti
+reports.audit|Audit Log|Журнал аудита|Audit jurnali
+reports.generate|Generate Report|Создать отчет|Hisobot yaratish
+reports.export|Export Report|Экспортировать|Hisobotni eksport qilish
+reports.dateRange|Date Range|Период|Davr
+reports.summary|Summary|Итого|Xulosa
+reports.details|Details|Детали|Tafsilotlar
+
+# Dashboard
+dashboard.title|Dashboard|Панель управления|Boshqaruv paneli
+dashboard.welcome|Welcome|Добро пожаловать|Xush kelibsiz
+dashboard.overview|Overview|Обзор|Umumiy ko'rinish
+dashboard.recentOrders|Recent Orders|Последние заказы|Oxirgi buyurtmalar
+dashboard.todayStats|Today's Statistics|Статистика за сегодня|Bugungi statistika
+dashboard.thisMonth|This Month|Этот месяц|Bu oy
+dashboard.revenue|Revenue|Доход|Daromad
+dashboard.growth|Growth|Рост|O'sish
+
+# Receipts
+receipt.upload|Upload Receipt|Загрузить квитанцию|Kvitansiya yuklash
+receipt.view|View Receipt|Просмотр квитанции|Kvitansiyani ko'rish
+receipt.download|Download Receipt|Скачать квитанцию|Kvitansiyani yuklash
+receipt.pending|Pending Receipt|Ожидание квитанции|Kvitansiya kutilmoqda
+receipt.approved|Receipt Approved|Квитанция одобрена|Kvitansiya tasdiqlandi
+receipt.rejected|Receipt Rejected|Квитанция отклонена|Kvitansiya rad etildi
+receipt.showForCardPayments|Shown only for card/bank transfer payments|Показывается только для карт/переводов|Faqat karta/pul o'tkazmasi uchun ko'rsatiladi
+
+# Validation
+validation.required|This field is required|Это поле обязательно|Bu maydon majburiy
+validation.invalid|Invalid value|Неверное значение|Noto'g'ri qiymat
+validation.minLength|Minimum length is|Минимальная длина|Minimal uzunlik
+validation.maxLength|Maximum length is|Максимальная длина|Maksimal uzunlik
+validation.min|Minimum value is|Минимальное значение|Minimal qiymat
+validation.max|Maximum value is|Максимальное значение|Maksimal qiymat
+validation.email|Invalid email address|Неверный email|Noto'g'ri email
+validation.phone|Invalid phone number|Неверный номер телефона|Noto'g'ri telefon raqami

@@ -1261,6 +1261,8 @@ def record_order_payment(request, order_id):
         extra_fee: Decimal extra fee to add (optional)
         extra_fee_description: String description (optional)
         force_accept: "true" to force full acceptance (owner only)
+        payment_type: "cash", "card", or "bank_transfer" (optional)
+        recipt: File upload for payment receipt (optional)
     """
     order = get_object_or_404(Order, id=order_id)
     
@@ -1278,6 +1280,18 @@ def record_order_payment(request, order_id):
         extra_fee = request.POST.get('extra_fee')
         extra_fee_description = request.POST.get('extra_fee_description', '').strip()
         force_accept = request.POST.get('force_accept', '').lower() == 'true'
+        payment_type = request.POST.get('payment_type', '').strip()
+        receipt_file = request.FILES.get('recipt')
+        
+        # Update payment type if provided
+        if payment_type and payment_type in ['cash', 'card', 'bank_transfer']:
+            order.payment_type = payment_type
+            order.save(update_fields=['payment_type'])
+        
+        # Handle receipt file upload
+        if receipt_file:
+            order.recipt = receipt_file
+            order.save(update_fields=['recipt'])
         
         # Force accept is only allowed for owners/superusers
         if force_accept:

@@ -20,12 +20,12 @@
                         {% if can_edit_expense %}
                         <a href="{% url 'editExpense' expense.id %}" class="btn btn-success-600 radius-8 px-16 py-9 d-flex align-items-center gap-2">
                             <iconify-icon icon="lucide:edit" class="text-lg"></iconify-icon>
-                            <span>Edit</span>
+                            <span data-i18n="actions.edit">Edit</span>
                         </a>
                         {% endif %}
                         <a href="{% url 'expenseList' %}" class="btn btn-outline-secondary-600 radius-8 px-16 py-9 d-flex align-items-center gap-2">
                             <iconify-icon icon="ep:back"></iconify-icon>
-                            <span>Back</span>
+                            <span data-i18n="actions.back">Back</span>
                         </a>
                     </div>
                 </div>
@@ -69,9 +69,9 @@
                                         <td class="text-secondary-light py-8 ps-0">Status:</td>
                                         <td class="py-8">
                                             {% if expense.is_active %}
-                                            <span class="bg-success-focus text-success-600 border border-success-main px-12 py-4 radius-4 fw-medium text-sm">Active</span>
+                                            <span class="bg-success-focus text-success-600 border border-success-main px-12 py-4 radius-4 fw-medium text-sm" data-i18n="common.active">Active</span>
                                             {% else %}
-                                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-12 py-4 radius-4 fw-medium text-sm">Inactive</span>
+                                            <span class="bg-neutral-200 text-neutral-600 border border-neutral-400 px-12 py-4 radius-4 fw-medium text-sm" data-i18n="common.inactive">Inactive</span>
                                             {% endif %}
                                         </td>
                                     </tr>

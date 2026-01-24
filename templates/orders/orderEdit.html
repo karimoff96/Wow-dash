@@ -1,5 +1,6 @@
 {% extends '../layout/layout.html' %}
 {% load static %}
+{% load number_filters %}
 
 {% block content %}
 <style>
@@ -370,7 +371,7 @@
                                         <th>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" id="selectAllFiles">
-                                                <label class="form-check-label text-sm" for="selectAllFiles">Delete</label>
+                                                <label class="form-check-label text-sm" for="selectAllFiles" data-i18n="actions.delete">Delete</label>
                                             </div>
                                         </th>
                                         <th data-i18n="detail.file">File</th>
@@ -437,7 +438,7 @@
                         </div>
                         {% if order.received > 0 %}
                         <div class="d-flex align-items-center justify-content-between mt-8">
-                            <span class="text-secondary-light text-sm">Received</span>
+                            <span class="text-secondary-light text-sm" data-i18n="status.paymentReceived">Received</span>
                             <span class="text-md fw-medium text-primary-600">{{ order.received|format_number }} UZS</span>
                         </div>
                         <div class="d-flex align-items-center justify-content-between">
@@ -516,21 +517,21 @@
                 <div class="mb-16">
                     <span class="text-secondary-light text-sm d-block mb-8">Status</span>
                     {% if order.status == 'pending' %}
-                        <span class="bg-warning-focus text-warning-600 px-16 py-6 radius-4 fw-medium text-sm">Pending</span>
+                        <span class="bg-warning-focus text-warning-600 px-16 py-6 radius-4 fw-medium text-sm" data-i18n="status.pending">Pending</span>
                     {% elif order.status == 'payment_pending' %}
-                        <span class="bg-info-focus text-info-600 px-16 py-6 radius-4 fw-medium text-sm">Awaiting</span>
+                        <span class="bg-info-focus text-info-600 px-16 py-6 radius-4 fw-medium text-sm" data-i18n="status.paymentPending">Awaiting</span>
                     {% elif order.status == 'payment_received' %}
-                        <span class="bg-primary-focus text-primary-600 px-16 py-6 radius-4 fw-medium text-sm">Received</span>
+                        <span class="bg-primary-focus text-primary-600 px-16 py-6 radius-4 fw-medium text-sm" data-i18n="status.paymentReceived">Received</span>
                     {% elif order.status == 'payment_confirmed' %}
-                        <span class="bg-cyan-focus text-cyan px-16 py-6 radius-4 fw-medium text-sm">Confirmed</span>
+                        <span class="bg-cyan-focus text-cyan px-16 py-6 radius-4 fw-medium text-sm" data-i18n="status.paymentConfirmed">Confirmed</span>
                     {% elif order.status == 'in_progress' %}
-                        <span class="bg-lilac-focus text-lilac-600 px-16 py-6 radius-4 fw-medium text-sm">In Process</span>
+                        <span class="bg-lilac-focus text-lilac-600 px-16 py-6 radius-4 fw-medium text-sm" data-i18n="status.inProgress">In Process</span>
                     {% elif order.status == 'ready' %}
-                        <span class="bg-success-focus text-success-600 px-16 py-6 radius-4 fw-medium text-sm">Ready</span>
+                        <span class="bg-success-focus text-success-600 px-16 py-6 radius-4 fw-medium text-sm" data-i18n="status.ready">Ready</span>
                     {% elif order.status == 'completed' %}
-                        <span class="bg-success-focus text-success-600 px-16 py-6 radius-4 fw-medium text-sm">Done</span>
+                        <span class="bg-success-focus text-success-600 px-16 py-6 radius-4 fw-medium text-sm" data-i18n="status.completed">Done</span>
                     {% elif order.status == 'cancelled' %}
-                        <span class="bg-danger-focus text-danger-600 px-16 py-6 radius-4 fw-medium text-sm">Cancelled</span>
+                        <span class="bg-danger-focus text-danger-600 px-16 py-6 radius-4 fw-medium text-sm" data-i18n="status.cancelled">Cancelled</span>
                     {% endif %}
                 </div>
                 <div class="mb-16">

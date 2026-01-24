@@ -228,8 +228,8 @@
                         <thead>
                             <tr>
                                 <th data-i18n="common.staff">Staff</th>
-                                <th class="text-center col-id" title="Assigned">#A</th>
-                                <th class="text-center col-id" title="Completed">#D</th>
+                                <th class="text-center col-id" data-i18n-title="table.assigned">#A</th>
+                                <th class="text-center col-id" data-i18n-title="status.completed">#D</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -256,7 +256,7 @@
                     </div>
                     <div class="col-4">
                         <div class="bg-success-50 p-3 rounded-3 text-center">
-                            <iconify-icon icon="solar:building-bold" class="text-xxl text-success-600 d-block mb-1"></iconify-icon>
+                            <iconify-icon icon="solar:buildings-2-bold" class="text-xxl text-success-600 d-block mb-1"></iconify-icon>
                             <h5 class="fw-bold mb-0">{{ total_branches }}</h5>
                             <small class="text-secondary-light" data-i18n="common.branches">Branches</small>
                         </div>
@@ -551,7 +551,7 @@
                                     {% if order.product %}
                                     <span class="text-sm">{{ order.product.name|truncatechars:30 }}</span>
                                     {% if order.total_pages > 1 %}
-                                    <span class="badge bg-neutral-200 text-neutral-900 ms-1">{{ order.total_pages }} pages</span>
+                                    <span class="badge bg-neutral-200 text-neutral-900 ms-1">{{ order.total_pages }} <span data-i18n="common.pages">pages</span></span>
                                     {% endif %}
                                     {% else %}
                                     <span class="text-secondary-light">-</span>
@@ -560,11 +560,11 @@
                                 <td class="text-end fw-semibold">{{ order.total_price|format_number }} <small class="text-xs fw-normal text-secondary-light">UZS</small></td>
                                 <td>
                                     {% if order.payment_method == 'cash' %}
-                                    <span class="badge bg-success-100 text-success-600"><iconify-icon icon="solar:wallet-bold" class="me-1"></iconify-icon>Cash</span>
+                                    <span class="badge bg-success-100 text-success-600"><iconify-icon icon="solar:wallet-bold" class="me-1"></iconify-icon data-i18n="payment.cash">Cash</span>
                                     {% elif order.payment_method == 'card' %}
-                                    <span class="badge bg-info-100 text-info-600"><iconify-icon icon="solar:card-bold" class="me-1"></iconify-icon>Card</span>
+                                    <span class="badge bg-info-100 text-info-600"><iconify-icon icon="solar:card-bold" class="me-1"></iconify-icon data-i18n="payment.card">Card</span>
                                     {% elif order.payment_method == 'transfer' %}
-                                    <span class="badge bg-primary-100 text-primary-600"><iconify-icon icon="solar:transfer-bold" class="me-1"></iconify-icon>Transfer</span>
+                                    <span class="badge bg-primary-100 text-primary-600"><iconify-icon icon="solar:transfer-bold" class="me-1"></iconify-icon><span data-i18n="payment.transfer">Transfer</span></span>
                                     {% else %}
                                     <span class="text-secondary-light">-</span>
                                     {% endif %}
@@ -588,7 +588,7 @@
                                         </span>
                                     </div>
                                     {% else %}
-                                    <span class="text-secondary-light">Unassigned</span>
+                                    <span class="text-secondary-light" data-i18n="table.unassigned">Unassigned</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
@@ -707,7 +707,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new ApexCharts(document.querySelector("#userDonutChart"), {
         series: [totalAgencies, totalUsers - totalAgencies],
         chart: { type: 'donut', height: 150 },
-        labels: ['Agencies', 'Customers'],
+        labels: [getTranslation('dashboard.agencies'), getTranslation('dashboard.customers')],
         colors: ['#45B369', '#F59E0B'],
         legend: { show: false },
         dataLabels: { enabled: false },
@@ -719,7 +719,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         show: true,
                         name: { show: true, fontSize: '12px', color: colors.textColor },
                         value: { show: true, fontSize: '16px', fontWeight: 600, color: colors.textColor },
-                        total: { show: true, label: 'Total', color: colors.textColor, formatter: function(w) { return w.globals.seriesTotals.reduce((a, b) => a + b, 0); } }
+                        total: { show: true, label: getTranslation('dashboard.total'), color: colors.textColor, formatter: function(w) { return w.globals.seriesTotals.reduce((a, b) => a + b, 0); } }
                     }
                 }
             }

@@ -1,0 +1,491 @@
+{% extends '../layout/layout.html' %}
+{% load static %}
+{% load i18n %}
+{% load number_filters %}
+
+{% block title %}{% trans "Payment History - Full Report" %}{% endblock %}
+
+{% block content %}
+<!-- Filter Bar -->
+<div class="card radius-8 border-0 mb-24">
+    <div class="card-body p-16">
+        <form method="GET" class="d-flex align-items-center gap-3 flex-wrap">
+            <span class="text-md fw-semibold text-secondary-light" data-i18n="filter.period">Period:</span>
+            <select name="period" id="periodSelect" class="form-select form-select-sm w-auto">
+                <option value="today" {% if period == 'today' %}selected{% endif %} data-i18n="filter.today">Today</option>
+                <option value="week" {% if period == 'week' %}selected{% endif %} data-i18n="filter.thisWeek">This Week</option>
+                <option value="month" {% if period == 'month' %}selected{% endif %} data-i18n="filter.thisMonth">This Month</option>
+                <option value="year" {% if period == 'year' %}selected{% endif %} data-i18n="filter.thisYear">This Year</option>
+                <option value="custom" {% if period == 'custom' %}selected{% endif %} data-i18n="filter.custom">Custom Range</option>
+            </select>
+            
+            <div id="customDateRange" class="d-flex gap-2" style="{% if period != 'custom' %}display: none;{% endif %}">
+                <input type="date" name="date_from" class="form-control form-control-sm" value="{{ date_from }}" style="width: 150px;">
+                <input type="date" name="date_to" class="form-control form-control-sm" value="{{ date_to }}" style="width: 150px;">
+            </div>
+            
+            <select name="payment_method" class="form-select form-select-sm w-auto">
+                <option value="" data-i18n="filter.allPaymentMethods">All Payment Methods</option>
+                <option value="cash" {% if payment_method == 'cash' %}selected{% endif %} data-i18n="payment.cash">Cash</option>
+                <option value="card" {% if payment_method == 'card' %}selected{% endif %} data-i18n="payment.card">Card</option>
+                <option value="bank_transfer" {% if payment_method == 'bank_transfer' %}selected{% endif %} data-i18n="payment.bankTransfer">Bank Transfer</option>
+            </select>
+            
+            <select name="customer_type" class="form-select form-select-sm w-auto">
+                <option value="" data-i18n="filter.allCustomers">All Customers</option>
+                <option value="agency" {% if customer_type == 'agency' %}selected{% endif %} data-i18n="customer.agency">Agency (B2B)</option>
+                <option value="individual" {% if customer_type == 'individual' %}selected{% endif %} data-i18n="customer.individual">Individual (B2C)</option>
+            </select>
+            
+            <button type="submit" class="btn btn-primary btn-sm px-16 d-inline-flex align-items-center gap-2">
+                <iconify-icon icon="solar:filter-bold" class="icon"></iconify-icon>
+                <span data-i18n="common.apply">Apply</span>
+            </button>
+            
+            {% if period_label %}
+            <span class="badge bg-primary-light text-primary-main px-12 py-6">
+                <iconify-icon icon="solar:calendar-bold" class="me-1"></iconify-icon>
+                {{ period_label }}
+            </span>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="row gy-4">
+    <!-- Statistics Cards -->
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-1">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:wallet-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="stats.totalPayments">Total Payments</span>
+                            <h6 class="fw-semibold">{{ stats.total_count }}</h6>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0">
+                    <span class="text-secondary-light" data-i18n="stats.transactionsProcessed">transactions processed</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-2">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-success-main flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:dollar-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="stats.totalAmount">Total Amount</span>
+                            <h6 class="fw-semibold">{{ stats.total_amount|floatformat:0|format_number }} <small class="text-xs fw-normal">UZS</small></h6>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0">
+                    <span class="text-secondary-light">{{ stats.average_amount|floatformat:0|format_number }} UZS/<span data-i18n="common.avgPayment">avg payment</span></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-3">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-yellow text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:bag-4-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="stats.ordersPaid">Orders Paid</span>
+                            <h6 class="fw-semibold">{{ stats.total_orders }}</h6>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0">
+                    <span class="bg-success-focus px-1 rounded-2 fw-medium text-success-main text-sm">{{ stats.fully_paid_orders }}</span>
+                    <span class="text-secondary-light" data-i18n="stats.fullyPaid">fully paid</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xxl-3 col-sm-6">
+        <div class="card p-3 shadow-2 radius-8 border input-form-light h-100 bg-gradient-end-6">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-info-main text-white flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle h6">
+                            <iconify-icon icon="solar:users-group-rounded-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-sm" data-i18n="stats.uniqueCustomers">Unique Customers</span>
+                            <h6 class="fw-semibold">{{ stats.unique_customers }}</h6>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0">
+                    <span class="text-secondary-light" data-i18n="stats.customersServed">customers served</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment History Table -->
+    <div class="col-12">
+        <div class="card radius-8 border">
+            <div class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center justify-content-between">
+                <h6 class="text-lg fw-semibold mb-0" data-i18n="payment.paymentHistory">Payment History</h6>
+                <a href="{% url 'orders:bulk_payment_page' %}" class="text-primary-600 hover-text-primary d-flex align-items-center gap-1">
+                    <iconify-icon icon="solar:add-circle-bold" class="icon"></iconify-icon>
+                    <span data-i18n="payment.newPayment">New Payment</span>
+                </a>
+            </div>
+            <div class="card-body p-24">
+                {% if payments %}
+                <div class="table-responsive">
+                    <table class="table bordered-table mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-id" data-i18n="table.id">#</th>
+                                <th scope="col" data-i18n="table.customer">Customer</th>
+                                <th scope="col" data-i18n="table.paymentMethod">Payment Method</th>
+                                <th scope="col" class="col-amount" data-i18n="table.amount">Amount</th>
+                                <th scope="col" class="text-center col-id" data-i18n="table.orders">Orders</th>
+                                <th scope="col" class="text-center col-id" data-i18n="table.fullyPaid">Fully Paid</th>
+                                <th scope="col" class="col-date" data-i18n="table.date">Date</th>
+                                <th scope="col" data-i18n="table.processedBy">Processed By</th>
+                                <th scope="col" class="text-center" data-i18n="table.actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                            <tr>
+                                <td class="col-id"><span class="text-primary-600 fw-medium">{{ payment.id }}</span></td>
+                                <td>
+                                    {% if payment.bot_user %}
+                                        <div class="d-flex flex-column">
+                                            <span class="text-primary-light fw-medium">{{ payment.bot_user.name|truncatechars:20 }}</span>
+                                            <small class="text-secondary-light">{{ payment.bot_user.phone }}</small>
+                                            {% if payment.bot_user.is_agency %}
+                                                <span class="badge bg-primary-light text-primary-main px-8 py-2 mt-1" style="font-size: 10px; width: fit-content;">B2B</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary-light text-secondary-main px-8 py-2 mt-1" style="font-size: 10px; width: fit-content;">B2C</span>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <span class="text-secondary-light">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if payment.payment_method == 'cash' %}
+                                    <span class="bg-success-focus text-success-main status-badge-sm rounded-pill fw-medium" data-i18n="payment.cash">Cash</span>
+                                    {% elif payment.payment_method == 'card' %}
+                                    <span class="bg-primary-focus text-primary-main status-badge-sm rounded-pill fw-medium" data-i18n="payment.card">Card</span>
+                                    {% elif payment.payment_method == 'bank_transfer' %}
+                                    <span class="bg-info-focus text-info-main status-badge-sm rounded-pill fw-medium" data-i18n="payment.bankTransfer">Bank</span>
+                                    {% else %}
+                                    <span class="bg-secondary-focus text-secondary-main status-badge-sm rounded-pill fw-medium" data-i18n="payment.other">Other</span>
+                                    {% endif %}
+                                </td>
+                                <td class="col-amount"><span class="fw-medium nowrap">{{ payment.amount|format_number }}</span></td>
+                                <td class="text-center">
+                                    <span class="bg-info-focus text-info-main px-12 py-4 rounded-pill fw-medium text-sm">{{ payment.orders_count }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="bg-success-focus text-success-main px-12 py-4 rounded-pill fw-medium text-sm">{{ payment.fully_paid_orders }}</span>
+                                </td>
+                                <td class="col-date"><span class="text-secondary-light text-xs">{{ payment.created_at|date:"Y-m-d H:i" }}</span></td>
+                                <td>
+                                    {% if payment.processed_by %}
+                                        <span class="text-secondary-light text-sm">{{ payment.processed_by.user.get_full_name|default:payment.processed_by.user.username|truncatechars:15 }}</span>
+                                    {% else %}
+                                        <span class="text-secondary-light">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-primary-600 radius-8 px-12 py-4" onclick="viewPaymentDetails({{ payment.id }})" title="View Details">
+                                        <iconify-icon icon="solar:eye-bold" class="text-xl"></iconify-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                {% if payments.has_other_pages %}
+                <nav aria-label="Page navigation" class="mt-24">
+                    <ul class="pagination justify-content-center">
+                        {% if payments.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ payments.previous_page_number }}{% if period %}&period={{ period }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}{% if payment_method %}&payment_method={{ payment_method }}{% endif %}{% if customer_type %}&customer_type={{ customer_type }}{% endif %}">
+                                <iconify-icon icon="solar:alt-arrow-left-linear"></iconify-icon>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in payments.paginator.page_range %}
+                            {% if payments.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > payments.number|add:'-3' and num < payments.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if period %}&period={{ period }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}{% if payment_method %}&payment_method={{ payment_method }}{% endif %}{% if customer_type %}&customer_type={{ customer_type }}{% endif %}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if payments.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ payments.next_page_number }}{% if period %}&period={{ period }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}{% if payment_method %}&payment_method={{ payment_method }}{% endif %}{% if customer_type %}&customer_type={{ customer_type }}{% endif %}">
+                                <iconify-icon icon="solar:alt-arrow-right-linear"></iconify-icon>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                
+                {% else %}
+                <div class="text-center py-24">
+                    <iconify-icon icon="solar:receipt-linear" class="text-secondary-light" style="font-size: 64px;"></iconify-icon>
+                    <h5 class="mt-3 text-secondary-light" data-i18n="payment.noPaymentsFound">No payments found</h5>
+                    <p class="text-secondary-light" data-i18n="payment.tryDifferentFilters">Try adjusting your filters or date range</p>
+                    <a href="{% url 'orders:bulk_payment_page' %}" class="btn btn-primary mt-2">
+                        <iconify-icon icon="solar:add-circle-bold" class="me-2"></iconify-icon>
+                        <span data-i18n="payment.processPayment">Process Payment</span>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Details Modal -->
+<div class="modal fade" id="paymentDetailsModal" tabindex="-1" aria-labelledby="paymentDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentDetailsModalLabel">
+                    <iconify-icon icon="solar:wallet-bold" class="me-2"></iconify-icon>
+                    <span data-i18n="payment.paymentDetails">Payment Details</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="paymentDetailsContent">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="common.close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+// Period filter toggle for custom date range
+const periodSelect = document.getElementById('periodSelect');
+const customDateRange = document.getElementById('customDateRange');
+
+if (periodSelect && customDateRange) {
+    periodSelect.addEventListener('change', function() {
+        if (this.value === 'custom') {
+            customDateRange.style.display = 'flex';
+        } else {
+            customDateRange.style.display = 'none';
+            // Auto-submit when not custom
+            this.form.submit();
+        }
+    });
+}
+
+// View payment details function
+function viewPaymentDetails(paymentId) {
+    const modal = new bootstrap.Modal(document.getElementById('paymentDetailsModal'));
+    const content = document.getElementById('paymentDetailsContent');
+    
+    // Show loading state
+    content.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    `;
+    
+    modal.show();
+    
+    // Fetch payment details
+    fetch(`/orders/bulk-payment/details/${paymentId}/`)
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch payment details');
+            return response.json();
+        })
+        .then(data => {
+            renderPaymentDetails(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            content.innerHTML = `
+                <div class="alert alert-danger">
+                    <iconify-icon icon="solar:danger-circle-bold" class="me-2"></iconify-icon>
+                    Failed to load payment details. Please try again.
+                </div>
+            `;
+        });
+}
+
+function renderPaymentDetails(data) {
+    const content = document.getElementById('paymentDetailsContent');
+    
+    let html = `
+        <!-- Payment Summary -->
+        <div class="card mb-3 border">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:user-bold" class="text-primary text-xl"></iconify-icon>
+                            <div>
+                                <small class="text-secondary-light">Customer</small>
+                                <div class="fw-semibold">${data.customer_name}</div>
+                                <small class="text-muted">${data.customer_phone || 'N/A'}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:dollar-bold" class="text-success text-xl"></iconify-icon>
+                            <div>
+                                <small class="text-secondary-light">Payment Amount</small>
+                                <div class="fw-bold text-success">${formatNumber(data.amount)} UZS</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:calendar-bold" class="text-info text-xl"></iconify-icon>
+                            <div>
+                                <small class="text-secondary-light">Payment Date</small>
+                                <div class="fw-semibold">${data.payment_date}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:card-bold" class="text-warning text-xl"></iconify-icon>
+                            <div>
+                                <small class="text-secondary-light">Payment Method</small>
+                                <div class="fw-semibold">${data.payment_method}</div>
+                            </div>
+                        </div>
+                    </div>
+                    ${data.processed_by ? `
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:user-check-bold" class="text-primary text-xl"></iconify-icon>
+                            <div>
+                                <small class="text-secondary-light">Processed By</small>
+                                <div class="fw-semibold">${data.processed_by}</div>
+                            </div>
+                        </div>
+                    </div>` : ''}
+                    ${data.receipt_note ? `
+                    <div class="col-12">
+                        <div class="alert alert-info mb-0 py-2">
+                            <small><strong>Note:</strong> ${data.receipt_note}</small>
+                        </div>
+                    </div>` : ''}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Orders List -->
+        <h6 class="mb-3">
+            <iconify-icon icon="solar:bag-4-bold" class="me-2"></iconify-icon>
+            Orders Paid (${data.orders.length})
+        </h6>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm bg-base">
+                <thead>
+                    <tr>
+                        <th class="text-secondary-light">Order #</th>
+                        <th class="text-secondary-light">Customer</th>
+                        <th class="text-secondary-light">Product</th>
+                        <th class="text-end text-secondary-light">Paid Amount</th>
+                        <th class="text-center text-secondary-light">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+    
+    data.orders.forEach(order => {
+        let statusBadge = '';
+        if (order.is_fully_paid) {
+            statusBadge = '<span class="badge bg-success-focus text-success-main">Fully Paid</span>';
+        } else {
+            statusBadge = '<span class="badge bg-warning-focus text-warning-main">Partially Paid</span>';
+        }
+        
+        html += `
+            <tr>
+                <td class="bg-base"><a href="/orders/${order.order_id}/" class="text-primary-600 fw-medium" target="_blank">#${order.order_id}</a></td>
+                <td class="bg-base text-primary-light">${order.customer_name}</td>
+                <td class="bg-base text-secondary-light">${order.product_name || 'N/A'}</td>
+                <td class="bg-base text-end fw-medium text-primary-light">${formatNumber(order.paid_amount)} UZS</td>
+                <td class="bg-base text-center">${statusBadge}</td>
+            </tr>
+        `;
+    });
+    
+    html += `
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Summary -->
+        <div class="card bg-base border mt-3">
+            <div class="card-body py-2">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <small class="text-secondary-light">Total Orders</small>
+                        <div class="fw-bold text-primary">${data.orders_count}</div>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-secondary-light">Fully Paid</small>
+                        <div class="fw-bold text-success">${data.fully_paid_count}</div>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-secondary-light">Remaining Debt</small>
+                        <div class="fw-bold text-danger">${formatNumber(data.remaining_debt)} UZS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    content.innerHTML = html;
+}
+
+function formatNumber(num) {
+    if (!num) return '0';
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+</script>
+{% endblock script %}

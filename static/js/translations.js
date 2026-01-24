@@ -978,6 +978,46 @@ const translations = {
         ru: 'Клиент',
         en: 'Customer'
     },
+    'table.phone': {
+        uz: 'Telefon',
+        ru: 'Телефон',
+        en: 'Phone'
+    },
+    'table.service': {
+        uz: 'Xizmat',
+        ru: 'Услуга',
+        en: 'Service'
+    },
+    'table.paymentMethod': {
+        uz: 'To\'lov usuli',
+        ru: 'Способ оплаты',
+        en: 'Payment Method'
+    },
+    'table.dateTime': {
+        uz: 'Sana va vaqt',
+        ru: 'Дата и время',
+        en: 'Date & Time'
+    },
+    'table.location': {
+        uz: 'Joylashuv',
+        ru: 'Местоположение',
+        en: 'Location'
+    },
+    'table.branch': {
+        uz: 'Filial',
+        ru: 'Филиал',
+        en: 'Branch'
+    },
+    'table.assigned': {
+        uz: 'Tayinlangan',
+        ru: 'Назначено',
+        en: 'Assigned'
+    },
+    'table.unassigned': {
+        uz: 'Tayinlanmagan',
+        ru: 'Не назначено',
+        en: 'Unassigned'
+    },
     'table.product': {
         uz: 'Mahsulot',
         ru: 'Продукт',

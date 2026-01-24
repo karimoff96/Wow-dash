@@ -2915,3 +2915,1002 @@ msgstr "Журналы аудита"
 #: templates/partials/sidebar.html
 msgid "Marketing"
 msgstr "Маркетинг"
+
+msgid "auth.forgotPassword"
+msgstr "Забыли пароль"
+
+msgid "auth.forgotPasswordDesc"
+msgstr "Введите адрес электронной почты, связанный с вашей учетной записью, и мы отправим вам ссылку для сброса пароля"
+
+msgid "auth.enterEmail"
+msgstr "Введите Email"
+
+msgid "auth.sendResetLink"
+msgstr "Отправить ссылку"
+
+msgid "auth.backToSignIn"
+msgstr "Назад к входу"
+
+msgid "orders.orderId"
+msgstr "ID заказа"
+
+msgid "orders.customer"
+msgstr "Клиент"
+
+msgid "orders.product"
+msgstr "Товар"
+
+msgid "orders.pages"
+msgstr "Страниц"
+
+msgid "orders.status"
+msgstr "Статус"
+
+msgid "orders.price"
+msgstr "Цена"
+
+msgid "orders.totalPrice"
+msgstr "Общая цена"
+
+msgid "orders.received"
+msgstr "Получено"
+
+msgid "orders.remaining"
+msgstr "Осталось"
+
+msgid "orders.orderNumber"
+msgstr "Номер заказа"
+
+msgid "orders.documents"
+msgstr "Документы"
+
+msgid "orders.assignedTo"
+msgstr "Назначен"
+
+msgid "orders.notAssigned"
+msgstr "Не назначен"
+
+msgid "orders.assignedBy"
+msgstr "Назначил"
+
+msgid "orders.paymentReceived"
+msgstr "Платеж получен"
+
+msgid "orders.paymentReceivedBy"
+msgstr "Платеж принят"
+
+msgid "orders.paymentReceivedAt"
+msgstr "Платеж получен"
+
+msgid "orders.clientName"
+msgstr "Имя клиента"
+
+msgid "orders.phoneNumber"
+msgstr "Номер телефона"
+
+msgid "orders.totalAmount"
+msgstr "Общая сумма"
+
+msgid "orders.extraFee"
+msgstr "Дополнительная плата"
+
+msgid "orders.extraFeeDesc"
+msgstr "Описание допплаты"
+
+msgid "orders.copyNumber"
+msgstr "Количество копий"
+
+msgid "orders.additionalCopies"
+msgstr "Требуются дополнительные копии (0 означает только оригинал)"
+
+msgid "orders.translationLanguage"
+msgstr "Язык перевода"
+
+msgid "orders.description"
+msgstr "Описание"
+
+msgid "status.pending"
+msgstr "Ожидание"
+
+msgid "status.paymentPending"
+msgstr "Ожидание оплаты"
+
+msgid "status.paymentReceived"
+msgstr "Получено"
+
+msgid "status.paymentConfirmed"
+msgstr "Подтверждено"
+
+msgid "status.inProgress"
+msgstr "В процессе"
+
+msgid "status.ready"
+msgstr "Готово"
+
+msgid "status.completed"
+msgstr "Выполнено"
+
+msgid "status.cancelled"
+msgstr "Отменено"
+
+msgid "actions.view"
+msgstr "Просмотр"
+
+msgid "actions.edit"
+msgstr "Редактировать"
+
+msgid "actions.delete"
+msgstr "Удалить"
+
+msgid "actions.assign"
+msgstr "Назначить"
+
+msgid "actions.confirmPayment"
+msgstr "Подтвердить оплату"
+
+msgid "actions.recordPayment"
+msgstr "Записать оплату"
+
+msgid "actions.updateStatus"
+msgstr "Обновить статус"
+
+msgid "actions.downloadReceipt"
+msgstr "Скачать квитанцию"
+
+msgid "actions.viewDetails"
+msgstr "Просмотр деталей"
+
+msgid "actions.cancel"
+msgstr "Отмена"
+
+msgid "actions.save"
+msgstr "Сохранить"
+
+msgid "actions.update"
+msgstr "Обновить"
+
+msgid "actions.upload"
+msgstr "Загрузить"
+
+msgid "actions.download"
+msgstr "Скачать"
+
+msgid "actions.print"
+msgstr "Печать"
+
+msgid "actions.export"
+msgstr "Экспорт"
+
+msgid "actions.filter"
+msgstr "Фильтр"
+
+msgid "actions.search"
+msgstr "Поиск"
+
+msgid "actions.reset"
+msgstr "Сбросить"
+
+msgid "actions.apply"
+msgstr "Применить"
+
+msgid "actions.submit"
+msgstr "Отправить"
+
+msgid "actions.close"
+msgstr "Закрыть"
+
+msgid "actions.confirm"
+msgstr "Подтвердить"
+
+msgid "actions.back"
+msgstr "Назад"
+
+msgid "filter.all"
+msgstr "Все"
+
+msgid "filter.status"
+msgstr "Статус"
+
+msgid "filter.paymentStatus"
+msgstr "Статус оплаты"
+
+msgid "filter.assignmentStatus"
+msgstr "Статус назначения"
+
+msgid "filter.search"
+msgstr "Поиск"
+
+msgid "filter.searchPlaceholder"
+msgstr "Поиск по номеру, имени, телефону"
+
+msgid "filter.perPage"
+msgstr "На странице"
+
+msgid "filter.branch"
+msgstr "Филиал"
+
+msgid "filter.center"
+msgstr "Центр"
+
+msgid "filter.staff"
+msgstr "Сотрудник"
+
+msgid "filter.dateFrom"
+msgstr "С даты"
+
+msgid "filter.dateTo"
+msgstr "До даты"
+
+msgid "filter.period"
+msgstr "Период"
+
+msgid "filter.today"
+msgstr "Сегодня"
+
+msgid "filter.thisWeek"
+msgstr "Эта неделя"
+
+msgid "filter.thisMonth"
+msgstr "Этот месяц"
+
+msgid "filter.thisYear"
+msgstr "Этот год"
+
+msgid "filter.custom"
+msgstr "Пользовательский период"
+
+msgid "filter.allPaymentMethods"
+msgstr "Все способы оплаты"
+
+msgid "filter.allCustomers"
+msgstr "Все клиенты"
+
+msgid "payment.cash"
+msgstr "Наличные"
+
+msgid "payment.card"
+msgstr "Карта"
+
+msgid "payment.bankTransfer"
+msgstr "Банковский перевод"
+
+msgid "payment.other"
+msgstr "Другое"
+
+msgid "payment.paymentMethod"
+msgstr "Способ оплаты"
+
+msgid "payment.paymentType"
+msgstr "Тип оплаты"
+
+msgid "payment.paymentAmount"
+msgstr "Сумма оплаты"
+
+msgid "payment.paymentDate"
+msgstr "Дата оплаты"
+
+msgid "payment.paymentDetails"
+msgstr "Детали оплаты"
+
+msgid "payment.paymentHistory"
+msgstr "История платежей"
+
+msgid "payment.receiptNote"
+msgstr "Квитанция/Примечание"
+
+msgid "payment.uploadReceipt"
+msgstr "Загрузить квитанцию"
+
+msgid "payment.noReceiptUploaded"
+msgstr "Квитанция не загружена"
+
+msgid "payment.processPayment"
+msgstr "Обработать платеж"
+
+msgid "payment.newPayment"
+msgstr "Новый платеж"
+
+msgid "payment.bulkPayment"
+msgstr "Массовый платеж"
+
+msgid "payment.paidAmount"
+msgstr "Оплаченная сумма"
+
+msgid "payment.fully"
+msgstr "Полностью"
+
+msgid "payment.partial"
+msgstr "Частично"
+
+msgid "payment.unpaid"
+msgstr "Неоплачено"
+
+msgid "payment.fullyPaid"
+msgstr "Полностью оплачено"
+
+msgid "payment.partiallyPaid"
+msgstr "Частично оплачено"
+
+msgid "payment.pendingPayment"
+msgstr "Ожидание оплаты"
+
+msgid "payment.acceptPayment"
+msgstr "Принять оплату полностью"
+
+msgid "customer.agency"
+msgstr "Агентство (B2B)"
+
+msgid "customer.individual"
+msgstr "Физлицо (B2C)"
+
+msgid "customer.type"
+msgstr "Тип клиента"
+
+msgid "customer.name"
+msgstr "Имя клиента"
+
+msgid "customer.phone"
+msgstr "Телефон"
+
+msgid "customer.email"
+msgstr "Email"
+
+msgid "stats.total"
+msgstr "Всего"
+
+msgid "stats.totalPayments"
+msgstr "Всего платежей"
+
+msgid "stats.totalAmount"
+msgstr "Общая сумма"
+
+msgid "stats.totalOrders"
+msgstr "Всего заказов"
+
+msgid "stats.ordersPaid"
+msgstr "Оплачено заказов"
+
+msgid "stats.fullyPaid"
+msgstr "полностью оплачено"
+
+msgid "stats.uniqueCustomers"
+msgstr "Уникальных клиентов"
+
+msgid "stats.customersServed"
+msgstr "клиентов обслужено"
+
+msgid "stats.transactionsProcessed"
+msgstr "транзакций обработано"
+
+msgid "stats.avgPayment"
+msgstr "средний платеж"
+
+msgid "stats.averageAmount"
+msgstr "Средняя сумма"
+
+msgid "table.id"
+msgstr "№"
+
+msgid "table.customer"
+msgstr "Клиент"
+
+msgid "table.phone"
+msgstr "Телефон"
+
+msgid "table.service"
+msgstr "Услуга"
+
+msgid "table.paymentMethod"
+msgstr "Способ оплаты"
+
+msgid "table.amount"
+msgstr "Сумма"
+
+msgid "table.dateTime"
+msgstr "Дата и время"
+
+msgid "table.location"
+msgstr "Местоположение"
+
+msgid "table.branch"
+msgstr "Филиал"
+
+msgid "table.assigned"
+msgstr "Назначено"
+
+msgid "table.unassigned"
+msgstr "Не назначено"
+
+msgid "table.noRecentOrders"
+msgstr "Нет недавних заказов"
+
+msgid "table.orders"
+msgstr "Заказы"
+
+msgid "table.fullyPaid"
+msgstr "Полностью оплачено"
+
+msgid "table.date"
+msgstr "Дата"
+
+msgid "table.processedBy"
+msgstr "Обработал"
+
+msgid "table.actions"
+msgstr "Действия"
+
+msgid "table.status"
+msgstr "Статус"
+
+msgid "table.product"
+msgstr "Товар"
+
+msgid "table.price"
+msgstr "Цена"
+
+msgid "table.received"
+msgstr "Получено"
+
+msgid "table.remaining"
+msgstr "Осталось"
+
+msgid "table.assignedTo"
+msgstr "Назначен"
+
+msgid "table.createdAt"
+msgstr "Создано"
+
+msgid "form.username"
+msgstr "Логин"
+
+msgid "form.password"
+msgstr "Пароль"
+
+msgid "form.email"
+msgstr "Email"
+
+msgid "form.firstName"
+msgstr "Имя"
+
+msgid "form.lastName"
+msgstr "Фамилия"
+
+msgid "form.phone"
+msgstr "Номер телефона"
+
+msgid "form.address"
+msgstr "Адрес"
+
+msgid "form.note"
+msgstr "Примечание"
+
+msgid "form.selectOption"
+msgstr "Выберите опцию"
+
+msgid "form.selectStatus"
+msgstr "Выберите статус"
+
+msgid "form.selectPaymentType"
+msgstr "Выберите тип оплаты"
+
+msgid "form.selectBranch"
+msgstr "Выберите филиал"
+
+msgid "form.selectStaff"
+msgstr "Выберите сотрудника"
+
+msgid "form.selectProduct"
+msgstr "Выберите товар"
+
+msgid "form.selectLanguage"
+msgstr "Выберите язык"
+
+msgid "form.selectCustomer"
+msgstr "Выберите клиента"
+
+msgid "form.enterAmount"
+msgstr "Введите сумму"
+
+msgid "form.enterDescription"
+msgstr "Введите описание"
+
+msgid "form.required"
+msgstr "Обязательно"
+
+msgid "form.optional"
+msgstr "Необязательно"
+
+msgid "form.chooseFile"
+msgstr "Выберите файл"
+
+msgid "form.noFileChosen"
+msgstr "Файл не выбран"
+
+msgid "form.dragDropFile"
+msgstr "Перетащите файлы сюда"
+
+msgid "form.uploadFiles"
+msgstr "Загрузить файлы"
+
+msgid "message.success"
+msgstr "Успешно"
+
+msgid "message.error"
+msgstr "Ошибка"
+
+msgid "message.warning"
+msgstr "Предупреждение"
+
+msgid "message.info"
+msgstr "Информация"
+
+msgid "message.loading"
+msgstr "Загрузка"
+
+msgid "message.noData"
+msgstr "Нет данных"
+
+msgid "message.confirmDelete"
+msgstr "Вы уверены, что хотите удалить этот элемент?"
+
+msgid "message.deleteSuccess"
+msgstr "Элемент успешно удален"
+
+msgid "message.updateSuccess"
+msgstr "Успешно обновлено"
+
+msgid "message.createSuccess"
+msgstr "Успешно создано"
+
+msgid "message.saveSuccess"
+msgstr "Успешно сохранено"
+
+msgid "message.noResults"
+msgstr "Результаты не найдены"
+
+msgid "message.tryDifferentFilters"
+msgstr "Попробуйте изменить фильтры или период"
+
+msgid "common.yes"
+msgstr "Да"
+
+msgid "common.no"
+msgstr "Нет"
+
+msgid "common.active"
+msgstr "Активно"
+
+msgid "common.inactive"
+msgstr "Неактивно"
+
+msgid "common.enabled"
+msgstr "Включено"
+
+msgid "common.disabled"
+msgstr "Отключено"
+
+msgid "common.default"
+msgstr "По умолчанию"
+
+msgid "common.all"
+msgstr "Все"
+
+msgid "common.none"
+msgstr "Нет"
+
+msgid "common.select"
+msgstr "Выбрать"
+
+msgid "common.selected"
+msgstr "Выбрано"
+
+msgid "common.clear"
+msgstr "Очистить"
+
+msgid "common.refresh"
+msgstr "Обновить"
+
+msgid "common.showing"
+msgstr "Показано"
+
+msgid "common.of"
+msgstr "из"
+
+msgid "common.entries"
+msgstr "записей"
+
+msgid "common.previous"
+msgstr "Предыдущая"
+
+msgid "common.next"
+msgstr "Следующая"
+
+msgid "common.page"
+msgstr "Страница"
+
+msgid "common.perPage"
+msgstr "На странице"
+
+msgid "common.from"
+msgstr "С"
+
+msgid "common.to"
+msgstr "До"
+
+msgid "common.language"
+msgstr "Язык"
+
+msgid "common.more"
+msgstr "Еще"
+
+msgid "common.less"
+msgstr "Меньше"
+
+msgid "common.show"
+msgstr "Показать"
+
+msgid "common.hide"
+msgstr "Скрыть"
+
+msgid "common.details"
+msgstr "Детали"
+
+msgid "common.close"
+msgstr "Закрыть"
+
+msgid "common.avgPayment"
+msgstr "средний платеж"
+
+msgid "empty.noOrders"
+msgstr "Заказы не найдены"
+
+msgid "empty.noPayments"
+msgstr "Платежи не найдены"
+
+msgid "empty.noCustomers"
+msgstr "Клиенты не найдены"
+
+msgid "empty.noData"
+msgstr "Нет данных"
+
+msgid "empty.noResults"
+msgstr "Результаты не найдены"
+
+msgid "pagination.showing"
+msgstr "Показано"
+
+msgid "pagination.to"
+msgstr "до"
+
+msgid "pagination.of"
+msgstr "из"
+
+msgid "pagination.entries"
+msgstr "записей"
+
+msgid "pagination.previous"
+msgstr "Предыдущая"
+
+msgid "pagination.next"
+msgstr "Следующая"
+
+msgid "pagination.first"
+msgstr "Первая"
+
+msgid "pagination.last"
+msgstr "Последняя"
+
+msgid "assignment.assignTo"
+msgstr "Назначить"
+
+msgid "assignment.reassign"
+msgstr "Переназначить"
+
+msgid "assignment.unassigned"
+msgstr "Не назначено"
+
+msgid "assignment.assigned"
+msgstr "Назначено"
+
+msgid "assignment.selectStaff"
+msgstr "Выберите сотрудника"
+
+msgid "assignment.assignmentDate"
+msgstr "Дата назначения"
+
+msgid "bulk.selectCustomer"
+msgstr "Выберите клиента"
+
+msgid "bulk.customerWithDebt"
+msgstr "Клиент (с долгом)"
+
+msgid "bulk.paymentAmount"
+msgstr "Сумма платежа"
+
+msgid "bulk.previewDistribution"
+msgstr "Предпросмотр распределения"
+
+msgid "bulk.processPayment"
+msgstr "Обработать платеж"
+
+msgid "bulk.ordersPaidCount"
+msgstr "Заказы к оплате"
+
+msgid "bulk.fullyPaidCount"
+msgstr "Полностью оплачено"
+
+msgid "bulk.remainingDebt"
+msgstr "Остаток долга"
+
+msgid "bulk.currentDebt"
+msgstr "Текущий остаток"
+
+msgid "bulk.amountToApply"
+msgstr "Сумма к применению"
+
+msgid "bulk.newRemaining"
+msgstr "Новый остаток"
+
+msgid "services.product"
+msgstr "Товар"
+
+msgid "services.products"
+msgstr "Товары"
+
+msgid "services.category"
+msgstr "Категория"
+
+msgid "services.categories"
+msgstr "Категории"
+
+msgid "services.language"
+msgstr "Язык"
+
+msgid "services.languages"
+msgstr "Языки"
+
+msgid "services.expense"
+msgstr "Расход"
+
+msgid "services.expenses"
+msgstr "Расходы"
+
+msgid "services.addProduct"
+msgstr "Добавить товар"
+
+msgid "services.editProduct"
+msgstr "Редактировать товар"
+
+msgid "services.productName"
+msgstr "Название товара"
+
+msgid "services.productPrice"
+msgstr "Цена товара"
+
+msgid "services.productDescription"
+msgstr "Описание товара"
+
+msgid "services.pricePerPage"
+msgstr "Цена за страницу"
+
+msgid "services.basePrice"
+msgstr "Базовая цена"
+
+msgid "services.additionalCopyPrice"
+msgstr "Цена доп. копии"
+
+msgid "services.available"
+msgstr "Доступно"
+
+msgid "services.notAvailable"
+msgstr "Недоступно"
+
+msgid "users.user"
+msgstr "Пользователь"
+
+msgid "users.users"
+msgstr "Пользователи"
+
+msgid "users.profile"
+msgstr "Профиль"
+
+msgid "users.role"
+msgstr "Роль"
+
+msgid "users.permissions"
+msgstr "Разрешения"
+
+msgid "users.addUser"
+msgstr "Добавить пользователя"
+
+msgid "users.editUser"
+msgstr "Редактировать"
+
+msgid "users.viewProfile"
+msgstr "Просмотр профиля"
+
+msgid "users.changePassword"
+msgstr "Изменить пароль"
+
+msgid "users.lastLogin"
+msgstr "Последний вход"
+
+msgid "users.dateJoined"
+msgstr "Дата регистрации"
+
+msgid "org.center"
+msgstr "Центр"
+
+msgid "org.centers"
+msgstr "Центры"
+
+msgid "org.branch"
+msgstr "Филиал"
+
+msgid "org.branches"
+msgstr "Филиалы"
+
+msgid "org.addCenter"
+msgstr "Добавить центр"
+
+msgid "org.addBranch"
+msgstr "Добавить филиал"
+
+msgid "org.editCenter"
+msgstr "Редактировать центр"
+
+msgid "org.editBranch"
+msgstr "Редактировать филиал"
+
+msgid "org.centerName"
+msgstr "Название центра"
+
+msgid "org.branchName"
+msgstr "Название филиала"
+
+msgid "org.address"
+msgstr "Адрес"
+
+msgid "org.contactInfo"
+msgstr "Контактная информация"
+
+msgid "marketing.broadcast"
+msgstr "Рассылка"
+
+msgid "marketing.campaign"
+msgstr "Кампания"
+
+msgid "marketing.message"
+msgstr "Сообщение"
+
+msgid "marketing.recipients"
+msgstr "Получатели"
+
+msgid "marketing.send"
+msgstr "Отправить"
+
+msgid "marketing.scheduled"
+msgstr "Запланировано"
+
+msgid "marketing.sent"
+msgstr "Отправлено"
+
+msgid "marketing.failed"
+msgstr "Ошибка"
+
+msgid "reports.financial"
+msgstr "Финансовый отчет"
+
+msgid "reports.debt"
+msgstr "Отчет по долгам"
+
+msgid "reports.audit"
+msgstr "Журнал аудита"
+
+msgid "reports.generate"
+msgstr "Создать отчет"
+
+msgid "reports.export"
+msgstr "Экспортировать"
+
+msgid "reports.dateRange"
+msgstr "Период"
+
+msgid "reports.summary"
+msgstr "Итого"
+
+msgid "reports.details"
+msgstr "Детали"
+
+msgid "dashboard.title"
+msgstr "Панель управления"
+
+msgid "dashboard.welcome"
+msgstr "Добро пожаловать"
+
+msgid "dashboard.overview"
+msgstr "Обзор"
+
+msgid "dashboard.recentOrders"
+msgstr "Последние заказы"
+
+msgid "dashboard.todayStats"
+msgstr "Статистика за сегодня"
+
+msgid "dashboard.thisMonth"
+msgstr "Этот месяц"
+
+msgid "dashboard.revenue"
+msgstr "Доход"
+
+msgid "dashboard.growth"
+msgstr "Рост"
+
+msgid "receipt.upload"
+msgstr "Загрузить квитанцию"
+
+msgid "receipt.view"
+msgstr "Просмотр квитанции"
+
+msgid "receipt.download"
+msgstr "Скачать квитанцию"
+
+msgid "receipt.pending"
+msgstr "Ожидание квитанции"
+
+msgid "receipt.approved"
+msgstr "Квитанция одобрена"
+
+msgid "receipt.rejected"
+msgstr "Квитанция отклонена"
+
+msgid "receipt.showForCardPayments"
+msgstr "Показывается только для карт/переводов"
+
+msgid "validation.required"
+msgstr "Это поле обязательно"
+
+msgid "validation.invalid"
+msgstr "Неверное значение"
+
+msgid "validation.minLength"
+msgstr "Минимальная длина"
+
+msgid "validation.maxLength"
+msgstr "Максимальная длина"
+
+msgid "validation.min"
+msgstr "Минимальное значение"
+
+msgid "validation.max"
+msgstr "Максимальное значение"
+
+msgid "validation.email"
+msgstr "Неверный email"
+
+msgid "validation.phone"
+msgstr "Неверный номер телефона"
+
+msgid "table.phone"
+msgstr "Телефон"
+
+msgid "table.service"
+msgstr "Услуга"
+
+msgid "table.dateTime"
+msgstr "Дата и время"
+
+msgid "table.location"
+msgstr "Местоположение"
+
+msgid "table.branch"
+msgstr "Филиал"
+
+msgid "table.assigned"
+msgstr "Назначено"
+
+msgid "table.unassigned"
+msgstr "Не назначено"
+
+msgid "table.noRecentOrders"
+msgstr "Нет недавних заказов"

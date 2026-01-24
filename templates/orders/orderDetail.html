@@ -678,7 +678,55 @@
                 
                 {% if not order.is_fully_paid %}
                 <!-- Payment Form -->
-                <form id="paymentForm">
+                <form id="paymentForm" enctype="multipart/form-data">
+                    <!-- Payment Type Selection -->
+                    <div class="mb-16">
+                        <label class="form-label fw-semibold">
+                            <iconify-icon icon="solar:wallet-bold" class="me-1"></iconify-icon>
+                            Payment Type
+                        </label>
+                        <select class="form-select radius-8" id="paymentTypeSelect" name="payment_type">
+                            <option value="cash" {% if order.payment_type == 'cash' %}selected{% endif %}>
+                                💵 Cash
+                            </option>
+                            <option value="card" {% if order.payment_type == 'card' %}selected{% endif %}>
+                                💳 Card
+                            </option>
+                            <option value="bank_transfer" {% if order.payment_type == 'bank_transfer' %}selected{% endif %}>
+                                🏦 Bank Transfer
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <!-- Receipt Upload Section (for card/bank transfer) -->
+                    <div class="mb-16" id="receiptUploadSection" style="display: none;">
+                        <label class="form-label fw-semibold">
+                            <iconify-icon icon="solar:document-add-bold" class="me-1"></iconify-icon>
+                            Payment Receipt
+                        </label>
+                        {% if order.recipt %}
+                        <div class="mb-12 p-12 bg-success-50 border border-success-200 radius-8">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <iconify-icon icon="solar:file-check-bold" class="text-success-600 text-xl me-2"></iconify-icon>
+                                    <div>
+                                        <span class="fw-medium text-success-600">Current Receipt:</span>
+                                        <a href="{{ order.recipt.url }}" target="_blank" class="text-primary-600 ms-2">
+                                            {{ order.recipt.name|slice:"-30:" }}
+                                        </a>
+                                    </div>
+                                </div>
+                                <a href="{{ order.recipt.url }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                    <iconify-icon icon="solar:eye-bold"></iconify-icon> View
+                                </a>
+                            </div>
+                        </div>
+                        <label class="form-label text-sm mb-8">Replace Receipt (Optional)</label>
+                        {% endif %}
+                        <input type="file" name="recipt" id="receiptFile" class="form-control radius-8" accept="image/*,.pdf">
+                        <small class="text-secondary-light">Upload payment receipt for card/transfer transactions</small>
+                    </div>
+                    
                     <!-- Accept Fully Checkbox -->
                     <div class="form-check form-switch mb-16">
                         <input class="form-check-input" type="checkbox" id="acceptFully" name="accept_fully">
@@ -802,6 +850,25 @@ document.getElementById('acceptFully')?.addEventListener('change', function() {
     }
 });
 
+// Toggle receipt upload section based on payment type
+const paymentTypeSelect = document.getElementById('paymentTypeSelect');
+const receiptUploadSection = document.getElementById('receiptUploadSection');
+
+if (paymentTypeSelect && receiptUploadSection) {
+    function toggleReceiptSection() {
+        if (paymentTypeSelect.value === 'card' || paymentTypeSelect.value === 'bank_transfer') {
+            receiptUploadSection.style.display = 'block';
+        } else {
+            receiptUploadSection.style.display = 'none';
+        }
+    }
+    
+    paymentTypeSelect.addEventListener('change', toggleReceiptSection);
+    
+    // Initialize on page load
+    toggleReceiptSection();
+}
+
 function setAmount(amount) {
     document.getElementById('paymentAmount').value = Math.round(amount);
 }
@@ -846,6 +913,18 @@ async function submitPayment() {
         const extraFee = document.getElementById('extraFeeAmount')?.value;
         const extraFeeDesc = document.getElementById('extraFeeDescription')?.value;
         const forceAccept = document.getElementById('forceAccept')?.checked;
+        const paymentType = document.getElementById('paymentTypeSelect')?.value;
+        const receiptFile = document.getElementById('receiptFile')?.files[0];
+        
+        // Add payment type
+        if (paymentType) {
+            formData.append('payment_type', paymentType);
+        }
+        
+        // Add receipt file if uploaded
+        if (receiptFile) {
+            formData.append('recipt', receiptFile);
+        }
         
         if (acceptFully) {
             formData.append('accept_fully', 'true');

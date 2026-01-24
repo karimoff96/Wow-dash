@@ -37,7 +37,7 @@
                     <iconify-icon icon="solar:check-circle-bold" class="text-info-600 text-2xl"></iconify-icon>
                 </div>
                 <div>
-                    <span class="text-secondary-light text-sm fw-medium">Ready</span>
+                    <span class="text-secondary-light text-sm fw-medium" data-i18n="status.ready">Ready</span>
                     <h6 class="mb-0 mt-1">{{ stats.ready }}</h6>
                 </div>
             </div>
@@ -129,21 +129,21 @@
                                 </td>
                                 <td>
                                     {% if order.status == 'pending' %}
-                                        <span class="badge bg-warning-focus text-warning-600">Pending</span>
+                                        <span class="badge bg-warning-focus text-warning-600" data-i18n="status.pending">Pending</span>
                                     {% elif order.status == 'payment_pending' %}
-                                        <span class="badge bg-info-focus text-info-600">Awaiting</span>
+                                        <span class="badge bg-info-focus text-info-600" data-i18n="status.paymentPending">Awaiting</span>
                                     {% elif order.status == 'payment_received' %}
-                                        <span class="badge bg-primary-focus text-primary-600">Received</span>
+                                        <span class="badge bg-primary-focus text-primary-600" data-i18n="status.paymentReceived">Received</span>
                                     {% elif order.status == 'payment_confirmed' %}
-                                        <span class="badge bg-cyan-focus text-cyan">Confirmed</span>
+                                        <span class="badge bg-cyan-focus text-cyan" data-i18n="status.paymentConfirmed">Confirmed</span>
                                     {% elif order.status == 'in_progress' %}
-                                        <span class="badge bg-lilac-focus text-lilac-600">In Process</span>
+                                        <span class="badge bg-lilac-focus text-lilac-600" data-i18n="status.inProgress">In Process</span>
                                     {% elif order.status == 'ready' %}
-                                        <span class="badge bg-success-focus text-success-600">Ready</span>
+                                        <span class="badge bg-success-focus text-success-600" data-i18n="status.ready">Ready</span>
                                     {% elif order.status == 'completed' %}
-                                        <span class="badge bg-success-focus text-success-600">Done</span>
+                                        <span class="badge bg-success-focus text-success-600" data-i18n="status.completed">Done</span>
                                     {% elif order.status == 'cancelled' %}
-                                        <span class="badge bg-danger-focus text-danger-600">Cancelled</span>
+                                        <span class="badge bg-danger-focus text-danger-600" data-i18n="status.cancelled">Cancelled</span>
                                     {% endif %}
                                 </td>
                                 <td>

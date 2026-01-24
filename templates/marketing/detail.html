@@ -224,7 +224,7 @@
                                 </td>
                                 <td>
                                     {% if recipient.status == 'pending' %}
-                                    <span class="badge bg-secondary-focus text-secondary-main">Pending</span>
+                                    <span class="badge bg-secondary-focus text-secondary-main" data-i18n="status.pending">Pending</span>
                                     {% elif recipient.status == 'sent' %}
                                     <span class="badge bg-info-focus text-info-main">Sent</span>
                                     {% elif recipient.status == 'delivered' %}
@@ -329,7 +329,7 @@
                         <div class="bg-secondary-50 radius-8 p-12 text-center">
                             <iconify-icon icon="mdi:clock-outline" class="text-secondary-600 text-xl mb-4"></iconify-icon>
                             <h5 class="fw-bold text-secondary-600 mb-0">{{ recipient_stats.pending }}</h5>
-                            <small class="text-secondary-light">Pending</small>
+                            <small class="text-secondary-light" data-i18n="status.pending">Pending</small>
                         </div>
                     </div>
                     {% endif %}

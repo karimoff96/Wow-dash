@@ -8,7 +8,7 @@ Implements FIFO (First In, First Out) payment distribution across orders.
 import logging
 from decimal import Decimal
 from django.db import transaction
-from django.db.models import Sum, Q, F, Case, When, DecimalField
+from django.db.models import Sum, Count, Q, F, Case, When, DecimalField
 from django.db.models.functions import Coalesce
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -791,3 +791,232 @@ def get_top_debtors_api(request):
     )
     
     return JsonResponse({'debtors': debtors})
+
+
+@login_required
+@require_permission(can_manage_bulk_payments, 'You do not have permission to view payment history')
+def payment_history_full(request):
+    """
+    Full payment history view with comprehensive filters, pagination, and statistics.
+    Similar to other report pages with period filters.
+    """
+    from django.core.paginator import Paginator
+    from datetime import datetime, timedelta
+    
+    # Get filter parameters
+    period = request.GET.get('period', 'month')
+    date_from_str = request.GET.get('date_from', '')
+    date_to_str = request.GET.get('date_to', '')
+    payment_method = request.GET.get('payment_method', '')
+    customer_type = request.GET.get('customer_type', '')
+    page_number = request.GET.get('page', 1)
+    
+    # Calculate date range based on period
+    today = timezone.now()
+    if period == 'today':
+        date_from = today.replace(hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+        period_label = _('Today')
+    elif period == 'week':
+        start_of_week = today - timedelta(days=today.weekday())
+        date_from = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+        period_label = _('This Week')
+    elif period == 'month':
+        date_from = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+        period_label = _('This Month')
+    elif period == 'year':
+        date_from = today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+        period_label = _('This Year')
+    elif period == 'custom' and date_from_str and date_to_str:
+        try:
+            # Parse dates and make them timezone-aware
+            date_from_naive = datetime.strptime(date_from_str, '%Y-%m-%d')
+            date_to_naive = datetime.strptime(date_to_str, '%Y-%m-%d').replace(hour=23, minute=59, second=59)
+            # Convert to timezone-aware datetimes
+            date_from = timezone.make_aware(date_from_naive)
+            date_to = timezone.make_aware(date_to_naive)
+            period_label = f"{date_from_str} to {date_to_str}"
+        except ValueError:
+            date_from = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            date_to = today
+            period_label = _('This Month')
+    else:
+        # Default to this month
+        date_from = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        date_to = today
+        period_label = _('This Month')
+    
+    # Get bulk payments with filters
+    payments = BulkPayment.objects.select_related(
+        'bot_user', 'processed_by__user', 'branch', 'branch__center'
+    )
+    
+    # Filter based on user role (RBAC)
+    if not request.user.is_superuser:
+        admin_profile = request.user.admin_profile if hasattr(request.user, 'admin_profile') else None
+        if admin_profile:
+            if admin_profile.is_owner:
+                # Owner sees center payments
+                payments = payments.filter(branch__center=admin_profile.center)
+            elif admin_profile.is_manager:
+                # Manager sees branch payments
+                payments = payments.filter(branch=admin_profile.branch)
+    
+    # Apply date range filter
+    payments = payments.filter(created_at__gte=date_from, created_at__lte=date_to)
+    
+    # Apply payment method filter
+    if payment_method:
+        payments = payments.filter(payment_method=payment_method)
+    
+    # Apply customer type filter
+    if customer_type:
+        if customer_type == 'agency':
+            payments = payments.filter(bot_user__is_agency=True)
+        elif customer_type == 'individual':
+            payments = payments.filter(bot_user__is_agency=False)
+    
+    # Calculate statistics BEFORE ordering and pagination
+    # Get the payment IDs first
+    payment_ids = list(payments.values_list('id', flat=True))
+    
+    # Calculate ACTUAL amount applied from PaymentOrderLink (not BulkPayment.amount)
+    # BulkPayment.amount is what user entered, PaymentOrderLink.amount_applied is what was actually applied
+    actual_amount_applied = PaymentOrderLink.objects.filter(
+        bulk_payment_id__in=payment_ids
+    ).aggregate(total=Coalesce(Sum('amount_applied'), Decimal('0')))['total']
+    
+    # Calculate other stats from BulkPayment table
+    stats = payments.aggregate(
+        total_count=Count('id', distinct=True),
+        total_orders=Coalesce(Sum('orders_count'), 0),
+        fully_paid_orders=Coalesce(Sum('fully_paid_orders'), 0),
+        unique_customers=Count('bot_user', distinct=True)
+    )
+    
+    # Use actual amount applied instead of BulkPayment.amount
+    stats['total_amount'] = actual_amount_applied
+    
+    # Calculate average amount
+    if stats['total_count'] and stats['total_count'] > 0:
+        stats['average_amount'] = stats['total_amount'] / stats['total_count']
+    else:
+        stats['average_amount'] = Decimal('0')
+    
+    # Now add prefetch_related for displaying the list
+    payments = payments.prefetch_related('order_links')
+    
+    # Order by newest first
+    payments = payments.order_by('-created_at')
+    
+    # Paginate results
+    paginator = Paginator(payments, 20)  # 20 payments per page
+    try:
+        payments_page = paginator.page(page_number)
+    except:
+        payments_page = paginator.page(1)
+    
+    # Check if user is owner
+    is_owner = False
+    if hasattr(request.user, 'admin_profile') and request.user.admin_profile:
+        is_owner = request.user.admin_profile.is_owner
+    
+    context = {
+        'page_title': _('Payment History - Full Report'),
+        'payments': payments_page,
+        'stats': stats,
+        'period': period,
+        'period_label': period_label,
+        'date_from': date_from_str,
+        'date_to': date_to_str,
+        'payment_method': payment_method,
+        'customer_type': customer_type,
+        'active_nav': 'payment_history',
+        'is_owner': is_owner,
+    }
+    
+    return render(request, 'orders/payment_history_full.html', context)
+
+
+@login_required
+@require_permission(can_manage_bulk_payments, 'You do not have permission to view payment details')
+@require_http_methods(["GET"])
+def get_payment_details(request, payment_id):
+    """
+    API endpoint to get detailed information about a specific bulk payment.
+    Returns payment info and all orders that were paid with this payment.
+    """
+    try:
+        # Get the payment with related data
+        payment = BulkPayment.objects.select_related(
+            'bot_user', 'processed_by__user', 'branch'
+        ).prefetch_related('order_links__order').get(id=payment_id)
+        
+        # Check RBAC permissions
+        if not request.user.is_superuser:
+            admin_profile = request.user.admin_profile if hasattr(request.user, 'admin_profile') else None
+            if admin_profile:
+                if admin_profile.is_owner:
+                    # Owner must have same center
+                    if payment.branch.center != admin_profile.center:
+                        return JsonResponse({'error': 'Permission denied'}, status=403)
+                elif admin_profile.is_manager:
+                    # Manager must have same branch
+                    if payment.branch != admin_profile.branch:
+                        return JsonResponse({'error': 'Permission denied'}, status=403)
+        
+        # Get all order links for this payment
+        order_links = payment.order_links.all()
+        
+        # Build orders list
+        orders_data = []
+        fully_paid_count = 0
+        remaining_debt = Decimal('0')
+        
+        for link in order_links:
+            order = link.order
+            is_fully_paid = order.remaining <= 0
+            if is_fully_paid:
+                fully_paid_count += 1
+            else:
+                remaining_debt += order.remaining
+            
+            orders_data.append({
+                'order_id': order.id,
+                'customer_name': order.bot_user.name if order.bot_user else 'N/A',
+                'product_name': order.product.name if order.product else 'N/A',
+                'paid_amount': float(link.amount_applied),
+                'is_fully_paid': is_fully_paid,
+            })
+        
+        # Get payment method display name
+        payment_method_display = dict(BulkPayment.PAYMENT_METHOD_CHOICES).get(
+            payment.payment_method, payment.payment_method
+        )
+        
+        # Build response
+        response_data = {
+            'id': payment.id,
+            'customer_name': payment.bot_user.name if payment.bot_user else 'N/A',
+            'customer_phone': payment.bot_user.phone if payment.bot_user else None,
+            'amount': float(payment.amount),
+            'payment_method': payment_method_display,
+            'payment_date': payment.created_at.strftime('%Y-%m-%d %H:%M'),
+            'processed_by': payment.processed_by.user.get_full_name() if payment.processed_by else None,
+            'receipt_note': payment.receipt_note,
+            'orders_count': payment.orders_count,
+            'fully_paid_count': fully_paid_count,
+            'remaining_debt': float(remaining_debt),
+            'orders': orders_data,
+        }
+        
+        return JsonResponse(response_data)
+        
+    except BulkPayment.DoesNotExist:
+        return JsonResponse({'error': 'Payment not found'}, status=404)
+    except Exception as e:
+        logger.error(f"Error fetching payment details: {str(e)}")
+        return JsonResponse({'error': 'Internal server error'}, status=500)

@@ -2390,3 +2390,978 @@ msgstr ""
 #: templates/reports/audit_logs.html:389
 msgid "Reset Filters"
 msgstr ""
+
+msgid "auth.forgotPassword"
+msgstr "Forgot Password"
+
+msgid "auth.forgotPasswordDesc"
+msgstr "Enter the email address associated with your account and we will send you a link to reset your password"
+
+msgid "auth.enterEmail"
+msgstr "Enter Email"
+
+msgid "auth.sendResetLink"
+msgstr "Send Reset Link"
+
+msgid "auth.backToSignIn"
+msgstr "Back to Sign In"
+
+msgid "orders.orderId"
+msgstr "Order ID"
+
+msgid "orders.customer"
+msgstr "Customer"
+
+msgid "orders.product"
+msgstr "Product"
+
+msgid "orders.pages"
+msgstr "Pages"
+
+msgid "orders.status"
+msgstr "Status"
+
+msgid "orders.price"
+msgstr "Price"
+
+msgid "orders.totalPrice"
+msgstr "Total Price"
+
+msgid "orders.received"
+msgstr "Received"
+
+msgid "orders.remaining"
+msgstr "Remaining"
+
+msgid "orders.orderNumber"
+msgstr "Order Number"
+
+msgid "orders.documents"
+msgstr "Documents"
+
+msgid "orders.assignedTo"
+msgstr "Assigned To"
+
+msgid "orders.notAssigned"
+msgstr "Not Assigned"
+
+msgid "orders.assignedBy"
+msgstr "Assigned By"
+
+msgid "orders.paymentReceived"
+msgstr "Payment Received"
+
+msgid "orders.paymentReceivedBy"
+msgstr "Payment Received By"
+
+msgid "orders.paymentReceivedAt"
+msgstr "Payment Received At"
+
+msgid "orders.clientName"
+msgstr "Client Name"
+
+msgid "orders.phoneNumber"
+msgstr "Phone Number"
+
+msgid "orders.totalAmount"
+msgstr "Total Amount"
+
+msgid "orders.extraFee"
+msgstr "Extra Fee"
+
+msgid "orders.extraFeeDesc"
+msgstr "Extra Fee Description"
+
+msgid "orders.copyNumber"
+msgstr "Number of Copies"
+
+msgid "orders.additionalCopies"
+msgstr "Additional copies needed (0 means only original)"
+
+msgid "orders.translationLanguage"
+msgstr "Translation Language"
+
+msgid "orders.description"
+msgstr "Description"
+
+msgid "status.pending"
+msgstr "Pending"
+
+msgid "status.paymentPending"
+msgstr "Awaiting"
+
+msgid "status.paymentReceived"
+msgstr "Received"
+
+msgid "status.paymentConfirmed"
+msgstr "Confirmed"
+
+msgid "status.inProgress"
+msgstr "In Process"
+
+msgid "status.ready"
+msgstr "Ready"
+
+msgid "status.completed"
+msgstr "Done"
+
+msgid "status.cancelled"
+msgstr "Cancelled"
+
+msgid "actions.view"
+msgstr "View"
+
+msgid "actions.edit"
+msgstr "Edit"
+
+msgid "actions.delete"
+msgstr "Delete"
+
+msgid "actions.assign"
+msgstr "Assign"
+
+msgid "actions.confirmPayment"
+msgstr "Confirm Payment"
+
+msgid "actions.recordPayment"
+msgstr "Record Payment"
+
+msgid "actions.updateStatus"
+msgstr "Update Status"
+
+msgid "actions.downloadReceipt"
+msgstr "Download Receipt"
+
+msgid "actions.viewDetails"
+msgstr "View Details"
+
+msgid "actions.cancel"
+msgstr "Cancel"
+
+msgid "actions.save"
+msgstr "Save"
+
+msgid "actions.update"
+msgstr "Update"
+
+msgid "actions.upload"
+msgstr "Upload"
+
+msgid "actions.download"
+msgstr "Download"
+
+msgid "actions.print"
+msgstr "Print"
+
+msgid "actions.export"
+msgstr "Export"
+
+msgid "actions.filter"
+msgstr "Filter"
+
+msgid "actions.search"
+msgstr "Search"
+
+msgid "actions.reset"
+msgstr "Reset"
+
+msgid "actions.apply"
+msgstr "Apply"
+
+msgid "actions.submit"
+msgstr "Submit"
+
+msgid "actions.close"
+msgstr "Close"
+
+msgid "actions.confirm"
+msgstr "Confirm"
+
+msgid "actions.back"
+msgstr "Back"
+
+msgid "filter.all"
+msgstr "All"
+
+msgid "filter.status"
+msgstr "Status"
+
+msgid "filter.paymentStatus"
+msgstr "Payment Status"
+
+msgid "filter.assignmentStatus"
+msgstr "Assignment Status"
+
+msgid "filter.search"
+msgstr "Search"
+
+msgid "filter.searchPlaceholder"
+msgstr "Search by order ID, customer name, phone"
+
+msgid "filter.perPage"
+msgstr "Per Page"
+
+msgid "filter.branch"
+msgstr "Branch"
+
+msgid "filter.center"
+msgstr "Center"
+
+msgid "filter.staff"
+msgstr "Staff Member"
+
+msgid "filter.dateFrom"
+msgstr "From Date"
+
+msgid "filter.dateTo"
+msgstr "To Date"
+
+msgid "filter.period"
+msgstr "Period"
+
+msgid "filter.today"
+msgstr "Today"
+
+msgid "filter.thisWeek"
+msgstr "This Week"
+
+msgid "filter.thisMonth"
+msgstr "This Month"
+
+msgid "filter.thisYear"
+msgstr "This Year"
+
+msgid "filter.custom"
+msgstr "Custom Range"
+
+msgid "filter.allPaymentMethods"
+msgstr "All Payment Methods"
+
+msgid "filter.allCustomers"
+msgstr "All Customers"
+
+msgid "payment.cash"
+msgstr "Cash"
+
+msgid "payment.card"
+msgstr "Card"
+
+msgid "payment.bankTransfer"
+msgstr "Bank Transfer"
+
+msgid "payment.other"
+msgstr "Other"
+
+msgid "payment.paymentMethod"
+msgstr "Payment Method"
+
+msgid "payment.paymentType"
+msgstr "Payment Type"
+
+msgid "payment.paymentAmount"
+msgstr "Payment Amount"
+
+msgid "payment.paymentDate"
+msgstr "Payment Date"
+
+msgid "payment.paymentDetails"
+msgstr "Payment Details"
+
+msgid "payment.paymentHistory"
+msgstr "Payment History"
+
+msgid "payment.receiptNote"
+msgstr "Receipt/Note"
+
+msgid "payment.uploadReceipt"
+msgstr "Upload Receipt"
+
+msgid "payment.noReceiptUploaded"
+msgstr "No receipt uploaded"
+
+msgid "payment.processPayment"
+msgstr "Process Payment"
+
+msgid "payment.newPayment"
+msgstr "New Payment"
+
+msgid "payment.bulkPayment"
+msgstr "Bulk Payment"
+
+msgid "payment.paidAmount"
+msgstr "Paid Amount"
+
+msgid "payment.fully"
+msgstr "Fully"
+
+msgid "payment.partial"
+msgstr "Partial"
+
+msgid "payment.unpaid"
+msgstr "Unpaid"
+
+msgid "payment.fullyPaid"
+msgstr "Fully Paid"
+
+msgid "payment.partiallyPaid"
+msgstr "Partially Paid"
+
+msgid "payment.pendingPayment"
+msgstr "Pending Payment"
+
+msgid "payment.acceptPayment"
+msgstr "Accept Payment Fully"
+
+msgid "customer.agency"
+msgstr "Agency (B2B)"
+
+msgid "customer.individual"
+msgstr "Individual (B2C)"
+
+msgid "customer.type"
+msgstr "Customer Type"
+
+msgid "customer.name"
+msgstr "Customer Name"
+
+msgid "customer.phone"
+msgstr "Phone"
+
+msgid "customer.email"
+msgstr "Email"
+
+msgid "stats.total"
+msgstr "Total"
+
+msgid "stats.totalPayments"
+msgstr "Total Payments"
+
+msgid "stats.totalAmount"
+msgstr "Total Amount"
+
+msgid "stats.totalOrders"
+msgstr "Total Orders"
+
+msgid "stats.ordersPaid"
+msgstr "Orders Paid"
+
+msgid "stats.fullyPaid"
+msgstr "fully paid"
+
+msgid "stats.uniqueCustomers"
+msgstr "Unique Customers"
+
+msgid "stats.customersServed"
+msgstr "customers served"
+
+msgid "stats.transactionsProcessed"
+msgstr "transactions processed"
+
+msgid "stats.avgPayment"
+msgstr "avg payment"
+
+msgid "stats.averageAmount"
+msgstr "Average Amount"
+
+msgid "table.id"
+msgstr "#"
+
+msgid "table.customer"
+msgstr "Customer"
+
+msgid "table.phone"
+msgstr "Phone"
+
+msgid "table.service"
+msgstr "Service"
+
+msgid "table.paymentMethod"
+msgstr "Payment Method"
+
+msgid "table.amount"
+msgstr "Amount"
+
+msgid "table.dateTime"
+msgstr "Date & Time"
+
+msgid "table.location"
+msgstr "Location"
+
+msgid "table.branch"
+msgstr "Branch"
+
+msgid "table.assigned"
+msgstr "Assigned"
+
+msgid "table.unassigned"
+msgstr "Unassigned"
+
+msgid "table.noRecentOrders"
+msgstr "No recent orders"
+
+msgid "table.orders"
+msgstr "Orders"
+
+msgid "table.fullyPaid"
+msgstr "Fully Paid"
+
+msgid "table.date"
+msgstr "Date"
+
+msgid "table.processedBy"
+msgstr "Processed By"
+
+msgid "table.actions"
+msgstr "Actions"
+
+msgid "table.status"
+msgstr "Status"
+
+msgid "table.product"
+msgstr "Product"
+
+msgid "table.price"
+msgstr "Price"
+
+msgid "table.received"
+msgstr "Received"
+
+msgid "table.remaining"
+msgstr "Remaining"
+
+msgid "table.assignedTo"
+msgstr "Assigned To"
+
+msgid "table.createdAt"
+msgstr "Created At"
+
+msgid "form.username"
+msgstr "Username"
+
+msgid "form.password"
+msgstr "Password"
+
+msgid "form.email"
+msgstr "Email"
+
+msgid "form.firstName"
+msgstr "First Name"
+
+msgid "form.lastName"
+msgstr "Last Name"
+
+msgid "form.phone"
+msgstr "Phone Number"
+
+msgid "form.address"
+msgstr "Address"
+
+msgid "form.note"
+msgstr "Note"
+
+msgid "form.selectOption"
+msgstr "Select an option"
+
+msgid "form.selectStatus"
+msgstr "Select Status"
+
+msgid "form.selectPaymentType"
+msgstr "Select Payment Type"
+
+msgid "form.selectBranch"
+msgstr "Select Branch"
+
+msgid "form.selectStaff"
+msgstr "Select Staff"
+
+msgid "form.selectProduct"
+msgstr "Select Product"
+
+msgid "form.selectLanguage"
+msgstr "Select Language"
+
+msgid "form.selectCustomer"
+msgstr "Select Customer"
+
+msgid "form.enterAmount"
+msgstr "Enter Amount"
+
+msgid "form.enterDescription"
+msgstr "Enter Description"
+
+msgid "form.required"
+msgstr "Required"
+
+msgid "form.optional"
+msgstr "Optional"
+
+msgid "form.chooseFile"
+msgstr "Choose File"
+
+msgid "form.noFileChosen"
+msgstr "No file chosen"
+
+msgid "form.dragDropFile"
+msgstr "Drag and drop files here"
+
+msgid "form.uploadFiles"
+msgstr "Upload Files"
+
+msgid "message.success"
+msgstr "Success"
+
+msgid "message.error"
+msgstr "Error"
+
+msgid "message.warning"
+msgstr "Warning"
+
+msgid "message.info"
+msgstr "Information"
+
+msgid "message.loading"
+msgstr "Loading"
+
+msgid "message.noData"
+msgstr "No data available"
+
+msgid "message.confirmDelete"
+msgstr "Are you sure you want to delete this item?"
+
+msgid "message.deleteSuccess"
+msgstr "Item deleted successfully"
+
+msgid "message.updateSuccess"
+msgstr "Updated successfully"
+
+msgid "message.createSuccess"
+msgstr "Created successfully"
+
+msgid "message.saveSuccess"
+msgstr "Saved successfully"
+
+msgid "message.noResults"
+msgstr "No results found"
+
+msgid "message.tryDifferentFilters"
+msgstr "Try adjusting your filters or date range"
+
+msgid "common.yes"
+msgstr "Yes"
+
+msgid "common.no"
+msgstr "No"
+
+msgid "common.active"
+msgstr "Active"
+
+msgid "common.inactive"
+msgstr "Inactive"
+
+msgid "common.enabled"
+msgstr "Enabled"
+
+msgid "common.disabled"
+msgstr "Disabled"
+
+msgid "common.default"
+msgstr "Default"
+
+msgid "common.all"
+msgstr "All"
+
+msgid "common.none"
+msgstr "None"
+
+msgid "common.select"
+msgstr "Select"
+
+msgid "common.selected"
+msgstr "Selected"
+
+msgid "common.clear"
+msgstr "Clear"
+
+msgid "common.refresh"
+msgstr "Refresh"
+
+msgid "common.showing"
+msgstr "Showing"
+
+msgid "common.of"
+msgstr "of"
+
+msgid "common.entries"
+msgstr "entries"
+
+msgid "common.previous"
+msgstr "Previous"
+
+msgid "common.next"
+msgstr "Next"
+
+msgid "common.page"
+msgstr "Page"
+
+msgid "common.perPage"
+msgstr "Per Page"
+
+msgid "common.from"
+msgstr "From"
+
+msgid "common.to"
+msgstr "To"
+
+msgid "common.language"
+msgstr "Language"
+
+msgid "common.more"
+msgstr "More"
+
+msgid "common.less"
+msgstr "Less"
+
+msgid "common.show"
+msgstr "Show"
+
+msgid "common.hide"
+msgstr "Hide"
+
+msgid "common.details"
+msgstr "Details"
+
+msgid "common.close"
+msgstr "Close"
+
+msgid "common.avgPayment"
+msgstr "avg payment"
+
+msgid "empty.noOrders"
+msgstr "No orders found"
+
+msgid "empty.noPayments"
+msgstr "No payments found"
+
+msgid "empty.noCustomers"
+msgstr "No customers found"
+
+msgid "empty.noData"
+msgstr "No data available"
+
+msgid "empty.noResults"
+msgstr "No results found"
+
+msgid "pagination.showing"
+msgstr "Showing"
+
+msgid "pagination.to"
+msgstr "to"
+
+msgid "pagination.of"
+msgstr "of"
+
+msgid "pagination.entries"
+msgstr "entries"
+
+msgid "pagination.previous"
+msgstr "Previous"
+
+msgid "pagination.next"
+msgstr "Next"
+
+msgid "pagination.first"
+msgstr "First"
+
+msgid "pagination.last"
+msgstr "Last"
+
+msgid "assignment.assignTo"
+msgstr "Assign To"
+
+msgid "assignment.reassign"
+msgstr "Reassign"
+
+msgid "assignment.unassigned"
+msgstr "Unassigned"
+
+msgid "assignment.assigned"
+msgstr "Assigned"
+
+msgid "assignment.selectStaff"
+msgstr "Select Staff Member"
+
+msgid "assignment.assignmentDate"
+msgstr "Assignment Date"
+
+msgid "bulk.selectCustomer"
+msgstr "Select Customer"
+
+msgid "bulk.customerWithDebt"
+msgstr "Customer (with outstanding debt)"
+
+msgid "bulk.paymentAmount"
+msgstr "Payment Amount"
+
+msgid "bulk.previewDistribution"
+msgstr "Preview Distribution"
+
+msgid "bulk.processPayment"
+msgstr "Process Payment"
+
+msgid "bulk.ordersPaidCount"
+msgstr "Orders that will be paid"
+
+msgid "bulk.fullyPaidCount"
+msgstr "Orders that will be fully paid"
+
+msgid "bulk.remainingDebt"
+msgstr "Remaining debt after payment"
+
+msgid "bulk.currentDebt"
+msgstr "Current Remaining"
+
+msgid "bulk.amountToApply"
+msgstr "Amount to Apply"
+
+msgid "bulk.newRemaining"
+msgstr "New Remaining"
+
+msgid "services.product"
+msgstr "Product"
+
+msgid "services.products"
+msgstr "Products"
+
+msgid "services.category"
+msgstr "Category"
+
+msgid "services.categories"
+msgstr "Categories"
+
+msgid "services.language"
+msgstr "Language"
+
+msgid "services.languages"
+msgstr "Languages"
+
+msgid "services.expense"
+msgstr "Expense"
+
+msgid "services.expenses"
+msgstr "Expenses"
+
+msgid "services.addProduct"
+msgstr "Add Product"
+
+msgid "services.editProduct"
+msgstr "Edit Product"
+
+msgid "services.productName"
+msgstr "Product Name"
+
+msgid "services.productPrice"
+msgstr "Product Price"
+
+msgid "services.productDescription"
+msgstr "Product Description"
+
+msgid "services.pricePerPage"
+msgstr "Price per Page"
+
+msgid "services.basePrice"
+msgstr "Base Price"
+
+msgid "services.additionalCopyPrice"
+msgstr "Additional Copy Price"
+
+msgid "services.available"
+msgstr "Available"
+
+msgid "services.notAvailable"
+msgstr "Not Available"
+
+msgid "users.user"
+msgstr "User"
+
+msgid "users.users"
+msgstr "Users"
+
+msgid "users.profile"
+msgstr "Profile"
+
+msgid "users.role"
+msgstr "Role"
+
+msgid "users.permissions"
+msgstr "Permissions"
+
+msgid "users.addUser"
+msgstr "Add User"
+
+msgid "users.editUser"
+msgstr "Edit User"
+
+msgid "users.viewProfile"
+msgstr "View Profile"
+
+msgid "users.changePassword"
+msgstr "Change Password"
+
+msgid "users.lastLogin"
+msgstr "Last Login"
+
+msgid "users.dateJoined"
+msgstr "Date Joined"
+
+msgid "org.center"
+msgstr "Center"
+
+msgid "org.centers"
+msgstr "Centers"
+
+msgid "org.branch"
+msgstr "Branch"
+
+msgid "org.branches"
+msgstr "Branches"
+
+msgid "org.addCenter"
+msgstr "Add Center"
+
+msgid "org.addBranch"
+msgstr "Add Branch"
+
+msgid "org.editCenter"
+msgstr "Edit Center"
+
+msgid "org.editBranch"
+msgstr "Edit Branch"
+
+msgid "org.centerName"
+msgstr "Center Name"
+
+msgid "org.branchName"
+msgstr "Branch Name"
+
+msgid "org.address"
+msgstr "Address"
+
+msgid "org.contactInfo"
+msgstr "Contact Information"
+
+msgid "marketing.broadcast"
+msgstr "Broadcast"
+
+msgid "marketing.campaign"
+msgstr "Campaign"
+
+msgid "marketing.message"
+msgstr "Message"
+
+msgid "marketing.recipients"
+msgstr "Recipients"
+
+msgid "marketing.send"
+msgstr "Send"
+
+msgid "marketing.scheduled"
+msgstr "Scheduled"
+
+msgid "marketing.sent"
+msgstr "Sent"
+
+msgid "marketing.failed"
+msgstr "Failed"
+
+msgid "reports.financial"
+msgstr "Financial Report"
+
+msgid "reports.debt"
+msgstr "Debt Report"
+
+msgid "reports.audit"
+msgstr "Audit Log"
+
+msgid "reports.generate"
+msgstr "Generate Report"
+
+msgid "reports.export"
+msgstr "Export Report"
+
+msgid "reports.dateRange"
+msgstr "Date Range"
+
+msgid "reports.summary"
+msgstr "Summary"
+
+msgid "reports.details"
+msgstr "Details"
+
+msgid "dashboard.title"
+msgstr "Dashboard"
+
+msgid "dashboard.welcome"
+msgstr "Welcome"
+
+msgid "dashboard.overview"
+msgstr "Overview"
+
+msgid "dashboard.recentOrders"
+msgstr "Recent Orders"
+
+msgid "dashboard.todayStats"
+msgstr "Today's Statistics"
+
+msgid "dashboard.thisMonth"
+msgstr "This Month"
+
+msgid "dashboard.revenue"
+msgstr "Revenue"
+
+msgid "dashboard.growth"
+msgstr "Growth"
+
+msgid "receipt.upload"
+msgstr "Upload Receipt"
+
+msgid "receipt.view"
+msgstr "View Receipt"
+
+msgid "receipt.download"
+msgstr "Download Receipt"
+
+msgid "receipt.pending"
+msgstr "Pending Receipt"
+
+msgid "receipt.approved"
+msgstr "Receipt Approved"
+
+msgid "receipt.rejected"
+msgstr "Receipt Rejected"
+
+msgid "receipt.showForCardPayments"
+msgstr "Shown only for card/bank transfer payments"
+
+msgid "validation.required"
+msgstr "This field is required"
+
+msgid "validation.invalid"
+msgstr "Invalid value"
+
+msgid "validation.minLength"
+msgstr "Minimum length is"
+
+msgid "validation.maxLength"
+msgstr "Maximum length is"
+
+msgid "validation.min"
+msgstr "Minimum value is"
+
+msgid "validation.max"
+msgstr "Maximum value is"
+
+msgid "validation.email"
+msgstr "Invalid email address"
+
+msgid "validation.phone"
+msgstr "Invalid phone number"

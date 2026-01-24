@@ -2913,3 +2913,1002 @@ msgstr "Audit yozuvlari"
 #: templates/partials/sidebar.html
 msgid "Marketing"
 msgstr "Marketing"
+
+msgid "auth.forgotPassword"
+msgstr "Parolni unutdingizmi"
+
+msgid "auth.forgotPasswordDesc"
+msgstr "Hisobingiz bilan bog'langan elektron pochta manzilini kiriting va biz sizga parolni tiklash havolasini yuboramiz"
+
+msgid "auth.enterEmail"
+msgstr "Emailni kiriting"
+
+msgid "auth.sendResetLink"
+msgstr "Havola yuborish"
+
+msgid "auth.backToSignIn"
+msgstr "Kirishga qaytish"
+
+msgid "orders.orderId"
+msgstr "Buyurtma ID"
+
+msgid "orders.customer"
+msgstr "Mijoz"
+
+msgid "orders.product"
+msgstr "Mahsulot"
+
+msgid "orders.pages"
+msgstr "Sahifalar"
+
+msgid "orders.status"
+msgstr "Holat"
+
+msgid "orders.price"
+msgstr "Narx"
+
+msgid "orders.totalPrice"
+msgstr "Umumiy narx"
+
+msgid "orders.received"
+msgstr "Qabul qilindi"
+
+msgid "orders.remaining"
+msgstr "Qoldiq"
+
+msgid "orders.orderNumber"
+msgstr "Buyurtma raqami"
+
+msgid "orders.documents"
+msgstr "Hujjatlar"
+
+msgid "orders.assignedTo"
+msgstr "Tayinlangan"
+
+msgid "orders.notAssigned"
+msgstr "Tayinlanmagan"
+
+msgid "orders.assignedBy"
+msgstr "Kim tayinladi"
+
+msgid "orders.paymentReceived"
+msgstr "To'lov qabul qilindi"
+
+msgid "orders.paymentReceivedBy"
+msgstr "To'lovni qabul qildi"
+
+msgid "orders.paymentReceivedAt"
+msgstr "To'lov qabul qilindi"
+
+msgid "orders.clientName"
+msgstr "Mijoz ismi"
+
+msgid "orders.phoneNumber"
+msgstr "Telefon raqami"
+
+msgid "orders.totalAmount"
+msgstr "Umumiy summa"
+
+msgid "orders.extraFee"
+msgstr "Qo'shimcha to'lov"
+
+msgid "orders.extraFeeDesc"
+msgstr "Qo'shimcha to'lov tavsifi"
+
+msgid "orders.copyNumber"
+msgstr "Nusxalar soni"
+
+msgid "orders.additionalCopies"
+msgstr "Qo'shimcha nusxalar kerak (0 faqat asl nusxani bildiradi)"
+
+msgid "orders.translationLanguage"
+msgstr "Tarjima tili"
+
+msgid "orders.description"
+msgstr "Tavsif"
+
+msgid "status.pending"
+msgstr "Kutilmoqda"
+
+msgid "status.paymentPending"
+msgstr "To'lov kutilmoqda"
+
+msgid "status.paymentReceived"
+msgstr "Qabul qilindi"
+
+msgid "status.paymentConfirmed"
+msgstr "Tasdiqlandi"
+
+msgid "status.inProgress"
+msgstr "Jarayonda"
+
+msgid "status.ready"
+msgstr "Tayyor"
+
+msgid "status.completed"
+msgstr "Bajarildi"
+
+msgid "status.cancelled"
+msgstr "Bekor qilindi"
+
+msgid "actions.view"
+msgstr "Ko'rish"
+
+msgid "actions.edit"
+msgstr "Tahrirlash"
+
+msgid "actions.delete"
+msgstr "O'chirish"
+
+msgid "actions.assign"
+msgstr "Tayinlash"
+
+msgid "actions.confirmPayment"
+msgstr "To'lovni tasdiqlash"
+
+msgid "actions.recordPayment"
+msgstr "To'lovni yozish"
+
+msgid "actions.updateStatus"
+msgstr "Holatni yangilash"
+
+msgid "actions.downloadReceipt"
+msgstr "Kvitansiyani yuklash"
+
+msgid "actions.viewDetails"
+msgstr "Tafsilotlarni ko'rish"
+
+msgid "actions.cancel"
+msgstr "Bekor qilish"
+
+msgid "actions.save"
+msgstr "Saqlash"
+
+msgid "actions.update"
+msgstr "Yangilash"
+
+msgid "actions.upload"
+msgstr "Yuklash"
+
+msgid "actions.download"
+msgstr "Yuklab olish"
+
+msgid "actions.print"
+msgstr "Chop etish"
+
+msgid "actions.export"
+msgstr "Eksport"
+
+msgid "actions.filter"
+msgstr "Filtr"
+
+msgid "actions.search"
+msgstr "Qidirish"
+
+msgid "actions.reset"
+msgstr "Qayta tiklash"
+
+msgid "actions.apply"
+msgstr "Qo'llash"
+
+msgid "actions.submit"
+msgstr "Yuborish"
+
+msgid "actions.close"
+msgstr "Yopish"
+
+msgid "actions.confirm"
+msgstr "Tasdiqlash"
+
+msgid "actions.back"
+msgstr "Orqaga"
+
+msgid "filter.all"
+msgstr "Hammasi"
+
+msgid "filter.status"
+msgstr "Holat"
+
+msgid "filter.paymentStatus"
+msgstr "To'lov holati"
+
+msgid "filter.assignmentStatus"
+msgstr "Tayinlash holati"
+
+msgid "filter.search"
+msgstr "Qidirish"
+
+msgid "filter.searchPlaceholder"
+msgstr "Raqam, ism, telefon bo'yicha qidirish"
+
+msgid "filter.perPage"
+msgstr "Sahifada"
+
+msgid "filter.branch"
+msgstr "Filial"
+
+msgid "filter.center"
+msgstr "Markaz"
+
+msgid "filter.staff"
+msgstr "Xodim"
+
+msgid "filter.dateFrom"
+msgstr "Sana dan"
+
+msgid "filter.dateTo"
+msgstr "Sana gacha"
+
+msgid "filter.period"
+msgstr "Davr"
+
+msgid "filter.today"
+msgstr "Bugun"
+
+msgid "filter.thisWeek"
+msgstr "Bu hafta"
+
+msgid "filter.thisMonth"
+msgstr "Bu oy"
+
+msgid "filter.thisYear"
+msgstr "Bu yil"
+
+msgid "filter.custom"
+msgstr "Maxsus davr"
+
+msgid "filter.allPaymentMethods"
+msgstr "Barcha to'lov usullari"
+
+msgid "filter.allCustomers"
+msgstr "Barcha mijozlar"
+
+msgid "payment.cash"
+msgstr "Naqd"
+
+msgid "payment.card"
+msgstr "Karta"
+
+msgid "payment.bankTransfer"
+msgstr "Bank o'tkazmasi"
+
+msgid "payment.other"
+msgstr "Boshqa"
+
+msgid "payment.paymentMethod"
+msgstr "To'lov usuli"
+
+msgid "payment.paymentType"
+msgstr "To'lov turi"
+
+msgid "payment.paymentAmount"
+msgstr "To'lov summasi"
+
+msgid "payment.paymentDate"
+msgstr "To'lov sanasi"
+
+msgid "payment.paymentDetails"
+msgstr "To'lov tafsilotlari"
+
+msgid "payment.paymentHistory"
+msgstr "To'lovlar tarixi"
+
+msgid "payment.receiptNote"
+msgstr "Kvitansiya/Izoh"
+
+msgid "payment.uploadReceipt"
+msgstr "Kvitansiyani yuklash"
+
+msgid "payment.noReceiptUploaded"
+msgstr "Kvitansiya yuklanmagan"
+
+msgid "payment.processPayment"
+msgstr "To'lovni qayta ishlash"
+
+msgid "payment.newPayment"
+msgstr "Yangi to'lov"
+
+msgid "payment.bulkPayment"
+msgstr "Ommaviy to'lov"
+
+msgid "payment.paidAmount"
+msgstr "To'langan summa"
+
+msgid "payment.fully"
+msgstr "To'liq"
+
+msgid "payment.partial"
+msgstr "Qisman"
+
+msgid "payment.unpaid"
+msgstr "To'lanmagan"
+
+msgid "payment.fullyPaid"
+msgstr "To'liq to'langan"
+
+msgid "payment.partiallyPaid"
+msgstr "Qisman to'langan"
+
+msgid "payment.pendingPayment"
+msgstr "To'lov kutilmoqda"
+
+msgid "payment.acceptPayment"
+msgstr "To'lovni to'liq qabul qilish"
+
+msgid "customer.agency"
+msgstr "Agentlik (B2B)"
+
+msgid "customer.individual"
+msgstr "Jismoniy shaxs (B2C)"
+
+msgid "customer.type"
+msgstr "Mijoz turi"
+
+msgid "customer.name"
+msgstr "Mijoz ismi"
+
+msgid "customer.phone"
+msgstr "Telefon"
+
+msgid "customer.email"
+msgstr "Email"
+
+msgid "stats.total"
+msgstr "Jami"
+
+msgid "stats.totalPayments"
+msgstr "Jami to'lovlar"
+
+msgid "stats.totalAmount"
+msgstr "Umumiy summa"
+
+msgid "stats.totalOrders"
+msgstr "Jami buyurtmalar"
+
+msgid "stats.ordersPaid"
+msgstr "To'langan buyurtmalar"
+
+msgid "stats.fullyPaid"
+msgstr "to'liq to'langan"
+
+msgid "stats.uniqueCustomers"
+msgstr "Noyob mijozlar"
+
+msgid "stats.customersServed"
+msgstr "mijozlarga xizmat ko'rsatildi"
+
+msgid "stats.transactionsProcessed"
+msgstr "tranzaksiyalar qayta ishlandi"
+
+msgid "stats.avgPayment"
+msgstr "o'rtacha to'lov"
+
+msgid "stats.averageAmount"
+msgstr "O'rtacha summa"
+
+msgid "table.id"
+msgstr "#"
+
+msgid "table.customer"
+msgstr "Mijoz"
+
+msgid "table.phone"
+msgstr "Telefon"
+
+msgid "table.service"
+msgstr "Xizmat"
+
+msgid "table.paymentMethod"
+msgstr "To'lov usuli"
+
+msgid "table.amount"
+msgstr "Summa"
+
+msgid "table.dateTime"
+msgstr "Sana va vaqt"
+
+msgid "table.location"
+msgstr "Joylashuv"
+
+msgid "table.branch"
+msgstr "Filial"
+
+msgid "table.assigned"
+msgstr "Tayinlangan"
+
+msgid "table.unassigned"
+msgstr "Tayinlanmagan"
+
+msgid "table.noRecentOrders"
+msgstr "Yaqinda buyurtmalar yo'q"
+
+msgid "table.orders"
+msgstr "Buyurtmalar"
+
+msgid "table.fullyPaid"
+msgstr "To'liq to'langan"
+
+msgid "table.date"
+msgstr "Sana"
+
+msgid "table.processedBy"
+msgstr "Kim qayta ishladi"
+
+msgid "table.actions"
+msgstr "Amallar"
+
+msgid "table.status"
+msgstr "Holat"
+
+msgid "table.product"
+msgstr "Mahsulot"
+
+msgid "table.price"
+msgstr "Narx"
+
+msgid "table.received"
+msgstr "Qabul qilindi"
+
+msgid "table.remaining"
+msgstr "Qoldiq"
+
+msgid "table.assignedTo"
+msgstr "Tayinlangan"
+
+msgid "table.createdAt"
+msgstr "Yaratilgan"
+
+msgid "form.username"
+msgstr "Foydalanuvchi nomi"
+
+msgid "form.password"
+msgstr "Parol"
+
+msgid "form.email"
+msgstr "Email"
+
+msgid "form.firstName"
+msgstr "Ism"
+
+msgid "form.lastName"
+msgstr "Familiya"
+
+msgid "form.phone"
+msgstr "Telefon raqami"
+
+msgid "form.address"
+msgstr "Manzil"
+
+msgid "form.note"
+msgstr "Izoh"
+
+msgid "form.selectOption"
+msgstr "Variantni tanlang"
+
+msgid "form.selectStatus"
+msgstr "Holatni tanlang"
+
+msgid "form.selectPaymentType"
+msgstr "To'lov turini tanlang"
+
+msgid "form.selectBranch"
+msgstr "Filialni tanlang"
+
+msgid "form.selectStaff"
+msgstr "Xodimni tanlang"
+
+msgid "form.selectProduct"
+msgstr "Mahsulotni tanlang"
+
+msgid "form.selectLanguage"
+msgstr "Tilni tanlang"
+
+msgid "form.selectCustomer"
+msgstr "Mijozni tanlang"
+
+msgid "form.enterAmount"
+msgstr "Summani kiriting"
+
+msgid "form.enterDescription"
+msgstr "Tavsifni kiriting"
+
+msgid "form.required"
+msgstr "Majburiy"
+
+msgid "form.optional"
+msgstr "Ixtiyoriy"
+
+msgid "form.chooseFile"
+msgstr "Faylni tanlang"
+
+msgid "form.noFileChosen"
+msgstr "Fayl tanlanmagan"
+
+msgid "form.dragDropFile"
+msgstr "Fayllarni bu yerga torting"
+
+msgid "form.uploadFiles"
+msgstr "Fayllarni yuklash"
+
+msgid "message.success"
+msgstr "Muvaffaqiyatli"
+
+msgid "message.error"
+msgstr "Xato"
+
+msgid "message.warning"
+msgstr "Ogohlantirish"
+
+msgid "message.info"
+msgstr "Ma'lumot"
+
+msgid "message.loading"
+msgstr "Yuklanmoqda"
+
+msgid "message.noData"
+msgstr "Ma'lumot yo'q"
+
+msgid "message.confirmDelete"
+msgstr "Ushbu elementni o'chirmoqchimisiz?"
+
+msgid "message.deleteSuccess"
+msgstr "Element muvaffaqiyatli o'chirildi"
+
+msgid "message.updateSuccess"
+msgstr "Muvaffaqiyatli yangilandi"
+
+msgid "message.createSuccess"
+msgstr "Muvaffaqiyatli yaratildi"
+
+msgid "message.saveSuccess"
+msgstr "Muvaffaqiyatli saqlandi"
+
+msgid "message.noResults"
+msgstr "Natijalar topilmadi"
+
+msgid "message.tryDifferentFilters"
+msgstr "Filtrlarni yoki davrni o'zgartirib ko'ring"
+
+msgid "common.yes"
+msgstr "Ha"
+
+msgid "common.no"
+msgstr "Yo'q"
+
+msgid "common.active"
+msgstr "Faol"
+
+msgid "common.inactive"
+msgstr "Nofaol"
+
+msgid "common.enabled"
+msgstr "Yoqilgan"
+
+msgid "common.disabled"
+msgstr "O'chirilgan"
+
+msgid "common.default"
+msgstr "Standart"
+
+msgid "common.all"
+msgstr "Hammasi"
+
+msgid "common.none"
+msgstr "Yo'q"
+
+msgid "common.select"
+msgstr "Tanlash"
+
+msgid "common.selected"
+msgstr "Tanlangan"
+
+msgid "common.clear"
+msgstr "Tozalash"
+
+msgid "common.refresh"
+msgstr "Yangilash"
+
+msgid "common.showing"
+msgstr "Ko'rsatilmoqda"
+
+msgid "common.of"
+msgstr "dan"
+
+msgid "common.entries"
+msgstr "yozuvlar"
+
+msgid "common.previous"
+msgstr "Oldingi"
+
+msgid "common.next"
+msgstr "Keyingi"
+
+msgid "common.page"
+msgstr "Sahifa"
+
+msgid "common.perPage"
+msgstr "Sahifada"
+
+msgid "common.from"
+msgstr "Dan"
+
+msgid "common.to"
+msgstr "Gacha"
+
+msgid "common.language"
+msgstr "Til"
+
+msgid "common.more"
+msgstr "Ko'proq"
+
+msgid "common.less"
+msgstr "Kamroq"
+
+msgid "common.show"
+msgstr "Ko'rsatish"
+
+msgid "common.hide"
+msgstr "Yashirish"
+
+msgid "common.details"
+msgstr "Tafsilotlar"
+
+msgid "common.close"
+msgstr "Yopish"
+
+msgid "common.avgPayment"
+msgstr "o'rtacha to'lov"
+
+msgid "empty.noOrders"
+msgstr "Buyurtmalar topilmadi"
+
+msgid "empty.noPayments"
+msgstr "To'lovlar topilmadi"
+
+msgid "empty.noCustomers"
+msgstr "Mijozlar topilmadi"
+
+msgid "empty.noData"
+msgstr "Ma'lumot yo'q"
+
+msgid "empty.noResults"
+msgstr "Natijalar topilmadi"
+
+msgid "pagination.showing"
+msgstr "Ko'rsatilmoqda"
+
+msgid "pagination.to"
+msgstr "gacha"
+
+msgid "pagination.of"
+msgstr "dan"
+
+msgid "pagination.entries"
+msgstr "yozuvlar"
+
+msgid "pagination.previous"
+msgstr "Oldingi"
+
+msgid "pagination.next"
+msgstr "Keyingi"
+
+msgid "pagination.first"
+msgstr "Birinchi"
+
+msgid "pagination.last"
+msgstr "Oxirgi"
+
+msgid "assignment.assignTo"
+msgstr "Tayinlash"
+
+msgid "assignment.reassign"
+msgstr "Qayta tayinlash"
+
+msgid "assignment.unassigned"
+msgstr "Tayinlanmagan"
+
+msgid "assignment.assigned"
+msgstr "Tayinlangan"
+
+msgid "assignment.selectStaff"
+msgstr "Xodimni tanlang"
+
+msgid "assignment.assignmentDate"
+msgstr "Tayinlash sanasi"
+
+msgid "bulk.selectCustomer"
+msgstr "Mijozni tanlang"
+
+msgid "bulk.customerWithDebt"
+msgstr "Mijoz (qarzdor)"
+
+msgid "bulk.paymentAmount"
+msgstr "To'lov summasi"
+
+msgid "bulk.previewDistribution"
+msgstr "Taqsimotni ko'rish"
+
+msgid "bulk.processPayment"
+msgstr "To'lovni qayta ishlash"
+
+msgid "bulk.ordersPaidCount"
+msgstr "To'lanadigan buyurtmalar"
+
+msgid "bulk.fullyPaidCount"
+msgstr "To'liq to'lanadi"
+
+msgid "bulk.remainingDebt"
+msgstr "Qoldiq qarz"
+
+msgid "bulk.currentDebt"
+msgstr "Joriy qoldiq"
+
+msgid "bulk.amountToApply"
+msgstr "Qo'llaniladigan summa"
+
+msgid "bulk.newRemaining"
+msgstr "Yangi qoldiq"
+
+msgid "services.product"
+msgstr "Mahsulot"
+
+msgid "services.products"
+msgstr "Mahsulotlar"
+
+msgid "services.category"
+msgstr "Kategoriya"
+
+msgid "services.categories"
+msgstr "Kategoriyalar"
+
+msgid "services.language"
+msgstr "Til"
+
+msgid "services.languages"
+msgstr "Tillar"
+
+msgid "services.expense"
+msgstr "Xarajat"
+
+msgid "services.expenses"
+msgstr "Xarajatlar"
+
+msgid "services.addProduct"
+msgstr "Mahsulot qo'shish"
+
+msgid "services.editProduct"
+msgstr "Mahsulotni tahrirlash"
+
+msgid "services.productName"
+msgstr "Mahsulot nomi"
+
+msgid "services.productPrice"
+msgstr "Mahsulot narxi"
+
+msgid "services.productDescription"
+msgstr "Mahsulot tavsifi"
+
+msgid "services.pricePerPage"
+msgstr "Sahifa narxi"
+
+msgid "services.basePrice"
+msgstr "Asosiy narx"
+
+msgid "services.additionalCopyPrice"
+msgstr "Qo'shimcha nusxa narxi"
+
+msgid "services.available"
+msgstr "Mavjud"
+
+msgid "services.notAvailable"
+msgstr "Mavjud emas"
+
+msgid "users.user"
+msgstr "Foydalanuvchi"
+
+msgid "users.users"
+msgstr "Foydalanuvchilar"
+
+msgid "users.profile"
+msgstr "Profil"
+
+msgid "users.role"
+msgstr "Rol"
+
+msgid "users.permissions"
+msgstr "Ruxsatlar"
+
+msgid "users.addUser"
+msgstr "Foydalanuvchi qo'shish"
+
+msgid "users.editUser"
+msgstr "Tahrirlash"
+
+msgid "users.viewProfile"
+msgstr "Profilni ko'rish"
+
+msgid "users.changePassword"
+msgstr "Parolni o'zgartirish"
+
+msgid "users.lastLogin"
+msgstr "Oxirgi kirish"
+
+msgid "users.dateJoined"
+msgstr "Ro'yxatdan o'tgan sana"
+
+msgid "org.center"
+msgstr "Markaz"
+
+msgid "org.centers"
+msgstr "Markazlar"
+
+msgid "org.branch"
+msgstr "Filial"
+
+msgid "org.branches"
+msgstr "Filiallar"
+
+msgid "org.addCenter"
+msgstr "Markaz qo'shish"
+
+msgid "org.addBranch"
+msgstr "Filial qo'shish"
+
+msgid "org.editCenter"
+msgstr "Markazni tahrirlash"
+
+msgid "org.editBranch"
+msgstr "Filialni tahrirlash"
+
+msgid "org.centerName"
+msgstr "Markaz nomi"
+
+msgid "org.branchName"
+msgstr "Filial nomi"
+
+msgid "org.address"
+msgstr "Manzil"
+
+msgid "org.contactInfo"
+msgstr "Aloqa ma'lumoti"
+
+msgid "marketing.broadcast"
+msgstr "Xabar yuborish"
+
+msgid "marketing.campaign"
+msgstr "Kampaniya"
+
+msgid "marketing.message"
+msgstr "Xabar"
+
+msgid "marketing.recipients"
+msgstr "Qabul qiluvchilar"
+
+msgid "marketing.send"
+msgstr "Yuborish"
+
+msgid "marketing.scheduled"
+msgstr "Rejalashtirilgan"
+
+msgid "marketing.sent"
+msgstr "Yuborildi"
+
+msgid "marketing.failed"
+msgstr "Xato"
+
+msgid "reports.financial"
+msgstr "Moliyaviy hisobot"
+
+msgid "reports.debt"
+msgstr "Qarz hisoboti"
+
+msgid "reports.audit"
+msgstr "Audit jurnali"
+
+msgid "reports.generate"
+msgstr "Hisobot yaratish"
+
+msgid "reports.export"
+msgstr "Hisobotni eksport qilish"
+
+msgid "reports.dateRange"
+msgstr "Davr"
+
+msgid "reports.summary"
+msgstr "Xulosa"
+
+msgid "reports.details"
+msgstr "Tafsilotlar"
+
+msgid "dashboard.title"
+msgstr "Boshqaruv paneli"
+
+msgid "dashboard.welcome"
+msgstr "Xush kelibsiz"
+
+msgid "dashboard.overview"
+msgstr "Umumiy ko'rinish"
+
+msgid "dashboard.recentOrders"
+msgstr "Oxirgi buyurtmalar"
+
+msgid "dashboard.todayStats"
+msgstr "Bugungi statistika"
+
+msgid "dashboard.thisMonth"
+msgstr "Bu oy"
+
+msgid "dashboard.revenue"
+msgstr "Daromad"
+
+msgid "dashboard.growth"
+msgstr "O'sish"
+
+msgid "receipt.upload"
+msgstr "Kvitansiya yuklash"
+
+msgid "receipt.view"
+msgstr "Kvitansiyani ko'rish"
+
+msgid "receipt.download"
+msgstr "Kvitansiyani yuklash"
+
+msgid "receipt.pending"
+msgstr "Kvitansiya kutilmoqda"
+
+msgid "receipt.approved"
+msgstr "Kvitansiya tasdiqlandi"
+
+msgid "receipt.rejected"
+msgstr "Kvitansiya rad etildi"
+
+msgid "receipt.showForCardPayments"
+msgstr "Faqat karta/pul o'tkazmasi uchun ko'rsatiladi"
+
+msgid "validation.required"
+msgstr "Bu maydon majburiy"
+
+msgid "validation.invalid"
+msgstr "Noto'g'ri qiymat"
+
+msgid "validation.minLength"
+msgstr "Minimal uzunlik"
+
+msgid "validation.maxLength"
+msgstr "Maksimal uzunlik"
+
+msgid "validation.min"
+msgstr "Minimal qiymat"
+
+msgid "validation.max"
+msgstr "Maksimal qiymat"
+
+msgid "validation.email"
+msgstr "Noto'g'ri email"
+
+msgid "validation.phone"
+msgstr "Noto'g'ri telefon raqami"
+
+msgid "table.phone"
+msgstr "Telefon"
+
+msgid "table.service"
+msgstr "Xizmat"
+
+msgid "table.dateTime"
+msgstr "Sana va vaqt"
+
+msgid "table.location"
+msgstr "Joylashuv"
+
+msgid "table.branch"
+msgstr "Filial"
+
+msgid "table.assigned"
+msgstr "Tayinlangan"
+
+msgid "table.unassigned"
+msgstr "Tayinlanmagan"
+
+msgid "table.noRecentOrders"
+msgstr "Yaqinda buyurtmalar yo'q"

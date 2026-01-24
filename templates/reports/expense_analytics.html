@@ -319,7 +319,7 @@
             <div class="card-body p-24">
                 {% if type_distribution %}
                 <div class="text-center mb-16">
-                    <canvas id="typeDistributionChart" height="140"></canvas>
+                    <canvas id="typeDistributionChart" height="100"></canvas>
                 </div>
                 <div>
                     {% for item in type_distribution %}
@@ -522,6 +522,7 @@
 {% endblock %}
 
 {% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 // Period selector - show/hide custom date inputs and auto-submit
 document.getElementById('periodSelect').addEventListener('change', function() {
@@ -565,6 +566,13 @@ if (branchSelect) {
 }
 
 // Chart.js for visualizations
+console.log('=== EXPENSE ANALYTICS DEBUG ===');
+console.log('by_branch:', {{ by_branch|length }});
+console.log('branch_labels:', {{ branch_labels|safe }});
+console.log('branch_b2b:', {{ branch_b2b|safe }});
+console.log('branch_b2c:', {{ branch_b2c|safe }});
+console.log('branch_both:', {{ branch_both|safe }});
+
 {% if type_distribution %}
 // Type Distribution Pie Chart
 const typeCtx = document.getElementById('typeDistributionChart').getContext('2d');
@@ -590,9 +598,17 @@ new Chart(typeCtx, {
     options: {
         responsive: true,
         maintainAspectRatio: true,
+        aspectRatio: 2,
         plugins: {
             legend: {
                 position: 'bottom',
+                labels: {
+                    boxWidth: 12,
+                    padding: 8,
+                    font: {
+                        size: 11
+                    }
+                }
             }
         }
     }
@@ -600,7 +616,7 @@ new Chart(typeCtx, {
 {% endif %}
 
 {% if by_branch %}
-// Branch Comparison Bar Chart
+// Branch Comparison Bar Chart - Total Expenses per Branch
 const branchCtx = document.getElementById('branchComparisonChart').getContext('2d');
 new Chart(branchCtx, {
     type: 'bar',
@@ -608,25 +624,13 @@ new Chart(branchCtx, {
         labels: {{ branch_labels|safe }},
         datasets: [
             {
-                label: 'B2B Expenses',
-                data: {{ branch_b2b|safe }},
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            },
-            {
-                label: 'B2C Expenses',
-                data: {{ branch_b2c|safe }},
-                backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            },
-            {
-                label: 'Both Types',
-                data: {{ branch_both|safe }},
-                backgroundColor: 'rgba(255, 206, 86, 0.7)',
-                borderColor: 'rgba(255, 206, 86, 1)',
-                borderWidth: 1
+                label: 'Total Expenses',
+                data: {{ branch_totals|safe }},
+                backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                borderColor: 'rgba(99, 102, 241, 1)',
+                borderWidth: 2,
+                borderRadius: 6,
+                borderSkipped: false,
             }
         ]
     },
@@ -635,26 +639,40 @@ new Chart(branchCtx, {
         maintainAspectRatio: true,
         scales: {
             x: {
-                stacked: false,
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    font: {
+                        size: 11
+                    }
+                }
             },
             y: {
-                stacked: false,
                 beginAtZero: true,
                 ticks: {
                     callback: function(value) {
-                        return value.toLocaleString() + ' UZS';
+                        if (value >= 1000000) {
+                            return (value / 1000000).toFixed(1) + 'M';
+                        } else if (value >= 1000) {
+                            return (value / 1000).toFixed(0) + 'K';
+                        }
+                        return value.toLocaleString();
                     }
+                },
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)'
                 }
             }
         },
         plugins: {
             legend: {
-                position: 'top',
+                display: false
             },
             tooltip: {
                 callbacks: {
                     label: function(context) {
-                        return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' UZS';
+                        return 'Total: ' + context.parsed.y.toLocaleString() + ' UZS';
                     }
                 }
             }
