@@ -4533,20 +4533,24 @@ def handle_file_upload(message):
             # Get file information
             import time
             import hashlib
+            import random
             
             if message.document:
                 file_id = message.document.file_id
                 original_name = message.document.file_name
                 file_size = message.document.file_size
-                # Use short filename: timestamp + extension
+                # Use short filename: timestamp + random suffix
                 ext = os.path.splitext(original_name)[1] if original_name else '.bin'
-                file_name = f"doc_{int(time.time())}_{hashlib.md5(file_id.encode()).hexdigest()[:8]}{ext}"
+                # Limit extension length
+                if len(ext) > 10:
+                    ext = ext[:10]
+                file_name = f"doc_{int(time.time())}_{random.randint(1000, 9999)}{ext}"
             elif message.photo:
                 file_id = message.photo[-1].file_id
                 file_info_obj = bot.get_file(file_id)
                 file_size = file_info_obj.file_size
-                # Use short filename: timestamp + hash
-                file_name = f"photo_{int(time.time())}_{hashlib.md5(file_id.encode()).hexdigest()[:8]}.jpg"
+                # Use short filename: timestamp + random suffix
+                file_name = f"photo_{int(time.time())}_{random.randint(1000, 9999)}.jpg"
             else:
                 return
 
@@ -4571,21 +4575,14 @@ def handle_file_upload(message):
             from django.core.files.base import ContentFile
             from django.core.files.storage import default_storage
 
-            # Ensure filename is short enough to avoid path length issues
-            if len(file_name) > 100:
+            # Ensure filename is short and clean
+            if len(file_name) > 50:
                 logger.warning(f"File name too long ({len(file_name)} chars), truncating: {file_name}")
-                file_name = truncate_filename(file_name, max_length=80)
+                file_name = truncate_filename(file_name, max_length=40)
             
             file_content = ContentFile(downloaded_file, name=file_name)
-            storage_path = f"order_media/{user_id}_{file_name}"
-            
-            # Final path length check (Windows MAX_PATH = 260)
-            if len(storage_path) > 200:  # Leave room for base path
-                logger.warning(f"Storage path too long ({len(storage_path)} chars), using hash")
-                import hashlib
-                file_hash = hashlib.md5(file_name.encode()).hexdigest()[:16]
-                ext = os.path.splitext(file_name)[1]
-                storage_path = f"order_media/{user_id}_{file_hash}{ext}"
+            # Use simple storage path without user_id to keep it short
+            storage_path = f"order_media/{file_name}"
             
             file_path = default_storage.save(storage_path, file_content)
 

@@ -13,8 +13,30 @@ logger = logging.getLogger(__name__)
 # Create your models here.
 
 
+def order_media_upload_path(instance, filename):
+    """
+    Generate a clean, short upload path for order media files.
+    Format: order_media/timestamp_random.ext
+    """
+    import os
+    import time
+    import random
+    
+    # Get file extension, limit to 10 chars
+    ext = os.path.splitext(filename)[1][:10] or '.bin'
+    
+    # Generate short filename: timestamp + random 4-digit number
+    new_filename = f"{int(time.time())}_{random.randint(1000, 9999)}{ext}"
+    
+    return f"order_media/{new_filename}"
+
+
 class OrderMedia(models.Model):
-    file = models.FileField(upload_to="order_media/", max_length=500, verbose_name=_("File"))
+    file = models.FileField(
+        upload_to=order_media_upload_path, 
+        max_length=500, 
+        verbose_name=_("File")
+    )
     telegram_file_id = models.CharField(
         max_length=200, 
         null=True, 
@@ -33,12 +55,13 @@ class OrderMedia(models.Model):
         """Override save to validate and clean file path - prevents future corruption without breaking existing data"""
         if self.file:
             file_path = str(self.file)
-            # Check if path contains Telegram file_id pattern (corrupted)
-            if 'AgAC' in file_path or 'BAAC' in file_path:
-                logger.warning(f"Detected and cleaning corrupted file path: {file_path[:100]}")
-                # Clear corrupted path but keep telegram_file_id field intact
-                # This prevents 404 errors while preserving the Telegram reference
-                self.file = ''
+            # Check if path contains Telegram file_id pattern AND doesn't exist on disk (truly corrupted)
+            if ('AgAC' in file_path or 'BAAC' in file_path):
+                # Check if file actually exists - if it does, it's a legitimate filename, not corruption
+                from django.core.files.storage import default_storage
+                if not default_storage.exists(file_path):
+                    logger.warning(f"Detected and cleaning corrupted file path: {file_path[:100]}")
+                    self.file = ''
         super().save(*args, **kwargs)
     
     @property
@@ -50,10 +73,12 @@ class OrderMedia(models.Model):
             
             file_path = str(self.file)
             
-            # Only block corrupted paths with Telegram file_id pattern
-            if 'AgAC' in file_path or 'BAAC' in file_path:
-                logger.warning(f"Blocked corrupted file path for OrderMedia {self.id}")
-                return None
+            # Only block if file contains pattern AND doesn't exist (truly corrupted)
+            if ('AgAC' in file_path or 'BAAC' in file_path):
+                from django.core.files.storage import default_storage
+                if not default_storage.exists(file_path):
+                    logger.warning(f"Blocked corrupted file path for OrderMedia {self.id}")
+                    return None
             
             # Return URL for all other paths (let Django/server handle missing files)
             if hasattr(self.file, 'url'):
@@ -71,9 +96,11 @@ class OrderMedia(models.Model):
             
             file_path = str(self.file)
             
-            # Only block corrupted paths
-            if 'AgAC' in file_path or 'BAAC' in file_path:
-                return "File unavailable (corrupted path)"
+            # Only block if pattern exists AND file doesn't exist on disk
+            if ('AgAC' in file_path or 'BAAC' in file_path):
+                from django.core.files.storage import default_storage
+                if not default_storage.exists(file_path):
+                    return "File unavailable (corrupted path)"
             
             if hasattr(self.file, 'name'):
                 import os
