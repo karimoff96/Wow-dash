@@ -460,9 +460,16 @@ class Role(models.Model):
             "can_create_expenses",
             "can_edit_expenses",
             "can_delete_expenses",
+            # Languages (master first)
+            "can_manage_languages",
+            "can_view_languages",
+            "can_create_languages",
+            "can_edit_languages",
+            "can_delete_languages",
             # Customers (master first)
             "can_manage_customers",
             "can_view_customers",
+            "can_create_customers",
             "can_edit_customers",
             "can_delete_customers",
             # Marketing & Broadcasts (master first)
@@ -485,6 +492,9 @@ class Role(models.Model):
             "can_view_audit_logs",
             "can_export_audit_logs",
             "can_grant_audit_permissions",
+            # Bulk Payments
+            "can_manage_bulk_payments",
+            "can_assign_bulk_payment_permission",
         ]
 
     @classmethod

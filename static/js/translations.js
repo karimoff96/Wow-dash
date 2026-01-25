@@ -4546,6 +4546,681 @@ const translations = {
         en: 'Manage Customers'
     },
 
+    // ========== PERMISSION SECTION HEADERS ==========
+    'permissions.centerManagement': {
+        uz: 'Markaz boshqaruvi',
+        ru: 'Управление центром',
+        en: 'Center Management'
+    },
+    'permissions.branchManagement': {
+        uz: 'Filial boshqaruvi',
+        ru: 'Управление филиалом',
+        en: 'Branch Management'
+    },
+    'permissions.staffManagement': {
+        uz: 'Xodimlar boshqaruvi',
+        ru: 'Управление персоналом',
+        en: 'Staff Management'
+    },
+    'permissions.orderManagement': {
+        uz: 'Buyurtmalar boshqaruvi',
+        ru: 'Управление заказами',
+        en: 'Order Management'
+    },
+    'permissions.financial': {
+        uz: 'Moliya',
+        ru: 'Финансы',
+        en: 'Financial'
+    },
+    'permissions.reportsAnalytics': {
+        uz: 'Hisobotlar va tahlil',
+        ru: 'Отчеты и аналитика',
+        en: 'Reports & Analytics'
+    },
+    'permissions.products': {
+        uz: 'Mahsulotlar',
+        ru: 'Продукты',
+        en: 'Products'
+    },
+    'permissions.expenses': {
+        uz: 'Xarajatlar',
+        ru: 'Расходы',
+        en: 'Expenses'
+    },
+    'permissions.languages': {
+        uz: 'Tillar',
+        ru: 'Языки',
+        en: 'Languages'
+    },
+    'permissions.customers': {
+        uz: 'Mijozlar',
+        ru: 'Клиенты',
+        en: 'Customers'
+    },
+    'permissions.marketingBroadcasts': {
+        uz: 'Marketing va xabarlar',
+        ru: 'Маркетинг и рассылки',
+        en: 'Marketing & Broadcasts'
+    },
+    'permissions.agencyManagement': {
+        uz: 'Agentliklar boshqaruvi',
+        ru: 'Управление агентствами',
+        en: 'Agency Management'
+    },
+    'permissions.branchSettings': {
+        uz: 'Filial sozlamalari',
+        ru: 'Настройки филиала',
+        en: 'Branch Settings'
+    },
+    'permissions.auditLogs': {
+        uz: 'Audit jurnallari',
+        ru: 'Журналы аудита',
+        en: 'Audit Logs'
+    },
+    'permissions.bulkPayments': {
+        uz: 'Ommaviy to\'lovlar',
+        ru: 'Массовые платежи',
+        en: 'Bulk Payments'
+    },
+
+    // ========== MASTER PERMISSIONS ==========
+    'permissions.fullCenterManagement': {
+        uz: 'To\'liq markaz boshqaruvi',
+        ru: 'Полное управление центром',
+        en: 'Full Center Management'
+    },
+    'permissions.fullBranchManagement': {
+        uz: 'To\'liq filial boshqaruvi',
+        ru: 'Полное управление филиалом',
+        en: 'Full Branch Management'
+    },
+    'permissions.fullStaffManagement': {
+        uz: 'To\'liq xodimlar boshqaruvi',
+        ru: 'Полное управление персоналом',
+        en: 'Full Staff Management'
+    },
+    'permissions.fullOrderManagement': {
+        uz: 'To\'liq buyurtmalar boshqaruvi',
+        ru: 'Полное управление заказами',
+        en: 'Full Order Management'
+    },
+    'permissions.fullFinancialManagement': {
+        uz: 'To\'liq moliya boshqaruvi',
+        ru: 'Полное управление финансами',
+        en: 'Full Financial Management'
+    },
+    'permissions.fullReportsManagement': {
+        uz: 'To\'liq hisobotlar boshqaruvi',
+        ru: 'Полное управление отчетами',
+        en: 'Full Reports Management'
+    },
+    'permissions.fullProductManagement': {
+        uz: 'To\'liq mahsulotlar boshqaruvi',
+        ru: 'Полное управление продуктами',
+        en: 'Full Product Management'
+    },
+    'permissions.fullExpenseManagement': {
+        uz: 'To\'liq xarajatlar boshqaruvi',
+        ru: 'Полное управление расходами',
+        en: 'Full Expense Management'
+    },
+    'permissions.fullLanguageManagement': {
+        uz: 'To\'liq tillar boshqaruvi',
+        ru: 'Полное управление языками',
+        en: 'Full Language Management'
+    },
+    'permissions.fullCustomerManagement': {
+        uz: 'To\'liq mijozlar boshqaruvi',
+        ru: 'Полное управление клиентами',
+        en: 'Full Customer Management'
+    },
+    'permissions.fullMarketingManagement': {
+        uz: 'To\'liq marketing boshqaruvi',
+        ru: 'Полное управление маркетингом',
+        en: 'Full Marketing Management'
+    },
+    'permissions.fullAgencyManagement': {
+        uz: 'To\'liq agentliklar boshqaruvi',
+        ru: 'Полное управление агентствами',
+        en: 'Full Agency Management'
+    },
+    'permissions.fullBranchSettingsManagement': {
+        uz: 'To\'liq filial sozlamalarini boshqarish',
+        ru: 'Полное управление настройками филиала',
+        en: 'Full Branch Settings Management'
+    },
+    'permissions.fullAuditLogsManagement': {
+        uz: 'To\'liq audit jurnallari boshqaruvi',
+        ru: 'Полное управление журналами аудита',
+        en: 'Full Audit Logs Management'
+    },
+    'permissions.fullBulkPaymentManagement': {
+        uz: 'To\'liq ommaviy to\'lovlar boshqaruvi',
+        ru: 'Полное управление массовыми платежами',
+        en: 'Full Bulk Payment Management'
+    },
+
+    // ========== GRANULAR PERMISSIONS - CENTERS ==========
+    'permissions.viewCenters': {
+        uz: 'Markazlarni ko\'rish',
+        ru: 'Просмотр центров',
+        en: 'View Centers'
+    },
+    'permissions.createCenters': {
+        uz: 'Markaz yaratish',
+        ru: 'Создание центров',
+        en: 'Create Centers'
+    },
+    'permissions.editCenters': {
+        uz: 'Markazlarni tahrirlash',
+        ru: 'Редактирование центров',
+        en: 'Edit Centers'
+    },
+    'permissions.deleteCenters': {
+        uz: 'Markazlarni o\'chirish',
+        ru: 'Удаление центров',
+        en: 'Delete Centers'
+    },
+
+    // ========== GRANULAR PERMISSIONS - BRANCHES ==========
+    'permissions.viewBranches': {
+        uz: 'Filiallarni ko\'rish',
+        ru: 'Просмотр филиалов',
+        en: 'View Branches'
+    },
+    'permissions.createBranches': {
+        uz: 'Filial yaratish',
+        ru: 'Создание филиалов',
+        en: 'Create Branches'
+    },
+    'permissions.editBranches': {
+        uz: 'Filiallarni tahrirlash',
+        ru: 'Редактирование филиалов',
+        en: 'Edit Branches'
+    },
+    'permissions.deleteBranches': {
+        uz: 'Filiallarni o\'chirish',
+        ru: 'Удаление филиалов',
+        en: 'Delete Branches'
+    },
+
+    // ========== GRANULAR PERMISSIONS - STAFF ==========
+    'permissions.viewStaff': {
+        uz: 'Xodimlarni ko\'rish',
+        ru: 'Просмотр сотрудников',
+        en: 'View Staff'
+    },
+    'permissions.addStaff': {
+        uz: 'Xodim qo\'shish',
+        ru: 'Добавление сотрудников',
+        en: 'Add Staff'
+    },
+    'permissions.editStaff': {
+        uz: 'Xodimlarni tahrirlash',
+        ru: 'Редактирование сотрудников',
+        en: 'Edit Staff'
+    },
+    'permissions.removeStaff': {
+        uz: 'Xodimlarni o\'chirish',
+        ru: 'Удаление сотрудников',
+        en: 'Remove Staff'
+    },
+
+    // ========== GRANULAR PERMISSIONS - ORDERS ==========
+    'permissions.viewAllOrders': {
+        uz: 'Barcha buyurtmalarni ko\'rish',
+        ru: 'Просмотр всех заказов',
+        en: 'View All Orders'
+    },
+    'permissions.viewOwnOrders': {
+        uz: 'O\'z buyurtmalarini ko\'rish',
+        ru: 'Просмотр своих заказов',
+        en: 'View Own Orders'
+    },
+    'permissions.createOrders': {
+        uz: 'Buyurtma yaratish',
+        ru: 'Создание заказов',
+        en: 'Create Orders'
+    },
+    'permissions.editOrders': {
+        uz: 'Buyurtmalarni tahrirlash',
+        ru: 'Редактирование заказов',
+        en: 'Edit Orders'
+    },
+    'permissions.deleteOrders': {
+        uz: 'Buyurtmalarni o\'chirish',
+        ru: 'Удаление заказов',
+        en: 'Delete Orders'
+    },
+    'permissions.assignOrders': {
+        uz: 'Buyurtma tayinlash',
+        ru: 'Назначение заказов',
+        en: 'Assign Orders'
+    },
+    'permissions.updateOrderStatus': {
+        uz: 'Buyurtma holatini yangilash',
+        ru: 'Обновление статуса заказов',
+        en: 'Update Order Status'
+    },
+    'permissions.completeOrders': {
+        uz: 'Buyurtmani yakunlash',
+        ru: 'Завершение заказов',
+        en: 'Complete Orders'
+    },
+    'permissions.cancelOrders': {
+        uz: 'Buyurtmani bekor qilish',
+        ru: 'Отмена заказов',
+        en: 'Cancel Orders'
+    },
+
+    // ========== GRANULAR PERMISSIONS - FINANCIAL ==========
+    'permissions.receivePayments': {
+        uz: 'To\'lovlarni qabul qilish',
+        ru: 'Прием платежей',
+        en: 'Receive Payments'
+    },
+    'permissions.viewFinancialReports': {
+        uz: 'Moliyaviy hisobotlarni ko\'rish',
+        ru: 'Просмотр финансовых отчетов',
+        en: 'View Financial Reports'
+    },
+    'permissions.applyDiscounts': {
+        uz: 'Chegirmalar qo\'llash',
+        ru: 'Применение скидок',
+        en: 'Apply Discounts'
+    },
+    'permissions.refundOrders': {
+        uz: 'Buyurtmalarni qaytarish',
+        ru: 'Возврат заказов',
+        en: 'Refund Orders'
+    },
+
+    // ========== GRANULAR PERMISSIONS - REPORTS ==========
+    'permissions.viewReports': {
+        uz: 'Hisobotlarni ko\'rish',
+        ru: 'Просмотр отчетов',
+        en: 'View Reports'
+    },
+    'permissions.viewAnalytics': {
+        uz: 'Tahlillarni ko\'rish',
+        ru: 'Просмотр аналитики',
+        en: 'View Analytics'
+    },
+    'permissions.exportData': {
+        uz: 'Ma\'lumotlarni eksport qilish',
+        ru: 'Экспорт данных',
+        en: 'Export Data'
+    },
+
+    // ========== GRANULAR PERMISSIONS - PRODUCTS ==========
+    'permissions.viewProducts': {
+        uz: 'Mahsulotlarni ko\'rish',
+        ru: 'Просмотр продуктов',
+        en: 'View Products'
+    },
+    'permissions.createProducts': {
+        uz: 'Mahsulot yaratish',
+        ru: 'Создание продуктов',
+        en: 'Create Products'
+    },
+    'permissions.editProducts': {
+        uz: 'Mahsulotlarni tahrirlash',
+        ru: 'Редактирование продуктов',
+        en: 'Edit Products'
+    },
+    'permissions.deleteProducts': {
+        uz: 'Mahsulotlarni o\'chirish',
+        ru: 'Удаление продуктов',
+        en: 'Delete Products'
+    },
+
+    // ========== GRANULAR PERMISSIONS - EXPENSES ==========
+    'permissions.viewExpenses': {
+        uz: 'Xarajatlarni ko\'rish',
+        ru: 'Просмотр расходов',
+        en: 'View Expenses'
+    },
+    'permissions.createExpenses': {
+        uz: 'Xarajat yaratish',
+        ru: 'Создание расходов',
+        en: 'Create Expenses'
+    },
+    'permissions.editExpenses': {
+        uz: 'Xarajatlarni tahrirlash',
+        ru: 'Редактирование расходов',
+        en: 'Edit Expenses'
+    },
+    'permissions.deleteExpenses': {
+        uz: 'Xarajatlarni o\'chirish',
+        ru: 'Удаление расходов',
+        en: 'Delete Expenses'
+    },
+
+    // ========== GRANULAR PERMISSIONS - LANGUAGES ==========
+    'permissions.viewLanguages': {
+        uz: 'Tillarni ko\'rish',
+        ru: 'Просмотр языков',
+        en: 'View Languages'
+    },
+    'permissions.createLanguages': {
+        uz: 'Til qo\'shish',
+        ru: 'Добавление языков',
+        en: 'Create Languages'
+    },
+    'permissions.editLanguages': {
+        uz: 'Tillarni tahrirlash',
+        ru: 'Редактирование языков',
+        en: 'Edit Languages'
+    },
+    'permissions.deleteLanguages': {
+        uz: 'Tillarni o\'chirish',
+        ru: 'Удаление языков',
+        en: 'Delete Languages'
+    },
+
+    // ========== GRANULAR PERMISSIONS - CUSTOMERS ==========
+    'permissions.viewCustomers': {
+        uz: 'Mijozlarni ko\'rish',
+        ru: 'Просмотр клиентов',
+        en: 'View Customers'
+    },
+    'permissions.createCustomers': {
+        uz: 'Mijoz qo\'shish',
+        ru: 'Добавление клиентов',
+        en: 'Create Customers'
+    },
+    'permissions.editCustomers': {
+        uz: 'Mijozlarni tahrirlash',
+        ru: 'Редактирование клиентов',
+        en: 'Edit Customers'
+    },
+    'permissions.deleteCustomers': {
+        uz: 'Mijozlarni o\'chirish',
+        ru: 'Удаление клиентов',
+        en: 'Delete Customers'
+    },
+
+    // ========== GRANULAR PERMISSIONS - MARKETING ==========
+    'permissions.createMarketingPosts': {
+        uz: 'Marketing e\'lonlari yaratish',
+        ru: 'Создание маркетинговых объявлений',
+        en: 'Create Marketing Posts'
+    },
+    'permissions.sendBranchBroadcasts': {
+        uz: 'Filial uchun xabar yuborish',
+        ru: 'Отправка сообщений филиала',
+        en: 'Send Branch Broadcasts'
+    },
+    'permissions.sendCenterBroadcasts': {
+        uz: 'Markaz uchun xabar yuborish',
+        ru: 'Отправка сообщений центра',
+        en: 'Send Center Broadcasts'
+    },
+    'permissions.viewBroadcastStats': {
+        uz: 'Xabar statistikasini ko\'rish',
+        ru: 'Просмотр статистики сообщений',
+        en: 'View Broadcast Stats'
+    },
+
+    // ========== GRANULAR PERMISSIONS - AGENCIES ==========
+    'permissions.viewAgencies': {
+        uz: 'Agentliklarni ko\'rish',
+        ru: 'Просмотр агентств',
+        en: 'View Agencies'
+    },
+    'permissions.createAgencies': {
+        uz: 'Agentlik yaratish',
+        ru: 'Создание агентств',
+        en: 'Create Agencies'
+    },
+    'permissions.editAgencies': {
+        uz: 'Agentliklarni tahrirlash',
+        ru: 'Редактирование агентств',
+        en: 'Edit Agencies'
+    },
+    'permissions.deleteAgencies': {
+        uz: 'Agentliklarni o\'chirish',
+        ru: 'Удаление агентств',
+        en: 'Delete Agencies'
+    },
+
+    // ========== GRANULAR PERMISSIONS - BRANCH SETTINGS ==========
+    'permissions.viewBranchSettings': {
+        uz: 'Filial sozlamalarini ko\'rish',
+        ru: 'Просмотр настроек филиала',
+        en: 'View Branch Settings'
+    },
+
+    // ========== GRANULAR PERMISSIONS - AUDIT LOGS ==========
+    'permissions.viewAuditLogs': {
+        uz: 'Audit jurnallarini ko\'rish',
+        ru: 'Просмотр журналов аудита',
+        en: 'View Audit Logs'
+    },
+    'permissions.exportAuditLogs': {
+        uz: 'Audit jurnallarini eksport qilish',
+        ru: 'Экспорт журналов аудита',
+        en: 'Export Audit Logs'
+    },
+    'permissions.grantAuditPermissions': {
+        uz: 'Audit ruxsatlarini berish',
+        ru: 'Предоставление разрешений аудита',
+        en: 'Grant Audit Permissions'
+    },
+
+    // ========== GRANULAR PERMISSIONS - BULK PAYMENTS ==========
+    'permissions.manageBulkPayments': {
+        uz: 'Ommaviy to\'lovlarni boshqarish',
+        ru: 'Управление массовыми платежами',
+        en: 'Manage Bulk Payments'
+    },
+    'permissions.assignBulkPaymentAccess': {
+        uz: 'Ommaviy to\'lov huquqini berish',
+        ru: 'Назначение доступа к массовым платежам',
+        en: 'Assign Bulk Payment Access'
+    },
+
+    // ========== PERMISSION HINTS ==========
+    'permissions.overridesCenterPerms': {
+        uz: 'Barcha markaz ruxsatlarini bekor qiladi',
+        ru: 'Переопределяет все разрешения центра',
+        en: 'Overrides all center permissions'
+    },
+    'permissions.overridesBranchPerms': {
+        uz: 'Barcha filial ruxsatlarini bekor qiladi',
+        ru: 'Переопределяет все разрешения филиала',
+        en: 'Overrides all branch permissions'
+    },
+    'permissions.overridesStaffPerms': {
+        uz: 'Barcha xodim ruxsatlarini bekor qiladi',
+        ru: 'Переопределяет все разрешения персонала',
+        en: 'Overrides all staff permissions'
+    },
+    'permissions.masterPermissionGrantsAll': {
+        uz: 'Asosiy ruxsat - barcha buyurtma operatsiyalarini beradi',
+        ru: 'Главное разрешение - предоставляет все операции с заказами',
+        en: 'Master permission - grants all order operations'
+    },
+    'permissions.viewAllOrdersHint': {
+        uz: 'Filial/markaz barcha buyurtmalarini ko\'rish',
+        ru: 'Просмотр всех заказов филиала/центра',
+        en: 'See all orders in branch/center'
+    },
+    'permissions.viewOwnOrdersHint': {
+        uz: 'Faqat tayinlangan buyurtmalarni ko\'rish',
+        ru: 'Просмотр только назначенных заказов',
+        en: 'See assigned orders only'
+    },
+    'permissions.createOrdersHint': {
+        uz: 'Yangi buyurtmalar yaratish',
+        ru: 'Создание новых заказов',
+        en: 'Create new orders'
+    },
+    'permissions.editOrdersHint': {
+        uz: 'Buyurtma tafsilotlari va fayllarini o\'zgartirish',
+        ru: 'Изменение деталей заказа и файлов',
+        en: 'Modify order details & files'
+    },
+    'permissions.deleteOrdersHint': {
+        uz: 'Buyurtmalarni butunlay o\'chirish',
+        ru: 'Полное удаление заказов',
+        en: 'Permanently delete orders'
+    },
+    'permissions.assignOrdersHint': {
+        uz: 'Xodimlarga buyurtma tayinlash',
+        ru: 'Назначение заказов сотрудникам',
+        en: 'Assign to staff members'
+    },
+    'permissions.updateOrderStatusHint': {
+        uz: 'Ishlanmoqda, tayyor, va h.k.',
+        ru: 'В обработке, готово и т.д.',
+        en: 'In Progress, Completed, etc.'
+    },
+    'permissions.completeOrdersHint': {
+        uz: 'Buyurtmani yakunlangan deb belgilash',
+        ru: 'Отметить заказ как выполненный',
+        en: 'Mark orders as finished'
+    },
+    'permissions.cancelOrdersHint': {
+        uz: 'Buyurtmani bekor qilish / rad etish',
+        ru: 'Отменить/отклонить заказы',
+        en: 'Cancel/reject orders'
+    },
+    'permissions.auditLogsCriticalHint': {
+        uz: '⚠️ Audit jurnallari nozik ma\'lumotlarni o\'z ichiga oladi. Ehtiyotkorlik bilan foydalaning.',
+        ru: '⚠️ Журналы аудита содержат конфиденциальную информацию. Предоставляйте с осторожностью.',
+        en: '⚠️ Audit logs contain sensitive information. Grant with caution.'
+    },
+    'permissions.bulkPaymentCriticalHint': {
+        uz: '⚠️ Ommaviy to\'lov tizimiga kirish. Faqat ishonchli xodimlarga bering.',
+        ru: '⚠️ Доступ к системе массовых платежей. Предоставляйте только доверенным сотрудникам.',
+        en: '⚠️ Access to bulk payment system. Grant only to trusted staff.'
+    },
+    'permissions.bulkPaymentAssignCriticalHint': {
+        uz: '⚠️ Boshqa rollarga ommaviy to\'lov huquqini berishi mumkin. Ehtiyotkorlik bilan bering.',
+        ru: '⚠️ Может предоставить доступ к массовым платежам другим ролям. Предоставляйте с осторожностью.',
+        en: '⚠️ Can grant bulk payment permission to other roles. Grant with caution.'
+    },
+
+    // ========== QUICK TEMPLATES ==========
+    'form.quickTemplates': {
+        uz: 'Tezkor ruxsat shablonlari',
+        ru: 'Быстрые шаблоны разрешений',
+        en: 'Quick Permission Templates'
+    },
+    'common.ownerAll': {
+        uz: 'Egasi (Hammasi)',
+        ru: 'Владелец (Все)',
+        en: 'Owner (All)'
+    },
+    'common.manager': {
+        uz: 'Menejer',
+        ru: 'Менеджер',
+        en: 'Manager'
+    },
+    'common.staff': {
+        uz: 'Xodim',
+        ru: 'Сотрудник',
+        en: 'Staff'
+    },
+    'common.clearAll': {
+        uz: 'Hammasini tozalash',
+        ru: 'Очистить все',
+        en: 'Clear All'
+    },
+
+    // ========== PERMISSION GUIDE (HELP PANEL) ==========
+    'form.permissionGuide': {
+        uz: 'Ruxsatlar bo\'yicha qo\'llanma',
+        ru: 'Руководство по разрешениям',
+        en: 'Permission Guide'
+    },
+    'help.organizationPermissionsTitle': {
+        uz: 'Tashkilot ruxsatlari',
+        ru: 'Разрешения организации',
+        en: 'Organization Permissions'
+    },
+    'help.organizationPermissionsDesc': {
+        uz: 'Markaz, filial va xodimlar boshqaruviga kirishni nazorat qiladi. Odatda egalar uchun.',
+        ru: 'Контроль доступа к управлению центрами, филиалами и персоналом. Обычно для владельцев.',
+        en: 'Control access to centers, branches, and staff management. Usually for owners.'
+    },
+    'help.orderPermissionsTitle': {
+        uz: 'Buyurtma ruxsatlari',
+        ru: 'Разрешения заказов',
+        en: 'Order Permissions'
+    },
+    'help.orderPermissionsDesc': {
+        uz: '<strong>To\'liq buyurtma boshqaruvi</strong> barcha buyurtma operatsiyalarini beradi. Aks holda, maxsus amallar uchun aniq ruxsatlardan foydalaning.',
+        ru: '<strong>Полное управление заказами</strong> предоставляет все операции с заказами. В противном случае используйте детальные разрешения для конкретных действий.',
+        en: '<strong>Full Order Management</strong> grants all order operations. Otherwise, use granular permissions for specific actions.'
+    },
+    'help.financialPermissionsTitle': {
+        uz: 'Moliya ruxsatlari',
+        ru: 'Финансовые разрешения',
+        en: 'Financial Permissions'
+    },
+    'help.financialPermissionsDesc': {
+        uz: 'Kim to\'lovlarni qabul qilishi, daromadni ko\'rishi, chegirmalar qo\'llashi va qaytarishlarni amalga oshirishi mumkinligini nazorat qiladi.',
+        ru: 'Контроль над тем, кто может принимать платежи, просматривать доход, применять скидки и обрабатывать возвраты.',
+        en: 'Control who can receive payments, view revenue, apply discounts, and process refunds.'
+    },
+    'help.dataAccessTitle': {
+        uz: 'Ma\'lumotlar kirishi',
+        ru: 'Доступ к данным',
+        en: 'Data Access'
+    },
+    'help.dataAccessDesc': {
+        uz: '<strong>Barcha buyurtmalarni ko\'rish</strong>: Filial/markaz barcha buyurtmalari<br><strong>O\'z buyurtmalarini ko\'rish</strong>: Faqat tayinlangan buyurtmalar',
+        ru: '<strong>Просмотр всех заказов</strong>: Все заказы филиала/центра<br><strong>Просмотр своих заказов</strong>: Только назначенные заказы',
+        en: '<strong>View All Orders</strong>: All branch/center orders<br><strong>View Own Orders</strong>: Only assigned orders'
+    },
+    'help.masterPermissionsTitle': {
+        uz: 'Asosiy ruxsatlar',
+        ru: 'Главные разрешения',
+        en: 'Master Permissions'
+    },
+    'help.masterPermissionsDesc': {
+        uz: 'Sariq rangda belgilangan <strong>To\'liq boshqaruv</strong> ruxsatlari avtomatik ravishda o\'sha kategoriya bo\'yicha barcha tegishli ruxsatlarni beradi.',
+        ru: 'Разрешения <strong>Полное управление</strong>, выделенные желтым, автоматически предоставляют все связанные разрешения для этой категории.',
+        en: '<strong>Full Management</strong> permissions highlighted in yellow automatically grant all related permissions for that category.'
+    },
+    'help.systemRoleWarningTitle': {
+        uz: 'Tizim rollari',
+        ru: 'Системные роли',
+        en: 'System Roles'
+    },
+    'help.systemRoleWarningDesc': {
+        uz: 'Ba\'zi rollar tizim tomonidan yaratilgan va ichki foydalanish uchun zahiralangan. Ularning nomlarini o\'zgartirib bo\'lmaydi, lekin ruxsatlarini sozlash mumkin.',
+        ru: 'Некоторые роли созданы системой и зарезервированы для внутреннего использования. Их имена нельзя изменить, но разрешения можно настроить.',
+        en: 'Some roles are system-created and reserved for internal use. Their names cannot be changed, but permissions can be customized.'
+    },
+    'form.permissionsSelected': {
+        uz: 'ta ruxsat tanlangan',
+        ru: 'разрешений выбрано',
+        en: 'permissions selected'
+    },
+    'common.granular': {
+        uz: 'Aniq',
+        ru: 'Детальный',
+        en: 'Granular'
+    },
+    'permissions.viewOrders': {
+        uz: 'Buyurtmalarni ko\'rish',
+        ru: 'Просмотр заказов',
+        en: 'View Orders'
+    },
+    'permissions.createModify': {
+        uz: 'Yaratish va o\'zgartirish',
+        ru: 'Создание и изменение',
+        en: 'Create & Modify'
+    },
+    'permissions.workflowStatus': {
+        uz: 'Ish jarayoni va holat',
+        ru: 'Рабочий процесс и статус',
+        en: 'Workflow & Status'
+    },
+
     // ========== ROLE ACTIVE STATUS ==========
     'form.activeStatus': {
         uz: 'Faol',

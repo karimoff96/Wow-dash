@@ -127,7 +127,7 @@
                                 <div class="permission-card border border-primary-100">
                                     <h6 class="text-sm fw-semibold text-primary-main permission-section-header">
                                         <iconify-icon icon="lucide:building-2"></iconify-icon>
-                                        <span>Center Management</span>
+                                        <span data-i18n="permissions.centerManagement">Center Management</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -135,17 +135,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_centers" id="can_manage_centers"
                                                    {% if role.can_manage_centers %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_centers">
+                                            <label class="form-check-label" for="can_manage_centers" data-i18n="permissions.fullCenterManagement">
                                                 Full Center Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all center permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesCenterPerms">Overrides all center permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_centers" id="can_view_centers"
                                                {% if role.can_view_centers %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_centers">
+                                        <label class="form-check-label" for="can_view_centers" data-i18n="permissions.viewCenters">
                                             View Centers
                                         </label>
                                     </div>
@@ -153,7 +153,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_create_centers" id="can_create_centers"
                                                {% if role.can_create_centers %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_create_centers">
+                                        <label class="form-check-label" for="can_create_centers" data-i18n="permissions.createCenters">
                                             Create Centers
                                         </label>
                                     </div>
@@ -161,7 +161,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_edit_centers" id="can_edit_centers"
                                                {% if role.can_edit_centers %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_edit_centers">
+                                        <label class="form-check-label" for="can_edit_centers" data-i18n="permissions.editCenters">
                                             Edit Centers
                                         </label>
                                     </div>
@@ -169,7 +169,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_delete_centers" id="can_delete_centers"
                                                {% if role.can_delete_centers %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_delete_centers">
+                                        <label class="form-check-label" for="can_delete_centers" data-i18n="permissions.deleteCenters">
                                             Delete Centers
                                         </label>
                                     </div>
@@ -181,7 +181,7 @@
                                 <div class="permission-card border border-primary-100">
                                     <h6 class="text-sm fw-semibold text-primary-main permission-section-header">
                                         <iconify-icon icon="lucide:git-branch"></iconify-icon>
-                                        <span>Branch Management</span>
+                                        <span data-i18n="permissions.branchManagement">Branch Management</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -189,17 +189,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_branches" id="can_manage_branches"
                                                    {% if role.can_manage_branches %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_branches">
+                                            <label class="form-check-label" for="can_manage_branches" data-i18n="permissions.fullBranchManagement">
                                                 Full Branch Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all branch permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesBranchPerms">Overrides all branch permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_branches" id="can_view_branches"
                                                {% if role.can_view_branches %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_branches">
+                                        <label class="form-check-label" for="can_view_branches" data-i18n="permissions.viewBranches">
                                             View Branches
                                         </label>
                                     </div>
@@ -207,7 +207,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_create_branches" id="can_create_branches"
                                                {% if role.can_create_branches %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_create_branches">
+                                        <label class="form-check-label" for="can_create_branches" data-i18n="permissions.createBranches">
                                             Create Branches
                                         </label>
                                     </div>
@@ -215,7 +215,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_edit_branches" id="can_edit_branches"
                                                {% if role.can_edit_branches %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_edit_branches">
+                                        <label class="form-check-label" for="can_edit_branches" data-i18n="permissions.editBranches">
                                             Edit Branches
                                         </label>
                                     </div>
@@ -223,7 +223,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_delete_branches" id="can_delete_branches"
                                                {% if role.can_delete_branches %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_delete_branches">
+                                        <label class="form-check-label" for="can_delete_branches" data-i18n="permissions.deleteBranches">
                                             Delete Branches
                                         </label>
                                     </div>
@@ -235,7 +235,7 @@
                                 <div class="permission-card border border-info-100">
                                     <h6 class="text-sm fw-semibold text-info-main permission-section-header">
                                         <iconify-icon icon="lucide:users"></iconify-icon>
-                                        <span>Staff Management</span>
+                                        <span data-i18n="permissions.staffManagement">Staff Management</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -243,17 +243,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_staff" id="can_manage_staff"
                                                    {% if role.can_manage_staff %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_staff">
+                                            <label class="form-check-label" for="can_manage_staff" data-i18n="permissions.fullStaffManagement">
                                                 Full Staff Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all staff permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesStaffPerms">Overrides all staff permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_staff" id="can_view_staff"
                                                {% if role.can_view_staff %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_staff">
+                                        <label class="form-check-label" for="can_view_staff" data-i18n="permissions.viewStaff">
                                             View Staff
                                         </label>
                                     </div>
@@ -261,7 +261,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_create_staff" id="can_create_staff"
                                                {% if role.can_create_staff %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_create_staff">
+                                        <label class="form-check-label" for="can_create_staff" data-i18n="permissions.addStaff">
                                             Add Staff
                                         </label>
                                     </div>
@@ -269,7 +269,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_edit_staff" id="can_edit_staff"
                                                {% if role.can_edit_staff %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_edit_staff">
+                                        <label class="form-check-label" for="can_edit_staff" data-i18n="permissions.editStaff">
                                             Edit Staff
                                         </label>
                                     </div>
@@ -277,7 +277,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_delete_staff" id="can_delete_staff"
                                                {% if role.can_delete_staff %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_delete_staff">
+                                        <label class="form-check-label" for="can_delete_staff" data-i18n="permissions.removeStaff">
                                             Remove Staff
                                         </label>
                                     </div>
@@ -289,8 +289,8 @@
                                 <div class="permission-card border border-success-100">
                                     <h6 class="text-sm fw-semibold text-success-main permission-section-header">
                                         <iconify-icon icon="lucide:file-text"></iconify-icon>
-                                        <span>Order Management</span>
-                                        <span class="badge bg-success-100 text-success-600 text-xs ms-2">Granular</span>
+                                        <span data-i18n="permissions.orderManagement">Order Management</span>
+                                        <span class="badge bg-success-100 text-success-600 text-xs ms-2" data-i18n="common.granular">Granular</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -300,101 +300,101 @@
                                                    {% if role.can_manage_orders %}checked{% endif %}>
                                             <label class="form-check-label text-warning-600" for="can_manage_orders">
                                                 <iconify-icon icon="lucide:crown" class="me-1"></iconify-icon>
-                                                Full Order Management
+                                                <span data-i18n="permissions.fullOrderManagement">Full Order Management</span>
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Master permission - grants all order operations</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.masterOrderPermission">Master permission - grants all order operations</div>
                                     </div>
                                     
                                     <div class="row g-2">
                                         <div class="col-md-4">
-                                            <strong class="text-xs text-secondary-light d-block mb-2">View Orders</strong>
+                                            <strong class="text-xs text-secondary-light d-block mb-2" data-i18n="permissions.viewOrdersSection">View Orders</strong>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="can_view_all_orders" id="can_view_all_orders"
                                                        {% if role.can_view_all_orders %}checked{% endif %}>
-                                                <label class="form-check-label" for="can_view_all_orders">
+                                                <label class="form-check-label" for="can_view_all_orders" data-i18n="permissions.viewAllOrders">
                                                     View All Orders
                                                 </label>
                                             </div>
-                                            <div class="perm-hint text-secondary-light">See all orders in branch/center</div>
+                                            <div class="perm-hint text-secondary-light" data-i18n="permissions.viewAllOrdersHint">See all orders in branch/center</div>
                                             
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="can_view_own_orders" id="can_view_own_orders"
                                                        {% if role.can_view_own_orders %}checked{% endif %} checked>
-                                                <label class="form-check-label" for="can_view_own_orders">
+                                                <label class="form-check-label" for="can_view_own_orders" data-i18n="permissions.viewOwnOrders">
                                                     View Own Orders
                                                 </label>
                                             </div>
-                                            <div class="perm-hint text-secondary-light">See assigned orders only</div>
+                                            <div class="perm-hint text-secondary-light" data-i18n="permissions.viewOwnOrdersHint">See assigned orders only</div>
                                         </div>
                                         
                                         <div class="col-md-4">
-                                            <strong class="text-xs text-secondary-light d-block mb-2">Create & Modify</strong>
+                                            <strong class="text-xs text-secondary-light d-block mb-2" data-i18n="permissions.createModifySection">Create & Modify</strong>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="can_create_orders" id="can_create_orders"
                                                        {% if role.can_create_orders %}checked{% endif %}>
-                                                <label class="form-check-label" for="can_create_orders">
+                                                <label class="form-check-label" for="can_create_orders" data-i18n="permissions.createOrders">
                                                     Create Orders
                                                 </label>
                                             </div>
-                                            <div class="perm-hint text-secondary-light">Create new orders</div>
+                                            <div class="perm-hint text-secondary-light" data-i18n="permissions.createOrdersHint">Create new orders</div>
                                             
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="can_edit_orders" id="can_edit_orders"
                                                        {% if role.can_edit_orders %}checked{% endif %}>
-                                                <label class="form-check-label" for="can_edit_orders">
+                                                <label class="form-check-label" for="can_edit_orders" data-i18n="permissions.editOrders">
                                                     Edit Orders
                                                 </label>
                                             </div>
-                                            <div class="perm-hint text-secondary-light">Modify order details & files</div>
+                                            <div class="perm-hint text-secondary-light" data-i18n="permissions.editOrdersHint">Modify order details & files</div>
                                             
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="can_delete_orders" id="can_delete_orders"
                                                        {% if role.can_delete_orders %}checked{% endif %}>
-                                                <label class="form-check-label text-danger-500" for="can_delete_orders">
+                                                <label class="form-check-label text-danger-500" for="can_delete_orders" data-i18n="permissions.deleteOrders">
                                                     Delete Orders
                                                 </label>
                                             </div>
-                                            <div class="perm-hint text-secondary-light">Permanently remove orders</div>
+                                            <div class="perm-hint text-secondary-light" data-i18n="permissions.deleteOrdersHint">Permanently remove orders</div>
                                         </div>
                                         
                                         <div class="col-md-4">
-                                            <strong class="text-xs text-secondary-light d-block mb-2">Workflow & Status</strong>
+                                            <strong class="text-xs text-secondary-light d-block mb-2" data-i18n="permissions.workflowStatusSection">Workflow & Status</strong>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="can_assign_orders" id="can_assign_orders"
                                                        {% if role.can_assign_orders %}checked{% endif %}>
-                                                <label class="form-check-label" for="can_assign_orders">
+                                                <label class="form-check-label" for="can_assign_orders" data-i18n="permissions.assignOrders">
                                                     Assign Orders
                                                 </label>
                                             </div>
-                                            <div class="perm-hint text-secondary-light">Assign to staff members</div>
+                                            <div class="perm-hint text-secondary-light" data-i18n="permissions.assignOrdersHint">Assign to staff members</div>
                                             
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="can_update_order_status" id="can_update_order_status"
                                                        {% if role.can_update_order_status %}checked{% endif %}>
-                                                <label class="form-check-label" for="can_update_order_status">
+                                                <label class="form-check-label" for="can_update_order_status" data-i18n="permissions.updateStatus">
                                                     Update Status
                                                 </label>
                                             </div>
-                                            <div class="perm-hint text-secondary-light">Change order status</div>
+                                            <div class="perm-hint text-secondary-light" data-i18n="permissions.updateStatusHint">Change order status</div>
                                             
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="can_complete_orders" id="can_complete_orders"
                                                        {% if role.can_complete_orders %}checked{% endif %}>
-                                                <label class="form-check-label" for="can_complete_orders">
+                                                <label class="form-check-label" for="can_complete_orders" data-i18n="permissions.completeOrders">
                                                     Complete Orders
                                                 </label>
                                             </div>
-                                            <div class="perm-hint text-secondary-light">Mark as completed</div>
+                                            <div class="perm-hint text-secondary-light" data-i18n="permissions.completeOrdersHint">Mark as completed</div>
                                             
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="can_cancel_orders" id="can_cancel_orders"
                                                        {% if role.can_cancel_orders %}checked{% endif %}>
-                                                <label class="form-check-label text-danger-500" for="can_cancel_orders">
+                                                <label class="form-check-label text-danger-500" for="can_cancel_orders" data-i18n="permissions.cancelOrders">
                                                     Cancel Orders
                                                 </label>
                                             </div>
-                                            <div class="perm-hint text-secondary-light">Cancel active orders</div>
+                                            <div class="perm-hint text-secondary-light" data-i18n="permissions.cancelOrdersHint">Cancel active orders</div>
                                         </div>
                                     </div>
                                 </div>
@@ -405,7 +405,7 @@
                                 <div class="permission-card border border-warning-100">
                                     <h6 class="text-sm fw-semibold text-warning-main permission-section-header">
                                         <iconify-icon icon="lucide:banknote"></iconify-icon>
-                                        <span>Financial</span>
+                                        <span data-i18n="permissions.financial">Financial</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -413,17 +413,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_financial" id="can_manage_financial"
                                                    {% if role.can_manage_financial %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_financial">
+                                            <label class="form-check-label" for="can_manage_financial" data-i18n="permissions.fullFinancialManagement">
                                                 Full Financial Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all financial permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesFinancialPerms">Overrides all financial permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_receive_payments" id="can_receive_payments"
                                                {% if role.can_receive_payments %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_receive_payments">
+                                        <label class="form-check-label" for="can_receive_payments" data-i18n="permissions.receivePayments">
                                             Receive Payments
                                         </label>
                                     </div>
@@ -431,7 +431,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_financial_reports" id="can_view_financial_reports"
                                                {% if role.can_view_financial_reports %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_financial_reports">
+                                        <label class="form-check-label" for="can_view_financial_reports" data-i18n="permissions.viewFinancialReports">
                                             View Financial Reports
                                         </label>
                                     </div>
@@ -439,7 +439,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_apply_discounts" id="can_apply_discounts"
                                                {% if role.can_apply_discounts %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_apply_discounts">
+                                        <label class="form-check-label" for="can_apply_discounts" data-i18n="permissions.applyDiscounts">
                                             Apply Discounts
                                         </label>
                                     </div>
@@ -447,7 +447,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_refund_orders" id="can_refund_orders"
                                                {% if role.can_refund_orders %}checked{% endif %}>
-                                        <label class="form-check-label text-danger-500" for="can_refund_orders">
+                                        <label class="form-check-label text-danger-500" for="can_refund_orders" data-i18n="permissions.refundOrders">
                                             Refund Orders
                                         </label>
                                     </div>
@@ -459,7 +459,7 @@
                                 <div class="permission-card border border-purple-100">
                                     <h6 class="text-sm fw-semibold text-purple-main permission-section-header">
                                         <iconify-icon icon="lucide:bar-chart-3"></iconify-icon>
-                                        <span>Reports & Analytics</span>
+                                        <span data-i18n="permissions.reportsAnalytics">Reports & Analytics</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -467,17 +467,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_reports" id="can_manage_reports"
                                                    {% if role.can_manage_reports %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_reports">
+                                            <label class="form-check-label" for="can_manage_reports" data-i18n="permissions.fullReportsAccess">
                                                 Full Reports Access
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all report permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesReportPerms">Overrides all report permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_reports" id="can_view_reports"
                                                {% if role.can_view_reports %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_reports">
+                                        <label class="form-check-label" for="can_view_reports" data-i18n="permissions.viewReports">
                                             View Reports
                                         </label>
                                     </div>
@@ -485,7 +485,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_analytics" id="can_view_analytics"
                                                {% if role.can_view_analytics %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_analytics">
+                                        <label class="form-check-label" for="can_view_analytics" data-i18n="permissions.viewAnalytics">
                                             View Analytics
                                         </label>
                                     </div>
@@ -493,7 +493,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_export_data" id="can_export_data"
                                                {% if role.can_export_data %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_export_data">
+                                        <label class="form-check-label" for="can_export_data" data-i18n="permissions.exportData">
                                             Export Data
                                         </label>
                                     </div>
@@ -505,7 +505,7 @@
                                 <div class="permission-card border border-danger-100">
                                     <h6 class="text-sm fw-semibold text-danger-main permission-section-header">
                                         <iconify-icon icon="lucide:box"></iconify-icon>
-                                        <span>Products</span>
+                                        <span data-i18n="permissions.products">Products</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -513,17 +513,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_products" id="can_manage_products"
                                                    {% if role.can_manage_products %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_products">
+                                            <label class="form-check-label" for="can_manage_products" data-i18n="permissions.fullProductManagement">
                                                 Full Product Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all product permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesProductPerms">Overrides all product permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_products" id="can_view_products"
                                                {% if role.can_view_products %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_products">
+                                        <label class="form-check-label" for="can_view_products" data-i18n="permissions.viewProducts">
                                             View Products
                                         </label>
                                     </div>
@@ -531,7 +531,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_create_products" id="can_create_products"
                                                {% if role.can_create_products %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_create_products">
+                                        <label class="form-check-label" for="can_create_products" data-i18n="permissions.createProducts">
                                             Create Products
                                         </label>
                                     </div>
@@ -539,7 +539,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_edit_products" id="can_edit_products"
                                                {% if role.can_edit_products %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_edit_products">
+                                        <label class="form-check-label" for="can_edit_products" data-i18n="permissions.editProducts">
                                             Edit Products
                                         </label>
                                     </div>
@@ -547,7 +547,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_delete_products" id="can_delete_products"
                                                {% if role.can_delete_products %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_delete_products">
+                                        <label class="form-check-label" for="can_delete_products" data-i18n="permissions.deleteProducts">
                                             Delete Products
                                         </label>
                                     </div>
@@ -559,7 +559,7 @@
                                 <div class="permission-card border border-warning-100">
                                     <h6 class="text-sm fw-semibold text-warning-main permission-section-header">
                                         <iconify-icon icon="lucide:receipt"></iconify-icon>
-                                        <span>Expenses</span>
+                                        <span data-i18n="permissions.expenses">Expenses</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -567,17 +567,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_expenses" id="can_manage_expenses"
                                                    {% if role.can_manage_expenses %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_expenses">
+                                            <label class="form-check-label" for="can_manage_expenses" data-i18n="permissions.fullExpenseManagement">
                                                 Full Expense Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all expense permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesExpensePerms">Overrides all expense permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_expenses" id="can_view_expenses"
                                                {% if role.can_view_expenses %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_expenses">
+                                        <label class="form-check-label" for="can_view_expenses" data-i18n="permissions.viewExpenses">
                                             View Expenses
                                         </label>
                                     </div>
@@ -585,7 +585,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_create_expenses" id="can_create_expenses"
                                                {% if role.can_create_expenses %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_create_expenses">
+                                        <label class="form-check-label" for="can_create_expenses" data-i18n="permissions.createExpenses">
                                             Create Expenses
                                         </label>
                                     </div>
@@ -593,7 +593,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_edit_expenses" id="can_edit_expenses"
                                                {% if role.can_edit_expenses %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_edit_expenses">
+                                        <label class="form-check-label" for="can_edit_expenses" data-i18n="permissions.editExpenses">
                                             Edit Expenses
                                         </label>
                                     </div>
@@ -601,7 +601,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_delete_expenses" id="can_delete_expenses"
                                                {% if role.can_delete_expenses %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_delete_expenses">
+                                        <label class="form-check-label" for="can_delete_expenses" data-i18n="permissions.deleteExpenses">
                                             Delete Expenses
                                         </label>
                                     </div>
@@ -613,7 +613,7 @@
                                 <div class="permission-card border border-info-100">
                                     <h6 class="text-sm fw-semibold text-info-main permission-section-header">
                                         <iconify-icon icon="lucide:languages"></iconify-icon>
-                                        <span>Languages</span>
+                                        <span data-i18n="permissions.languages">Languages</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -621,17 +621,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_languages" id="can_manage_languages"
                                                    {% if role.can_manage_languages %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_languages">
+                                            <label class="form-check-label" for="can_manage_languages" data-i18n="permissions.fullLanguageManagement">
                                                 Full Language Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all language permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesLanguagePerms">Overrides all language permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_languages" id="can_view_languages"
                                                {% if role.can_view_languages %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_languages">
+                                        <label class="form-check-label" for="can_view_languages" data-i18n="permissions.viewLanguages">
                                             View Languages
                                         </label>
                                     </div>
@@ -639,7 +639,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_create_languages" id="can_create_languages"
                                                {% if role.can_create_languages %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_create_languages">
+                                        <label class="form-check-label" for="can_create_languages" data-i18n="permissions.createLanguages">
                                             Create Languages
                                         </label>
                                     </div>
@@ -647,7 +647,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_edit_languages" id="can_edit_languages"
                                                {% if role.can_edit_languages %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_edit_languages">
+                                        <label class="form-check-label" for="can_edit_languages" data-i18n="permissions.editLanguages">
                                             Edit Languages
                                         </label>
                                     </div>
@@ -655,7 +655,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_delete_languages" id="can_delete_languages"
                                                {% if role.can_delete_languages %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_delete_languages">
+                                        <label class="form-check-label" for="can_delete_languages" data-i18n="permissions.deleteLanguages">
                                             Delete Languages
                                         </label>
                                     </div>
@@ -667,7 +667,7 @@
                                 <div class="permission-card border border-danger-100">
                                     <h6 class="text-sm fw-semibold text-danger-main permission-section-header">
                                         <iconify-icon icon="lucide:users-round"></iconify-icon>
-                                        <span>Customers</span>
+                                        <span data-i18n="permissions.customers">Customers</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -675,17 +675,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_customers" id="can_manage_customers"
                                                    {% if role.can_manage_customers %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_customers">
+                                            <label class="form-check-label" for="can_manage_customers" data-i18n="permissions.fullCustomerManagement">
                                                 Full Customer Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all customer permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesCustomerPerms">Overrides all customer permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_customers" id="can_view_customers"
                                                {% if role.can_view_customers %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_customers">
+                                        <label class="form-check-label" for="can_view_customers" data-i18n="permissions.viewCustomers">
                                             View Customers
                                         </label>
                                     </div>
@@ -693,7 +693,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_edit_customers" id="can_edit_customers"
                                                {% if role.can_edit_customers %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_edit_customers">
+                                        <label class="form-check-label" for="can_edit_customers" data-i18n="permissions.editCustomers">
                                             Edit Customers
                                         </label>
                                     </div>
@@ -701,7 +701,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_delete_customers" id="can_delete_customers"
                                                {% if role.can_delete_customers %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_delete_customers">
+                                        <label class="form-check-label" for="can_delete_customers" data-i18n="permissions.deleteCustomers">
                                             Delete Customers
                                         </label>
                                     </div>
@@ -713,7 +713,7 @@
                                 <div class="permission-card border border-secondary-100">
                                     <h6 class="text-sm fw-semibold text-secondary-main permission-section-header">
                                         <iconify-icon icon="mdi:bullhorn"></iconify-icon>
-                                        <span>Marketing & Broadcasts</span>
+                                        <span data-i18n="permissions.marketingBroadcasts">Marketing & Broadcasts</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -721,17 +721,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_marketing" id="can_manage_marketing"
                                                    {% if role.can_manage_marketing %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_marketing">
+                                            <label class="form-check-label" for="can_manage_marketing" data-i18n="permissions.fullMarketingAccess">
                                                 Full Marketing Access
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all marketing permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesMarketingPerms">Overrides all marketing permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_create_marketing_posts" id="can_create_marketing_posts"
                                                {% if role.can_create_marketing_posts %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_create_marketing_posts">
+                                        <label class="form-check-label" for="can_create_marketing_posts" data-i18n="permissions.createMarketingPosts">
                                             Create Marketing Posts
                                         </label>
                                     </div>
@@ -739,7 +739,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_send_branch_broadcasts" id="can_send_branch_broadcasts"
                                                {% if role.can_send_branch_broadcasts %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_send_branch_broadcasts">
+                                        <label class="form-check-label" for="can_send_branch_broadcasts" data-i18n="permissions.sendBranchBroadcasts">
                                             Send Branch Broadcasts
                                         </label>
                                     </div>
@@ -749,14 +749,14 @@
                                                {% if role.can_send_center_broadcasts %}checked{% endif %}>
                                         <label class="form-check-label text-warning-600" for="can_send_center_broadcasts">
                                             <iconify-icon icon="lucide:alert-triangle" class="me-1"></iconify-icon>
-                                            Send Center-wide Broadcasts
+                                            <span data-i18n="permissions.sendCenterBroadcasts">Send Center-wide Broadcasts</span>
                                         </label>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_broadcast_stats" id="can_view_broadcast_stats"
                                                {% if role.can_view_broadcast_stats %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_broadcast_stats">
+                                        <label class="form-check-label" for="can_view_broadcast_stats" data-i18n="permissions.viewBroadcastStats">
                                             View Broadcast Stats
                                         </label>
                                     </div>
@@ -768,7 +768,7 @@
                                 <div class="permission-card border border-purple-100">
                                     <h6 class="text-sm fw-semibold text-purple-main permission-section-header">
                                         <iconify-icon icon="fa-solid:building-user"></iconify-icon>
-                                        <span>Agency Management</span>
+                                        <span data-i18n="permissions.agencyManagement">Agency Management</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -776,17 +776,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_agencies" id="can_manage_agencies"
                                                    {% if role.can_manage_agencies %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_agencies">
+                                            <label class="form-check-label" for="can_manage_agencies" data-i18n="permissions.fullAgencyManagement">
                                                 Full Agency Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all agency permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesAgencyPerms">Overrides all agency permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_agencies" id="can_view_agencies"
                                                {% if role.can_view_agencies %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_agencies">
+                                        <label class="form-check-label" for="can_view_agencies" data-i18n="permissions.viewAgencies">
                                             View Agencies
                                         </label>
                                     </div>
@@ -794,7 +794,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_create_agencies" id="can_create_agencies"
                                                {% if role.can_create_agencies %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_create_agencies">
+                                        <label class="form-check-label" for="can_create_agencies" data-i18n="permissions.createAgencies">
                                             Create Agencies
                                         </label>
                                     </div>
@@ -802,7 +802,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_edit_agencies" id="can_edit_agencies"
                                                {% if role.can_edit_agencies %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_edit_agencies">
+                                        <label class="form-check-label" for="can_edit_agencies" data-i18n="permissions.editAgencies">
                                             Edit Agencies
                                         </label>
                                     </div>
@@ -810,7 +810,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_delete_agencies" id="can_delete_agencies"
                                                {% if role.can_delete_agencies %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_delete_agencies">
+                                        <label class="form-check-label" for="can_delete_agencies" data-i18n="permissions.deleteAgencies">
                                             Delete Agencies
                                         </label>
                                     </div>
@@ -822,7 +822,7 @@
                                 <div class="permission-card border border-info-100">
                                     <h6 class="text-sm fw-semibold text-info-main permission-section-header">
                                         <iconify-icon icon="lucide:settings"></iconify-icon>
-                                        <span>Branch Settings</span>
+                                        <span data-i18n="permissions.branchSettings">Branch Settings</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -830,17 +830,17 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_branch_settings" id="can_manage_branch_settings"
                                                    {% if role.can_manage_branch_settings %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_branch_settings">
+                                            <label class="form-check-label" for="can_manage_branch_settings" data-i18n="permissions.fullBranchSettingsManagement">
                                                 Full Branch Settings Management
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all branch settings permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesBranchSettingsPerms">Overrides all branch settings permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_branch_settings" id="can_view_branch_settings"
                                                {% if role.can_view_branch_settings %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_branch_settings">
+                                        <label class="form-check-label" for="can_view_branch_settings" data-i18n="permissions.viewBranchSettings">
                                             View Branch Settings
                                         </label>
                                     </div>
@@ -852,7 +852,7 @@
                                 <div class="permission-card border border-secondary-100">
                                     <h6 class="text-sm fw-semibold text-secondary-main permission-section-header">
                                         <iconify-icon icon="lucide:scroll-text"></iconify-icon>
-                                        <span>Audit Logs</span>
+                                        <span data-i18n="permissions.auditLogs">Audit Logs</span>
                                     </h6>
                                     
                                     <!-- Master Permission -->
@@ -860,40 +860,40 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="can_manage_audit_logs" id="can_manage_audit_logs"
                                                    {% if role.can_manage_audit_logs %}checked{% endif %}>
-                                            <label class="form-check-label" for="can_manage_audit_logs">
+                                            <label class="form-check-label" for="can_manage_audit_logs" data-i18n="permissions.fullAuditLogAccess">
                                                 Full Audit Log Access
                                             </label>
                                         </div>
-                                        <div class="perm-hint text-secondary-light">Overrides all audit log permissions</div>
+                                        <div class="perm-hint text-secondary-light" data-i18n="permissions.overridesAuditLogPerms">Overrides all audit log permissions</div>
                                     </div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_view_audit_logs" id="can_view_audit_logs"
                                                {% if role.can_view_audit_logs %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_view_audit_logs">
+                                        <label class="form-check-label" for="can_view_audit_logs" data-i18n="permissions.viewAuditLogs">
                                             View Audit Logs
                                         </label>
                                     </div>
-                                    <div class="perm-hint text-secondary-light">View system activity and changes history</div>
+                                    <div class="perm-hint text-secondary-light" data-i18n="permissions.viewAuditLogsHint">View system activity and changes history</div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_export_audit_logs" id="can_export_audit_logs"
                                                {% if role.can_export_audit_logs %}checked{% endif %}>
-                                        <label class="form-check-label" for="can_export_audit_logs">
+                                        <label class="form-check-label" for="can_export_audit_logs" data-i18n="permissions.exportAuditLogs">
                                             Export Audit Logs
                                         </label>
                                     </div>
-                                    <div class="perm-hint text-secondary-light">Export logs to CSV/Excel</div>
+                                    <div class="perm-hint text-secondary-light" data-i18n="permissions.exportAuditLogsHint">Export logs to CSV/Excel</div>
                                     
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="can_grant_audit_permissions" id="can_grant_audit_permissions"
                                                {% if role.can_grant_audit_permissions %}checked{% endif %}>
                                         <label class="form-check-label text-warning-600" for="can_grant_audit_permissions">
                                             <iconify-icon icon="lucide:shield-check" class="me-1"></iconify-icon>
-                                            Grant Audit Permissions
+                                            <span data-i18n="permissions.grantAuditPermissions">Grant Audit Permissions</span>
                                         </label>
                                     </div>
-                                    <div class="perm-hint text-secondary-light">Can assign audit permissions to other users</div>
+                                    <div class="perm-hint text-secondary-light" data-i18n="permissions.grantAuditPermissionsHint">Can assign audit permissions to other users</div>
                                 </div>
                             </div>
 
@@ -902,7 +902,7 @@
                                 <div class="permission-card border border-warning-100 bg-warning-50">
                                     <h6 class="text-sm fw-semibold text-warning-main permission-section-header">
                                         <iconify-icon icon="lucide:banknote"></iconify-icon>
-                                        <span>Bulk Payments</span>
+                                        <span data-i18n="permissions.bulkPayments">Bulk Payments</span>
                                     </h6>
                                     
                                     <div class="form-check">
@@ -910,10 +910,10 @@
                                                {% if role.can_manage_bulk_payments %}checked{% endif %}>
                                         <label class="form-check-label fw-semibold" for="can_manage_bulk_payments">
                                             <iconify-icon icon="lucide:wallet" class="me-1"></iconify-icon>
-                                            Process Bulk Payments
+                                            <span data-i18n="permissions.processBulkPayments">Process Bulk Payments</span>
                                         </label>
                                     </div>
-                                    <div class="perm-hint text-secondary-light">Can process bulk payments for agency/customer debts across multiple orders</div>
+                                    <div class="perm-hint text-secondary-light" data-i18n="permissions.processBulkPaymentsHint">Can process bulk payments for agency/customer debts across multiple orders</div>
                                     
                                     <hr class="my-12">
                                     
@@ -922,10 +922,10 @@
                                                {% if role.can_assign_bulk_payment_permission %}checked{% endif %}>
                                         <label class="form-check-label text-danger-600 fw-semibold" for="can_assign_bulk_payment_permission">
                                             <iconify-icon icon="lucide:shield-check" class="me-1"></iconify-icon>
-                                            Assign Bulk Payment Access
+                                            <span data-i18n="permissions.assignBulkPaymentAccess">Assign Bulk Payment Access</span>
                                         </label>
                                     </div>
-                                    <div class="perm-hint text-danger-light">⚠️ Can grant bulk payment permission to other roles. Grant with caution.</div>
+                                    <div class="perm-hint text-danger-light" data-i18n="permissions.assignBulkPaymentAccessHint">⚠️ Can grant bulk payment permission to other roles. Grant with caution.</div>
                                 </div>
                             </div>
                         </div>
@@ -938,16 +938,16 @@
                             </h6>
                             <div class="d-flex flex-wrap gap-2">
                                 <button type="button" class="btn btn-sm btn-outline-primary" onclick="applyTemplate('owner')">
-                                    <iconify-icon icon="lucide:crown" class="me-1"></iconify-icon> Owner (All)
+                                    <iconify-icon icon="lucide:crown" class="me-1"></iconify-icon> <span data-i18n="common.ownerAll">Owner (All)</span>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-info" onclick="applyTemplate('manager')">
-                                    <iconify-icon icon="lucide:user-cog" class="me-1"></iconify-icon> Manager
+                                    <iconify-icon icon="lucide:user-cog" class="me-1"></iconify-icon> <span data-i18n="common.manager">Manager</span>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-success" onclick="applyTemplate('staff')">
-                                    <iconify-icon icon="lucide:user" class="me-1"></iconify-icon> Staff
+                                    <iconify-icon icon="lucide:user" class="me-1"></iconify-icon> <span data-i18n="common.staff">Staff</span>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="applyTemplate('none')">
-                                    <iconify-icon icon="lucide:x" class="me-1"></iconify-icon> Clear All
+                                    <iconify-icon icon="lucide:x" class="me-1"></iconify-icon> <span data-i18n="common.clearAll">Clear All</span>
                                 </button>
                             </div>
                         </div>
@@ -981,26 +981,26 @@
             <div class="card-body p-24">
                 <div class="d-flex flex-column gap-16">
                     <div>
-                        <h6 class="text-sm fw-semibold text-primary-main mb-4">Organization Permissions</h6>
-                        <p class="text-sm text-secondary-light mb-0">
+                        <h6 class="text-sm fw-semibold text-primary-main mb-4" data-i18n="help.organizationPermissionsTitle">Organization Permissions</h6>
+                        <p class="text-sm text-secondary-light mb-0" data-i18n="help.organizationPermissionsDesc">
                             Control access to centers, branches, and staff management. Usually for owners.
                         </p>
                     </div>
                     <div>
-                        <h6 class="text-sm fw-semibold text-success-main mb-4">Order Permissions</h6>
-                        <p class="text-sm text-secondary-light mb-0">
+                        <h6 class="text-sm fw-semibold text-success-main mb-4" data-i18n="help.orderPermissionsTitle">Order Permissions</h6>
+                        <p class="text-sm text-secondary-light mb-0" data-i18n="help.orderPermissionsDesc">
                             <strong>Full Order Management</strong> grants all order operations. Otherwise, use granular permissions for specific actions.
                         </p>
                     </div>
                     <div>
-                        <h6 class="text-sm fw-semibold text-warning-main mb-4">Financial Permissions</h6>
-                        <p class="text-sm text-secondary-light mb-0">
+                        <h6 class="text-sm fw-semibold text-warning-main mb-4" data-i18n="help.financialPermissionsTitle">Financial Permissions</h6>
+                        <p class="text-sm text-secondary-light mb-0" data-i18n="help.financialPermissionsDesc">
                             Control who can receive payments, view revenue, apply discounts, and process refunds.
                         </p>
                     </div>
                     <div>
-                        <h6 class="text-sm fw-semibold text-purple-main mb-4">Reports Permissions</h6>
-                        <p class="text-sm text-secondary-light mb-0">
+                        <h6 class="text-sm fw-semibold text-purple-main mb-4" data-i18n="help.reportsPermissionsTitle">Reports Permissions</h6>
+                        <p class="text-sm text-secondary-light mb-0" data-i18n="help.reportsPermissionsDesc">
                             Separate permissions for reports, analytics, and data export capabilities.
                         </p>
                     </div>
@@ -1008,7 +1008,7 @@
                     {% if role.is_system_role %}
                     <div class="alert alert-warning-100 text-warning-600 radius-8 py-12 px-16 d-flex align-items-start gap-2">
                         <iconify-icon icon="lucide:alert-triangle" class="flex-shrink-0 mt-1"></iconify-icon>
-                        <span>System Role: The role name cannot be changed as it's used internally.</span>
+                        <span data-i18n="help.systemRoleWarning">System Role: The role name cannot be changed as it's used internally.</span>
                     </div>
                     {% endif %}
                 </div>
@@ -1020,7 +1020,7 @@
             <div class="card-header py-12 px-24 border-bottom bg-base">
                 <h6 class="mb-0 fw-semibold text-sm d-flex align-items-center gap-2">
                     <iconify-icon icon="lucide:check-circle"></iconify-icon>
-                    <span id="permission-count">0</span> Permissions Selected
+                    <span id="permission-count">0</span> <span data-i18n="form.permissionsSelected">Permissions Selected</span>
                 </h6>
             </div>
         </div>
