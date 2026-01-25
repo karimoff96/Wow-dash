@@ -383,13 +383,17 @@
                                 {% for file in order.files.all %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{ file.file.name|slice:"-30:" }}</td>
+                                    <td>{{ file.file_name|slice:"-30:" }}</td>
                                     <td><span class="badge bg-info-focus text-info-600">{{ file.pages }}</span></td>
                                     <td>{{ file.created_at|date:"d M Y H:i" }}</td>
                                     <td>
-                                        <a href="{{ file.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        {% if file.file_url %}
+                                        <a href="{{ file.file_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                             <iconify-icon icon="mdi:download"></iconify-icon>
                                         </a>
+                                        {% else %}
+                                        <span class="badge bg-danger-focus text-danger-600">File unavailable</span>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}

@@ -1962,8 +1962,9 @@ def handle_main_menu(message):
     ):
         show_pricelist(message, language)
 def show_pricelist(message, language):
-    """Show price list for the user's branch"""
-    from services.models import Category, Product
+    """Show advanced price list with language pricing, user type, and copy prices"""
+    from services.models import Category, Product, Language
+    from decimal import Decimal
     
     user_id = message.from_user.id
     user = get_bot_user(user_id)
@@ -1986,27 +1987,27 @@ def show_pricelist(message, language):
     categories = Category.objects.filter(
         branch=user.branch,
         is_active=True
-    ).prefetch_related('product_set').order_by('name')
+    ).prefetch_related('product_set', 'languages').order_by('name')
     
     # Build price list text with creative formatting
     if language == 'uz':
-        pricelist_text = "╔══════════════════════╗\n"
-        pricelist_text += "   💰 <b>NARXLAR RO'YXATI</b> 💰\n"
-        pricelist_text += "╚══════════════════════╝\n\n"
+        pricelist_text = "╔═════════════════╗\n"
+        pricelist_text += " 💰 <b>NARXLAR RO'YXATI</b> 💰\n"
+        pricelist_text += "╚═════════════════╝\n\n"
         pricelist_text += f"🏢 <b>{user.branch.name}</b>\n"
-        pricelist_text += "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n"
+        pricelist_text += "▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n"
     elif language == 'ru':
-        pricelist_text = "╔══════════════════════╗\n"
-        pricelist_text += "     💰 <b>ПРАЙС-ЛИСТ</b> 💰\n"
-        pricelist_text += "╚══════════════════════╝\n\n"
+        pricelist_text = "╔═════════════════╗\n"
+        pricelist_text += "  💰 <b>ПРАЙС-ЛИСТ</b> 💰\n"
+        pricelist_text += "╚═════════════════╝\n\n"
         pricelist_text += f"🏢 <b>{user.branch.name}</b>\n"
-        pricelist_text += "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n"
+        pricelist_text += "▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n"
     else:
-        pricelist_text = "╔══════════════════════╗\n"
-        pricelist_text += "     💰 <b>PRICE LIST</b> 💰\n"
-        pricelist_text += "╚══════════════════════╝\n\n"
+        pricelist_text = "╔═════════════════╗\n"
+        pricelist_text += "  💰 <b>PRICE LIST</b> 💰\n"
+        pricelist_text += "╚═════════════════╝\n\n"
         pricelist_text += f"🏢 <b>{user.branch.name}</b>\n"
-        pricelist_text += "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n"
+        pricelist_text += "▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n\n"
     
     # Add B2B/B2C note with icons
     if is_agency:
@@ -2038,6 +2039,9 @@ def show_pricelist(message, language):
             # Determine charging type for this category
             is_dynamic = category.charging == 'dynamic'
             
+            # Get available languages for this category
+            available_languages = category.languages.all()
+            
             # Use rotating icons for categories
             cat_icon = category_icons[idx % len(category_icons)]
             
@@ -2049,86 +2053,192 @@ def show_pricelist(message, language):
                 # Get product name based on language
                 product_name = get_translated_field(product, 'name', language)
                 
-                # Get prices based on user type (agency vs regular)
+                # Get base prices based on user type (agency vs regular)
                 if is_agency:
                     first_price = product.agency_first_page_price
                     other_price = product.agency_other_page_price
+                    copy_price_decimal = product.agency_copy_price_decimal
+                    copy_price_percentage = product.agency_copy_price_percentage
                 else:
                     first_price = product.ordinary_first_page_price
                     other_price = product.ordinary_other_page_price
+                    copy_price_decimal = product.user_copy_price_decimal
+                    copy_price_percentage = product.user_copy_price_percentage
                 
-                # Format prices
-                first_formatted = "{:,.0f}".format(first_price).replace(",", " ")
-                other_formatted = "{:,.0f}".format(other_price).replace(",", " ")
+                pricelist_text += f"\n  📄 <b>{product_name}</b>\n"
                 
                 if is_dynamic:
                     # Dynamic pricing - show first page and other pages prices
+                    first_formatted = "{:,.0f}".format(first_price).replace(",", " ")
+                    other_formatted = "{:,.0f}".format(other_price).replace(",", " ")
+                    
                     if language == 'uz':
-                        pricelist_text += f"\n  📄 <b>{product_name}</b>\n"
-                        pricelist_text += f"     ├ 1️⃣ sahifa: <code>{first_formatted}</code> so'm\n"
-                        pricelist_text += f"     ├ ➕ keyingi: <code>{other_formatted}</code> so'm\n"
-                        if product.estimated_days:
-                            pricelist_text += f"     └ ⏰ ~{product.estimated_days} kun\n"
+                        pricelist_text += f"     ├ 1️⃣ Birinchi sahifa: <code>{first_formatted}</code> so'm\n"
+                        pricelist_text += f"     ├ ➕ Keyingi sahifalar: <code>{other_formatted}</code> so'm\n"
                     elif language == 'ru':
-                        pricelist_text += f"\n  📄 <b>{product_name}</b>\n"
-                        pricelist_text += f"     ├ 1️⃣ стр.: <code>{first_formatted}</code> сум\n"
-                        pricelist_text += f"     ├ ➕ далее: <code>{other_formatted}</code> сум\n"
-                        if product.estimated_days:
-                            pricelist_text += f"     └ ⏰ ~{product.estimated_days} дн.\n"
+                        pricelist_text += f"     ├ 1️⃣ Первая страница: <code>{first_formatted}</code> сум\n"
+                        pricelist_text += f"     ├ ➕ Следующие страницы: <code>{other_formatted}</code> сум\n"
                     else:
-                        pricelist_text += f"\n  📄 <b>{product_name}</b>\n"
-                        pricelist_text += f"     ├ 1️⃣ page: <code>{first_formatted}</code> sum\n"
-                        pricelist_text += f"     ├ ➕ next: <code>{other_formatted}</code> sum\n"
-                        if product.estimated_days:
-                            pricelist_text += f"     └ ⏰ ~{product.estimated_days} days\n"
+                        pricelist_text += f"     ├ 1️⃣ First page: <code>{first_formatted}</code> sum\n"
+                        pricelist_text += f"     ├ ➕ Next pages: <code>{other_formatted}</code> sum\n"
                 else:
                     # Static pricing - single price per document
+                    first_formatted = "{:,.0f}".format(first_price).replace(",", " ")
+                    
                     if language == 'uz':
-                        pricelist_text += f"\n  📄 {product_name}\n"
-                        pricelist_text += f"     ├ 💵 <code>{first_formatted}</code> so'm"
-                        if product.estimated_days:
-                            pricelist_text += f"\n     └ ⏰ ~{product.estimated_days} kun\n"
-                        else:
-                            pricelist_text += "\n"
+                        pricelist_text += f"     ├ 💵 Narx: <code>{first_formatted}</code> so'm\n"
                     elif language == 'ru':
-                        pricelist_text += f"\n  📄 {product_name}\n"
-                        pricelist_text += f"     ├ 💵 <code>{first_formatted}</code> сум"
-                        if product.estimated_days:
-                            pricelist_text += f"\n     └ ⏰ ~{product.estimated_days} дн.\n"
-                        else:
-                            pricelist_text += "\n"
+                        pricelist_text += f"     ├ 💵 Цена: <code>{first_formatted}</code> сум\n"
                     else:
-                        pricelist_text += f"\n  📄 {product_name}\n"
-                        pricelist_text += f"     ├ 💵 <code>{first_formatted}</code> sum"
-                        if product.estimated_days:
-                            pricelist_text += f"\n     └ ⏰ ~{product.estimated_days} days\n"
+                        pricelist_text += f"     ├ 💵 Price: <code>{first_formatted}</code> sum\n"
+                
+                # Show copy pricing
+                if copy_price_decimal and copy_price_decimal > 0:
+                    # Use fixed decimal copy price
+                    copy_formatted = "{:,.0f}".format(copy_price_decimal).replace(",", " ")
+                    if language == 'uz':
+                        pricelist_text += f"     ├ 📋 Nusxa narxi: <code>{copy_formatted}</code> so'm\n"
+                    elif language == 'ru':
+                        pricelist_text += f"     ├ 📋 Цена копии: <code>{copy_formatted}</code> сум\n"
+                    else:
+                        pricelist_text += f"     ├ 📋 Copy price: <code>{copy_formatted}</code> sum\n"
+                elif copy_price_percentage and copy_price_percentage > 0:
+                    # Calculate copy price from percentage of base price
+                    if is_dynamic:
+                        # For dynamic pricing, use first page price as base
+                        calculated_copy_price = first_price * (copy_price_percentage / 100)
+                    else:
+                        # For static pricing, use the single price as base
+                        calculated_copy_price = first_price * (copy_price_percentage / 100)
+                    
+                    copy_formatted = "{:,.0f}".format(calculated_copy_price).replace(",", " ")
+                    if language == 'uz':
+                        pricelist_text += f"     ├ 📋 Nusxa narxi: <code>{copy_formatted}</code> so'm\n"
+                    elif language == 'ru':
+                        pricelist_text += f"     ├ 📋 Цена копии: <code>{copy_formatted}</code> сум\n"
+                    else:
+                        pricelist_text += f"     ├ 📋 Copy price: <code>{copy_formatted}</code> sum\n"
+                
+                # Show language pricing if available (compact format)
+                if available_languages.exists():
+                    # Collect languages with pricing
+                    languages_with_pricing = []
+                    for lang in available_languages:
+                        if is_agency:
+                            lang_first = lang.agency_page_price
+                            lang_other = lang.agency_other_page_price
+                            lang_copy = lang.agency_copy_price
                         else:
-                            pricelist_text += "\n"
+                            lang_first = lang.ordinary_page_price
+                            lang_other = lang.ordinary_other_page_price
+                            lang_copy = lang.ordinary_copy_price
+                        
+                        if lang_first > 0 or lang_other > 0 or lang_copy > 0:
+                            # Create compact language price info
+                            lang_info = f"{lang.short_name}"
+                            prices = []
+                            if lang_first > 0:
+                                prices.append(f"+{int(lang_first):,}".replace(",", " "))
+                            if lang_other > 0 and is_dynamic:
+                                prices.append(f"+{int(lang_other):,}".replace(",", " "))
+                            if lang_copy > 0:
+                                prices.append(f"📋+{int(lang_copy):,}".replace(",", " "))
+                            
+                            if prices:
+                                lang_info += f": {'/'.join(prices)}"
+                                languages_with_pricing.append(lang_info)
+                    
+                    if languages_with_pricing:
+                        if language == 'uz':
+                            pricelist_text += f"     ├ 🌍 Tillar: {', '.join(languages_with_pricing)}\n"
+                        elif language == 'ru':
+                            pricelist_text += f"     ├ 🌍 Языки: {', '.join(languages_with_pricing)}\n"
+                        else:
+                            pricelist_text += f"     ├ 🌍 Languages: {', '.join(languages_with_pricing)}\n"
+                
+                # Show estimated time
+                if product.estimated_days:
+                    if language == 'uz':
+                        pricelist_text += f"     └ ⏰ Muddat: ~{product.estimated_days} kun\n"
+                    elif language == 'ru':
+                        pricelist_text += f"     └ ⏰ Срок: ~{product.estimated_days} дн.\n"
+                    else:
+                        pricelist_text += f"     └ ⏰ Time: ~{product.estimated_days} days\n"
+                else:
+                    pricelist_text += "     └\n"
             
             pricelist_text += "\n"
     
     if not has_products:
         pricelist_text = get_text("pricelist_empty", language)
+        send_message(message.chat.id, pricelist_text, parse_mode="HTML")
     else:
         # Add creative footer
-        pricelist_text += "═══════════════════════\n"
+        pricelist_text += "═════════════════\n"
         if language == 'uz':
-            pricelist_text += "📞 <b>Savollar bormi?</b>\n"
-            pricelist_text += "💬 Biz bilan bog'laning!\n"
-            pricelist_text += "═══════════════════════\n"
+            pricelist_text += "📞 <b>Savollar?</b> 💬 Bog'laning!\n"
+            pricelist_text += "═════════════════\n"
             pricelist_text += "🚀 <i>Tez • Sifatli • Ishonchli</i>"
         elif language == 'ru':
-            pricelist_text += "📞 <b>Есть вопросы?</b>\n"
-            pricelist_text += "💬 Свяжитесь с нами!\n"
-            pricelist_text += "═══════════════════════\n"
+            pricelist_text += "📞 <b>Вопросы?</b> 💬 Звоните!\n"
+            pricelist_text += "═════════════════\n"
             pricelist_text += "🚀 <i>Быстро • Качественно • Надежно</i>"
         else:
-            pricelist_text += "📞 <b>Have questions?</b>\n"
-            pricelist_text += "💬 Contact us!\n"
-            pricelist_text += "═══════════════════════\n"
+            pricelist_text += "📞 <b>Questions?</b> 💬 Contact us!\n"
+            pricelist_text += "═════════════════\n"
             pricelist_text += "🚀 <i>Fast • Quality • Reliable</i>"
+        
+        # Split message if it exceeds Telegram's 4096 character limit
+        MAX_MESSAGE_LENGTH = 4000  # Leave some buffer
+        
+        if len(pricelist_text) <= MAX_MESSAGE_LENGTH:
+            # Send as single message
+            send_message(message.chat.id, pricelist_text, parse_mode="HTML")
+        else:
+            # Split into multiple messages
+            # Find good split points (after category sections)
+            messages = []
+            current_msg = ""
+            
+            # Split by double newlines (category boundaries)
+            sections = pricelist_text.split("\n\n")
+            
+            for section in sections:
+                # Check if adding this section would exceed limit
+                if len(current_msg) + len(section) + 2 > MAX_MESSAGE_LENGTH:
+                    if current_msg:
+                        messages.append(current_msg)
+                        current_msg = section + "\n\n"
+                    else:
+                        # Section itself is too long, split it further
+                        messages.append(section[:MAX_MESSAGE_LENGTH])
+                        current_msg = section[MAX_MESSAGE_LENGTH:] + "\n\n"
+                else:
+                    current_msg += section + "\n\n"
+            
+            if current_msg:
+                messages.append(current_msg)
+            
+            # Send all messages
+            for idx, msg in enumerate(messages):
+                if idx == 0:
+                    # First message already has the header
+                    send_message(message.chat.id, msg.strip(), parse_mode="HTML")
+                else:
+                    # Add continuation indicator for subsequent messages
+                    if language == 'uz':
+                        continuation = "📋 <i>(Davomi...)</i>\n\n"
+                    elif language == 'ru':
+                        continuation = "📋 <i>(Продолжение...)</i>\n\n"
+                    else:
+                        continuation = "📋 <i>(Continued...)</i>\n\n"
+                    
+                    send_message(message.chat.id, continuation + msg.strip(), parse_mode="HTML")
+                
+                # Small delay between messages to avoid rate limiting
+                import time
+                time.sleep(0.3)
     
-    send_message(message.chat.id, pricelist_text, parse_mode="HTML")
     show_main_menu(message, language)
 def show_user_orders(message, language):
     """Show all orders for the current user"""

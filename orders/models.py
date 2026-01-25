@@ -28,6 +28,59 @@ class OrderMedia(models.Model):
 
     def __str__(self):
         return f"{self.file.name} ({self.pages} pages)"
+    
+    def save(self, *args, **kwargs):
+        """Override save to validate and clean file path - prevents future corruption without breaking existing data"""
+        if self.file:
+            file_path = str(self.file)
+            # Check if path contains Telegram file_id pattern (corrupted)
+            if 'AgAC' in file_path or 'BAAC' in file_path:
+                logger.warning(f"Detected and cleaning corrupted file path: {file_path[:100]}")
+                # Clear corrupted path but keep telegram_file_id field intact
+                # This prevents 404 errors while preserving the Telegram reference
+                self.file = ''
+        super().save(*args, **kwargs)
+    
+    @property
+    def file_url(self):
+        """Get file URL safely, only blocking corrupted Telegram file_id paths"""
+        try:
+            if not self.file:
+                return None
+            
+            file_path = str(self.file)
+            
+            # Only block corrupted paths with Telegram file_id pattern
+            if 'AgAC' in file_path or 'BAAC' in file_path:
+                logger.warning(f"Blocked corrupted file path for OrderMedia {self.id}")
+                return None
+            
+            # Return URL for all other paths (let Django/server handle missing files)
+            if hasattr(self.file, 'url'):
+                return self.file.url
+        except Exception as e:
+            logger.error(f"Error getting file URL for OrderMedia {self.id}: {e}")
+        return None
+    
+    @property
+    def file_name(self):
+        """Get file name safely"""
+        try:
+            if not self.file:
+                return "No file"
+            
+            file_path = str(self.file)
+            
+            # Only block corrupted paths
+            if 'AgAC' in file_path or 'BAAC' in file_path:
+                return "File unavailable (corrupted path)"
+            
+            if hasattr(self.file, 'name'):
+                import os
+                return os.path.basename(self.file.name)
+        except Exception:
+            pass
+        return "Unknown file"
 
     class Meta:
         verbose_name = _("Order file")

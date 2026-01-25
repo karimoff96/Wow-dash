@@ -388,15 +388,19 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="text-sm">{{ file.file.name|slice:"-30:" }}</span>
+                                            <span class="text-sm">{{ file.file_name|slice:"-30:" }}</span>
                                         </td>
                                         <td>
                                             <span class="badge bg-info-focus text-info-600">{{ file.pages }}</span>
                                         </td>
                                         <td>
-                                            <a href="{{ file.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                            {% if file.file_url %}
+                                            <a href="{{ file.file_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                                 <iconify-icon icon="mdi:download"></iconify-icon>
                                             </a>
+                                            {% else %}
+                                            <span class="badge bg-danger-focus text-danger-600">Unavailable</span>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% endfor %}
