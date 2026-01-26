@@ -29,11 +29,14 @@ class SubdomainMiddleware:
     """
     
     # Subdomains to ignore (not tenant subdomains)
-    IGNORED_SUBDOMAINS = {'www', 'api', 'admin', 'static', 'media'}
+    # Note: 'admin' is now a valid subdomain for superuser admin panel
+    IGNORED_SUBDOMAINS = {'www', 'api', 'static', 'media'}
     
     def __init__(self, get_response):
         self.get_response = get_response
         self.main_domain = getattr(settings, 'MAIN_DOMAIN', 'alltranslation.uz')
+        # Support .local and lvh.me for development
+        self.dev_domains = ['multilang.local', 'lvh.me']
     
     def __call__(self, request):
         host = request.get_host().split(':')[0]
@@ -60,9 +63,17 @@ class SubdomainMiddleware:
         if re.match(r'^(\d{1,3}\.){3}\d{1,3}$', host) or host in ('localhost', '127.0.0.1'):
             return None
         
+        # Check main production domain
         if host.endswith('.' + self.main_domain):
             subdomain = host[:-len('.' + self.main_domain)]
             if '.' not in subdomain:
                 return subdomain
+        
+        # Check development domains
+        for dev_domain in self.dev_domains:
+            if host.endswith('.' + dev_domain):
+                subdomain = host[:-len('.' + dev_domain)]
+                if '.' not in subdomain:
+                    return subdomain
         
         return None

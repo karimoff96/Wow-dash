@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "bot",
     "orders",
     "marketing",
+    "landing",
 ]
 
 MIDDLEWARE = [

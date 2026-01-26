@@ -1,0 +1,1325 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ current_language|default:'ru' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MultiLang - Современная SaaS платформа для управления бюро переводов. Автоматизация заказов, Telegram интеграция, аналитика и многое другое.">
+    <meta name="keywords" content="translation management, бюро переводов, telegram bot, документы, перевод, автоматизация">
+    <title>MultiLang - Платформа Управления Переводами</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #487FFF;
+            --primary-dark: #3366CC;
+            --secondary-color: #2DB6F5;
+            --success-color: #45B369;
+            --warning-color: #FFA500;
+            --danger-color: #FF6B6B;
+            --dark-color: #1E293B;
+            --light-color: #F8FAFC;
+            --text-dark: #334155;
+            --text-light: #64748B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Navbar */
+        .landing-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .landing-navbar.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-placeholder {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .nav-link {
+            color: var(--text-dark) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            padding: 0.7rem 1.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(72, 127, 255, 0.3);
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(72, 127, 255, 0.4);
+        }
+        
+        .lang-switcher {
+            display: flex;
+            gap: 0.3rem;
+            align-items: center;
+        }
+        
+        .lang-btn {
+            padding: 0.3rem 0.8rem;
+            border: 2px solid transparent;
+            background: transparent;
+            color: var(--text-light);
+            font-weight: 600;
+            border-radius: 6px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .lang-btn.active {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: rgba(72, 127, 255, 0.1);
+        }
+        
+        .lang-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9f2ff 100%);
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(72, 127, 255, 0.1), transparent);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+        
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(45, 182, 245, 0.1), transparent);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-outline-custom {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.7rem 1.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+            background: transparent;
+        }
+        
+        .btn-outline-custom:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Features Section */
+        .section {
+            padding: 6rem 0;
+        }
+        
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .feature-card {
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            height: 100%;
+            border: 2px solid transparent;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .feature-desc {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        
+        /* How It Works */
+        .step-card {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 4px 15px rgba(72, 127, 255, 0.3);
+        }
+        
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: var(--dark-color);
+        }
+        
+        .step-desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        
+        /* Pricing */
+        .pricing-card {
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            height: 100%;
+            position: relative;
+            border: 2px solid transparent;
+        }
+        
+        .pricing-card.featured {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .pricing-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--success-color), #3da55d);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .pricing-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .pricing-period {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-features li {
+            padding: 0.7rem 0;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .pricing-features li i {
+            color: var(--success-color);
+            font-size: 1.2rem;
+        }
+        
+        .pricing-features li.disabled {
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+        
+        .pricing-features li.disabled i {
+            color: var(--text-light);
+        }
+        
+        /* Contact Form */
+        .contact-form {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-control, .form-select {
+            padding: 0.9rem 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(72, 127, 255, 0.1);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 3rem;
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="landing-navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'landing_home' %}" class="navbar-brand">
+                    <div class="logo-placeholder">ML</div>
+                    <span>MultiLang</span>
+                </a>
+                
+                <div class="d-flex align-items-center gap-4">
+                    <div class="lang-switcher">
+                        <a href="{% url 'change_language' 'ru' %}" class="lang-btn {% if current_language == 'ru' %}active{% endif %}">RU</a>
+                        <a href="{% url 'change_language' 'uz' %}" class="lang-btn {% if current_language == 'uz' %}active{% endif %}">UZ</a>
+                        <a href="{% url 'change_language' 'en' %}" class="lang-btn {% if current_language == 'en' %}active{% endif %}">EN</a>
+                    </div>
+                    <a href="#contact" class="btn btn-primary-custom">
+                        <i class="fas fa-envelope me-1"></i>
+                        {% if current_language == 'uz' %}Bog'lanish{% elif current_language == 'en' %}Contact{% else %}Связаться{% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content" data-aos="fade-right">
+                    {% if current_language == 'uz' %}
+                        <h1 class="hero-title">Tarjima Byurosini Boshqarishning Zamonaviy Platformasi</h1>
+                        <p class="hero-subtitle">
+                            Telegram bot, aqlli buyurtmalar tizimi va kuchli analitika bilan tarjima byurosini avtomatlashtiring
+                        </p>
+                    {% elif current_language == 'en' %}
+                        <h1 class="hero-title">Modern Translation Bureau Management Platform</h1>
+                        <p class="hero-subtitle">
+                            Automate your translation bureau with Telegram bot, smart order system, and powerful analytics
+                        </p>
+                    {% else %}
+                        <h1 class="hero-title">Современная Платформа Управления Бюро Переводов</h1>
+                        <p class="hero-subtitle">
+                            Автоматизируйте бюро переводов с Telegram ботом, умной системой заказов и мощной аналитикой
+                        </p>
+                    {% endif %}
+                    
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn btn-primary-custom">
+                            {% if current_language == 'uz' %}Bepul Boshlash{% elif current_language == 'en' %}Start Free{% else %}Начать Бесплатно{% endif %}
+                        </a>
+                        <a href="#features" class="btn btn-outline-custom">
+                            {% if current_language == 'uz' %}Ko'proq Bilib Oling{% elif current_language == 'en' %}Learn More{% else %}Узнать Больше{% endif %}
+                        </a>
+                    </div>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+                            <span class="stat-number">10,000+</span>
+                            <span class="stat-label">
+                                {% if current_language == 'uz' %}Buyurtmalar{% elif current_language == 'en' %}Orders{% else %}Заказов{% endif %}
+                            </span>
+                        </div>
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">
+                                {% if current_language == 'uz' %}Tarjima Markazlari{% elif current_language == 'en' %}Centers{% else %}Центров{% endif %}
+                            </span>
+                        </div>
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+                            <span class="stat-number">99.9%</span>
+                            <span class="stat-label">
+                                {% if current_language == 'uz' %}Ishonchlilik{% elif current_language == 'en' %}Uptime{% else %}Время Работы{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <img src="{% static 'images/hero-dashboard.png' %}" alt="Dashboard" class="img-fluid" style="max-width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">
+                {% if current_language == 'uz' %}Kuchli Imkoniyatlar{% elif current_language == 'en' %}Powerful Features{% else %}Мощные Возможности{% endif %}
+            </h2>
+            <p class="section-subtitle" data-aos="fade-up">
+                {% if current_language == 'uz' %}
+                    Biznesingizni avtomatlashtirish va samaradorlikni oshirish uchun barcha kerakli vositalar
+                {% elif current_language == 'en' %}
+                    All the tools you need to automate your business and increase efficiency
+                {% else %}
+                    Все необходимые инструменты для автоматизации бизнеса и повышения эффективности
+                {% endif %}
+            </p>
+            
+            <div class="row g-4">
+                <!-- Feature 1: Telegram Bot -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #0088cc, #0099dd);">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Telegram Bot Integratsiyasi{% elif current_language == 'en' %}Telegram Bot Integration{% else %}Telegram Бот Интеграция{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Mijozlar to'g'ridan-to'g'ri Telegram orqali buyurtma berishlari mumkin. Avtomatik narx hisoblash va xabar yuborish
+                            {% elif current_language == 'en' %}
+                                Customers can place orders directly via Telegram. Automatic price calculation and notifications
+                            {% else %}
+                                Клиенты могут оформлять заказы напрямую через Telegram. Автоматический расчет цены и уведомления
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Order Management -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #487FFF, #2DB6F5);">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Buyurtmalarni Boshqarish{% elif current_language == 'en' %}Order Management{% else %}Управление Заказами{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Botdan va admin paneldan buyurtma qabul qilish. Holat kuzatish, fayllar boshqaruvi, to'lovlarni nazorat qilish
+                            {% elif current_language == 'en' %}
+                                Accept orders from bot and admin panel. Status tracking, file management, payment control
+                            {% else %}
+                                Прием заказов из бота и админ панели. Отслеживание статусов, управление файлами, контроль оплат
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Bulk Payments -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #45B369, #3da55d);">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Ommaviy To'lovlar{% elif current_language == 'en' %}Bulk Payments{% else %}Массовые Платежи{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Bir vaqtning o'zida ko'plab buyurtmalar uchun to'lovlarni qayd etish. Qisman to'lovlar va qarz nazorati
+                            {% elif current_language == 'en' %}
+                                Process payments for multiple orders at once. Partial payments and debt tracking
+                            {% else %}
+                                Обработка оплаты для нескольких заказов одновременно. Частичные платежи и контроль задолженностей
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 4: Analytics & Reports -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #9333ea, #a855f7);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Analitika va Hisobotlar{% elif current_language == 'en' %}Analytics & Reports{% else %}Аналитика и Отчеты{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Real vaqtda statistika, moliyaviy hisobotlar, xodimlar samaradorligi, filiallar taqqoslash. Excel eksport
+                            {% elif current_language == 'en' %}
+                                Real-time statistics, financial reports, staff performance, branch comparison. Excel export
+                            {% else %}
+                                Статистика в реальном времени, финансовые отчеты, производительность сотрудников, сравнение филиалов. Экспорт в Excel
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 5: RBAC -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #f59e0b, #f97316);">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Ruxsatlar Tizimi (RBAC){% elif current_language == 'en' %}Role-Based Access Control{% else %}Система Прав Доступа (RBAC){% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Har bir xodim uchun alohida ruxsatlar. Owner, Manager, Staff rollari. Xavfsiz kirish nazorati
+                            {% elif current_language == 'en' %}
+                                Individual permissions for each employee. Owner, Manager, Staff roles. Secure access control
+                            {% else %}
+                                Индивидуальные права для каждого сотрудника. Роли Owner, Manager, Staff. Безопасный контроль доступа
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 6: Multi-Language -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}3 Tilda Qo'llab-quvvatlash{% elif current_language == 'en' %}3 Language Support{% else %}Поддержка 3 Языков{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Rus, O'zbek va Ingliz tillarida to'liq interface. Mijozlar va xodimlar uchun qulay til tanlash
+                            {% elif current_language == 'en' %}
+                                Full interface in Russian, Uzbek and English. Convenient language selection for clients and staff
+                            {% else %}
+                                Полный интерфейс на русском, узбекском и английском языках. Удобный выбор языка для клиентов и сотрудников
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 7: File Archive -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #14b8a6, #0ea5e9);">
+                            <i class="fas fa-archive"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Avtomatik Arxivlash{% elif current_language == 'en' %}Automatic Archiving{% else %}Автоматическое Архивирование{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Eski buyurtmalar avtomatik arxivlanadi va Telegram kanaliga yuboriladi. Xavfsiz va ierarxik tuzilma. Ma'lumotlar yo'qotilmaydi
+                            {% elif current_language == 'en' %}
+                                Old orders are automatically archived and sent to Telegram channel. Secure and hierarchical structure. No data loss
+                            {% else %}
+                                Старые заказы автоматически архивируются и отправляются в Telegram канал. Безопасная иерархическая структура. Нет потери данных
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 8: Staff Performance -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="700">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Xodimlar Samaradorligi{% elif current_language == 'en' %}Staff Performance{% else %}Производительность Сотрудников{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Har bir xodimning ish natijalarini kuzatish. Bajarilgan buyurtmalar, daromad, vaqt sarfi statistikasi
+                            {% elif current_language == 'en' %}
+                                Track work results of each employee. Completed orders, revenue, time spent statistics
+                            {% else %}
+                                Отслеживание результатов работы каждого сотрудника. Выполненные заказы, доход, статистика времени
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 9: Multi-Tenant -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="800">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Ko'p Markazlar{% elif current_language == 'en' %}Multi-Tenant{% else %}Мульти-Тенантность{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Cheksiz tarjima markazlari va filiallar. Har biri o'z subdomeniga ega. To'liq ajratilgan ma'lumotlar
+                            {% elif current_language == 'en' %}
+                                Unlimited translation centers and branches. Each with own subdomain. Fully isolated data
+                            {% else %}
+                                Неограниченное количество центров и филиалов. Каждый со своим поддоменом. Полная изоляция данных
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 10: Export & Filters -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="900">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Excel va Filtrlar{% elif current_language == 'en' %}Excel & Filters{% else %}Excel и Фильтры{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Barcha ma'lumotlarni Excel formatida eksport qiling. Kuchli qidiruv va filtrlash tizimi
+                            {% elif current_language == 'en' %}
+                                Export all data to Excel format. Powerful search and filtering system
+                            {% else %}
+                                Экспорт всех данных в формат Excel. Мощная система поиска и фильтрации
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 11: Marketing Tools -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="1000">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Marketing Vositalari{% elif current_language == 'en' %}Marketing Tools{% else %}Маркетинговые Инструменты{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Barcha mijozlarga ommaviy xabarlar yuborish. Maxsus guruhlar, rejalangan xabarlar, media qo'shish
+                            {% elif current_language == 'en' %}
+                                Send bulk messages to all customers. Custom groups, scheduled messages, media attachments
+                            {% else %}
+                                Массовая рассылка всем клиентам. Кастомные группы, запланированные сообщения, медиа вложения
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 12: Real-time Monitoring -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="1100">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <h3 class="feature-title">
+                            {% if current_language == 'uz' %}Real Vaqt Monitoring{% elif current_language == 'en' %}Real-time Monitoring{% else %}Мониторинг в Реальном Времени{% endif %}
+                        </h3>
+                        <p class="feature-desc">
+                            {% if current_language == 'uz' %}
+                                Barcha jarayonlarni jonli kuzatish. Yangi buyurtmalar, to'lovlar, holat o'zgarishlari real vaqtda
+                            {% elif current_language == 'en' %}
+                                Live tracking of all processes. New orders, payments, status changes in real-time
+                            {% else %}
+                                Живое отслеживание всех процессов. Новые заказы, платежи, изменения статусов в реальном времени
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">
+                {% if current_language == 'uz' %}Qanday Ishlaydi?{% elif current_language == 'en' %}How It Works?{% else %}Как Это Работает?{% endif %}
+            </h2>
+            <p class="section-subtitle" data-aos="fade-up">
+                {% if current_language == 'uz' %}
+                    4 oddiy qadam - biznesingiz avtomatlashtiriladi
+                {% elif current_language == 'en' %}
+                    4 simple steps - your business is automated
+                {% else %}
+                    4 простых шага - ваш бизнес автоматизирован
+                {% endif %}
+            </p>
+            
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">
+                            {% if current_language == 'uz' %}Buyurtma Qabul Qilish{% elif current_language == 'en' %}Order Reception{% else %}Прием Заказа{% endif %}
+                        </h3>
+                        <p class="step-desc">
+                            {% if current_language == 'uz' %}
+                                Mijoz Telegram bot yoki admin panel orqali buyurtma yuboradi. Fayllar avtomatik yuklanadi
+                            {% elif current_language == 'en' %}
+                                Customer sends order via Telegram bot or admin panel. Files are uploaded automatically
+                            {% else %}
+                                Клиент отправляет заказ через Telegram бот или админ панель. Файлы загружаются автоматически
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">
+                            {% if current_language == 'uz' %}Narx Hisoblash{% elif current_language == 'en' %}Price Calculation{% else %}Расчет Цены{% endif %}
+                        </h3>
+                        <p class="step-desc">
+                            {% if current_language == 'uz' %}
+                                Tizim avtomatik ravishda narxni hisoblaydi. Sahifalar soni, til, mijoz turi (B2B/B2C), nusxalar
+                            {% elif current_language == 'en' %}
+                                System automatically calculates price. Pages, language, client type (B2B/B2C), copies
+                            {% else %}
+                                Система автоматически рассчитывает цену. Страницы, язык, тип клиента (B2B/B2C), копии
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">
+                            {% if current_language == 'uz' %}Xodimlarga Tayinlash{% elif current_language == 'en' %}Staff Assignment{% else %}Назначение Сотрудникам{% endif %}
+                        </h3>
+                        <p class="step-desc">
+                            {% if current_language == 'uz' %}
+                                Menejer buyurtmani tegishli xodimga tayinlaydi. Xabarlar Telegram orqali yuboriladi
+                            {% elif current_language == 'en' %}
+                                Manager assigns order to appropriate staff. Notifications sent via Telegram
+                            {% else %}
+                                Менеджер назначает заказ соответствующему сотруднику. Уведомления отправляются через Telegram
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h3 class="step-title">
+                            {% if current_language == 'uz' %}Kuzatuv va Hisobot{% elif current_language == 'en' %}Tracking & Reporting{% else %}Отслеживание и Отчеты{% endif %}
+                        </h3>
+                        <p class="step-desc">
+                            {% if current_language == 'uz' %}
+                                Real vaqtda holat kuzatish, to'lovlar nazorati, analitika. Ma'lumotlar Telegram kanaliga avtomatik arxivlanadi
+                            {% elif current_language == 'en' %}
+                                Real-time status tracking, payment control, analytics. Data automatically archived to Telegram channel
+                            {% else %}
+                                Отслеживание статусов в реальном времени, контроль оплат, аналитика. Данные автоматически архивируются в Telegram канал
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">
+                {% if current_language == 'uz' %}Narxlar{% elif current_language == 'en' %}Pricing{% else %}Тарифы{% endif %}
+            </h2>
+            <p class="section-subtitle" data-aos="fade-up">
+                {% if current_language == 'uz' %}
+                    Biznesingiz uchun ideal rejani tanlang
+                {% elif current_language == 'en' %}
+                    Choose the perfect plan for your business
+                {% else %}
+                    Выберите идеальный план для вашего бизнеса
+                {% endif %}
+            </p>
+            
+            <div class="row g-4">
+                <!-- Starter Plan -->
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="0">
+                    <div class="pricing-card">
+                        <h3 class="pricing-name">
+                            {% if current_language == 'uz' %}Starter{% elif current_language == 'en' %}Starter{% else %}Начальный{% endif %}
+                        </h3>
+                        <div class="pricing-price">$29</div>
+                        <div class="pricing-period">
+                            {% if current_language == 'uz' %}oyiga{% elif current_language == 'en' %}per month{% else %}в месяц{% endif %}
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}1 ta Tarjima Markazi{% elif current_language == 'en' %}1 Translation Center{% else %}1 Центр Переводов{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}3 ta Filial{% elif current_language == 'en' %}3 Branches{% else %}3 Филиала{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}5 ta Xodim{% elif current_language == 'en' %}5 Staff Members{% else %}5 Сотрудников{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}500 Buyurtma/oy{% elif current_language == 'en' %}500 Orders/month{% else %}500 Заказов/месяц{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> Telegram Bot</li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Asosiy Hisobotlar{% elif current_language == 'en' %}Basic Reports{% else %}Базовые Отчеты{% endif %}
+                            </li>
+                            <li class="disabled"><i class="fas fa-times-circle"></i> 
+                                {% if current_language == 'uz' %}Kengaytirilgan Analitika{% elif current_language == 'en' %}Advanced Analytics{% else %}Расширенная Аналитика{% endif %}
+                            </li>
+                            <li class="disabled"><i class="fas fa-times-circle"></i> 
+                                {% if current_language == 'uz' %}API Kirish{% elif current_language == 'en' %}API Access{% else %}Доступ к API{% endif %}
+                            </li>
+                        </ul>
+                        <a href="#contact" class="btn btn-outline-custom w-100">
+                            {% if current_language == 'uz' %}Tanlash{% elif current_language == 'en' %}Choose Plan{% else %}Выбрать План{% endif %}
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Professional Plan (Featured) -->
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="pricing-card featured">
+                        <div class="pricing-badge">
+                            {% if current_language == 'uz' %}Ommabop{% elif current_language == 'en' %}Popular{% else %}Популярный{% endif %}
+                        </div>
+                        <h3 class="pricing-name">
+                            {% if current_language == 'uz' %}Professional{% elif current_language == 'en' %}Professional{% else %}Профессиональный{% endif %}
+                        </h3>
+                        <div class="pricing-price">$79</div>
+                        <div class="pricing-period">
+                            {% if current_language == 'uz' %}oyiga{% elif current_language == 'en' %}per month{% else %}в месяц{% endif %}
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}1 ta Tarjima Markazi{% elif current_language == 'en' %}1 Translation Center{% else %}1 Центр Переводов{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}10 ta Filial{% elif current_language == 'en' %}10 Branches{% else %}10 Филиалов{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}20 ta Xodim{% elif current_language == 'en' %}20 Staff Members{% else %}20 Сотрудников{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Cheksiz Buyurtmalar{% elif current_language == 'en' %}Unlimited Orders{% else %}Безлимитные Заказы{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> Telegram Bot</li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}To'liq Hisobotlar{% elif current_language == 'en' %}Full Reports{% else %}Полные Отчеты{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Kengaytirilgan Analitika{% elif current_language == 'en' %}Advanced Analytics{% else %}Расширенная Аналитика{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Marketing Vositalari{% elif current_language == 'en' %}Marketing Tools{% else %}Маркетинговые Инструменты{% endif %}
+                            </li>
+                            <li class="disabled"><i class="fas fa-times-circle"></i> API Access</li>
+                        </ul>
+                        <a href="#contact" class="btn btn-primary-custom w-100">
+                            {% if current_language == 'uz' %}Tanlash{% elif current_language == 'en' %}Choose Plan{% else %}Выбрать План{% endif %}
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Enterprise Plan -->
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="pricing-card">
+                        <h3 class="pricing-name">
+                            {% if current_language == 'uz' %}Enterprise{% elif current_language == 'en' %}Enterprise{% else %}Корпоративный{% endif %}
+                        </h3>
+                        <div class="pricing-price">$199</div>
+                        <div class="pricing-period">
+                            {% if current_language == 'uz' %}oyiga{% elif current_language == 'en' %}per month{% else %}в месяц{% endif %}
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Cheksiz Markazlar{% elif current_language == 'en' %}Unlimited Centers{% else %}Безлимитные Центры{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Cheksiz Filiallar{% elif current_language == 'en' %}Unlimited Branches{% else %}Безлимитные Филиалы{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Cheksiz Xodimlar{% elif current_language == 'en' %}Unlimited Staff{% else %}Безлимитные Сотрудники{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Cheksiz Buyurtmalar{% elif current_language == 'en' %}Unlimited Orders{% else %}Безлимитные Заказы{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Barcha Imkoniyatlar{% elif current_language == 'en' %}All Features{% else %}Все Возможности{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> API Access</li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Shaxsiy Qo'llab-quvvatlash{% elif current_language == 'en' %}Priority Support{% else %}Приоритетная Поддержка{% endif %}
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> 
+                                {% if current_language == 'uz' %}Maxsus Integratsiya{% elif current_language == 'en' %}Custom Integration{% else %}Кастомная Интеграция{% endif %}
+                            </li>
+                        </ul>
+                        <a href="#contact" class="btn btn-outline-custom w-100">
+                            {% if current_language == 'uz' %}Bog'lanish{% elif current_language == 'en' %}Contact Us{% else %}Связаться{% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">
+                {% if current_language == 'uz' %}Bog'lanish{% elif current_language == 'en' %}Contact Us{% else %}Связаться с Нами{% endif %}
+            </h2>
+            <p class="section-subtitle" data-aos="fade-up">
+                {% if current_language == 'uz' %}
+                    Savollar bormi? Biz yordam berishga tayyormiz!
+                {% elif current_language == 'en' %}
+                    Have questions? We're here to help!
+                {% else %}
+                    Есть вопросы? Мы готовы помочь!
+                {% endif %}
+            </p>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8" data-aos="fade-up">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <div class="contact-form">
+                        <form method="POST" action="{% url 'contact_form' %}">
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">
+                                        {% if current_language == 'uz' %}Ism{% elif current_language == 'en' %}Name{% else %}Имя{% endif %} *
+                                    </label>
+                                    <input type="text" name="name" class="form-control" required 
+                                           placeholder="{% if current_language == 'uz' %}Ismingiz{% elif current_language == 'en' %}Your name{% else %}Ваше имя{% endif %}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" name="email" class="form-control" required placeholder="you@example.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">
+                                        {% if current_language == 'uz' %}Kompaniya{% elif current_language == 'en' %}Company{% else %}Компания{% endif %}
+                                    </label>
+                                    <input type="text" name="company" class="form-control" 
+                                           placeholder="{% if current_language == 'uz' %}Kompaniya nomi{% elif current_language == 'en' %}Company name{% else %}Название компании{% endif %}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">
+                                        {% if current_language == 'uz' %}Telefon{% elif current_language == 'en' %}Phone{% else %}Телефон{% endif %}
+                                    </label>
+                                    <input type="tel" name="phone" class="form-control" placeholder="+998 XX XXX XX XX">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        {% if current_language == 'uz' %}Xabar{% elif current_language == 'en' %}Message{% else %}Сообщение{% endif %} *
+                                    </label>
+                                    <textarea name="message" class="form-control" required 
+                                              placeholder="{% if current_language == 'uz' %}Xabaringizni yozing...{% elif current_language == 'en' %}Write your message...{% else %}Напишите ваше сообщение...{% endif %}"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary-custom w-100">
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        {% if current_language == 'uz' %}Yuborish{% elif current_language == 'en' %}Send Message{% else %}Отправить Сообщение{% endif %}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="mt-4 text-center">
+                            <p class="text-secondary-light">
+                                {% if current_language == 'uz' %}
+                                    Yoki biz bilan to'g'ridan-to'g'ri bog'laning:
+                                {% elif current_language == 'en' %}
+                                    Or contact us directly:
+                                {% else %}
+                                    Или свяжитесь с нами напрямую:
+                                {% endif %}
+                            </p>
+                            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                                <a href="mailto:info@multilang.uz" class="btn btn-outline-custom">
+                                    <i class="fas fa-envelope"></i> info@multilang.uz
+                                </a>
+                                <a href="tel:+998901234567" class="btn btn-outline-custom">
+                                    <i class="fas fa-phone"></i> +998 (90) 123-45-67
+                                </a>
+                                <a href="https://t.me/multilang_support" target="_blank" class="btn btn-outline-custom">
+                                    <i class="fab fa-telegram"></i> @multilang_support
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="navbar-brand mb-3">
+                        <div class="logo-placeholder">ML</div>
+                        <span style="color: white;">MultiLang</span>
+                    </div>
+                    <p style="color: rgba(255, 255, 255, 0.7);">
+                        {% if current_language == 'uz' %}
+                            Tarjima byurolarini boshqarish uchun zamonaviy SaaS platforma
+                        {% elif current_language == 'en' %}
+                            Modern SaaS platform for translation bureau management
+                        {% else %}
+                            Современная SaaS платформа для управления бюро переводов
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h4 class="footer-title">
+                        {% if current_language == 'uz' %}Platforma{% elif current_language == 'en' %}Platform{% else %}Платформа{% endif %}
+                    </h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">
+                            {% if current_language == 'uz' %}Imkoniyatlar{% elif current_language == 'en' %}Features{% else %}Возможности{% endif %}
+                        </a></li>
+                        <li><a href="#pricing">
+                            {% if current_language == 'uz' %}Narxlar{% elif current_language == 'en' %}Pricing{% else %}Тарифы{% endif %}
+                        </a></li>
+                        <li><a href="#contact">
+                            {% if current_language == 'uz' %}Bog'lanish{% elif current_language == 'en' %}Contact{% else %}Контакты{% endif %}
+                        </a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h4 class="footer-title">
+                        {% if current_language == 'uz' %}Qo'llab-quvvatlash{% elif current_language == 'en' %}Support{% else %}Поддержка{% endif %}
+                    </h4>
+                    <ul class="footer-links">
+                        <li><a href="#contact">
+                            {% if current_language == 'uz' %}Bog'lanish{% elif current_language == 'en' %}Contact{% else %}Контакты{% endif %}
+                        </a></li>
+                        <li><a href="https://t.me/multilang_support">Telegram</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h4 class="footer-title">
+                        {% if current_language == 'uz' %}Yangiliklar{% elif current_language == 'en' %}Newsletter{% else %}Новости{% endif %}
+                    </h4>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
+                        {% if current_language == 'uz' %}
+                            Yangi imkoniyatlar va takliflar haqida birinchilardan bo'lib bilib oling
+                        {% elif current_language == 'en' %}
+                            Be the first to know about new features and offers
+                        {% else %}
+                            Узнавайте первыми о новых возможностях и предложениях
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 MultiLang. 
+                    {% if current_language == 'uz' %}
+                        Barcha huquqlar himoyalangan.
+                    {% elif current_language == 'en' %}
+                        All rights reserved.
+                    {% else %}
+                        Все права защищены.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.landing-navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
