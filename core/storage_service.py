@@ -102,16 +102,22 @@ class StorageArchiveService:
         """
         Create a ZIP archive of orders organized by branch/order
         
-        Archive structure:
+        Archive structure (with Order IDs in filenames for easy identification):
         Archive_2026-01_Center_Name.zip
         ├── Branch_01_BranchName/
         │   ├── Order_12345/
-        │   │   ├── order_details.json
-        │   │   ├── file_001.pdf
-        │   │   ├── file_002.jpg
-        │   │   └── receipt.jpg
+        │   │   ├── Order_12345_details.json
+        │   │   ├── Order_12345_file_001.pdf
+        │   │   ├── Order_12345_file_002.jpg
+        │   │   └── Order_12345_receipt.jpg
         │   └── Order_12346/
+        │       ├── Order_12346_details.json
+        │       ├── Order_12346_file_001.pdf
+        │       └── Order_12346_receipt.jpg
         └── Branch_02_BranchName/
+        
+        NOTE: Order IDs are included in filenames so files can be searched/filtered
+        by order number even after extraction from archive.
         
         Args:
             center: Center instance
@@ -153,24 +159,26 @@ class StorageArchiveService:
                 
                 # Process each order in branch
                 for order in branch_orders:
-                    order_folder = f"{branch_name}/Order_{order.get_order_number():05d}"
+                    order_number = order.get_order_number()
+                    order_folder = f"{branch_name}/Order_{order_number:05d}"
                     
-                    # Add order details JSON
+                    # Add order details JSON with order ID in filename
                     order_details = self._get_order_details(order)
                     details_json = json.dumps(order_details, indent=2, ensure_ascii=False, default=str)
-                    zipf.writestr(f"{order_folder}/order_details.json", details_json)
+                    zipf.writestr(f"{order_folder}/Order_{order_number:05d}_details.json", details_json)
                     
-                    # Add order media files
+                    # Add order media files with order ID prefix
                     for idx, media in enumerate(order.files.all(), 1):
                         if media.file and os.path.exists(media.file.path):
                             file_ext = os.path.splitext(media.file.name)[1]
-                            arcname = f"{order_folder}/file_{idx:03d}{file_ext}"
+                            # Include order ID in filename for easy identification
+                            arcname = f"{order_folder}/Order_{order_number:05d}_file_{idx:03d}{file_ext}"
                             zipf.write(media.file.path, arcname)
                     
-                    # Add receipt if exists
+                    # Add receipt with order ID prefix if exists
                     if order.recipt and os.path.exists(order.recipt.path):
                         receipt_ext = os.path.splitext(order.recipt.name)[1]
-                        arcname = f"{order_folder}/receipt{receipt_ext}"
+                        arcname = f"{order_folder}/Order_{order_number:05d}_receipt{receipt_ext}"
                         zipf.write(order.recipt.path, arcname)
         
         logger.info(f"Created archive: {archive_path} with {len(orders)} orders")
@@ -208,7 +216,8 @@ class StorageArchiveService:
                     f"💾 Size: {size_mb:.2f} MB\n"
                     f"📅 Date: {timezone.now().strftime('%Y-%m-%d %H:%M')}\n\n"
                     f"ℹ️ This archive contains completed orders with all files.\n"
-                    f"Download and unzip to access files by branch and order number."
+                    f"📂 Files organized by branch and order number.\n"
+                    f"🔍 All filenames include Order ID for easy searching."
                 )
             
             # Upload file
@@ -426,7 +435,8 @@ class StorageArchiveService:
             f"💾 Total Size: {size_mb:.2f} MB\n\n"
             f"<b>Orders by Branch:</b>\n{branch_summary}\n\n"
             f"ℹ️ Download and unzip to access files.\n"
-            f"Files are organized by: Branch/Order_XXXXX/"
+            f"📂 Files are organized by: Branch/Order_XXXXX/\n"
+            f"🔍 All filenames include Order ID for easy searching"
         )
         
         return caption

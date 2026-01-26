@@ -89,6 +89,64 @@
                         </div>
                     </div>
                     
+                    <!-- Archive Status Section -->
+                    {% if order.is_archived %}
+                    <div class="col-12 mt-16">
+                        <div class="p-16 {% if order.has_local_files %}bg-info-50{% else %}bg-warning-50{% endif %} radius-8 border {% if order.has_local_files %}border-info{% else %}border-warning{% endif %}">
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="flex-shrink-0">
+                                    <iconify-icon icon="mdi:archive" class="{% if order.has_local_files %}text-info-600{% else %}text-warning-600{% endif %}" width="32"></iconify-icon>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-semibold mb-2">
+                                        <iconify-icon icon="mdi:information" class="me-1"></iconify-icon>
+                                        {% if order.has_local_files %}
+                                            Files Archived (Available Locally)
+                                        {% else %}
+                                            Files Archived (Local Files Removed)
+                                        {% endif %}
+                                    </h6>
+                                    <p class="text-secondary-light mb-2">
+                                        {% if order.has_local_files %}
+                                            Files have been archived to Telegram for backup. Original files are still available below.
+                                        {% else %}
+                                            Local files have been removed to save storage. Download the archive from Telegram to access files.
+                                        {% endif %}
+                                    </p>
+                                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                                        {% with archive_info=order.get_archive_info %}
+                                        <a href="{{ archive_info.telegram_link }}" target="_blank" class="btn btn-sm btn-primary-600 px-16 py-6">
+                                            <iconify-icon icon="mdi:telegram" class="me-1"></iconify-icon>
+                                            Download Archive from Telegram
+                                        </a>
+                                        <span class="text-sm text-secondary-light">
+                                            <iconify-icon icon="mdi:calendar" class="me-1"></iconify-icon>
+                                            Archived: {{ archive_info.archive_date|date:"d M Y H:i" }}
+                                        </span>
+                                        <span class="text-sm text-secondary-light">
+                                            <iconify-icon icon="mdi:file-archive" class="me-1"></iconify-icon>
+                                            {{ archive_info.archive_name }}
+                                        </span>
+                                        <span class="text-sm text-secondary-light">
+                                            <iconify-icon icon="mdi:database" class="me-1"></iconify-icon>
+                                            Size: {{ archive_info.size_mb|floatformat:2 }} MB
+                                        </span>
+                                        {% endwith %}
+                                    </div>
+                                    {% if not order.has_local_files %}
+                                    <div class="alert alert-warning mt-2 mb-0 p-2">
+                                        <small>
+                                            <iconify-icon icon="mdi:alert" class="me-1"></iconify-icon>
+                                            <strong>Note:</strong> Files are named with Order ID (Order_{{ order.get_order_number }}_*) for easy identification in the archive.
+                                        </small>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
                     <!-- Payment Progress Section -->
                     {% if order.extra_fee > 0 or order.received > 0 or order.payment_accepted_fully %}
                     <div class="col-12 mt-16">

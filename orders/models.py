@@ -353,6 +353,78 @@ class Order(models.Model):
     def is_manual_order(self):
         """Check if this is a manually created order (no bot_user)"""
         return self.bot_user is None
+    
+    @property
+    def is_archived(self):
+        """Check if order files are archived"""
+        return self.archived_files is not None
+    
+    @property
+    def has_local_files(self):
+        """Check if order files still exist locally (not deleted after archiving)"""
+        import os
+        
+        # Check order media files
+        for media in self.files.all():
+            if media.file and hasattr(media.file, 'path'):
+                try:
+                    if os.path.exists(media.file.path):
+                        return True
+                except:
+                    pass
+        
+        # Check receipt
+        if self.recipt and hasattr(self.recipt, 'path'):
+            try:
+                if os.path.exists(self.recipt.path):
+                    return True
+            except:
+                pass
+        
+        return False
+    
+    @property
+    def files_location(self):
+        """Get user-friendly description of where files are stored"""
+        if self.is_archived and not self.has_local_files:
+            return "archived_only"  # Files only in archive (deleted locally)
+        elif self.is_archived and self.has_local_files:
+            return "both"  # Files in both archive and local storage
+        else:
+            return "local"  # Files only in local storage
+    
+    def get_archive_info(self):
+        """Get archive information with Telegram access link"""
+        if not self.is_archived:
+            return None
+        
+        archive = self.archived_files
+        
+        return {
+            'archive_name': archive.archive_name,
+            'archive_date': archive.archive_date,
+            'total_orders': archive.total_orders,
+            'size_mb': archive.size_mb,
+            'telegram_link': self._get_telegram_archive_link(),
+            'has_local_files': self.has_local_files,
+        }
+    
+    def _get_telegram_archive_link(self):
+        """Generate Telegram link to access archived files"""
+        if not self.is_archived:
+            return None
+        
+        archive = self.archived_files
+        channel_id = archive.telegram_channel_id
+        message_id = archive.telegram_message_id
+        
+        # Handle channel IDs (remove -100 prefix for link)
+        if channel_id.startswith('-100'):
+            channel_id_clean = channel_id[4:]  # Remove -100
+        else:
+            channel_id_clean = channel_id.lstrip('-')
+        
+        return f"https://t.me/c/{channel_id_clean}/{message_id}"
 
     @property
     def calculated_price(self):

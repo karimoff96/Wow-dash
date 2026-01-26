@@ -363,6 +363,11 @@
                                     {% if order.language %}
                                     <span class="badge bg-neutral-200 text-neutral-600 badge-compact">{{ order.language.short_name|default:order.language.name|slice:":2"|upper }}</span>
                                     {% endif %}
+                                    {% if order.is_archived %}
+                                    <span class="badge {% if order.has_local_files %}bg-info-focus text-info-600{% else %}bg-purple-focus text-purple-600{% endif %} badge-compact" title="{% if order.has_local_files %}Files archived but available locally{% else %}Files archived - local copies deleted{% endif %}">
+                                        <iconify-icon icon="mdi:archive" class="text-xs"></iconify-icon>
+                                    </span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </td>

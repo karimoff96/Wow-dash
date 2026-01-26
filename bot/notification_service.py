@@ -203,28 +203,83 @@ def format_order_message(order, include_details=True):
             message += f" • 📋 Копий: {order.copy_number}"
         message += "\n"
         
-        # Payment info
-        message += f"\n💰 <b>Оплата:</b>\n"
-        message += f"{payment_emoji} {payment_text}\n"
+        # Get detailed price breakdown
+        try:
+            breakdown = order.get_price_breakdown()
+            
+            # Payment info with detailed breakdown
+            message += f"\n💰 <b>Расчет стоимости:</b>\n"
+            
+            # User type indicator
+            user_type = "🏢 B2B (Агентство)" if breakdown['is_agency'] else "👤 B2C (Клиент)"
+            message += f"👥 Тип клиента: {user_type}\n"
+            
+            # Original document pricing
+            message += f"\n📄 <b>Оригинал:</b>\n"
+            if order.product.category.charging == "static":
+                message += f"💵 Цена документа: {float(breakdown['combined_first_page']):,.0f} UZS\n"
+                if breakdown['language_first_page'] > 0:
+                    message += f"   └ Продукт: {float(breakdown['product_first_page']):,.0f} UZS\n"
+                    message += f"   └ Язык: {float(breakdown['language_first_page']):,.0f} UZS\n"
+            else:
+                # First page
+                message += f"📃 Первая страница: {float(breakdown['combined_first_page']):,.0f} UZS\n"
+                if breakdown['language_first_page'] > 0:
+                    message += f"   └ Продукт: {float(breakdown['product_first_page']):,.0f} UZS\n"
+                    message += f"   └ Язык: {float(breakdown['language_first_page']):,.0f} UZS\n"
+                
+                # Other pages if more than 1
+                if breakdown['total_pages'] > 1:
+                    message += f"📑 Остальные страницы ({breakdown['total_pages'] - 1}): {float(breakdown['combined_other_page']):,.0f} UZS/стр\n"
+                    if breakdown['language_other_page'] > 0:
+                        message += f"   └ Продукт: {float(breakdown['product_other_page']):,.0f} UZS/стр\n"
+                        message += f"   └ Язык: {float(breakdown['language_other_page']):,.0f} UZS/стр\n"
+            
+            message += f"📄 Итого оригинал: <b>{float(breakdown['original_price']):,.0f} UZS</b>\n"
+            
+            # Copy pricing if copies exist
+            if breakdown['copy_number'] > 0:
+                message += f"\n📋 <b>Копии ({breakdown['copy_number']} шт):</b>\n"
+                message += f"💵 Цена за копию: {float(breakdown['combined_copy_price']):,.0f} UZS\n"
+                if breakdown['language_copy_price'] > 0:
+                    message += f"   └ Продукт: {float(breakdown['product_copy_price']):,.0f} UZS\n"
+                    message += f"   └ Язык: {float(breakdown['language_copy_price']):,.0f} UZS\n"
+                message += f"📋 Итого копии: <b>{float(breakdown['copy_total']):,.0f} UZS</b>\n"
+            
+            # Total
+            message += f"\n💰 <b>Итого к оплате: {float(breakdown['total_price']):,.0f} UZS</b>\n"
+            
+        except Exception as e:
+            logger.error(f"Failed to get price breakdown for order {order.id}: {e}")
+            # Fallback to simple price display
+            total_price = float(order.total_price)
+            message += f"\n💰 <b>Оплата:</b>\n"
+            message += f"💵 Сумма: <b>{total_price:,.0f} UZS</b>\n"
         
-        # Price breakdown
-        total_price = float(order.total_price)
-        message += f"💵 Сумма: <b>{total_price:,.0f} UZS</b>\n"
+        # Payment method
+        message += f"{payment_emoji} Способ оплаты: {payment_text}\n"
         
         # Extra fee if exists
         if order.extra_fee and float(order.extra_fee) > 0:
             extra_fee = float(order.extra_fee)
-            message += f"➕ Доп. услуги: {extra_fee:,.0f} UZS\n"
-            total_with_fee = total_price + extra_fee
-            message += f"💰 Итого: <b>{total_with_fee:,.0f} UZS</b>\n"
+            message += f"\n➕ <b>Дополнительные услуги:</b>\n"
+            if order.extra_fee_description:
+                message += f"📝 {order.extra_fee_description}\n"
+            message += f"💵 Сумма: {extra_fee:,.0f} UZS\n"
+            total_with_fee = float(order.total_price) + extra_fee
+            message += f"💰 <b>Итого с доп. услугами: {total_with_fee:,.0f} UZS</b>\n"
         
         # Payment tracking
         if order.received and float(order.received) > 0:
             received = float(order.received)
+            total_price = float(order.total_price)
             remaining = total_price - received
+            message += f"\n💳 <b>Статус оплаты:</b>\n"
             message += f"✅ Получено: {received:,.0f} UZS\n"
             if remaining > 0:
                 message += f"⏳ Остаток: {remaining:,.0f} UZS\n"
+            elif remaining < 0:
+                message += f"💰 Переплата: {abs(remaining):,.0f} UZS\n"
         
         # Receipt info
         if order.recipt:
@@ -232,7 +287,8 @@ def format_order_message(order, include_details=True):
         
         # Assignment info
         if order.assigned_to:
-            message += f"\n👤 Исполнитель: {order.assigned_to.full_name}\n"
+            message += f"\n👤 <b>Назначение:</b>\n"
+            message += f"👨‍💼 Исполнитель: {order.assigned_to.full_name}\n"
             if order.assigned_by:
                 message += f"📌 Назначил: {order.assigned_by.full_name}\n"
         
@@ -241,7 +297,7 @@ def format_order_message(order, include_details=True):
             desc = order.description[:200]
             if len(order.description) > 200:
                 desc += "..."
-            message += f"\n📝 {desc}\n"
+            message += f"\n📝 <b>Примечания:</b>\n{desc}\n"
     
     message += f"\n🕐 {created_str}"
     
