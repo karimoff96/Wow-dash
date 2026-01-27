@@ -246,6 +246,21 @@
                 </a>
             </li>
             {% endif %}
+            
+            <!-- Contact Requests - Superuser only -->
+            {% if user.is_superuser %}
+            <li>
+                <a href="{% url 'contact_requests_list' %}">
+                    <iconify-icon icon="solar:inbox-line-bold" class="menu-icon"></iconify-icon>
+                    <span data-i18n="sidebar.contactRequests">{% trans "Contact Requests" %}</span>
+                    {% if new_contact_requests_count > 0 %}
+                    <span class="badge text-sm fw-semibold text-warning-600 bg-warning-100 px-8 py-4 radius-4 ms-auto">
+                        {{ new_contact_requests_count }}
+                    </span>
+                    {% endif %}
+                </a>
+            </li>
+            {% endif %}
 
         </ul>
     </div>

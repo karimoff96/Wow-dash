@@ -392,10 +392,15 @@ button:focus,
 }
 
 /* ========================================
-   13. Responsive Adjustments
+   13. Responsive Adjustments - Mobile Optimization
    ======================================== */
 
+/* Hide columns on mobile */
 @media (max-width: 768px) {
+    .hide-mobile {
+        display: none !important;
+    }
+    
     .card-header,
     .card-footer {
         padding: 0.75rem;
@@ -404,5 +409,402 @@ button:focus,
     .badge {
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Mobile & Tablet Responsive (max-width: 991px) */
+@media (max-width: 991px) {
+    /* Table responsive improvements */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+    }
+    
+    .table {
+        min-width: 600px;
+        font-size: 0.85rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem !important;
+        white-space: nowrap;
+    }
+    
+    /* Card body padding */
+    .card-body {
+        padding: 1rem !important;
+    }
+    
+    /* Button groups stack vertically */
+    .btn-group {
+        flex-direction: column !important;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        border-radius: 0.375rem !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Filter form improvements */
+    .d-flex.align-items-center.gap-3 {
+        flex-wrap: wrap !important;
+        gap: 0.75rem !important;
+    }
+    
+    .form-select-sm,
+    .form-control-sm {
+        font-size: 0.875rem !important;
+    }
+    
+    /* Stats cards - 2 per row on tablet */
+    .col-xxl-2.col-lg-4.col-sm-6 {
+        flex: 0 0 auto;
+        width: 50% !important;
+    }
+    
+    .col-xxl-3.col-sm-6 {
+        flex: 0 0 auto;
+        width: 100% !important;
+    }
+    
+    /* Modal adjustments */
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    /* Sidebar improvements */
+    .sidebar {
+        width: 260px !important;
+    }
+}
+
+/* Mobile Only Responsive (max-width: 576px) */
+@media (max-width: 576px) {
+    /* Typography adjustments */
+    h1, .h1 {
+        font-size: 1.75rem !important;
+    }
+    
+    h2, .h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    h3, .h3 {
+        font-size: 1.25rem !important;
+    }
+    
+    h4, .h4 {
+        font-size: 1.1rem !important;
+    }
+    
+    h5, .h5 {
+        font-size: 1rem !important;
+    }
+    
+    h6, .h6 {
+        font-size: 0.9rem !important;
+    }
+    
+    /* All cards take full width */
+    .col-xxl-2,
+    .col-xxl-3,
+    .col-xxl-4,
+    .col-xxl-6,
+    .col-xxl-8,
+    .col-lg-4,
+    .col-lg-6,
+    .col-lg-8,
+    .col-md-6,
+    .col-sm-6 {
+        flex: 0 0 auto;
+        width: 100% !important;
+    }
+    
+    /* Card padding reduction */
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .card-body {
+        padding: 0.75rem !important;
+    }
+    
+    .p-24 {
+        padding: 1rem !important;
+    }
+    
+    .p-16 {
+        padding: 0.75rem !important;
+    }
+    
+    /* Button adjustments */
+    .btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn-sm {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.8125rem;
+    }
+    
+    /* Table mobile optimization */
+    .table {
+        font-size: 0.75rem;
+        min-width: 500px;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.375rem !important;
+    }
+    
+    /* Header actions */
+    .d-flex.align-items-center.justify-content-between {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+    
+    .d-flex.align-items-center.justify-content-between > div {
+        width: 100%;
+    }
+    
+    /* Filter bar */
+    .card.radius-8.border-0.mb-24 .card-body {
+        padding: 0.75rem !important;
+    }
+    
+    .card.radius-8.border-0.mb-24 form {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    
+    .card.radius-8.border-0.mb-24 .form-select,
+    .card.radius-8.border-0.mb-24 .form-control {
+        width: 100% !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Badge adjustments */
+    .badge {
+        font-size: 0.7rem !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+    
+    /* Iconify icon sizes */
+    iconify-icon {
+        font-size: 1rem;
+    }
+    
+    .text-xl iconify-icon,
+    iconify-icon.text-xl {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Stat card icons */
+    .w-48-px {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .w-32-px {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    
+    .w-24-px {
+        width: 20px !important;
+        height: 20px !important;
+    }
+    
+    /* Search and filter inputs */
+    input[type="search"],
+    input[type="text"],
+    input[type="date"],
+    select {
+        font-size: 0.875rem !important;
+    }
+    
+    /* Pagination */
+    .pagination {
+        font-size: 0.875rem;
+    }
+    
+    .pagination .page-link {
+        padding: 0.375rem 0.5rem;
+    }
+    
+    /* Modal full screen on mobile */
+    .modal-dialog {
+        margin: 0;
+        max-width: 100%;
+        height: 100%;
+    }
+    
+    .modal-content {
+        height: 100%;
+        border-radius: 0;
+    }
+    
+    /* Navbar mobile adjustments */
+    .navbar {
+        padding: 0.5rem 1rem;
+    }
+    
+    /* Sidebar mobile */
+    .sidebar {
+        width: 100% !important;
+    }
+    
+    /* Overflow scroll for wide content */
+    .table-responsive {
+        margin-left: -0.75rem;
+        margin-right: -0.75rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    
+    /* Stats grid - 1 per row */
+    .row.gy-4 > [class*="col-"] {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+    
+    /* Compact badges in table */
+    .badge-compact {
+        font-size: 0.65rem !important;
+        padding: 0.15rem 0.3rem !important;
+    }
+    
+    /* Text truncation helpers */
+    .truncate-120 {
+        max-width: 80px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Hide unnecessary gaps */
+    .gap-12 {
+        gap: 0.5rem !important;
+    }
+    
+    .gap-16 {
+        gap: 0.75rem !important;
+    }
+    
+    .gap-24 {
+        gap: 1rem !important;
+    }
+    
+    /* Action buttons in table */
+    .btn-icon {
+        width: 32px !important;
+        height: 32px !important;
+        padding: 0 !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Dropdown menus */
+    .dropdown-menu {
+        font-size: 0.875rem;
+        min-width: 150px;
+    }
+    
+    .dropdown-item {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    /* Form groups stack */
+    .row > [class*="col-"] {
+        margin-bottom: 0.75rem;
+    }
+    
+    /* Chart containers */
+    .apexcharts-canvas {
+        max-width: 100% !important;
+    }
+    
+    /* Date range picker */
+    #customDateRange {
+        flex-direction: column !important;
+        width: 100%;
+    }
+    
+    #customDateRange input {
+        width: 100% !important;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Tablet Specific (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+    /* 2 columns for stats */
+    .col-xxl-2.col-lg-4.col-sm-6,
+    .col-xxl-3.col-sm-6,
+    .col-xxl-4.col-sm-6 {
+        flex: 0 0 auto;
+        width: 50% !important;
+    }
+    
+    .col-xxl-6 {
+        flex: 0 0 auto;
+        width: 100% !important;
+    }
+    
+    .table {
+        font-size: 0.875rem;
+    }
+}
+
+/* Large Mobile / Small Tablet (577px - 767px) */
+@media (min-width: 577px) and (max-width: 767px) {
+    .col-sm-6 {
+        flex: 0 0 auto;
+        width: 50% !important;
+    }
+    
+    .table {
+        font-size: 0.8rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .sidebar,
+    .navbar,
+    .btn,
+    .hide-mobile {
+        display: none !important;
+    }
+    
+    .card {
+        break-inside: avoid;
+    }
+    
+    .table {
+        font-size: 0.75rem;
+    }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 896px) and (orientation: landscape) {
+    .modal-dialog {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .card-body {
+        padding: 0.75rem !important;
     }
 }

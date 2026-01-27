@@ -447,6 +447,100 @@
         padding-left: 8px !important;
         padding-right: 8px !important;
     }
+    
+    /* Stack button groups vertically */
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        border-radius: 0.375rem !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Full width form controls */
+    .form-select,
+    .form-control {
+        width: 100% !important;
+        max-width: 100%;
+    }
+    
+    /* Filter bar mobile */
+    .card .d-flex.align-items-center {
+        flex-wrap: wrap !important;
+    }
+    
+    .card .d-flex.align-items-center > * {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Modal full screen */
+    .modal-dialog {
+        margin: 0 !important;
+        max-width: 100% !important;
+        height: 100%;
+    }
+    
+    .modal-content {
+        height: 100%;
+        border-radius: 0 !important;
+    }
+    
+    /* Header actions stack */
+    .d-flex.justify-content-between {
+        flex-direction: column !important;
+        gap: 0.75rem;
+    }
+    
+    /* Date inputs take full width */
+    input[type="date"],
+    input[type="datetime-local"] {
+        width: 100% !important;
+    }
+    
+    /* Reduce icon sizes */
+    .w-48-px {
+        width: 36px !important;
+        height: 36px !important;
+    }
+    
+    .w-32-px {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    
+    /* Compact dropdown */
+    .dropdown-menu {
+        font-size: 0.875rem;
+        min-width: 150px !important;
+    }
+    
+    /* Mobile table improvements */
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .table thead,
+    .table tbody,
+    .table tr {
+        display: table;
+        width: 100%;
+    }
+    
+    /* Customer/user display compact */
+    .d-flex.align-items-center .text-sm {
+        font-size: 0.75rem !important;
+    }
+    
+    /* Pagination mobile */
+    .pagination .page-link {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.875rem;
+    }
 }
 
 /* ============================================

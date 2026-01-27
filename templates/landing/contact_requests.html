@@ -1,0 +1,475 @@
+{% extends 'layout/layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Contact Requests" %}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+    <h6 class="fw-semibold mb-0">{% trans "Contact Requests from Landing Page" %}</h6>
+    <ul class="d-flex align-items-center gap-2">
+        <li class="fw-medium">
+            <a href="{% url 'dashboard' %}" class="d-flex align-items-center gap-1 hover-text-primary">
+                <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
+                {% trans "Dashboard" %}
+            </a>
+        </li>
+        <li>-</li>
+        <li class="fw-medium">{% trans "Contact Requests" %}</li>
+    </ul>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row gy-4 mb-24">
+    <div class="col-xxl-2 col-md-4 col-sm-6">
+        <div class="card p-3 shadow-sm h-100">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                            <iconify-icon icon="solar:inbox-line-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-0 fw-medium text-secondary-light">{% trans "Total" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ total_requests }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xxl-2 col-md-4 col-sm-6">
+        <div class="card p-3 shadow-sm h-100">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-warning-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                            <iconify-icon icon="solar:hourglass-line-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-0 fw-medium text-secondary-light">{% trans "New" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ new_requests }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xxl-2 col-md-4 col-sm-6">
+        <div class="card p-3 shadow-sm h-100">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-info-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                            <iconify-icon icon="solar:phone-calling-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-0 fw-medium text-secondary-light">{% trans "Contacted" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ contacted_requests }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xxl-2 col-md-4 col-sm-6">
+        <div class="card p-3 shadow-sm h-100">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-purple-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                            <iconify-icon icon="solar:clock-circle-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-0 fw-medium text-secondary-light">{% trans "Pending" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ pending_requests }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xxl-2 col-md-4 col-sm-6">
+        <div class="card p-3 shadow-sm h-100">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-success-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                            <iconify-icon icon="solar:check-circle-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-0 fw-medium text-secondary-light">{% trans "Converted" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ converted_requests }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xxl-2 col-md-4 col-sm-6">
+        <div class="card p-3 shadow-sm h-100">
+            <div class="card-body p-0">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="mb-0 w-48-px h-48-px bg-danger-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                            <iconify-icon icon="solar:close-circle-bold" class="icon"></iconify-icon>
+                        </span>
+                        <div>
+                            <span class="mb-0 fw-medium text-secondary-light">{% trans "Cancelled" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ cancelled_requests }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters and Search -->
+<div class="card mb-24">
+    <div class="card-body">
+        <form method="GET" class="row gy-3 gx-3 align-items-center">
+            <div class="col-md-3">
+                <label class="form-label">{% trans "Status" %}</label>
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>{% trans "All" %}</option>
+                    <option value="new" {% if status_filter == 'new' %}selected{% endif %}>{% trans "New" %}</option>
+                    <option value="contacted" {% if status_filter == 'contacted' %}selected{% endif %}>{% trans "Contacted" %}</option>
+                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                    <option value="converted" {% if status_filter == 'converted' %}selected{% endif %}>{% trans "Converted" %}</option>
+                    <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>{% trans "Cancelled" %}</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">{% trans "Search" %}</label>
+                <input type="text" name="search" class="form-control" 
+                       placeholder="{% trans 'Search by name, email, company, phone or message' %}" 
+                       value="{{ search_query }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-600 flex-grow-1">
+                        <iconify-icon icon="solar:magnifer-linear" class="icon"></iconify-icon>
+                        {% trans "Search" %}
+                    </button>
+                    <a href="{% url 'contact_requests_list' %}" class="btn btn-outline-secondary">
+                        <iconify-icon icon="solar:refresh-linear" class="icon"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Contact Requests Table -->
+<div class="card">
+    <div class="card-body" style="overflow: visible;">
+        <div class="table-responsive" style="overflow-x: auto; overflow-y: visible;">
+            <table class="table bordered-table mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">{% trans "Date" %}</th>
+                        <th scope="col">{% trans "Name" %}</th>
+                        <th scope="col">{% trans "Email" %}</th>
+                        <th scope="col">{% trans "Company" %}</th>
+                        <th scope="col">{% trans "Phone" %}</th>
+                        <th scope="col">{% trans "Message" %}</th>
+                        <th scope="col">{% trans "Status" %}</th>
+                        <th scope="col" class="text-center">{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in contact_requests %}
+                    <tr>
+                        <td>
+                            <span class="text-sm">{{ request.created_at|date:"d M Y" }}</span><br>
+                            <span class="text-xs text-secondary-light">{{ request.created_at|time:"H:i" }}</span>
+                        </td>
+                        <td>
+                            <span class="fw-medium">{{ request.name }}</span>
+                        </td>
+                        <td>
+                            <a href="mailto:{{ request.email }}" class="text-primary-600">{{ request.email }}</a>
+                        </td>
+                        <td>
+                            {% if request.company %}
+                                {{ request.company }}
+                            {% else %}
+                                <span class="text-secondary-light">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if request.phone %}
+                                <a href="tel:{{ request.phone }}" class="text-primary-600">{{ request.phone }}</a>
+                            {% else %}
+                                <span class="text-secondary-light">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-primary-600" 
+                                    data-bs-toggle="modal" data-bs-target="#messageModal{{ request.id }}">
+                                <iconify-icon icon="solar:eye-linear" class="icon"></iconify-icon>
+                                {% trans "View" %}
+                            </button>
+                            
+                            <!-- Message Modal -->
+                            <div class="modal fade" id="messageModal{{ request.id }}" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">{% trans "Message from" %} {{ request.name }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <strong>{% trans "Message:" %}</strong>
+                                                <p class="mt-2">{{ request.message }}</p>
+                                            </div>
+                                            
+                                            <hr>
+                                            
+                                            <form method="POST" action="{% url 'contact_request_add_note' request.id %}">
+                                                {% csrf_token %}
+                                                <div class="mb-3">
+                                                    <label class="form-label"><strong>{% trans "Internal Notes:" %}</strong></label>
+                                                    <textarea name="notes" class="form-control" rows="3" 
+                                                              placeholder="{% trans 'Add notes about this contact request...' %}">{{ request.notes }}</textarea>
+                                                </div>
+                                                <div class="d-flex justify-content-end gap-2">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                                                    <button type="submit" class="btn btn-primary-600">
+                                                        <iconify-icon icon="solar:diskette-bold" class="icon"></iconify-icon>
+                                                        {% trans "Save Notes" %}
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if request.status == 'new' %}
+                                <span class="badge text-sm fw-semibold text-warning-600 bg-warning-100 px-20 py-9 radius-4">
+                                    <iconify-icon icon="solar:hourglass-line-bold" class="icon"></iconify-icon>
+                                    {% trans "New" %}
+                                </span>
+                            {% elif request.status == 'contacted' %}
+                                <span class="badge text-sm fw-semibold text-info-600 bg-info-100 px-20 py-9 radius-4">
+                                    <iconify-icon icon="solar:phone-calling-bold" class="icon"></iconify-icon>
+                                    {% trans "Contacted" %}
+                                </span>
+                            {% elif request.status == 'pending' %}
+                                <span class="badge text-sm fw-semibold text-purple-600 bg-purple-100 px-20 py-9 radius-4">
+                                    <iconify-icon icon="solar:clock-circle-bold" class="icon"></iconify-icon>
+                                    {% trans "Pending" %}
+                                </span>
+                            {% elif request.status == 'converted' %}
+                                <span class="badge text-sm fw-semibold text-success-600 bg-success-100 px-20 py-9 radius-4">
+                                    <iconify-icon icon="solar:check-circle-bold" class="icon"></iconify-icon>
+                                    {% trans "Converted" %}
+                                </span>
+                            {% elif request.status == 'cancelled' %}
+                                <span class="badge text-sm fw-semibold text-danger-600 bg-danger-100 px-20 py-9 radius-4">
+                                    <iconify-icon icon="solar:close-circle-bold" class="icon"></iconify-icon>
+                                    {% trans "Cancelled" %}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-primary-600 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-boundary="viewport">
+                                    <iconify-icon icon="solar:settings-linear" class="icon"></iconify-icon>
+                                    {% trans "Change Status" %}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <form method="POST" action="{% url 'contact_request_change_status' request.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="status" value="new">
+                                            <button type="submit" class="dropdown-item{% if request.status == 'new' %} active{% endif %}">
+                                                <iconify-icon icon="solar:hourglass-line-bold" class="icon"></iconify-icon>
+                                                {% trans "New" %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{% url 'contact_request_change_status' request.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="status" value="contacted">
+                                            <button type="submit" class="dropdown-item{% if request.status == 'contacted' %} active{% endif %}">
+                                                <iconify-icon icon="solar:phone-calling-bold" class="icon"></iconify-icon>
+                                                {% trans "Contacted" %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{% url 'contact_request_change_status' request.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="status" value="pending">
+                                            <button type="submit" class="dropdown-item{% if request.status == 'pending' %} active{% endif %}">
+                                                <iconify-icon icon="solar:clock-circle-bold" class="icon"></iconify-icon>
+                                                {% trans "Pending" %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{% url 'contact_request_change_status' request.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="status" value="converted">
+                                            <button type="submit" class="dropdown-item{% if request.status == 'converted' %} active{% endif %}">
+                                                <iconify-icon icon="solar:check-circle-bold" class="icon"></iconify-icon>
+                                                {% trans "Converted" %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{% url 'contact_request_change_status' request.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="status" value="cancelled">
+                                            <button type="submit" class="dropdown-item{% if request.status == 'cancelled' %} active{% endif %}">
+                                                <iconify-icon icon="solar:close-circle-bold" class="icon"></iconify-icon>
+                                                {% trans "Cancelled" %}
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-5">
+                            <iconify-icon icon="solar:inbox-line-bold" class="icon text-xxl text-secondary-light"></iconify-icon>
+                            <p class="text-secondary-light mt-2">{% trans "No contact requests found" %}</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if contact_requests.has_other_pages %}
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-24">
+            <span class="text-secondary-light text-sm">
+                {% trans "Showing" %} {{ contact_requests.start_index }} {% trans "to" %} {{ contact_requests.end_index }} {% trans "of" %} {{ contact_requests.paginator.count }} {% trans "results" %}
+            </span>
+            <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                {% if contact_requests.has_previous %}
+                <li class="page-item">
+                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 px-10 py-10 d-flex align-items-center justify-content-center h-32-px" 
+                       href="?page={{ contact_requests.previous_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                        <iconify-icon icon="ep:d-arrow-left" class="text-xl"></iconify-icon>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in contact_requests.paginator.page_range %}
+                    {% if contact_requests.number == num %}
+                    <li class="page-item">
+                        <a class="page-link text-white fw-semibold radius-8 border-0 px-10 py-10 d-flex align-items-center justify-content-center h-32-px w-32-px bg-primary-600" 
+                           href="javascript:void(0)">{{ num }}</a>
+                    </li>
+                    {% elif num > contact_requests.number|add:'-3' and num < contact_requests.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 px-10 py-10 d-flex align-items-center justify-content-center h-32-px" 
+                           href="?page={{ num }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if contact_requests.has_next %}
+                <li class="page-item">
+                    <a class="page-link bg-neutral-200 text-secondary-light fw-semibold radius-8 border-0 px-10 py-10 d-flex align-items-center justify-content-center h-32-px" 
+                       href="?page={{ contact_requests.next_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                        <iconify-icon icon="ep:d-arrow-right" class="text-xl"></iconify-icon>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /* Fix dropdown menu visibility - ensure it's not clipped by table container */
+    .table-responsive {
+        overflow: visible !important;
+    }
+    
+    .dropdown-menu {
+        position: fixed !important;
+        z-index: 1055 !important;
+        will-change: transform;
+    }
+    
+    /* Ensure dropdown doesn't get cut off by card */
+    .card {
+        overflow: visible !important;
+    }
+    
+    .card-body {
+        overflow: visible !important;
+    }
+    
+    /* Table container should allow dropdown to overflow */
+    table {
+        position: relative;
+    }
+    
+    tbody tr {
+        position: relative;
+    }
+    
+    /* Make table scrollable horizontally on mobile while keeping dropdown visible */
+    @media (max-width: 991px) {
+        .table-responsive {
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+        }
+        
+        .table {
+            min-width: 900px;
+        }
+    }
+    
+    /* Ensure dropdown button is always visible */
+    .dropdown-toggle {
+        white-space: nowrap;
+    }
+    
+    /* Better dropdown item spacing */
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .dropdown-item .icon {
+        font-size: 1.2rem;
+    }
+    
+    /* Active dropdown item styling */
+    .dropdown-item.active {
+        background-color: var(--primary-600);
+        color: white;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #f0f0f0;
+    }
+    
+    .dropdown-item.active:hover {
+        background-color: var(--primary-700);
+    }
+</style>
+{% endblock %}

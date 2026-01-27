@@ -594,7 +594,61 @@
                     </div>
                 </div>
                 <div class="col-lg-6" data-aos="fade-left">
-                    <img src="{% static 'images/hero-dashboard.png' %}" alt="Dashboard" class="img-fluid" style="max-width: 100%; height: auto;">
+                    <div class="hero-images-container" style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; flex-wrap: wrap; padding: 1.5rem 1rem;">
+                        <!-- Logo 1 -->
+                        <div class="hero-logo-card" style="background: white; padding: 1.5rem; border-radius: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.1); transform: rotate(-2deg); transition: all 0.3s; width: 100%; max-width: 420px;">
+                            <img src="{% static 'images/logo1.png' %}" alt="MultiLang Dashboard" style="width: 100%; height: auto; display: block; border-radius: 10px;">
+                        </div>
+                        
+                        <!-- Logo 2 -->
+                        <div class="hero-logo-card" style="background: white; padding: 1.5rem; border-radius: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.1); transform: rotate(2deg); transition: all 0.3s; width: 100%; max-width: 420px;">
+                            <img src="{% static 'images/logo2.png' %}" alt="MultiLang Analytics" style="width: 100%; height: auto; display: block; border-radius: 10px;">
+                        </div>
+                    </div>
+                    
+                    <style>
+                        .hero-logo-card:hover {
+                            transform: rotate(0deg) translateY(-12px) scale(1.03) !important;
+                            box-shadow: 0 20px 60px rgba(0,0,0,0.18) !important;
+                        }
+                        
+                        @media (max-width: 1400px) {
+                            .hero-logo-card {
+                                max-width: 350px !important;
+                            }
+                        }
+                        
+                        @media (max-width: 1200px) {
+                            .hero-logo-card {
+                                max-width: 315px !important;
+                                padding: 1.25rem !important;
+                            }
+                        }
+                        
+                        @media (max-width: 992px) {
+                            .hero-images-container {
+                                padding: 1.25rem 1rem !important;
+                                gap: 1.25rem !important;
+                            }
+                            .hero-logo-card {
+                                max-width: 280px !important;
+                                padding: 1.25rem !important;
+                            }
+                        }
+                        
+                        @media (max-width: 768px) {
+                            .hero-images-container {
+                                flex-direction: column !important;
+                                gap: 1rem !important;
+                                padding: 1rem !important;
+                            }
+                            .hero-logo-card {
+                                transform: none !important;
+                                max-width: 100% !important;
+                                padding: 1rem !important;
+                            }
+                        }
+                    </style>
                 </div>
             </div>
         </div>
@@ -987,7 +1041,7 @@
                         <h3 class="pricing-name">
                             {% if current_language == 'uz' %}Starter{% elif current_language == 'en' %}Starter{% else %}Начальный{% endif %}
                         </h3>
-                        <div class="pricing-price">$29</div>
+                        <div class="pricing-price">299 000 UZS</div>
                         <div class="pricing-period">
                             {% if current_language == 'uz' %}oyiga{% elif current_language == 'en' %}per month{% else %}в месяц{% endif %}
                         </div>
@@ -1030,7 +1084,7 @@
                         <h3 class="pricing-name">
                             {% if current_language == 'uz' %}Professional{% elif current_language == 'en' %}Professional{% else %}Профессиональный{% endif %}
                         </h3>
-                        <div class="pricing-price">$79</div>
+                        <div class="pricing-price">499 000 UZS</div>
                         <div class="pricing-period">
                             {% if current_language == 'uz' %}oyiga{% elif current_language == 'en' %}per month{% else %}в месяц{% endif %}
                         </div>
@@ -1071,7 +1125,7 @@
                         <h3 class="pricing-name">
                             {% if current_language == 'uz' %}Enterprise{% elif current_language == 'en' %}Enterprise{% else %}Корпоративный{% endif %}
                         </h3>
-                        <div class="pricing-price">$199</div>
+                        <div class="pricing-price">1 999 000 UZS</div>
                         <div class="pricing-period">
                             {% if current_language == 'uz' %}oyiga{% elif current_language == 'en' %}per month{% else %}в месяц{% endif %}
                         </div>
@@ -1148,7 +1202,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Email *</label>
-                                    <input type="email" name="email" class="form-control" required placeholder="you@example.com">
+                                    <input type="email" name="email" class="form-control" placeholder="you@example.com">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">
@@ -1190,14 +1244,14 @@
                                 {% endif %}
                             </p>
                             <div class="d-flex justify-content-center gap-3 flex-wrap">
-                                <a href="mailto:info@multilang.uz" class="btn btn-outline-custom">
-                                    <i class="fas fa-envelope"></i> info@multilang.uz
+                                <a href="mailto:go.multilang@gmail.com" class="btn btn-outline-custom">
+                                    <i class="fas fa-envelope"></i> go.multilang@gmail.com
                                 </a>
-                                <a href="tel:+998901234567" class="btn btn-outline-custom">
-                                    <i class="fas fa-phone"></i> +998 (90) 123-45-67
+                                <a href="tel:+998900290119" class="btn btn-outline-custom">
+                                    <i class="fas fa-phone"></i> +998(90)-029-01-19
                                 </a>
-                                <a href="https://t.me/multilang_support" target="_blank" class="btn btn-outline-custom">
-                                    <i class="fab fa-telegram"></i> @multilang_support
+                                <a href="https://t.me/multilang_support_bot" target="_blank" class="btn btn-outline-custom">
+                                    <i class="fab fa-telegram"></i> @multilang_support_bot
                                 </a>
                             </div>
                         </div>
@@ -1250,7 +1304,7 @@
                         <li><a href="#contact">
                             {% if current_language == 'uz' %}Bog'lanish{% elif current_language == 'en' %}Contact{% else %}Контакты{% endif %}
                         </a></li>
-                        <li><a href="https://t.me/multilang_support">Telegram</a></li>
+                        <li><a href="https://t.me/multilang_support_bot">Telegram</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4">
