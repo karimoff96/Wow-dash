@@ -9,9 +9,12 @@ from django.utils.translation import gettext as _
 from core.models import FileArchive
 from core.storage_service import StorageArchiveService
 from organizations.rbac import permission_required
+from billing.decorators import require_feature, require_active_subscription
 
 
 @login_required
+@require_active_subscription
+@require_feature('archive_access')
 @permission_required('can_view_orders')
 def archive_list(request):
     """List all archives for current center"""
@@ -31,6 +34,8 @@ def archive_list(request):
 
 
 @login_required
+@require_active_subscription
+@require_feature('archive_access')
 @permission_required('can_view_orders')
 def archive_detail(request, archive_id):
     """View details of a specific archive"""

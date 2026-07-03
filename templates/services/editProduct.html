@@ -470,21 +470,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const description = document.getElementById('expense_description').value.trim();
         
         if (!name) {
-            alert(t('expense.enterExpenseName'));
+            alert('Please enter an expense name.');
             return;
         }
         if (!branchId) {
             {% if is_superuser %}
-            alert(t('expense.selectCenterAndBranch'));
+            alert('Please select a center and branch.');
             {% else %}
-            alert(t('language.selectBranch'));
+            alert('Please select a branch.');
             {% endif %}
             return;
         }
         
         // Disable button and show loading
         saveExpenseBtn.disabled = true;
-        saveExpenseBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + t('common.creating');
+        saveExpenseBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating...';
         
         fetch('{% url "createExpenseInline" %}', {
             method: 'POST',
@@ -561,16 +561,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 {% endif %}
                 {% endif %}
             } else {
-                alert(t('common.error') + ': ' + data.error);
+                alert('Error: ' + data.error);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert(t('expense.createError'));
+            alert('An error occurred while creating the expense.');
         })
         .finally(() => {
             saveExpenseBtn.disabled = false;
-            saveExpenseBtn.innerHTML = '<iconify-icon icon="ic:round-plus" class="text-lg"></iconify-icon><span>' + t('form.createExpense') + '</span>';
+            saveExpenseBtn.innerHTML = '<iconify-icon icon="ic:round-plus" class="text-lg"></iconify-icon><span data-i18n="form.createExpense">Create Expense</span>';
         });
     });
 });

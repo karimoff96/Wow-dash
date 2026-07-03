@@ -73,37 +73,6 @@
                         </div>
                     </div>
 
-                    <div class="mb-24">
-                        <div class="d-flex align-items-center gap-8 mb-14 pb-8 border-bottom">
-                            <div class="w-28-px h-28-px radius-6 bg-warning-100 d-flex align-items-center justify-content-center flex-shrink-0">
-                                <iconify-icon icon="mdi:shield-lock" class="text-warning-600 text-md"></iconify-icon>
-                            </div>
-                            <h6 class="text-md fw-semibold mb-0">{% trans "Locked Setup Configuration" %}</h6>
-                        </div>
-                        <div class="row gy-12">
-                            {% for item in center_setup_status.items %}
-                            <div class="col-md-3">
-                                <div class="p-12 radius-8 bg-neutral-50 border h-100">
-                                    <div class="text-xs text-secondary-light mb-6">{{ item.label }}</div>
-                                    <span class="badge {{ item.badge }} px-10 py-4 radius-6 text-xs">{{ item.value }}</span>
-                                    <div class="text-xs text-secondary-light mt-8">{{ item.detail }}</div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <div class="mt-16">
-                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">{% trans "Request configuration change" %}</label>
-                            <div class="input-group">
-                                <input type="text" name="message" class="form-control radius-8"
-                                       placeholder="{% trans 'Describe the locked setting that needs to change' %}">
-                                <button type="submit" class="btn btn-outline-primary radius-8"
-                                        formaction="{% url 'request_center_configuration_change' center.id %}" formmethod="post">
-                                    <iconify-icon icon="mdi:send" class="me-1"></iconify-icon>{% trans "Send" %}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Editable Contact Information -->
                     <div class="mb-24">
                         <div class="d-flex align-items-center gap-8 mb-14 pb-8 border-bottom">
@@ -274,47 +243,230 @@
                         </div>
                     </div>
 
+                    <!-- ══════════════════════════════════════════════════════ -->
+                    <!-- §2  Bot Configuration                                  -->
+                    <!-- ══════════════════════════════════════════════════════ -->
                     <div class="mb-28">
                         <div class="d-flex align-items-center gap-8 mb-16 pb-8 border-bottom">
-                            <div class="w-28-px h-28-px radius-6 bg-warning-100 d-flex align-items-center justify-content-center flex-shrink-0">
-                                <iconify-icon icon="mdi:shield-lock" class="text-warning-600 text-md"></iconify-icon>
+                            <div class="w-28-px h-28-px radius-6 bg-info-100 d-flex align-items-center justify-content-center flex-shrink-0">
+                                <iconify-icon icon="mdi:robot" class="text-info-600 text-md"></iconify-icon>
                             </div>
-                            <h6 class="text-md fw-semibold mb-0">{% trans "Locked Setup Configuration" %}</h6>
-                            {% if request.user.is_superuser and center %}
-                            <a href="{{ center_setup_status.admin_url }}" class="btn btn-outline-primary btn-sm radius-8 ms-auto">
-                                <iconify-icon icon="mdi:cog" class="me-1"></iconify-icon>{% trans "Open Django admin" %}
-                            </a>
-                            {% endif %}
+                            <h6 class="text-md fw-semibold mb-0" data-i18n="form.botConfiguration">Bot Configuration</h6>
                         </div>
-                        {% if center %}
                         <div class="row gy-16">
-                            {% for item in center_setup_status.items %}
+
+                            <!-- Token + Username side-by-side -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span data-i18n="form.botToken">Bot Token</span>
+                                    <iconify-icon icon="mdi:shield-lock" class="text-warning-600 ms-1" data-bs-toggle="tooltip" title="Superadmin only"></iconify-icon>
+                                </label>
+                                {% if request.user.is_superuser %}
+                                <input type="text" name="bot_token" class="form-control radius-8 font-monospace text-sm"
+                                       value="{% if center %}{{ center.bot_token|default:'' }}{% endif %}"
+                                       placeholder="123456:ABC-DEF...">
+                                <small class="text-secondary-light">Get this from @BotFather on Telegram</small>
+                                {% else %}
+                                <input type="text" class="form-control radius-8 bg-neutral-100"
+                                       value="{% if center and center.bot_token %}••••••••{% endif %}" disabled readonly>
+                                {% endif %}
+                            </div>
+
                             <div class="col-md-3">
-                                <div class="p-12 radius-8 bg-neutral-50 border h-100">
-                                    <div class="text-xs text-secondary-light mb-6">{{ item.label }}</div>
-                                    <span class="badge {{ item.badge }} px-10 py-4 radius-6 text-xs">{{ item.value }}</span>
-                                    <div class="text-xs text-secondary-light mt-8">{{ item.detail }}</div>
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.botUsername">Bot Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-neutral-100 text-secondary-light">@</span>
+                                    <input type="text" name="bot_username" class="form-control radius-8"
+                                           value="{% if center %}{{ center.bot_username|default:'' }}{% endif %}"
+                                           placeholder="my_bot">
                                 </div>
                             </div>
-                            {% endfor %}
+
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8" data-i18n="form.companyOrdersChannel">Orders Channel ID</label>
+                                <input type="text" name="company_orders_channel_id" class="form-control radius-8 font-monospace text-sm"
+                                       value="{% if center %}{{ center.company_orders_channel_id|default:'' }}{% endif %}"
+                                       placeholder="-1001234567890">
+                                <small class="text-secondary-light" data-i18n="form.ordersForwardedHere">Orders are forwarded here</small>
+                            </div>
+
+                            <!-- Web App URL + Webhook bar combined -->
                             <div class="col-12">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" id="bot-webapp-url" class="form-control bg-base font-monospace text-xs"
-                                           value="{% if center.subdomain %}https://{{ center.subdomain }}.{{ main_domain }}/webapp/{% endif %}"
-                                           readonly placeholder="{% trans 'Set a subdomain first' %}">
-                                    <button type="button" class="btn btn-outline-secondary" id="copy-webapp-url-btn"
-                                            onclick="copyWebAppUrl()" title="{% trans 'Copy URL' %}">
+                                <div class="p-16 radius-8 bg-neutral-50 border">
+                                    <div class="d-flex align-items-center gap-16 flex-wrap">
+                                        <!-- Web App URL -->
+                                        <div class="flex-grow-1" style="min-width:220px">
+                                            <div class="text-xs fw-semibold text-secondary-light mb-6">
+                                                <iconify-icon icon="mdi:cellphone-link" class="me-1"></iconify-icon>
+                                                <span data-i18n="form.botWebAppUrl">Bot Web App URL</span>
+                                                <span class="fw-normal ms-1" data-i18n="form.botWebAppUrlHint">(BotFather → Bot Settings → Menu Button)</span>
+                                            </div>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" id="bot-webapp-url" class="form-control bg-base font-monospace text-xs"
+                                                       value="{% if center and center.subdomain %}https://{{ center.subdomain }}.{{ main_domain }}/webapp/{% endif %}"
+                                                       readonly placeholder="Set a subdomain first">
+                                                <button type="button" class="btn btn-outline-secondary" id="copy-webapp-url-btn"
+                                                        onclick="copyWebAppUrl()" title="Copy URL">
+                                                    <iconify-icon icon="mdi:content-copy"></iconify-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {% if center and center.bot_token and request.user.is_superuser %}
+                                        <div class="vr d-none d-lg-block"></div>
+                                        <!-- Webhook Status -->
+                                        <div class="d-flex align-items-center gap-12 flex-wrap">
+                                            <div>
+                                                <div class="fw-semibold text-sm mb-2">
+                                                    <iconify-icon icon="mdi:webhook" class="me-1"></iconify-icon>
+                                                    <span data-i18n="form.webhookStatus">Webhook Status</span>
+                                                </div>
+                                                <p class="text-xs text-secondary-light mb-0" id="webhook-status" data-i18n="form.webhookClickCheck">Click "Check" to view status</p>
+                                            </div>
+                                            <div class="d-flex gap-8">
+                                                <button type="button" class="btn btn-outline-info btn-sm radius-8" onclick="checkWebhook()">
+                                                    <iconify-icon icon="mdi:information" class="me-1"></iconify-icon><span data-i18n="form.checkStatus">Check</span>
+                                                </button>
+                                                <button type="button" class="btn btn-success btn-sm radius-8" onclick="setupWebhook()">
+                                                    <iconify-icon icon="mdi:check" class="me-1"></iconify-icon><span data-i18n="form.activate">Activate</span>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger btn-sm radius-8" onclick="removeWebhook()">
+                                                    <iconify-icon icon="mdi:close" class="me-1"></iconify-icon><span data-i18n="form.deactivate">Deactivate</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════════ -->
+                    <!-- §3  Payme Integration                                  -->
+                    <!-- ══════════════════════════════════════════════════════ -->
+                    {% if center %}
+                    <div class="mb-28">
+                        <div class="d-flex align-items-center gap-8 mb-16 pb-8 border-bottom">
+                            <div class="w-28-px h-28-px radius-6 bg-success-100 d-flex align-items-center justify-content-center flex-shrink-0">
+                                <iconify-icon icon="mdi:credit-card-check" class="text-success-600 text-md"></iconify-icon>
+                            </div>
+                            <h6 class="text-md fw-semibold mb-0" data-i18n="form.paymeIntegration">Payme Integration</h6>
+                        </div>
+                        <div class="row gy-16">
+
+                            <!-- Enable toggle + Sandbox toggle side by side -->
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center justify-content-between p-12 radius-8 bg-neutral-50 border h-100">
+                                    <div>
+                                        <div class="fw-semibold text-primary-light text-sm" data-i18n="form.enablePaymePayments">Enable Payme Payments</div>
+                                        <div class="text-secondary-light text-xs mt-2" data-i18n="form.enablePaymeDesc">Users pay via Payme checkout instead of uploading a receipt</div>
+                                    </div>
+                                    <div class="form-check form-switch switch-primary ms-16 mb-0">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                               name="payme_enabled" id="payme_enabled"
+                                               {% if center.payme_enabled %}checked{% endif %}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if request.user.is_superuser %}
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center justify-content-between p-12 radius-8 bg-warning-50 border border-warning-200 h-100">
+                                    <div>
+                                        <div class="fw-semibold text-warning-700 text-sm">
+                                            <iconify-icon icon="mdi:flask-outline" class="me-1"></iconify-icon>
+                                            <span data-i18n="form.sandboxMode">Sandbox Mode</span>
+                                            <iconify-icon icon="mdi:shield-lock" class="text-warning-600 ms-1" data-bs-toggle="tooltip" title="Superadmin only"></iconify-icon>
+                                        </div>
+                                        <div class="text-secondary-light text-xs mt-2">
+                                            <strong>ON</strong> → <code>test.paycom.uz</code> (sandbox key)<br>
+                                            <strong>OFF</strong> → <code>checkout.paycom.uz</code> (prod key)
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-switch switch-warning ms-16 mb-0">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                               name="payme_sandbox" id="payme_sandbox"
+                                               {% if center.payme_sandbox %}checked{% endif %}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Merchant ID + Webhook URL side by side -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <span data-i18n="form.paymeMerchantId">Payme Merchant ID</span>
+                                    <iconify-icon icon="mdi:shield-lock" class="text-warning-600 ms-1" data-bs-toggle="tooltip" title="Superadmin only"></iconify-icon>
+                                </label>
+                                <input type="text" name="payme_merchant_id" class="form-control radius-8 font-monospace text-sm"
+                                       value="{{ center.payme_merchant_id|default:'' }}"
+                                       placeholder="64e6b8a7d1bf3f80ab123456">
+                                <small class="text-secondary-light"><span data-i18n="form.paymeMerchantIdFrom">From</span> <a href="https://merchant.payme.uz" target="_blank" class="text-primary-600">merchant.payme.uz</a></small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <iconify-icon icon="mdi:webhook" class="me-1"></iconify-icon>
+                                    <span data-i18n="form.paymeWebhookUrl">Webhook Callback URL</span>
+                                    <iconify-icon icon="mdi:shield-lock" class="text-warning-600 ms-1" data-bs-toggle="tooltip" title="Superadmin only"></iconify-icon>
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control radius-8 bg-neutral-50 font-monospace text-sm"
+                                           id="payme-webhook-url-id"
+                                           value="https://{{ main_domain }}/payme/webhook/{{ center.id }}/"
+                                           readonly>
+                                    <button type="button" class="btn btn-outline-secondary px-12"
+                                            onclick="copyPaymeWebhook('payme-webhook-url-id')" title="Copy">
                                         <iconify-icon icon="mdi:content-copy"></iconify-icon>
                                     </button>
                                 </div>
+                                <small class="text-secondary-light" data-i18n="form.paymeWebhookHint">Paste into your Payme merchant cabinet</small>
                             </div>
+
+                            <!-- Both secret keys side by side -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <iconify-icon icon="mdi:flask-outline" class="text-warning-600 me-1"></iconify-icon>
+                                    <span data-i18n="form.paymeSandboxKey">Sandbox Secret Key</span>
+                                    <iconify-icon icon="mdi:shield-lock" class="text-warning-600 ms-1" data-bs-toggle="tooltip" title="Superadmin only"></iconify-icon>
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" name="payme_secret_key" id="payme_secret_key"
+                                           class="form-control radius-8"
+                                           value="{{ center.payme_secret_key|default:'' }}"
+                                           placeholder="Sandbox key" autocomplete="new-password">
+                                    <button type="button" class="btn btn-outline-secondary px-12"
+                                            onclick="togglePaymeKey('payme_secret_key','payme-key-eye-sandbox')" title="Show / hide">
+                                        <iconify-icon icon="mdi:eye" id="payme-key-eye-sandbox"></iconify-icon>
+                                    </button>
+                                </div>
+                                <small class="text-secondary-light" data-i18n="form.paymeSandboxKeyHint">Active when Sandbox Mode is ON</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                    <iconify-icon icon="mdi:check-decagram" class="text-success-600 me-1"></iconify-icon>
+                                    <span data-i18n="form.paymeProductionKey">Production Secret Key</span>
+                                    <iconify-icon icon="mdi:shield-lock" class="text-warning-600 ms-1" data-bs-toggle="tooltip" title="Superadmin only"></iconify-icon>
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" name="payme_secret_key_prod" id="payme_secret_key_prod"
+                                           class="form-control radius-8"
+                                           value="{{ center.payme_secret_key_prod|default:'' }}"
+                                           placeholder="Production key" autocomplete="new-password">
+                                    <button type="button" class="btn btn-outline-secondary px-12"
+                                            onclick="togglePaymeKey('payme_secret_key_prod','payme-key-eye-prod')" title="Show / hide">
+                                        <iconify-icon icon="mdi:eye" id="payme-key-eye-prod"></iconify-icon>
+                                    </button>
+                                </div>
+                                <small class="text-secondary-light" data-i18n="form.paymeProductionKeyHint">Active when Sandbox Mode is OFF</small>
+                            </div>
+
+                            {% endif %}
+
                         </div>
-                        {% else %}
-                        <div class="p-16 radius-8 bg-neutral-50 border text-sm text-secondary-light">
-                            {% trans "Create the center first, then configure credentials in Django admin." %}
-                        </div>
-                        {% endif %}
                     </div>
+                    {% endif %}
 
 {% endif %}{# end if/else superuser #}
 
@@ -404,6 +556,31 @@
 <script>
 // CSRF token for all AJAX requests
 const csrfToken = '{{ csrf_token }}';
+
+function copyPaymeWebhook(elId) {
+    const el = document.getElementById(elId || 'payme-webhook-url-id');
+    if (!el) return;
+    navigator.clipboard.writeText(el.value).then(() => {
+        const btn = el.nextElementSibling;
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<iconify-icon icon="mdi:check"></iconify-icon>';
+        btn.classList.replace('btn-outline-secondary', 'btn-success');
+        setTimeout(() => { btn.innerHTML = orig; btn.classList.replace('btn-success', 'btn-outline-secondary'); }, 1800);
+    });
+}
+
+function togglePaymeKey(inputId, eyeId) {
+    const inp = document.getElementById(inputId || 'payme_secret_key');
+    const eye = document.getElementById(eyeId || 'payme-key-eye-sandbox');
+    if (!inp) return;
+    if (inp.type === 'password') {
+        inp.type = 'text';
+        eye.setAttribute('icon', 'mdi:eye-off');
+    } else {
+        inp.type = 'password';
+        eye.setAttribute('icon', 'mdi:eye');
+    }
+}
 </script>
 
 <script>
@@ -463,13 +640,13 @@ async function createNewUser() {
     
     // Validate
     if (!username || !firstName || !password) {
-        errorDiv.textContent = t('validation.requiredFields');
+        errorDiv.textContent = 'Please fill in all required fields.';
         errorDiv.classList.remove('d-none');
         return;
     }
     
     if (password.length < 6) {
-        errorDiv.textContent = t('validation.passwordMin6');
+        errorDiv.textContent = 'Password must be at least 6 characters.';
         errorDiv.classList.remove('d-none');
         return;
     }
@@ -512,17 +689,119 @@ async function createNewUser() {
             form.reset();
             
             // Show success message
-            alert(t('user.createdOwner'));
+            alert('User created successfully and selected as owner!');
         } else {
-            errorDiv.textContent = data.error || t('user.createFailed');
+            errorDiv.textContent = data.error || 'Failed to create user.';
             errorDiv.classList.remove('d-none');
         }
     } catch (e) {
-        errorDiv.textContent = `${t('common.error')}: ${e.message}`;
+        errorDiv.textContent = `Error: ${e.message}`;
         errorDiv.classList.remove('d-none');
     }
 }
 </script>
 {% endif %}
 
+{% if center and center.bot_token and request.user.is_superuser %}
+<script>
+const centerId = {{ center.id }};
+
+function updateStatus(message, type = 'info') {
+    const statusEl = document.getElementById('webhook-status');
+    statusEl.innerHTML = message;
+    statusEl.className = `text-xs mb-0 text-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'secondary'}-light`;
+}
+
+async function checkWebhook() {
+    updateStatus('Checking...', 'info');
+    try {
+        const response = await fetch(`/organizations/api/centers/${centerId}/webhook/info/`);
+        const data = await response.json();
+        
+        if (data.success) {
+            if (data.url) {
+                updateStatus(`<strong>Active:</strong> ${data.url}<br>Pending updates: ${data.pending_update_count || 0}`, 'success');
+            } else {
+                updateStatus('Webhook not configured', 'info');
+            }
+        } else {
+            updateStatus(`Error: ${data.error}`, 'error');
+        }
+    } catch (e) {
+        updateStatus(`Error: ${e.message}`, 'error');
+    }
+}
+
+async function setupWebhook() {
+    updateStatus('Setting up webhook...', 'info');
+    
+    // Prompt for ngrok URL if using local development
+    const centerSubdomain = '{{ center.subdomain|default_if_none:""|escapejs }}';
+    const suggestedUrl = centerSubdomain ? `https://${centerSubdomain}.{{ main_domain|escapejs }}` : '';
+
+    const baseUrl = prompt(
+        'Enter your public HTTPS URL (center subdomain):\n\n' +
+        'Example: https://your-center.{{ main_domain|escapejs }}\n' +
+        'Leave empty to use current domain.',
+        suggestedUrl
+    );
+    
+    if (baseUrl === null) {
+        updateStatus('Webhook setup cancelled', 'info');
+        return;
+    }
+    
+    try {
+        const formData = new URLSearchParams();
+        if (baseUrl && baseUrl.trim()) {
+            formData.append('base_url', baseUrl.trim());
+        }
+        
+        const response = await fetch(`/organizations/api/centers/${centerId}/webhook/setup/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formData
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            updateStatus(`<strong>✅ Activated:</strong> ${data.webhook_url}`, 'success');
+        } else {
+            updateStatus(`Error: ${data.error}`, 'error');
+        }
+    } catch (e) {
+        updateStatus(`Error: ${e.message}`, 'error');
+    }
+}
+
+async function removeWebhook() {
+    if (!confirm('Are you sure you want to deactivate the webhook?')) return;
+    
+    updateStatus('Removing webhook...', 'info');
+    try {
+        const response = await fetch(`/organizations/api/centers/${centerId}/webhook/remove/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+            }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            updateStatus('Webhook deactivated', 'info');
+        } else {
+            updateStatus(`Error: ${data.error}`, 'error');
+        }
+    } catch (e) {
+        updateStatus(`Error: ${e.message}`, 'error');
+    }
+}
+
+// Check status on page load
+document.addEventListener('DOMContentLoaded', checkWebhook);
+</script>
+{% endif %}
 {% endblock %}

@@ -187,7 +187,7 @@
                                 {% endif %}
                                 {% can_do 'expenses.delete' as can_delete_expense %}
                                 {% if can_delete_expense %}
-                                <form method="post" action="{% url 'generalExpenseDelete' expense.id %}" class="d-inline" onsubmit="return confirm(t('expense.deleteConfirm'))">
+                                <form method="post" action="{% url 'generalExpenseDelete' expense.id %}" class="d-inline" onsubmit="return confirm('{% trans "Delete this expense?" %}')">
                                     {% csrf_token %}
                                     <button type="submit" class="w-32-px h-32-px bg-danger-focus text-danger-main radius-8 d-flex align-items-center justify-content-center border-0 bg-transparent">
                                         <iconify-icon icon="mingcute:delete-2-line" class="menu-icon"></iconify-icon>

@@ -380,7 +380,7 @@
 </div>
 
 <style>
-/* Shared tokens */
+/* ── shared tokens (auto-adapt to dark mode) ────────────────────── */
 :root {
   --mkt-soft-bg:      rgba(var(--primary-600-rgb, 79,70,229), 0.08);
   --mkt-soft-hover:   rgba(var(--primary-600-rgb, 79,70,229), 0.14);
@@ -390,6 +390,16 @@
   --mkt-header-bg:    var(--bg-color, #f5f6fa);
   --mkt-preview-bg:   var(--neutral-100, #f3f4f6);
   --mkt-divider:      var(--border-color, rgba(209,213,219,.5));
+}
+html[data-theme="dark"] {
+  --mkt-soft-bg:      rgba(99,102,241,0.15);
+  --mkt-soft-hover:   rgba(99,102,241,0.22);
+  --mkt-soft-active:  rgba(99,102,241,0.25);
+  --mkt-badge-bg:     rgba(99,102,241,0.18);
+  --mkt-badge-color:  #a5b4fc;
+  --mkt-header-bg:    var(--neutral-100, #273142);
+  --mkt-preview-bg:   var(--neutral-200, #323d4e);
+  --mkt-divider:      rgba(255,255,255,0.08);
 }
 
 /* scope card */

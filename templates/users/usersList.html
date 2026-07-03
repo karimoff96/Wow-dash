@@ -414,12 +414,12 @@ $(document).ready(function() {
         console.log('Apply clicked. Action:', action, 'Selected:', selectedCount);
         
         if (!action) {
-            alert(t('common.selectAction'));
+            alert('Please select an action');
             return;
         }
         
         if (selectedCount === 0) {
-            alert(t('users.selectRowsFirst'));
+            alert('Please select at least one user');
             return;
         }
         
@@ -440,7 +440,7 @@ $(document).ready(function() {
         console.log('Deleting users:', selectedIds);
         
         if (selectedIds.length === 0) {
-            alert(t('users.selectRowsFirst'));
+            alert('No users selected');
             return;
         }
         
@@ -471,7 +471,7 @@ $(document).ready(function() {
                     // Reload page
                     location.reload();
                 } else {
-                    alert(t('common.error') + ': ' + response.message);
+                    alert('Error: ' + response.message);
                     $btn.prop('disabled', false).html('<iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon> <span data-i18n="common.delete">Delete</span>');
                 }
             },
@@ -479,8 +479,8 @@ $(document).ready(function() {
                 console.error('Delete error:', xhr, status, error);
                 console.error('Response:', xhr.responseText);
                 const response = xhr.responseJSON;
-                const errorMsg = response ? response.message : (xhr.responseText || t('users.bulkDeleteWarning'));
-                alert(t('common.error') + ': ' + errorMsg);
+                const errorMsg = response ? response.message : (xhr.responseText || 'Failed to delete users');
+                alert('Error: ' + errorMsg);
                 $btn.prop('disabled', false).html('<iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon> <span data-i18n="common.delete">Delete</span>');
             }
         });

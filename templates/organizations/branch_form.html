@@ -128,40 +128,25 @@
                             </h6>
                         </div>
                         
-                        {% if branch %}
-                        {% for item in branch_setup_status.items %}
                         <div class="col-md-6">
-                            <div class="p-12 radius-8 bg-neutral-50 border h-100">
-                                <div class="text-xs text-secondary-light mb-6">{{ item.label }}</div>
-                                <span class="badge {{ item.badge }} px-10 py-4 radius-6 text-xs">{{ item.value }}</span>
-                                <div class="text-xs text-secondary-light mt-8">{{ item.detail }}</div>
-                            </div>
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.b2cOrdersChannel">B2C Orders Channel ID</span>
+                            </label>
+                            <input type="text" name="b2c_orders_channel_id" class="form-control radius-8" 
+                                   value="{% if branch %}{{ branch.b2c_orders_channel_id|default:'' }}{% endif %}"
+                                   data-i18n-placeholder="form.channelIdPlaceholder" placeholder="Enter Telegram channel ID (e.g., -1001234567890)">
+                            <small class="text-secondary-light" data-i18n="form.b2cOrdersChannelHint">Orders from individual customers (non-agency)</small>
                         </div>
-                        {% endfor %}
-                        <div class="col-12">
-                            {% if user.is_superuser %}
-                            <a href="/admin/organizations/branch/{{ branch.id }}/change/" class="btn btn-outline-primary radius-8">
-                                <iconify-icon icon="mdi:cog" class="me-1"></iconify-icon>{% trans "Open Django admin" %}
-                            </a>
-                            {% else %}
-                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">{% trans "Request channel configuration change" %}</label>
-                            <div class="input-group">
-                                <input type="text" name="message" class="form-control radius-8"
-                                       placeholder="{% trans 'Describe the channel routing change needed' %}">
-                                <button type="submit" class="btn btn-outline-primary radius-8"
-                                        formaction="{% url 'request_branch_configuration_change' branch.id %}" formmethod="post">
-                                    <iconify-icon icon="mdi:send" class="me-1"></iconify-icon>{% trans "Send" %}
-                                </button>
-                            </div>
-                            {% endif %}
+                        
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                <span data-i18n="form.b2bOrdersChannel">B2B Orders Channel ID</span>
+                            </label>
+                            <input type="text" name="b2b_orders_channel_id" class="form-control radius-8" 
+                                   value="{% if branch %}{{ branch.b2b_orders_channel_id|default:'' }}{% endif %}"
+                                   data-i18n-placeholder="form.channelIdPlaceholder" placeholder="Enter Telegram channel ID (e.g., -1001234567890)">
+                            <small class="text-secondary-light" data-i18n="form.b2bOrdersChannelHint">Orders from agencies (is_agency=True)</small>
                         </div>
-                        {% else %}
-                        <div class="col-12">
-                            <div class="p-12 radius-8 bg-neutral-50 border text-sm text-secondary-light">
-                                {% trans "Telegram channel routing is configured by the setup administrator after branch creation." %}
-                            </div>
-                        </div>
-                        {% endif %}
                         
                         <div class="col-md-6">
                             <label class="form-label fw-semibold text-primary-light text-sm mb-8">
@@ -256,14 +241,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     addRegionForm.reset();
                     
                     // Show success message
-                    alert(t('location.regionCreated'));
+                    alert('Region created successfully!');
                 } else {
-                    alert(t('common.error') + ': ' + (data.error || t('location.regionCreateFailed')));
+                    alert('Error: ' + (data.error || 'Failed to create region'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert(t('location.regionCreateError'));
+                alert('An error occurred while creating the region.');
             });
         });
     }
@@ -298,14 +283,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     addDistrictForm.reset();
                     
                     // Show success message
-                    alert(t('location.districtCreated'));
+                    alert('District created successfully!');
                 } else {
-                    alert(t('common.error') + ': ' + (data.error || t('location.districtCreateFailed')));
+                    alert('Error: ' + (data.error || 'Failed to create district'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert(t('location.districtCreateError'));
+                alert('An error occurred while creating the district.');
             });
         });
     }

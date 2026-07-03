@@ -22,6 +22,7 @@ from django.utils import timezone
 from accounts.models import BotUser
 from orders.models import Order, BulkPayment, PaymentOrderLink
 from organizations.rbac import require_permission, get_user_orders, get_user_customers, get_user_branches
+from billing.decorators import require_feature, require_active_subscription
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,8 @@ def can_manage_bulk_payments(user):
 
 
 @login_required
+@require_active_subscription
+@require_feature('bulk_payments')
 @require_permission(can_manage_bulk_payments, 'You do not have permission to manage bulk payments')
 def bulk_payment_page(request):
     """

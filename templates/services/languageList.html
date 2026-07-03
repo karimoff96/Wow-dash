@@ -302,13 +302,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const branchId = branchSelect.value;
 
         if (!branchId) {
-            errorDiv.textContent = t('language.selectBranch');
+            errorDiv.textContent = 'Please select a branch.';
             errorDiv.classList.remove('d-none');
             return;
         }
 
         if (!name || !shortName) {
-            errorDiv.textContent = t('language.nameAndShortRequired');
+            errorDiv.textContent = 'Both Language Name and Short Name are required.';
             errorDiv.classList.remove('d-none');
             return;
         }
@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Disable button and show loading
         saveBtn.disabled = true;
-        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> ' + t('common.creating');
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Creating...';
         errorDiv.classList.add('d-none');
         
         // Send AJAX request
@@ -354,17 +354,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Reload page to show new language
                 setTimeout(() => window.location.reload(), 1000);
             } else {
-                errorDiv.textContent = data.error || t('language.createError');
+                errorDiv.textContent = data.error || 'An error occurred while creating the language.';
                 errorDiv.classList.remove('d-none');
                 saveBtn.disabled = false;
-                saveBtn.innerHTML = '<iconify-icon icon="mdi:content-save" class="me-1"></iconify-icon> ' + t('literal.createLanguage');
+                saveBtn.innerHTML = '<iconify-icon icon="mdi:content-save" class="me-1"></iconify-icon> Create Language';
             }
         })
         .catch(error => {
-            errorDiv.textContent = t('common.networkError');
+            errorDiv.textContent = 'Network error. Please try again.';
             errorDiv.classList.remove('d-none');
             saveBtn.disabled = false;
-            saveBtn.innerHTML = '<iconify-icon icon="mdi:content-save" class="me-1"></iconify-icon> ' + t('literal.createLanguage');
+            saveBtn.innerHTML = '<iconify-icon icon="mdi:content-save" class="me-1"></iconify-icon> Create Language';
         });
     });
 
@@ -479,17 +479,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Reload page to show updated list
                 setTimeout(() => window.location.reload(), 1500);
             } else {
-                errorDiv.textContent = data.error || t('language.deleteFailed');
+                errorDiv.textContent = data.error || 'An error occurred while deleting the language.';
                 errorDiv.classList.remove('d-none');
                 confirmDeleteBtn.disabled = false;
-                confirmDeleteBtn.innerHTML = '<iconify-icon icon="mdi:delete" class="me-1"></iconify-icon> ' + t('language.deleteLanguage');
+                confirmDeleteBtn.innerHTML = '<iconify-icon icon="mdi:delete" class="me-1"></iconify-icon> Delete Language';
             }
         })
         .catch(error => {
-            errorDiv.textContent = t('common.networkError');
+            errorDiv.textContent = 'Network error. Please try again.';
             errorDiv.classList.remove('d-none');
             confirmDeleteBtn.disabled = false;
-            confirmDeleteBtn.innerHTML = '<iconify-icon icon="mdi:delete" class="me-1"></iconify-icon> ' + t('language.deleteLanguage');
+            confirmDeleteBtn.innerHTML = '<iconify-icon icon="mdi:delete" class="me-1"></iconify-icon> Delete Language';
         });
     });
     

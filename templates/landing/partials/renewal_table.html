@@ -1,0 +1,71 @@
+{% load i18n %}
+<div class="table-responsive">
+    <table class="table align-middle mb-0">
+        <thead class="bg-neutral-50">
+            <tr>
+                <th>{% trans "Organization" %}</th>
+                <th>{% trans "Requested By" %}</th>
+                <th>{% trans "Description" %}</th>
+                <th>{% trans "Requested At" %}</th>
+                <th>{% trans "Actions" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in renewal_requests %}
+            <tr>
+                <td class="fw-semibold">
+                    {{ req.subscription.organization.name }}
+                    {% if req.subscription_id in approved_ids %}
+                        <span class="badge bg-success-100 text-success-700 ms-2">{% trans "Approved" %}</span>
+                    {% elif req.subscription_id in rejected_ids %}
+                        <span class="badge bg-danger-100 text-danger-700 ms-2">{% trans "Rejected" %}</span>
+                    {% else %}
+                        <span class="badge bg-warning-100 text-warning-700 ms-2">{% trans "Pending" %}</span>
+                    {% endif %}
+                </td>
+                <td>{{ req.performed_by.get_full_name|default:req.performed_by.email }}</td>
+                <td style="max-width: 320px; white-space: normal;">
+                    <small class="text-secondary">
+                        {{ req.description|linebreaksbr }}
+                    </small>
+                </td>
+                <td>{{ req.timestamp|date:"Y-m-d H:i" }}</td>
+                <td>
+                    {% if req.subscription_id in approved_ids %}
+                        <span class="text-success-700 fw-semibold">{% trans "Already approved" %}</span>
+                    {% elif req.subscription_id in rejected_ids %}
+                        <span class="text-danger-700 fw-semibold">{% trans "Already rejected" %}</span>
+                    {% else %}
+                        <div class="d-flex gap-2">
+                            <form method="post" action="" onsubmit="return confirm('{% trans "Approve this renewal?" %}');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="approve">
+                                <input type="hidden" name="history_id" value="{{ req.id }}">
+                                <button class="btn btn-sm btn-outline-success" title="{% trans 'Approve' %}">
+                                    <i class="ri-checkbox-circle-line"></i>
+                                </button>
+                            </form>
+                            <form method="post" action="" onsubmit="return confirm('{% trans "Reject this renewal?" %}');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="reject">
+                                <input type="hidden" name="history_id" value="{{ req.id }}">
+                                <button class="btn btn-sm btn-outline-danger" title="{% trans 'Reject' %}">
+                                    <i class="ri-close-circle-line"></i>
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center py-4 text-secondary-light">{% trans "No renewal requests found" %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="p-16">
+    {% include 'layout/pagination.html' with page_obj=renewal_requests %}
+</div>

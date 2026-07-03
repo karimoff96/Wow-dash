@@ -691,7 +691,13 @@ function formatNumber(num) {
 }
 
 function getThemeColors() {
-    return { textColor: '#6C757D', gridColor: '#E4E7EC', bgColor: '#ffffff', tooltipTheme: 'light' };
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    return {
+        textColor: isDark ? '#9CA3AF' : '#6C757D',
+        gridColor: isDark ? '#374151' : '#E4E7EC',
+        bgColor: isDark ? '#1F2937' : '#ffffff',
+        tooltipTheme: isDark ? 'dark' : 'light'
+    };
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -699,7 +705,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Weekly Revenue Chart
     const revenueOptions = {
-        series: [{ name: t('report.revenue'), data: weeklyChartData }],
+        series: [{ name: 'Revenue', data: weeklyChartData }],
         chart: { type: 'bar', height: 180, toolbar: { show: false } },
         colors: ['#487FFF'],
         plotOptions: { bar: { borderRadius: 4, columnWidth: '50%' } },
@@ -722,7 +728,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
         grid: { borderColor: colors.gridColor, strokeDashArray: 3 },
-        tooltip: { theme: 'light', x: { show: true }, y: { formatter: function(val) { return formatNumber(val) + ' UZS'; }, title: { formatter: function() { return ''; } } }, marker: { show: false } }
+        tooltip: { theme: 'dark', x: { show: true }, y: { formatter: function(val) { return formatNumber(val) + ' UZS'; }, title: { formatter: function() { return ''; } } }, marker: { show: false } }
     };
     new ApexCharts(document.querySelector("#revenueChart"), revenueOptions).render();
 
@@ -766,7 +772,7 @@ document.addEventListener('DOMContentLoaded', function() {
         colors: ['#45B369', '#F59E0B'],
         legend: { show: false },
         dataLabels: { enabled: false },
-        tooltip: { theme: 'light', fillSeriesColor: false, y: { formatter: val => val + ' ' + t('table.users'), title: { formatter: series => series } }, marker: { show: true } },
+        tooltip: { theme: 'dark', fillSeriesColor: false, y: { formatter: val => val + ' users', title: { formatter: series => series } }, marker: { show: true } },
         plotOptions: {
             pie: {
                 donut: {

@@ -60,7 +60,6 @@ def rbac_context(request):
         'can_view_financial_reports': False,
         'can_apply_discounts': False,
         'can_refund_orders': False,
-        'can_edit_price': False,
         'can_manage_bulk_payments': False,
         'can_assign_bulk_payment_permission': False,
         # Reports & Analytics
@@ -209,8 +208,6 @@ def site_settings(request):
     - main_domain: The main domain (e.g., 'alltranslation.uz')
     """
     from django.conf import settings
-
     return {
         'main_domain': getattr(settings, 'MAIN_DOMAIN', 'alltranslation.uz'),
-        'app_url_prefix': getattr(settings, 'APP_URL_PREFIX', ''),
     }

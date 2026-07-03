@@ -243,18 +243,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadLanguagesForBranch(branchId) {
         if (!branchId) {
-            langCheckboxes.innerHTML = '<p class="text-secondary-light">' + t('orders.selectBranchFirst') + '</p>';
+            langCheckboxes.innerHTML = '<p class="text-secondary-light">Select a branch first to load available languages.</p>';
             if (addLangBtn) addLangBtn.disabled = true;
             return;
         }
-        langCheckboxes.innerHTML = '<p class="text-secondary-light"><span class="spinner-border spinner-border-sm me-1"></span> ' + t('common.loading') + '</p>';
+        langCheckboxes.innerHTML = '<p class="text-secondary-light"><span class="spinner-border spinner-border-sm me-1"></span> Loading languages...</p>';
         if (addLangBtn) addLangBtn.disabled = true;
         fetch(`{% url 'getLanguagesByBranch' 0 %}`.replace('/0/', `/${branchId}/`))
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
                     if (data.languages.length === 0) {
-                        langCheckboxes.innerHTML = '<p class="text-secondary-light">' + t('language.noLanguagesForBranch') + '</p>';
+                        langCheckboxes.innerHTML = '<p class="text-secondary-light">No languages for this branch. Add one using the button above.</p>';
                     } else {
                         langCheckboxes.innerHTML = data.languages.map(l =>
                             `<div class="form-check">
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(() => {
-                langCheckboxes.innerHTML = '<p class="text-danger">' + t('language.loadFailed') + '</p>';
+                langCheckboxes.innerHTML = '<p class="text-danger">Failed to load languages.</p>';
             });
     }
 
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const shortName = languageShortNameInput.value.trim().toUpperCase();
         
         if (!name || !shortName) {
-            languageError.textContent = t('validation.bothFieldsRequired');
+            languageError.textContent = 'Both fields are required.';
             languageError.classList.remove('d-none');
             return;
         }
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Disable button and show loading
         saveLanguageBtn.disabled = true;
-        saveLanguageBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> ' + t('common.creating');
+        saveLanguageBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Creating...';
         languageError.classList.add('d-none');
         
         // Send AJAX request
@@ -338,19 +338,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 addLanguageModal.hide();
                 
                 // Show success message
-                alert(t('language.created'));
+                alert('Language created successfully!');
             } else {
                 languageError.textContent = data.error;
                 languageError.classList.remove('d-none');
             }
         })
         .catch(error => {
-            languageError.textContent = t('common.errorOccurred');
+            languageError.textContent = 'An error occurred. Please try again.';
             languageError.classList.remove('d-none');
         })
         .finally(() => {
             saveLanguageBtn.disabled = false;
-            saveLanguageBtn.innerHTML = '<iconify-icon icon="mdi:content-save" class="me-1"></iconify-icon> ' + t('literal.createLanguage');
+            saveLanguageBtn.innerHTML = '<iconify-icon icon="mdi:content-save" class="me-1"></iconify-icon> Create Language';
         });
     });
     

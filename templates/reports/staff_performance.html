@@ -284,7 +284,12 @@
 {% block script %}
 <script>
 function getThemeColors() {
-    return { textColor: '#6C757D', gridColor: '#E4E7EC', bgColor: '#ffffff', tooltipTheme: 'light' };
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    return {
+        textColor: isDark ? '#9CA3AF' : '#6C757D',
+        gridColor: isDark ? '#374151' : '#E4E7EC',
+        bgColor: isDark ? '#1F2937' : '#ffffff'
+    };
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -311,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (staffLabels.length > 0 && document.querySelector("#performanceChart")) {
         new ApexCharts(document.querySelector("#performanceChart"), {
             series: [{
-                name: t('reports.completedOrders'),
+                name: 'Completed Orders',
                 data: staffCompleted
             }],
             chart: { type: 'bar', height: 280, toolbar: { show: false } },
@@ -340,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: { style: { colors: colors.textColor, fontSize: '12px' } }
             },
             grid: { borderColor: colors.gridColor, strokeDashArray: 3 },
-            tooltip: { theme: 'light', y: { formatter: function(val) { return val + ' ' + t('table.orders'); }, title: { formatter: function() { return ''; } } }, marker: { show: false } }
+            tooltip: { theme: 'dark', y: { formatter: function(val) { return val + ' orders'; }, title: { formatter: function() { return ''; } } }, marker: { show: false } }
         }).render();
     }
 });

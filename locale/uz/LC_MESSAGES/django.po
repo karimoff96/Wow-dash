@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -11,7 +12,7 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: uz\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -55,7 +56,7 @@ msgid "Widgets"
 msgstr "Vidjetlar"
 
 msgid "Pending"
-msgstr "Kutilmoqda"
+msgstr ""
 
 msgid "Awaiting"
 msgstr "Kutilmoqda"
@@ -64,7 +65,7 @@ msgid "Received"
 msgstr "Qabul qilindi"
 
 msgid "Confirmed"
-msgstr "Tasdiqlangan"
+msgstr "Tasdiqlandi"
 
 msgid "In Process"
 msgstr "Jarayonda"
@@ -90,18 +91,20 @@ msgstr "Savdo"
 msgid "Today"
 msgstr "Bugun"
 
+#, fuzzy
 msgid "This Week"
-msgstr "Shu hafta"
+msgstr "Bu hafta"
 
 msgid "This Month"
-msgstr "Shu oy"
+msgstr "Bu oy"
 
 #, fuzzy
 msgid "This Year"
 msgstr "Shu yil"
 
+#, fuzzy
 msgid "Custom Range"
-msgstr "Maxsus oraliq"
+msgstr "Maxsus davr"
 
 msgid "Finance & Analytics"
 msgstr "Moliya va tahlil"
@@ -109,8 +112,9 @@ msgstr "Moliya va tahlil"
 msgid "Finance"
 msgstr "Moliya"
 
+#, fuzzy
 msgid "Financial Reports"
-msgstr "Moliyaviy hisobotlar"
+msgstr "Moliyaviy Hisobotlar"
 
 # Reports Views Translations
 msgid "Reports / Financial"
@@ -134,7 +138,7 @@ msgid "Reports / Staff Performance"
 msgstr "Hisobotlar / Xodimlar samaradorligi"
 
 msgid "Branch Comparison"
-msgstr "Filiallarni taqqoslash"
+msgstr "Filiallar taqqoslash"
 
 msgid "Reports / Branch Comparison"
 msgstr "Hisobotlar / Filiallarni solishtirish"
@@ -149,15 +153,16 @@ msgstr "Telegram foydalanuvchi"
 msgid "Added Manually"
 msgstr "Qo'shdi"
 
+#, fuzzy
 #| msgid "Agency"
 msgid "Agencies"
-msgstr "Agentliklar"
+msgstr "Agentlik"
 
 msgid "Regular"
-msgstr "Oddiy"
+msgstr ""
 
 msgid "Customer Analytics"
-msgstr "Mijozlar tahlili"
+msgstr "Mijoz tahlili"
 
 msgid "Reports / Customers"
 msgstr "Hisobotlar / Mijozlar"
@@ -166,7 +171,7 @@ msgid "My Statistics"
 msgstr "Mening statistikam"
 
 msgid "Your Personal Performance"
-msgstr "Shaxsiy samaradorlik ko'rsatkichlaringiz"
+msgstr "Sizning shaxsiy samaradorligingiz"
 
 msgid "Unit Economy"
 msgstr "Birlik iqtisodiyoti"
@@ -174,9 +179,10 @@ msgstr "Birlik iqtisodiyoti"
 msgid "Reports / Unit Economy"
 msgstr "Hisobotlar / Birlik iqtisodiyoti"
 
+#, fuzzy
 #| msgid "Expense Analytics"
 msgid "Expense Analytics Report"
-msgstr "Chiqimlar tahlili hisobotı"
+msgstr "Xarajat tahlili"
 
 msgid "Detailed expense analysis by center, branch, and type"
 msgstr "Markaz, filial va tur bo'yicha batafsil xarajatlar tahlili"
@@ -188,10 +194,11 @@ msgid "Leave empty for global/default settings"
 msgstr "Global/standart sozlamalar uchun bo'sh qoldiring"
 
 msgid "Bank Card Number"
-msgstr "Bank karta raqami"
+msgstr "Bank kartasi raqami"
 
 msgid "Card number for receiving payments (e.g., 8600 1234 5678 9012)"
-msgstr "To'lovlarni qabul qilish uchun karta raqami (masalan, 8600 1234 5678 9012)"
+msgstr ""
+"To'lovlarni qabul qilish uchun karta raqami (masalan, 8600 1234 5678 9012)"
 
 msgid "Card Holder Name"
 msgstr "Karta egasining ismi"
@@ -206,7 +213,7 @@ msgid "Help text shown in bot"
 msgstr "Botda ko'rsatiladigan yordam matni"
 
 msgid "Description"
-msgstr "Ta'rif"
+msgstr "Tavsif"
 
 msgid "Description of the branch/center"
 msgstr "Filial/markaz tavsifi"
@@ -233,13 +240,15 @@ msgid "Support Telegram"
 msgstr "Qo'llab-quvvatlash Telegram"
 
 msgid "Telegram username for support (e.g., @support_bot)"
-msgstr "Qo'llab-quvvatlash uchun Telegram foydalanuvchi nomi (masalan, @support_bot)"
+msgstr ""
+"Qo'llab-quvvatlash uchun Telegram foydalanuvchi nomi (masalan, @support_bot)"
 
 msgid "Guide Link"
-msgstr "Qo'llanma havolasi"
+msgstr "Yo'riqnoma havolasi"
 
 msgid "URL to a guide (Telegram message, YouTube video, documentation, etc.)"
-msgstr "Yo'riqnoma havolasi (Telegram xabar, YouTube video, hujjat va boshqalar)"
+msgstr ""
+"Yo'riqnoma havolasi (Telegram xabar, YouTube video, hujjat va boshqalar)"
 
 msgid "Reserved Field 1"
 msgstr "Zaxira maydon 1"
@@ -254,10 +263,10 @@ msgid "Reserved Field 3"
 msgstr "Zaxira maydon 3"
 
 msgid "Created At"
-msgstr "Yaratildi"
+msgstr "Yaratilgan vaqti"
 
 msgid "Updated At"
-msgstr "Yangilangan sana"
+msgstr "Yangilangan vaqti"
 
 msgid "Additional Info"
 msgstr "Qo'shimcha ma'lumot"
@@ -265,14 +274,18 @@ msgstr "Qo'shimcha ma'lumot"
 msgid "Translation Center"
 msgstr "Tarjima markazi"
 
-msgid "The center this user belongs to. Same Telegram user can have separate accounts per center."
-msgstr "Ushbu foydalanuvchi tegishli bo'lgan markaz. Bir xil Telegram foydalanuvchisi har bir markaz uchun alohida hisobga ega bo'lishi mumkin."
+msgid ""
+"The center this user belongs to. Same Telegram user can have separate "
+"accounts per center."
+msgstr ""
+"Ushbu foydalanuvchi tegishli bo'lgan markaz. Bir xil Telegram "
+"foydalanuvchisi har bir markaz uchun alohida hisobga ega bo'lishi mumkin."
 
 msgid "Telegram User ID"
 msgstr "Telegram foydalanuvchi ID"
 
 msgid "Username"
-msgstr "Login"
+msgstr "Foydalanuvchi nomi"
 
 msgid "Full Name"
 msgstr "To'liq ism"
@@ -343,13 +356,15 @@ msgstr "Bot foydalanuvchi holati"
 msgid "Bot User States"
 msgstr "Bot foydalanuvchi holatlari"
 
+#, fuzzy
 #| msgid "All Users"
 msgid "Add User"
-msgstr "Foydalanuvchi qo'shish"
+msgstr "Barcha foydalanuvchilar"
 
+#, fuzzy
 #| msgid "User Agent"
 msgid "Users List"
-msgstr "Foydalanuvchilar ro'yxati"
+msgstr "Foydalanuvchi agenti"
 
 msgid "Used in Tariffs"
 msgstr ""
@@ -492,12 +507,13 @@ msgstr "Davr"
 msgid "Trial subscription information"
 msgstr "Biz haqimizda ma'lumot"
 
+#, fuzzy
 #| msgid "About us information"
 msgid "Payment Information"
-msgstr "To'lov ma'lumotlari"
+msgstr "Biz haqimizda ma'lumot"
 
 msgid "Status"
-msgstr "Status"
+msgstr "Holat"
 
 msgid "Days Left"
 msgstr ""
@@ -517,7 +533,8 @@ msgstr "Davr"
 msgid "No admin profile found."
 msgstr ""
 
-msgid "Your subscription has expired or is not active. Please renew to continue."
+msgid ""
+"Your subscription has expired or is not active. Please renew to continue."
 msgstr ""
 
 msgid "No active subscription found."
@@ -526,17 +543,22 @@ msgstr ""
 msgid "This feature is not available in your current plan. Please upgrade."
 msgstr ""
 
-msgid "You have reached your branch limit. Upgrade your plan to add more branches."
+msgid ""
+"You have reached your branch limit. Upgrade your plan to add more branches."
 msgstr ""
 
 msgid "You have reached your staff limit. Upgrade your plan to add more users."
 msgstr ""
 
-msgid "You have reached your monthly order limit. Upgrade your plan or wait for next month."
+msgid ""
+"You have reached your monthly order limit. Upgrade your plan or wait for "
+"next month."
 msgstr ""
 
 #, python-format
-msgid "You have reached your monthly broadcast limit (%(used)s/%(limit)s). Upgrade your plan or wait for next month."
+msgid ""
+"You have reached your monthly broadcast limit (%(used)s/%(limit)s). Upgrade "
+"your plan or wait for next month."
 msgstr ""
 
 msgid "Feature Code"
@@ -698,7 +720,8 @@ msgstr "Excel ga eksport qilish"
 msgid "Debt & Receivables Tracking"
 msgstr ""
 
-msgid "Unit economy analytics: outstanding balances, top debtors, collection rates"
+msgid ""
+"Unit economy analytics: outstanding balances, top debtors, collection rates"
 msgstr ""
 
 # Feature Names - Integration (4)
@@ -756,13 +779,13 @@ msgid "Create custom staff roles with RBAC"
 msgstr ""
 
 msgid "Branch Settings"
-msgstr "Filial sozlamalari"
+msgstr "Filial Sozlamalari"
 
 msgid "Customize settings per branch"
 msgstr ""
 
 msgid "Agency Management"
-msgstr "Agentliklar boshqaruvi"
+msgstr ""
 
 msgid "Create and manage B2B agency partners with agency-specific pricing"
 msgstr ""
@@ -802,7 +825,9 @@ msgstr "Mijozlarning to'lanmagan qarzlarini kuzatish va boshqarish"
 msgid "General (Operating) Expenses"
 msgstr "Yangi operatsion xarajat"
 
-msgid "Track operational costs: rent, salaries, stationery, repairs — not tied to individual orders"
+msgid ""
+"Track operational costs: rent, salaries, stationery, repairs — not tied to "
+"individual orders"
 msgstr ""
 
 msgid "Comprehensive Audit Logs"
@@ -874,7 +899,7 @@ msgid "Duration (Months)"
 msgstr ""
 
 msgid "Price"
-msgstr "Narx"
+msgstr ""
 
 msgid "Currency"
 msgstr ""
@@ -906,13 +931,15 @@ msgstr "To'lov kutilmoqda"
 msgid "Pricing Plan"
 msgstr ""
 
+#, fuzzy
 #| msgid "Extra Data"
 msgid "Start Date"
-msgstr "Boshlanish sanasi"
+msgstr "Qo'shimcha ma'lumotlar"
 
+#, fuzzy
 #| msgid "Date"
 msgid "End Date"
-msgstr "Tugash sanasi"
+msgstr "Sana"
 
 msgid "Is Trial Subscription"
 msgstr ""
@@ -928,31 +955,34 @@ msgstr ""
 msgid "Amount Paid"
 msgstr "Summa"
 
+#, fuzzy
 #| msgid "Payment Type"
 msgid "Payment Date"
-msgstr "To'lov sanasi"
+msgstr "To'lov turi"
 
 msgid "Payment Method"
 msgstr "To'lov usuli"
 
+#, fuzzy
 #| msgid "Translation Center"
 msgid "Transaction ID"
-msgstr "Tranzaksiya ID"
+msgstr "Tarjima markazi"
 
 msgid "Notes"
-msgstr "Izohlar"
+msgstr ""
 
 msgid "Created By"
-msgstr "Yaratdi"
+msgstr ""
 
 #, fuzzy
 #| msgid "Description"
 msgid "Subscription"
 msgstr "Tavsif"
 
+#, fuzzy
 #| msgid "Description"
 msgid "Subscriptions"
-msgstr "Obunalar"
+msgstr "Tavsif"
 
 #, fuzzy
 msgid "Year"
@@ -983,25 +1013,28 @@ msgstr "Soni"
 msgid "Marketing Posts Sent"
 msgstr "Marketing Vositalari"
 
+#, fuzzy
 #| msgid "Total Received"
 msgid "Total Revenue"
-msgstr "Jami daromad"
+msgstr "Jami qabul qilindi"
 
 #, fuzzy
 #| msgid "No Orders"
 msgid "Bot Orders"
 msgstr "Buyurtmalar yo'q"
 
+#, fuzzy
 #| msgid "All Orders"
 msgid "Manual Orders"
-msgstr "Qo'lda buyurtmalar"
+msgstr "Barcha buyurtmalar"
 
+#, fuzzy
 #| msgid "Expense Tracking"
 msgid "Usage Tracking"
-msgstr "Foydalanishni kuzatish"
+msgstr "Xarajatlarni Kuzatish"
 
 msgid "Action"
-msgstr "Amallar"
+msgstr "Harakat"
 
 #, fuzzy
 #| msgid "Processed By"
@@ -1062,7 +1095,7 @@ msgid "Subscription status updated successfully!"
 msgstr ""
 
 msgid "Tariff Plans"
-msgstr "Tarif rejalar"
+msgstr ""
 
 msgid "Tariff created successfully!"
 msgstr ""
@@ -1071,7 +1104,9 @@ msgid "Tariff updated successfully!"
 msgstr "Tarif muvaffaqiyatli yangilandi!"
 
 #, python-brace-format
-msgid "Cannot delete tariff '{tariff.title}'. It has {subscription_count} subscription(s) associated with it."
+msgid ""
+"Cannot delete tariff '{tariff.title}'. It has {subscription_count} "
+"subscription(s) associated with it."
 msgstr ""
 
 #, python-brace-format
@@ -1083,9 +1118,10 @@ msgstr ""
 msgid "All Translation Centers"
 msgstr "Tarjima markazi"
 
+#, fuzzy
 #| msgid "Center"
 msgid "Centers"
-msgstr "Markazlar"
+msgstr "Markaz"
 
 msgid "This subscription is not a trial subscription."
 msgstr ""
@@ -1154,7 +1190,9 @@ msgstr "Tavsif"
 msgid "Please select a subscription duration."
 msgstr "Mijozni tanlang"
 
-msgid "Your renewal request has been submitted successfully! Our team will contact you shortly to process the payment."
+msgid ""
+"Your renewal request has been submitted successfully! Our team will contact "
+"you shortly to process the payment."
 msgstr ""
 
 #, fuzzy
@@ -1196,7 +1234,9 @@ msgstr "Buyurtmalar yo'q"
 msgid "Archived Orders"
 msgstr "Barcha buyurtmalar"
 
-msgid "Manual archiving should be triggered from the center's admin page or via management command."
+msgid ""
+"Manual archiving should be triggered from the center's admin page or via "
+"management command."
 msgstr ""
 
 msgid "Trigger manual archive"
@@ -1320,7 +1360,7 @@ msgid "Audit Log"
 msgstr "Audit yozuvi"
 
 msgid "Audit Logs"
-msgstr "Audit jurnallari"
+msgstr "Audit yozuvlari"
 
 msgid "Receipt Pending Verification"
 msgstr "Kvitansiya tekshirilishi kutilmoqda"
@@ -1334,9 +1374,10 @@ msgstr "Buyurtma bekor qilindi"
 msgid "Order Completed"
 msgstr "Buyurtma bajarildi"
 
+#, fuzzy
 #| msgid "status.paymentConfirmed"
 msgid "Payment Confirmed"
-msgstr "To'lov tasdiqlandi"
+msgstr "Tasdiqlandi"
 
 msgid "New User Registered"
 msgstr "Yangi foydalanuvchi ro'yxatdan o'tdi"
@@ -1349,8 +1390,9 @@ msgstr "Yangi agentlik ro'yxatdan o'tdi"
 msgid "Order Overdue"
 msgstr "Buyurtma mediasi"
 
+#, fuzzy
 msgid "Type"
-msgstr "Turi"
+msgstr "Tur"
 
 msgid "Message"
 msgstr "Xabar"
@@ -1416,9 +1458,10 @@ msgstr "Telegram foydalanuvchi ID"
 msgid "Channel ID where archive is uploaded"
 msgstr ""
 
+#, fuzzy
 #| msgid "No Orders"
 msgid "Total Orders"
-msgstr "Jami buyurtmalar"
+msgstr "Buyurtmalar yo'q"
 
 msgid "Number of orders included in archive"
 msgstr ""
@@ -1446,9 +1489,10 @@ msgstr ""
 msgid "File Archive"
 msgstr "Tarixiy Fayl Arxivlari"
 
+#, fuzzy
 #| msgid "Admin Notifications"
 msgid "Notifications"
-msgstr "Bildirishnomalar"
+msgstr "Admin bildirisnomalari"
 
 #, fuzzy
 #| msgid "Admin Notifications"
@@ -1462,21 +1506,23 @@ msgid "System activity and audit trail"
 msgstr "Tizim faoliyati va audit izi"
 
 msgid "New"
-msgstr "Yangi"
+msgstr ""
 
+#, fuzzy
 #| msgid "Content"
 msgid "Contacted"
-msgstr "Bog'lanildi"
+msgstr "Kontent"
 
 msgid "Converted"
-msgstr "Konvertatsiya qilindi"
+msgstr ""
 
+#, fuzzy
 #| msgid "Companies"
 msgid "Company"
-msgstr "Kompaniya"
+msgstr "Kompaniyalar"
 
 msgid "Phone"
-msgstr "Telefon"
+msgstr ""
 
 msgid "Internal Notes"
 msgstr ""
@@ -1538,7 +1584,7 @@ msgid "Targeting"
 msgstr "Maqsadli auditoriya"
 
 msgid "Scheduling"
-msgstr "Rejalashtirish"
+msgstr "Rejalash"
 
 msgid "Errors"
 msgstr "Xatolar"
@@ -1571,7 +1617,7 @@ msgid "Sent"
 msgstr "Yuborildi"
 
 msgid "Paused"
-msgstr "To'xtatildi"
+msgstr "To'xtatilgan"
 
 msgid "Failed"
 msgstr "Muvaffaqiyatsiz"
@@ -1592,19 +1638,19 @@ msgid "Internal title for identification"
 msgstr ""
 
 msgid "Message Content"
-msgstr "Xabar matni"
+msgstr ""
 
 msgid "Message text (supports HTML: <b>, <i>, <a>, <code>)"
 msgstr ""
 
 msgid "Media File"
-msgstr "Media fayl"
+msgstr ""
 
 msgid "Image, video, or document to send with message"
 msgstr ""
 
 msgid "Target Scope"
-msgstr "Nishon doirasi"
+msgstr ""
 
 msgid "Target Center"
 msgstr ""
@@ -1653,7 +1699,7 @@ msgid "Leave empty to send immediately"
 msgstr ""
 
 msgid "Total Recipients"
-msgstr "Jami qabul qiluvchilar"
+msgstr ""
 
 msgid "Sent Count"
 msgstr ""
@@ -1665,10 +1711,10 @@ msgid "Failed Count"
 msgstr ""
 
 msgid "Sent At"
-msgstr "Yuborildi"
+msgstr ""
 
 msgid "Completed At"
-msgstr "Yakunlandi"
+msgstr ""
 
 msgid "Last Error"
 msgstr ""
@@ -1677,13 +1723,13 @@ msgid "Marketing Post"
 msgstr ""
 
 msgid "Marketing Posts"
-msgstr "Marketing postlari"
+msgstr "Marketing postlar"
 
 msgid "All Platform Users"
 msgstr ""
 
 msgid "Delivered"
-msgstr "Yetkazildi"
+msgstr ""
 
 msgid "Blocked by User"
 msgstr ""
@@ -1826,7 +1872,7 @@ msgid "Marketing post updated successfully."
 msgstr ""
 
 msgid "Edit Marketing Post"
-msgstr "Postni tahrirlash"
+msgstr ""
 
 msgid "You don't have access to delete this post."
 msgstr ""
@@ -1882,7 +1928,7 @@ msgid "Payment processed successfully"
 msgstr ""
 
 msgid "Payment History"
-msgstr "To'lovlar tarixi"
+msgstr "To'lov tarixi"
 
 msgid "Payment History - Full Report"
 msgstr "To'lov tarixi - To'liq hisobot"
@@ -1910,8 +1956,9 @@ msgstr "Buyurtma fayli"
 msgid "Order media"
 msgstr "Buyurtma mediasi"
 
+#, fuzzy
 msgid "Cash"
-msgstr "Naqd"
+msgstr "To'liq hisobot"
 
 msgid "Card"
 msgstr "Karta"
@@ -1949,7 +1996,8 @@ msgstr "Jami sahifalar"
 msgid "Translation Language"
 msgstr "Tarjima tili"
 
-msgid "The target language selected by user from category's available languages"
+msgid ""
+"The target language selected by user from category's available languages"
 msgstr "Foydalanuvchi kategoriyaning mavjud tillaridan tanlagan maqsadli til"
 
 msgid "Payment Type"
@@ -1982,9 +2030,10 @@ msgstr "Nusxalar soni"
 msgid "Additional copies needed (0 means only original)"
 msgstr "Qo'shimcha nusxalar kerak (0 faqat asl nusxani anglatadi)"
 
+#, fuzzy
 #| msgid "Admin Notifications"
 msgid "Name Clarifications"
-msgstr "Ism aniqlashtirmalari"
+msgstr "Admin bildirisnomalari"
 
 msgid "Full names typed by the user to avoid misreading handwriting"
 msgstr ""
@@ -1993,7 +2042,7 @@ msgid "Files"
 msgstr "Fayllar"
 
 msgid "Additional Supply Documents"
-msgstr "Qo'shimcha ta'minot hujjatlari"
+msgstr ""
 
 msgid "Supplementary documents provided alongside the main order files"
 msgstr ""
@@ -2020,7 +2069,7 @@ msgid "Total amount received so far"
 msgstr ""
 
 msgid "Extra Fee"
-msgstr "Qo'shimcha to'lov"
+msgstr ""
 
 msgid "Additional charges (rush fee, special handling, etc.)"
 msgstr ""
@@ -2099,7 +2148,7 @@ msgid "File ID from Telegram for quick access"
 msgstr ""
 
 msgid "Amount"
-msgstr "Miqdor"
+msgstr "Summa"
 
 msgid "Amount claimed in this receipt"
 msgstr ""
@@ -2129,14 +2178,15 @@ msgid "Verified At"
 msgstr ""
 
 msgid "Receipts"
-msgstr "Kvitansiyalar"
+msgstr ""
 
 msgid "Bank Transfer"
 msgstr "Bank o'tkazmasi"
 
+#, fuzzy
 #| msgid "Payment"
 msgid "Card Payment"
-msgstr "Karta to'lovi"
+msgstr "To'lov"
 
 msgid "Customer"
 msgstr "Mijoz"
@@ -2144,9 +2194,10 @@ msgstr "Mijoz"
 msgid "The customer/agency who made the payment"
 msgstr ""
 
+#, fuzzy
 #| msgid "payment.paidAmount"
 msgid "Payment Amount"
-msgstr "To'lov miqdori"
+msgstr "To'langan summa"
 
 msgid "Total amount received from customer"
 msgstr ""
@@ -2163,7 +2214,7 @@ msgid "Uploaded receipt image/PDF for card payments"
 msgstr ""
 
 msgid "Processed By"
-msgstr "Qabul qildi"
+msgstr "Qayta ishlagan"
 
 msgid "Admin user who recorded this payment"
 msgstr ""
@@ -2193,21 +2244,23 @@ msgstr "Qoldiq qarz"
 msgid "Customer remaining debt after this payment"
 msgstr ""
 
+#, fuzzy
 #| msgid "Total Payments"
 msgid "Bulk Payments"
-msgstr "Ommaviy to'lovlar"
+msgstr "Jami to'lovlar"
 
 #, fuzzy
 #| msgid "Total Price"
 msgid "Old Price"
 msgstr "Jami narx"
 
+#, fuzzy
 #| msgid "New Order"
 msgid "New Price"
-msgstr "Yangi narx"
+msgstr "Yangi buyurtma"
 
 msgid "Reason"
-msgstr "Sabab"
+msgstr ""
 
 msgid "Why was the price changed?"
 msgstr ""
@@ -2332,9 +2385,10 @@ msgstr ""
 msgid "Last Response Payload"
 msgstr ""
 
+#, fuzzy
 #| msgid "Payment Tracking & Recording"
 msgid "Payme Transaction"
-msgstr "Payme tranzaksiyasi"
+msgstr "To'lovlarni Kuzatish va Yozib Olish"
 
 #, fuzzy
 #| msgid "Payment Tracking & Recording"
@@ -2368,69 +2422,75 @@ msgstr "Buyurtmani tahrirlash"
 msgid "Orders Assigned to Me"
 msgstr "Menga tayinlangan buyurtmalar"
 
-msgid "Please select a customer or enable manual order and fill in customer details"
-msgstr "Mijozni tanlang yoki qo'lda buyurtmani yoqib, mijoz ma'lumotlarini to'ldiring"
+msgid ""
+"Please select a customer or enable manual order and fill in customer details"
+msgstr ""
 
 msgid "Please provide customer's first name and phone number for manual orders"
-msgstr "Qo'lda yaratiladigan buyurtma uchun mijoz ismi va telefon raqamini kiriting"
+msgstr ""
 
 msgid "Please fill in all required fields (product and branch)"
-msgstr "Barcha majburiy maydonlarni to'ldiring (mahsulot va filial)"
+msgstr ""
 
 msgid "You don't have access to the selected customer."
-msgstr "Sizda tanlangan mijozga kirish huquqi yo'q."
+msgstr ""
 
 msgid "You don't have access to the selected branch."
-msgstr "Sizda tanlangan filialga kirish huquqi yo'q."
+msgstr ""
 
 msgid "Order created successfully"
-msgstr "Buyurtma muvaffaqiyatli yaratildi"
+msgstr ""
 
+#, fuzzy
 #| msgid "Current Order"
 msgid "Create Order"
-msgstr "Buyurtma yaratish"
+msgstr "Joriy buyurtma"
 
 msgid "Create a new order manually"
-msgstr "Yangi buyurtmani qo'lda yarating"
+msgstr ""
 
 msgid "Subdomain"
-msgstr "Subdomen"
+msgstr ""
 
-msgid "Unique subdomain for this center (e.g., 'center1' for center1.alltranslation.uz)"
+msgid ""
+"Unique subdomain for this center (e.g., 'center1' for center1.alltranslation."
+"uz)"
 msgstr ""
 
 msgid "Owner"
-msgstr "Egasi"
+msgstr ""
 
 msgid "Logo"
 msgstr ""
 
 msgid "Address"
-msgstr "Manzil"
+msgstr ""
 
 msgid "Location URL"
-msgstr "Manzil URL"
+msgstr ""
 
 msgid "Google Maps or Yandex Maps URL"
 msgstr ""
 
 msgid "Bot Token"
-msgstr "Bot tokeni"
+msgstr ""
 
 msgid "Telegram Bot Token for this center (unique, superuser only)"
 msgstr ""
 
+#, fuzzy
 #| msgid "Username"
 msgid "Bot Username"
-msgstr "Bot foydalanuvchi nomi"
+msgstr "Foydalanuvchi nomi"
 
 #, fuzzy
 #| msgid "Telegram username for support (e.g., @support_bot)"
 msgid "Telegram Bot username without @ (e.g., 'my_translation_bot')"
-msgstr "Qo'llab-quvvatlash uchun Telegram foydalanuvchi nomi (masalan, @support_bot)"
+msgstr ""
+"Qo'llab-quvvatlash uchun Telegram foydalanuvchi nomi (masalan, @support_bot)"
 
 msgid "Company Orders Channel ID"
-msgstr "Kompaniya buyurtmalari kanali ID"
+msgstr ""
 
 msgid "Telegram channel ID for all company orders and file archives"
 msgstr ""
@@ -2440,14 +2500,19 @@ msgstr ""
 msgid "Payme Enabled"
 msgstr "To'lov turi"
 
-msgid "Enable Payme card payment integration for this center. When enabled, bot users are redirected to Payme checkout instead of uploading a receipt."
+msgid ""
+"Enable Payme card payment integration for this center. When enabled, bot "
+"users are redirected to Payme checkout instead of uploading a receipt."
 msgstr ""
 
+#, fuzzy
 #| msgid "Payment Type"
 msgid "Payme Merchant ID"
-msgstr "Payme Merchant ID"
+msgstr "To'lov turi"
 
-msgid "Per-center Payme merchant ID. Leave blank to use the global PAYME_MERCHANT_ID setting."
+msgid ""
+"Per-center Payme merchant ID. Leave blank to use the global "
+"PAYME_MERCHANT_ID setting."
 msgstr ""
 
 msgid "Payme Sandbox Secret Key"
@@ -2467,26 +2532,28 @@ msgstr ""
 msgid "Payme Sandbox Mode"
 msgstr "To'lov usuli"
 
-msgid "Use Payme test environment (test.paycom.uz). Enable while testing; disable when going live with production credentials."
+msgid ""
+"Use Payme test environment (test.paycom.uz). Enable while testing; disable "
+"when going live with production credentials."
 msgstr ""
 
 msgid "Translation Centers"
-msgstr "Tarjima markazlari"
+msgstr ""
 
 msgid "Cannot delete center with active bot token. Remove the bot token first."
 msgstr ""
 
 msgid "Main Branch"
-msgstr "Asosiy filial"
+msgstr ""
 
 msgid "B2C Orders Channel ID"
-msgstr "B2C buyurtmalar kanali ID"
+msgstr ""
 
 msgid "Telegram channel ID for B2C (individual customer) orders"
 msgstr ""
 
 msgid "B2B Orders Channel ID"
-msgstr "B2B buyurtmalar kanali ID"
+msgstr ""
 
 msgid "Telegram channel ID for B2B (agency/business) orders"
 msgstr ""
@@ -2501,13 +2568,13 @@ msgid "Branches"
 msgstr "Filiallar"
 
 msgid "Display Name"
-msgstr "Ko'rsatiladigan nom"
+msgstr ""
 
 msgid "System Role"
 msgstr ""
 
 msgid "System roles cannot be deleted"
-msgstr "Tizim rollarini o'chirib bo'lmaydi"
+msgstr ""
 
 msgid "Can manage centers (full access)"
 msgstr ""
@@ -2841,7 +2908,8 @@ msgstr ""
 msgid "Can manage bulk payments"
 msgstr "Moliya va to'lovlar"
 
-msgid "Can process bulk payments for customer/agency debts across multiple orders"
+msgid ""
+"Can process bulk payments for customer/agency debts across multiple orders"
 msgstr ""
 
 msgid "Can assign bulk payment permission"
@@ -2851,247 +2919,255 @@ msgid "Can grant the bulk payment permission to other users"
 msgstr ""
 
 msgid "Role"
-msgstr "Rol"
+msgstr ""
 
 msgid "Roles"
 msgstr ""
 
 msgid "Center Management"
-msgstr "Markaz boshqaruvi"
+msgstr ""
 
 msgid "Branch Management"
-msgstr "Filial boshqaruvi"
+msgstr ""
 
 msgid "Staff Management"
-msgstr "Xodimlar boshqaruvi"
+msgstr ""
 
 msgid "Order Management"
-msgstr "Buyurtmalar boshqaruvi"
+msgstr ""
 
 msgid "Financial"
-msgstr "Moliya"
+msgstr "Moliyaviy"
 
 msgid "Reports & Analytics"
-msgstr "Hisobotlar va tahlil"
+msgstr ""
 
 msgid "Products"
 msgstr "Mahsulotlar"
 
 msgid "Expenses"
-msgstr "Xarajatlar"
+msgstr ""
 
 msgid "Languages"
 msgstr "Tillar"
 
 msgid "Customers"
-msgstr "Mijozlar"
+msgstr ""
 
 msgid "Marketing & Broadcasts"
-msgstr "Marketing va xabarlar"
+msgstr ""
 
 msgid "Full Center Management"
-msgstr "To'liq markaz boshqaruvi"
+msgstr ""
 
 msgid "View Centers"
-msgstr "Markazlarni ko'rish"
+msgstr ""
 
 msgid "Create Centers"
-msgstr "Markaz yaratish"
+msgstr ""
 
 msgid "Edit Centers"
-msgstr "Markazlarni tahrirlash"
+msgstr ""
 
 msgid "Delete Centers"
-msgstr "Markazlarni o'chirish"
+msgstr ""
 
 msgid "Full Branch Management"
-msgstr "To'liq filial boshqaruvi"
+msgstr ""
 
 msgid "View Branches"
-msgstr "Filiallarni ko'rish"
+msgstr ""
 
 msgid "Create Branches"
-msgstr "Filial yaratish"
+msgstr ""
 
 msgid "Edit Branches"
-msgstr "Filiallarni tahrirlash"
+msgstr ""
 
 msgid "Delete Branches"
-msgstr "Filiallarni o'chirish"
+msgstr ""
 
 msgid "Full Staff Management"
-msgstr "To'liq xodimlar boshqaruvi"
+msgstr ""
 
 msgid "View Staff"
-msgstr "Xodimlarni ko'rish"
+msgstr ""
 
 msgid "Create Staff"
-msgstr "Xodim yaratish"
+msgstr ""
 
 msgid "Edit Staff"
-msgstr "Xodimlarni tahrirlash"
+msgstr ""
 
 msgid "Delete Staff"
 msgstr ""
 
 msgid "Full Order Management"
-msgstr "To'liq buyurtmalarni boshqarish"
+msgstr ""
 
 msgid "View All Orders"
-msgstr "Barcha buyurtmalarni ko'rish"
+msgstr ""
 
 msgid "View Own Orders"
-msgstr "O'z buyurtmalarini ko'rish"
+msgstr ""
 
 msgid "Create Orders"
-msgstr "Buyurtma yaratish"
+msgstr ""
 
 msgid "Edit Orders"
-msgstr "Buyurtmalarni tahrirlash"
+msgstr ""
 
 msgid "Delete Orders"
-msgstr "Buyurtmalarni o'chirish"
+msgstr ""
 
 msgid "Assign Orders"
-msgstr "Buyurtma tayinlash"
+msgstr ""
 
 msgid "Update Order Status"
-msgstr "Buyurtma holatini yangilash"
+msgstr ""
 
 msgid "Complete Orders"
-msgstr "Buyurtmani yakunlash"
+msgstr ""
 
 msgid "Cancel Orders"
-msgstr "Buyurtmani bekor qilish"
+msgstr ""
 
 msgid "Full Financial Management"
-msgstr "To'liq moliya boshqaruvi"
+msgstr ""
 
 msgid "Receive Payments"
-msgstr "To'lovlarni qabul qilish"
+msgstr ""
 
 msgid "View Financial Reports"
-msgstr "Moliyaviy hisobotlarni ko'rish"
+msgstr ""
 
 msgid "Apply Discounts"
-msgstr "Chegirmalar qo'llash"
+msgstr ""
 
 msgid "Refund Orders"
-msgstr "Buyurtmalarni qaytarish"
+msgstr ""
 
 msgid "Full Reports Management"
-msgstr "To'liq hisobotlar boshqaruvi"
+msgstr ""
 
 msgid "View Reports"
-msgstr "Hisobotlarni ko'rish"
+msgstr ""
 
 msgid "View Analytics"
-msgstr "Tahlillarni ko'rish"
+msgstr ""
 
 msgid "Export Data"
-msgstr "Ma'lumotlarni eksport qilish"
+msgstr ""
 
 msgid "Full Product Management"
-msgstr "To'liq mahsulotlar boshqaruvi"
+msgstr ""
 
 msgid "View Products"
-msgstr "Mahsulotlarni ko'rish"
+msgstr ""
 
 msgid "Create Products"
-msgstr "Mahsulot yaratish"
+msgstr ""
 
 msgid "Edit Products"
-msgstr "Mahsulotlarni tahrirlash"
+msgstr ""
 
 msgid "Delete Products"
-msgstr "Mahsulotlarni o'chirish"
+msgstr ""
 
 msgid "Full Expense Management"
-msgstr "To'liq xarajatlar boshqaruvi"
+msgstr ""
 
+#, fuzzy
 #| msgid "View Changes"
 msgid "View Expenses"
-msgstr "Xarajatlarni ko'rish"
+msgstr "O'zgarishlarni ko'rish"
 
+#, fuzzy
 #| msgid "services.expenses"
 msgid "Create Expenses"
-msgstr "Xarajat yaratish"
+msgstr "Xarajatlar"
 
 msgid "Edit Expenses"
-msgstr "Xarajatlarni tahrirlash"
+msgstr ""
 
+#, fuzzy
 #| msgid "services.expenses"
 msgid "Delete Expenses"
-msgstr "Xarajatlarni o'chirish"
+msgstr "Xarajatlar"
 
 msgid "Full Language Management"
-msgstr "To'liq tillar boshqaruvi"
+msgstr ""
 
+#, fuzzy
 #| msgid "Languages"
 msgid "View Languages"
-msgstr "Tillarni ko'rish"
+msgstr "Tillar"
 
+#, fuzzy
 #| msgid "Languages"
 msgid "Create Languages"
-msgstr "Til qo'shish"
+msgstr "Tillar"
 
+#, fuzzy
 #| msgid "Languages"
 msgid "Edit Languages"
-msgstr "Tillarni tahrirlash"
+msgstr "Tillar"
 
+#, fuzzy
 #| msgid "Languages"
 msgid "Delete Languages"
-msgstr "Tillarni o'chirish"
+msgstr "Tillar"
 
 msgid "Full Customer Management"
-msgstr "To'liq mijozlar boshqaruvi"
+msgstr ""
 
 msgid "View Customers"
-msgstr "Mijozlarni ko'rish"
+msgstr ""
 
 msgid "Edit Customers"
-msgstr "Mijozlarni tahrirlash"
+msgstr ""
 
 msgid "Delete Customers"
-msgstr "Mijozlarni o'chirish"
+msgstr ""
 
 msgid "Full Marketing Management"
-msgstr "To'liq marketing boshqaruvi"
+msgstr ""
 
 msgid "Create Marketing Posts"
-msgstr "Marketing e'lonlari yaratish"
+msgstr ""
 
 msgid "Send Branch Broadcasts"
-msgstr "Filial uchun xabar yuborish"
+msgstr ""
 
 msgid "Send Center Broadcasts"
-msgstr "Markaz uchun xabar yuborish"
+msgstr ""
 
 msgid "View Broadcast Stats"
-msgstr "Xabar statistikasini ko'rish"
+msgstr ""
 
 msgid "Manage Branch Settings"
 msgstr ""
 
 msgid "View Branch Settings"
-msgstr "Filial sozlamalarini ko'rish"
+msgstr ""
 
 msgid "Full Agency Management"
-msgstr "To'liq agentliklar boshqaruvi"
+msgstr ""
 
 msgid "View Agencies"
-msgstr "Agentliklarni ko'rish"
+msgstr ""
 
 msgid "Create Agencies"
-msgstr "Agentlik yaratish"
+msgstr ""
 
 msgid "Edit Agencies"
-msgstr "Agentliklarni tahrirlash"
+msgstr ""
 
 msgid "Delete Agencies"
-msgstr "Agentliklarni o'chirish"
+msgstr ""
 
-msgid "Full control over all center operations - overrides individual permissions"
+msgid ""
+"Full control over all center operations - overrides individual permissions"
 msgstr ""
 
 msgid "View translation center details and settings"
@@ -3106,7 +3182,8 @@ msgstr ""
 msgid "Delete translation centers (requires removing bot token first)"
 msgstr ""
 
-msgid "Full control over all branch operations - overrides individual permissions"
+msgid ""
+"Full control over all branch operations - overrides individual permissions"
 msgstr ""
 
 msgid "View branch details and settings"
@@ -3121,7 +3198,8 @@ msgstr ""
 msgid "Delete branches from the system"
 msgstr ""
 
-msgid "Full control over all staff operations - overrides individual permissions"
+msgid ""
+"Full control over all staff operations - overrides individual permissions"
 msgstr ""
 
 msgid "View staff profiles and details"
@@ -3136,7 +3214,8 @@ msgstr ""
 msgid "Remove staff members from the system"
 msgstr ""
 
-msgid "Full control over all order operations - overrides individual permissions"
+msgid ""
+"Full control over all order operations - overrides individual permissions"
 msgstr ""
 
 msgid "View all orders in the center/branch, not just assigned ones"
@@ -3166,7 +3245,8 @@ msgstr ""
 msgid "Cancel active orders"
 msgstr ""
 
-msgid "Full control over all financial operations - overrides individual permissions"
+msgid ""
+"Full control over all financial operations - overrides individual permissions"
 msgstr ""
 
 msgid "Accept and record customer payments"
@@ -3181,7 +3261,8 @@ msgstr ""
 msgid "Process refunds for completed or cancelled orders"
 msgstr ""
 
-msgid "Full control over all report operations - overrides individual permissions"
+msgid ""
+"Full control over all report operations - overrides individual permissions"
 msgstr ""
 
 msgid "Access performance and activity reports"
@@ -3193,7 +3274,8 @@ msgstr ""
 msgid "Export data to Excel, PDF, or other formats"
 msgstr ""
 
-msgid "Full control over all product operations - overrides individual permissions"
+msgid ""
+"Full control over all product operations - overrides individual permissions"
 msgstr ""
 
 msgid "View product and service listings"
@@ -3208,7 +3290,8 @@ msgstr ""
 msgid "Remove services and products from the system"
 msgstr ""
 
-msgid "Full control over all expense operations - overrides individual permissions"
+msgid ""
+"Full control over all expense operations - overrides individual permissions"
 msgstr ""
 
 msgid "View expense records and reports"
@@ -3223,7 +3306,8 @@ msgstr ""
 msgid "Remove expense records from the system"
 msgstr ""
 
-msgid "Full control over all language operations - overrides individual permissions"
+msgid ""
+"Full control over all language operations - overrides individual permissions"
 msgstr ""
 
 msgid "View language list and pricing"
@@ -3238,7 +3322,8 @@ msgstr ""
 msgid "Remove languages from the system"
 msgstr ""
 
-msgid "Full control over all customer operations - overrides individual permissions"
+msgid ""
+"Full control over all customer operations - overrides individual permissions"
 msgstr ""
 
 msgid "View customer information and history"
@@ -3250,7 +3335,8 @@ msgstr ""
 msgid "Remove customer records from the system"
 msgstr ""
 
-msgid "Full control over all marketing operations - overrides individual permissions"
+msgid ""
+"Full control over all marketing operations - overrides individual permissions"
 msgstr ""
 
 msgid "Create and edit marketing posts and announcements"
@@ -3271,7 +3357,8 @@ msgstr ""
 msgid "View branch settings without the ability to edit"
 msgstr ""
 
-msgid "Full control over all agency operations - overrides individual permissions"
+msgid ""
+"Full control over all agency operations - overrides individual permissions"
 msgstr ""
 
 msgid "View list of agency partners and their details"
@@ -3331,7 +3418,7 @@ msgid "Both B2B & B2C"
 msgstr ""
 
 msgid "Expense Name"
-msgstr "Xarajat nomi"
+msgstr ""
 
 msgid "Price for Original"
 msgstr ""
@@ -3346,7 +3433,7 @@ msgid "Cost of this expense per copy document"
 msgstr ""
 
 msgid "Expense Type"
-msgstr "Xarajat turi"
+msgstr ""
 
 msgid "Whether this expense applies to B2B, B2C, or both"
 msgstr ""
@@ -3355,7 +3442,7 @@ msgid "Branch this expense belongs to"
 msgstr ""
 
 msgid "Expense"
-msgstr "Xarajat"
+msgstr ""
 
 msgid "Branch this language belongs to"
 msgstr ""
@@ -3364,7 +3451,7 @@ msgid "Language Name"
 msgstr "Til nomi"
 
 msgid "Short Name"
-msgstr "Qisqartma"
+msgstr "Qisqa nom"
 
 msgid "Agency First Page Price"
 msgstr ""
@@ -3419,11 +3506,13 @@ msgstr ""
 msgid "Written Verification Required"
 msgstr ""
 
-msgid "If enabled, the bot will ask users to type full names from their documents to avoid misspelling handwritten names."
+msgid ""
+"If enabled, the bot will ask users to type full names from their documents "
+"to avoid misspelling handwritten names."
 msgstr ""
 
 msgid "Charging Type"
-msgstr "Narxlash turi"
+msgstr ""
 
 msgid "Main Service"
 msgstr ""
@@ -3450,10 +3539,10 @@ msgid "User Copy Price (Fixed)"
 msgstr ""
 
 msgid "Minimum Pages"
-msgstr "Minimal sahifalar"
+msgstr ""
 
 msgid "Estimated Days"
-msgstr "Taxminiy kunlar"
+msgstr ""
 
 msgid "Expenses associated with this product"
 msgstr ""
@@ -3461,9 +3550,10 @@ msgstr ""
 msgid "Document Types"
 msgstr ""
 
+#, fuzzy
 #| msgid "Categories"
 msgid "Category Name"
-msgstr "Kategoriya nomi"
+msgstr "Kategoriyalar"
 
 msgid "Iconify Icon"
 msgstr ""
@@ -3493,7 +3583,7 @@ msgid "Repayment deadline for credit expenses."
 msgstr "Nasiya xarajatlarini to'lash muddati."
 
 msgid "Paid"
-msgstr "To'langan"
+msgstr ""
 
 msgid "Mark as paid once a nasiya (credit) expense is settled."
 msgstr "Nasiya xarajat yopilganda to'langan deb belgilang."
@@ -3505,7 +3595,7 @@ msgid "Who was paid — shop, person, company, etc."
 msgstr "Kimga to'landi — do'kon, odam, kompaniya va h."
 
 msgid "Note"
-msgstr "Eslatma"
+msgstr "Izoh"
 
 msgid "Receipt / Photo"
 msgstr "Kvitansiya / rasm"
@@ -3526,7 +3616,8 @@ msgstr "Kategoriyalar"
 msgid "Category Details"
 msgstr "Kategoriya tafsilotlari"
 
-msgid "Dynamic pricing requires an upgraded plan. Category set to static pricing."
+msgid ""
+"Dynamic pricing requires an upgraded plan. Category set to static pricing."
 msgstr ""
 
 msgid "Add Category"
@@ -3554,7 +3645,7 @@ msgid "Edit Expense"
 msgstr "Xarajatni tahrirlash"
 
 msgid "Expense Analytics"
-msgstr "Xarajatlar tahlili"
+msgstr "Xarajat tahlili"
 
 msgid "Manage Languages"
 msgstr "Tillarni boshqarish"
@@ -3634,8 +3725,11 @@ msgstr "Xarajat toifalari"
 msgid "Manage Operating Expense Categories"
 msgstr "Xarajat toifalarini boshqarish"
 
-msgid "Cannot delete category that has expenses. Reassign or delete them first."
-msgstr "Xarajatlari bor toifani o'chirib bo'lmaydi. Avval ularni o'zgartiring yoki o'chiring."
+msgid ""
+"Cannot delete category that has expenses. Reassign or delete them first."
+msgstr ""
+"Xarajatlari bor toifani o'chirib bo'lmaydi. Avval ularni o'zgartiring yoki "
+"o'chiring."
 
 # Services/Orders/Organizations Views Translations
 msgid "Category deleted."
@@ -3644,10 +3738,15 @@ msgstr "Toifa o'chirildi."
 msgid "Auto-resolved: no staff response within the SLA period"
 msgstr ""
 
-msgid "This ticket was automatically resolved because no response was received within the expected timeframe. If your issue is still unresolved, please open a new ticket."
+msgid ""
+"This ticket was automatically resolved because no response was received "
+"within the expected timeframe. If your issue is still unresolved, please "
+"open a new ticket."
 msgstr ""
 
-msgid "This ticket is taking longer than expected to resolve. Our support team is aware and working on it."
+msgid ""
+"This ticket is taking longer than expected to resolve. Our support team is "
+"aware and working on it."
 msgstr ""
 
 #, fuzzy
@@ -3784,7 +3883,7 @@ msgid "Tickets"
 msgstr ""
 
 msgid "Staff"
-msgstr "Xodim"
+msgstr "Xodimlar"
 
 msgid "Support"
 msgstr "Qo'llab-quvvatlash"
@@ -3864,7 +3963,9 @@ msgstr "Mening so'rovlarim"
 msgid "All Tickets"
 msgstr "Barcha foydalanuvchilar"
 
-msgid "Your account is not linked to a center. Please ask your administrator to assign you to a center before submitting tickets."
+msgid ""
+"Your account is not linked to a center. Please ask your administrator to "
+"assign you to a center before submitting tickets."
 msgstr ""
 
 msgid "New Ticket"
@@ -3872,7 +3973,7 @@ msgstr "Yangi Murojaat"
 
 # Feature Names - Support (2)
 msgid "Support Tickets"
-msgstr "Qo'llab-quvvatlash murojaatlari"
+msgstr "Mening so'rovlarim"
 
 #, fuzzy
 #| msgid "Date is required."
@@ -3917,7 +4018,7 @@ msgid "Ticket has been resolved."
 msgstr ""
 
 msgid "Support Inbox"
-msgstr "Qo'llab-quvvatlash murojaat qutisi"
+msgstr "Qo'llab-quvvatlash xizmati"
 
 msgid "Reply sent to staff."
 msgstr ""
@@ -3965,7 +4066,7 @@ msgid "Search centers..."
 msgstr "Yozuvlarni qidirish..."
 
 msgid "All"
-msgstr "Hammasi"
+msgstr "Barchasi"
 
 #, fuzzy
 #| msgid "Description"
@@ -3977,12 +4078,13 @@ msgstr "Tavsif"
 msgid "Sort"
 msgstr "Saralash"
 
+#, fuzzy
 #| msgid "Name: A to Z"
 msgid "Name (A-Z)"
-msgstr "Nomi (A-Z)"
+msgstr "Ism: A dan Z gacha"
 
 msgid "Name (Z-A)"
-msgstr "Nomi (Z-A)"
+msgstr ""
 
 #, fuzzy
 #| msgid "Date"
@@ -3997,8 +4099,9 @@ msgstr "Sana"
 msgid "Apply"
 msgstr "Qo'llash"
 
+#, fuzzy
 msgid "Reset"
-msgstr "Tiklash"
+msgstr "Tozalash"
 
 msgid "ID"
 msgstr ""
@@ -4009,7 +4112,7 @@ msgid "Subscription Status"
 msgstr "Tavsif"
 
 msgid "Actions"
-msgstr "Amallar"
+msgstr "Harakatlar"
 
 #, fuzzy
 #| msgid "No debtors found"
@@ -4026,7 +4129,7 @@ msgid "of"
 msgstr "dan"
 
 msgid "Centers Monitoring"
-msgstr "Markazlarni monitoring qilish"
+msgstr ""
 
 #, fuzzy
 #| msgid "All Centers"
@@ -4077,7 +4180,7 @@ msgid "Current Status"
 msgstr ""
 
 msgid "days"
-msgstr "kun"
+msgstr ""
 
 msgid "years"
 msgstr ""
@@ -4165,15 +4268,19 @@ msgstr ""
 msgid "Select tariff first..."
 msgstr ""
 
-msgid "After conversion, the trial subscription will be replaced with a paid subscription starting today. Please ensure payment is collected before converting."
+msgid ""
+"After conversion, the trial subscription will be replaced with a paid "
+"subscription starting today. Please ensure payment is collected before "
+"converting."
 msgstr ""
 
 msgid "Convert to Paid Subscription"
 msgstr ""
 
+#, fuzzy
 #| msgid "Cancelled"
 msgid "Cancel"
-msgstr "Bekor qilish"
+msgstr "Bekor qilindi"
 
 msgid "Choose duration..."
 msgstr ""
@@ -4202,7 +4309,9 @@ msgstr "Buyurtmalar soni"
 msgid "Request Subscription Renewal"
 msgstr ""
 
-msgid "Select a tariff plan and duration to renew your subscription. Our team will contact you to complete the payment."
+msgid ""
+"Select a tariff plan and duration to renew your subscription. Our team will "
+"contact you to complete the payment."
 msgstr ""
 
 msgid "Select Tariff Plan"
@@ -4229,7 +4338,9 @@ msgstr "Umumiy summa"
 msgid "Select Subscription Duration"
 msgstr "Biz haqimizda ma'lumot"
 
-msgid "Choose how long you want to extend your subscription. Longer durations often have better rates."
+msgid ""
+"Choose how long you want to extend your subscription. Longer durations often "
+"have better rates."
 msgstr ""
 
 msgid "month"
@@ -4280,7 +4391,8 @@ msgstr ""
 msgid "Our team will contact you via email or phone to arrange payment"
 msgstr ""
 
-msgid "After payment confirmation, your subscription will be extended automatically"
+msgid ""
+"After payment confirmation, your subscription will be extended automatically"
 msgstr ""
 
 msgid "Submit Renewal Request"
@@ -4289,7 +4401,8 @@ msgstr ""
 msgid "Please select a tariff plan"
 msgstr ""
 
-msgid "Please select a subscription duration from the options below the tariff cards"
+msgid ""
+"Please select a subscription duration from the options below the tariff cards"
 msgstr ""
 
 msgid "Submitting..."
@@ -4376,9 +4489,10 @@ msgstr "Yaratildi"
 msgid "Free"
 msgstr ""
 
+#, fuzzy
 #| msgid "Details"
 msgid "View Details"
-msgstr "Tafsilotlarni ko'rish"
+msgstr "Tafsilotlar"
 
 msgid "Complete Subscription History"
 msgstr ""
@@ -4436,7 +4550,7 @@ msgstr "Yangilash"
 
 # Feature Names - Analytics & Reports (6)
 msgid "Analytics"
-msgstr "Tahlil"
+msgstr "Analitika"
 
 msgid "Back"
 msgstr "Orqaga"
@@ -4501,13 +4615,16 @@ msgstr "Uzaytirish"
 msgid "Subscription Ended"
 msgstr "Obuna tugadi"
 
-msgid "Your subscription has expired and access to this panel has been disabled."
+msgid ""
+"Your subscription has expired and access to this panel has been disabled."
 msgstr ""
 
 msgid "What to do next"
 msgstr ""
 
-msgid "Please contact your administrator to renew your subscription. Once renewed, you will regain full access."
+msgid ""
+"Please contact your administrator to renew your subscription. Once renewed, "
+"you will regain full access."
 msgstr ""
 
 #, fuzzy
@@ -4521,16 +4638,18 @@ msgstr ""
 msgid "Subscriptions - Billing"
 msgstr ""
 
+#, fuzzy
 #| msgid "Total Logs"
 msgid "Total"
-msgstr "Jami"
+msgstr "Jami yozuvlar"
 
 msgid "Expiring Soon"
 msgstr ""
 
+#, fuzzy
 #| msgid "All Rates"
 msgid "All Status"
-msgstr "Barcha holatlar"
+msgstr "Barcha darajalar"
 
 #, fuzzy
 #| msgid "All Categories"
@@ -4611,7 +4730,9 @@ msgstr ""
 msgid "Select Pricing Duration"
 msgstr ""
 
-msgid "If the tariff has pricing, choose a duration. If it has none, renewal keeps the current end date (treated as unlimited/manual)."
+msgid ""
+"If the tariff has pricing, choose a duration. If it has none, renewal keeps "
+"the current end date (treated as unlimited/manual)."
 msgstr ""
 
 msgid "New End Date"
@@ -4623,7 +4744,9 @@ msgstr ""
 msgid "Optional notes about this renewal..."
 msgstr ""
 
-msgid "Renewing will extend the subscription period. Status will be set to 'Pending' until payment is confirmed."
+msgid ""
+"Renewing will extend the subscription period. Status will be set to "
+"'Pending' until payment is confirmed."
 msgstr ""
 
 msgid "Available Tariffs"
@@ -4719,10 +4842,10 @@ msgid "Select features available in this tariff plan"
 msgstr ""
 
 msgid "Select All"
-msgstr "Barchasini tanlash"
+msgstr ""
 
 msgid "Deselect All"
-msgstr "Barcha tanlovni bekor qilish"
+msgstr ""
 
 #, fuzzy
 #| msgid "Services"
@@ -4737,7 +4860,8 @@ msgstr ""
 msgid "Basic Products"
 msgstr "Mahsulotlar"
 
-msgid "Define translation services with base prices (language pairs, document types)"
+msgid ""
+"Define translation services with base prices (language pairs, document types)"
 msgstr ""
 
 #, fuzzy
@@ -4745,7 +4869,8 @@ msgstr ""
 msgid "Advanced Products"
 msgstr "Mahsulot qo'shish"
 
-msgid "Multiple service variants, category grouping, and per-service customization"
+msgid ""
+"Multiple service variants, category grouping, and per-service customization"
 msgstr ""
 
 #, fuzzy
@@ -4756,7 +4881,9 @@ msgstr "Tilga Xos Narxlash"
 msgid "Set unique rates for each language direction (e.g. RU→EN vs RU→DE)"
 msgstr ""
 
-msgid "Auto-calculate order total by page count × per-page rate for each language pair"
+msgid ""
+"Auto-calculate order total by page count × per-page rate for each language "
+"pair"
 msgstr ""
 
 #, fuzzy
@@ -4764,7 +4891,9 @@ msgstr ""
 msgid "Basic Orders"
 msgstr "Buyurtmalar yo'q"
 
-msgid "Accept orders, update statuses (New → In Progress → Done), view full order history"
+msgid ""
+"Accept orders, update statuses (New → In Progress → Done), view full order "
+"history"
 msgstr ""
 
 #, fuzzy
@@ -4772,13 +4901,19 @@ msgstr ""
 msgid "Advanced Orders"
 msgstr "Kengaytirilgan Buyurtmalarni Boshqarish"
 
-msgid "Bulk-select orders and apply actions; filter by date, status, staff, branch or language pair"
+msgid ""
+"Bulk-select orders and apply actions; filter by date, status, staff, branch "
+"or language pair"
 msgstr ""
 
-msgid "Distribute orders to specific employees; track who is currently working on each order"
+msgid ""
+"Distribute orders to specific employees; track who is currently working on "
+"each order"
 msgstr ""
 
-msgid "Record one payment covering several orders at once; supports partial payments and debt carry-over"
+msgid ""
+"Record one payment covering several orders at once; supports partial "
+"payments and debt carry-over"
 msgstr ""
 
 #, fuzzy
@@ -4786,7 +4921,9 @@ msgstr ""
 msgid "Extra Fees"
 msgstr "Qo'shimcha ma'lumotlar"
 
-msgid "Add manual surcharges (urgency, notary, courier) or discounts to any order after creation"
+msgid ""
+"Add manual surcharges (urgency, notary, courier) or discounts to any order "
+"after creation"
 msgstr ""
 
 #, fuzzy
@@ -4799,22 +4936,32 @@ msgstr "Umumiy xarajatlar"
 msgid "Payment Management"
 msgstr "To'lov usuli"
 
-msgid "Record cash / card / online payments, upload receipts, and mark orders as fully or partially paid"
+msgid ""
+"Record cash / card / online payments, upload receipts, and mark orders as "
+"fully or partially paid"
 msgstr ""
 
-msgid "Create and download PDF invoices per client; essential for B2B billing and formal payments"
+msgid ""
+"Create and download PDF invoices per client; essential for B2B billing and "
+"formal payments"
 msgstr ""
 
-msgid "Log costs tied to specific orders (translator fees, printing, materials, postage)"
+msgid ""
+"Log costs tied to specific orders (translator fees, printing, materials, "
+"postage)"
 msgstr ""
 
-msgid "Record overhead not linked to orders: office rent, staff salaries, stationery, utilities"
+msgid ""
+"Record overhead not linked to orders: office rent, staff salaries, "
+"stationery, utilities"
 msgstr ""
 
 msgid "Archive Access"
 msgstr ""
 
-msgid "View, search and restore completed orders auto-archived to Telegram channel; zero data loss"
+msgid ""
+"View, search and restore completed orders auto-archived to Telegram channel; "
+"zero data loss"
 msgstr ""
 
 #, fuzzy
@@ -4822,7 +4969,9 @@ msgstr ""
 msgid "Customers & Agencies"
 msgstr "Mijoz tahlili"
 
-msgid "Onboard B2B partners with dedicated pricing, credit limits and separate analytics per agency"
+msgid ""
+"Onboard B2B partners with dedicated pricing, credit limits and separate "
+"analytics per agency"
 msgstr ""
 
 # Feature Names - Marketing (2)
@@ -4831,7 +4980,9 @@ msgstr ""
 msgid "Marketing Campaigns"
 msgstr "Marketing Kampaniyasi Vositalari"
 
-msgid "Compose Telegram posts with text, images or documents; manage drafts and campaign history"
+msgid ""
+"Compose Telegram posts with text, images or documents; manage drafts and "
+"campaign history"
 msgstr ""
 
 #, fuzzy
@@ -4839,22 +4990,32 @@ msgstr ""
 msgid "Broadcast Messaging"
 msgstr "Ommaviy Xabarlar Yuborish"
 
-msgid "Send a broadcast to all or filtered customers; schedule delivery and track open / delivery stats"
+msgid ""
+"Send a broadcast to all or filtered customers; schedule delivery and track "
+"open / delivery stats"
 msgstr ""
 
 msgid "Analytics & Reports"
-msgstr "Tahlillar va hisobotlar"
+msgstr "Tahlil va hisobotlar"
 
-msgid "Daily and monthly order volume, completion rate, and a summary dashboard for quick overview"
+msgid ""
+"Daily and monthly order volume, completion rate, and a summary dashboard for "
+"quick overview"
 msgstr ""
 
-msgid "Cross-branch comparison, revenue time-series, top clients by order count and total spend"
+msgid ""
+"Cross-branch comparison, revenue time-series, top clients by order count and "
+"total spend"
 msgstr ""
 
-msgid "Income vs. expense breakdown with profit margin per period, branch or language pair"
+msgid ""
+"Income vs. expense breakdown with profit margin per period, branch or "
+"language pair"
 msgstr ""
 
-msgid "Per-employee report: orders completed, revenue generated, avg. turnaround time"
+msgid ""
+"Per-employee report: orders completed, revenue generated, avg. turnaround "
+"time"
 msgstr ""
 
 #, fuzzy
@@ -4862,10 +5023,13 @@ msgstr ""
 msgid "Custom Reports"
 msgstr "Maxsus Hisobot Yaratuvchi"
 
-msgid "Build ad-hoc reports by combining any date range, branch, staff, service or status filters"
+msgid ""
+"Build ad-hoc reports by combining any date range, branch, staff, service or "
+"status filters"
 msgstr ""
 
-msgid "Download any report or data table as Excel / PDF / CSV with a single click"
+msgid ""
+"Download any report or data table as Excel / PDF / CSV with a single click"
 msgstr ""
 
 #, fuzzy
@@ -4873,7 +5037,9 @@ msgstr ""
 msgid "Debt Tracking"
 msgstr "To'lovlarni Kuzatish va Yozib Olish"
 
-msgid "Outstanding balance per client, top-debtors list, collection rate and overdue alerts"
+msgid ""
+"Outstanding balance per client, top-debtors list, collection rate and "
+"overdue alerts"
 msgstr ""
 
 # Sidebar Translations
@@ -4888,7 +5054,9 @@ msgstr "Tashkilot"
 msgid "Multi-Branch"
 msgstr "Ko'plab Filiallar"
 
-msgid "Add multiple branches under one account; each has its own staff, orders, pricing and settings"
+msgid ""
+"Add multiple branches under one account; each has its own staff, orders, "
+"pricing and settings"
 msgstr ""
 
 #, fuzzy
@@ -4896,13 +5064,19 @@ msgstr ""
 msgid "Custom Roles"
 msgstr "Maxsus Hisobot Yaratuvchi"
 
-msgid "Create roles (Translator, Manager, etc.) and precisely control what each role can view or do"
+msgid ""
+"Create roles (Translator, Manager, etc.) and precisely control what each "
+"role can view or do"
 msgstr ""
 
-msgid "Override global settings per branch: working hours, pricing rules, Telegram bot, notifications"
+msgid ""
+"Override global settings per branch: working hours, pricing rules, Telegram "
+"bot, notifications"
 msgstr ""
 
-msgid "Full history of who changed what and when — order edits, payment records, status changes, logins"
+msgid ""
+"Full history of who changed what and when — order edits, payment records, "
+"status changes, logins"
 msgstr ""
 
 #, fuzzy
@@ -4915,13 +5089,17 @@ msgstr "Uchinchi Tomon Integratsiyalari"
 msgid "Telegram Bot"
 msgstr "Telegram foydalanuvchi"
 
-msgid "Customers place orders, get instant price estimates and status notifications via your Telegram bot"
+msgid ""
+"Customers place orders, get instant price estimates and status notifications "
+"via your Telegram bot"
 msgstr ""
 
 msgid "Webhooks"
 msgstr ""
 
-msgid "Configure your bot's webhook URL so Telegram delivers messages to your server in real time"
+msgid ""
+"Configure your bot's webhook URL so Telegram delivers messages to your "
+"server in real time"
 msgstr ""
 
 # Feature Names - Integration (4)
@@ -4933,7 +5111,9 @@ msgstr "REST API Kirish"
 msgid "On Request"
 msgstr ""
 
-msgid "REST API to connect MultiLang data with your own tools, CRM or automation scripts"
+msgid ""
+"REST API to connect MultiLang data with your own tools, CRM or automation "
+"scripts"
 msgstr ""
 
 #, fuzzy
@@ -4941,7 +5121,9 @@ msgstr ""
 msgid "Third-Party"
 msgstr "Uchinchi Tomon Integratsiyalari"
 
-msgid "Connect payment gateways (Payme, etc.) and other external services to the platform"
+msgid ""
+"Connect payment gateways (Payme, etc.) and other external services to the "
+"platform"
 msgstr ""
 
 msgid "Pricing Options"
@@ -4958,7 +5140,9 @@ msgstr ""
 msgid "Full price per month without any discount"
 msgstr ""
 
-msgid "No pricing options. Add one below or leave empty to show 'Contact admin' on the public page."
+msgid ""
+"No pricing options. Add one below or leave empty to show 'Contact admin' on "
+"the public page."
 msgstr ""
 
 msgid "Add Pricing Option"
@@ -4987,11 +5171,13 @@ msgstr "Tarifni tahrirlash"
 #, python-format
 msgid ""
 "\n"
-"                    This tariff has %(counter)s subscription. Changes may affect active subscriptions.\n"
+"                    This tariff has %(counter)s subscription. Changes may "
+"affect active subscriptions.\n"
 "                    "
 msgid_plural ""
 "\n"
-"                    This tariff has %(counter)s subscriptions. Changes may affect active subscriptions.\n"
+"                    This tariff has %(counter)s subscriptions. Changes may "
+"affect active subscriptions.\n"
 "                    "
 msgstr[0] ""
 
@@ -5023,13 +5209,14 @@ msgid "subscription(s)"
 msgstr "obuna"
 
 msgid "Edit"
-msgstr "Tahrirlash"
+msgstr ""
 
 msgid "No Tariffs Found"
 msgstr "Tarif topilmadi"
 
 msgid "Create your first tariff plan to start offering subscriptions"
-msgstr "Obunalarni taklif qilishni boshlash uchun birinchi tarif rejangizni yarating"
+msgstr ""
+"Obunalarni taklif qilishni boshlash uchun birinchi tarif rejangizni yarating"
 
 msgid "Cannot delete this tariff. It has"
 msgstr ""
@@ -5041,10 +5228,10 @@ msgid "Please mark it as inactive instead or delete the subscriptions first."
 msgstr ""
 
 msgid "Are you sure you want to delete"
-msgstr "Haqiqatan ham o'chirishni xohlaysizmi"
+msgstr ""
 
 msgid "This action cannot be undone."
-msgstr "Bu amalni ortga qaytarib bo'lmaydi."
+msgstr "Bu amalni bekor qilib bo'lmaydi."
 
 #, fuzzy
 #| msgid "Payment Tracking & Recording"
@@ -5212,10 +5399,10 @@ msgid "Broadcasts"
 msgstr ""
 
 msgid "Revenue"
-msgstr "Daromad"
+msgstr ""
 
 msgid "UZS"
-msgstr "UZS"
+msgstr ""
 
 #, fuzzy
 #| msgid "No debtors found"
@@ -5247,11 +5434,12 @@ msgid "Page"
 msgstr "Sahifalar"
 
 msgid "items"
-msgstr "ta yozuv"
+msgstr ""
 
+#, fuzzy
 #| msgid "Order Completed"
 msgid "Completed"
-msgstr "Yakunlangan"
+msgstr "Buyurtma bajarildi"
 
 #, fuzzy
 #| msgid "New Order"
@@ -5290,63 +5478,73 @@ msgstr ""
 msgid "View all notifications"
 msgstr "Admin bildirisnomalari"
 
+#, fuzzy
 #| msgid "No Orders"
 msgid "Today's Orders"
-msgstr "Bugungi buyurtmalar"
+msgstr "Buyurtmalar yo'q"
 
+#, fuzzy
 #| msgid "Yesterday"
 msgid "vs yesterday"
-msgstr "kechagiga nisbatan"
+msgstr "Kecha"
 
 msgid "Today's Revenue"
-msgstr "Bugungi daromad"
+msgstr ""
 
+#, fuzzy
 #| msgid "Collection Rate"
 msgid "Completion Rate"
-msgstr "Bajarilish darajasi"
+msgstr "Yig'ish darajasi"
 
 msgid "completed today"
-msgstr "bugun bajarildi"
+msgstr ""
 
+#, fuzzy
 #| msgid "No Orders"
 msgid "Pending Orders"
-msgstr "Kutilayotgan buyurtmalar"
+msgstr "Buyurtmalar yo'q"
 
+#, fuzzy
 #| msgid "From"
 msgid "Date From"
-msgstr "Sana dan"
+msgstr "Dan"
 
+#, fuzzy
 #| msgid "Date"
 msgid "Date To"
-msgstr "Sana gacha"
+msgstr "Sana"
 
+#, fuzzy
 #| msgid "Companies"
 msgid "Has Company"
-msgstr "Kompaniyasi bor"
+msgstr "Kompaniyalar"
 
 msgid "Yes"
-msgstr "Ha"
+msgstr ""
 
 msgid "No"
-msgstr "Yo'q"
+msgstr ""
 
 msgid "Has Phone"
-msgstr "Telefoni bor"
+msgstr ""
 
+#, fuzzy
 #| msgid "Reset Filters"
 msgid "Newest First"
-msgstr "Avval yangilari"
+msgstr "Filtrlarni tozalash"
 
+#, fuzzy
 #| msgid "Reset Filters"
 msgid "Oldest First"
-msgstr "Avval eskilari"
+msgstr "Filtrlarni tozalash"
 
 msgid "Search by name, email, company, phone or message"
 msgstr ""
 
+#, fuzzy
 #| msgid "Message"
 msgid "Message from"
-msgstr "Xabar:"
+msgstr "Xabar"
 
 #, fuzzy
 #| msgid "Message"
@@ -5354,7 +5552,7 @@ msgid "Message:"
 msgstr "Xabar"
 
 msgid "Internal Notes:"
-msgstr "Ichki eslatmalar:"
+msgstr ""
 
 msgid "Add notes about this contact request..."
 msgstr ""
@@ -5363,11 +5561,12 @@ msgid "Close"
 msgstr "Yopish"
 
 msgid "Save Notes"
-msgstr "Eslatmalarni saqlash"
+msgstr ""
 
+#, fuzzy
 #| msgid "Changes"
 msgid "Change Status"
-msgstr "Statusni o'zgartirish"
+msgstr "O'zgarishlar"
 
 msgid "No contact requests found"
 msgstr ""
@@ -5453,11 +5652,14 @@ msgstr "mijozlarga xizmat ko'rsatildi"
 #, fuzzy
 #| msgid "Create your first tariff plan to start offering subscriptions"
 msgid "Create your first broadcast to reach your customers."
-msgstr "Mijozlaringizga yetib borish uchun birinchi e'loningizni yarating.Obunalarni taklif qilishni boshlash uchun birinchi tarif rejangizni yarating"
+msgstr ""
+"Mijozlaringizga yetib borish uchun birinchi e'loningizni yarating.Obunalarni "
+"taklif qilishni boshlash uchun birinchi tarif rejangizni yarating"
 
+#, fuzzy
 #| msgid "Created At"
 msgid "Create Post"
-msgstr "Post yaratish"
+msgstr "Yaratilgan vaqti"
 
 msgid "Bulk Payment & Top Up"
 msgstr "Ommaviy to'lov va to'ldirish"
@@ -5481,9 +5683,10 @@ msgstr "Mijoz"
 msgid "Outstanding Orders"
 msgstr ""
 
+#, fuzzy
 #| msgid "Orders"
 msgid "orders"
-msgstr "buyurtmalar"
+msgstr "Buyurtmalar"
 
 msgid "Average Debt"
 msgstr ""
@@ -5509,9 +5712,10 @@ msgstr ""
 msgid "View All Debtors"
 msgstr "Barcha qarzdarlar"
 
+#, fuzzy
 #| msgid "Customer"
 msgid "Search Customer"
-msgstr "Mijozni qidirish"
+msgstr "Mijoz"
 
 #, fuzzy
 #| msgid "Quick search by name or phone..."
@@ -5605,16 +5809,18 @@ msgstr "To'lovni qayta ishlash"
 msgid "Paid by"
 msgstr ""
 
+#, fuzzy
 #| msgid "bulk.newRemaining"
 msgid "Remaining"
-msgstr "Qolgan"
+msgstr "Yangi qoldiq"
 
 msgid "Failed to search customers"
 msgstr ""
 
+#, fuzzy
 #| msgid "No debtors found"
 msgid "No customers found"
-msgstr "Mijozlar topilmadi"
+msgstr "Qarzdarlar topilmadi"
 
 msgid "Failed to load customer debt details"
 msgstr ""
@@ -5671,27 +5877,28 @@ msgstr "Jarayonda"
 msgid "Failed to process payment"
 msgstr "To'lovni qayta ishlash"
 
+#, fuzzy
 #| msgid "bulk.remainingDebt"
 msgid "Remaining Debt"
-msgstr "Qolgan qarz"
+msgstr "Qoldiq qarz"
 
 msgid "Total Assigned"
 msgstr "Jami biriktirilgan"
 
 msgid "My Assigned Orders"
-msgstr "Mening Buyurtmalarim"
+msgstr "Mening biriktirilgan buyurtmalarim"
 
 msgid "No Orders Assigned"
-msgstr "Buyurtmalar Biriktirilmagan"
+msgstr "Biriktirilgan buyurtmalar yo'q"
 
 msgid "You don't have any orders assigned to you yet."
 msgstr "Sizga hali hech qanday buyurtma biriktirilmagan."
 
 msgid "Location"
-msgstr "Joylashuv"
+msgstr "Manzil"
 
 msgid "Assigned"
-msgstr "Tayinlangan"
+msgstr "Tayinlandi"
 
 #, fuzzy
 #| msgid "All Amounts"
@@ -5711,9 +5918,10 @@ msgstr "Summa"
 msgid "Max Amount"
 msgstr "Summa"
 
+#, fuzzy
 #| msgid "Apply Filters"
 msgid "Filter"
-msgstr "Filtr"
+msgstr "Filtrlarni qo'llash"
 
 msgid "Clear"
 msgstr "Tozalash"
@@ -5722,9 +5930,10 @@ msgstr "Tozalash"
 msgid "%(count)s record(s) found"
 msgstr ""
 
+#, fuzzy
 #| msgid "View"
 msgid "View All"
-msgstr "Hammasini ko'rish"
+msgstr "Ko'rish"
 
 msgid "New Payment"
 msgstr "Yangi to'lov"
@@ -5732,9 +5941,10 @@ msgstr "Yangi to'lov"
 msgid "Note:"
 msgstr ""
 
+#, fuzzy
 #| msgid "Receipt"
 msgid "View Receipt"
-msgstr "Kvitansiyani ko'rish"
+msgstr "Kvitansiya"
 
 #, fuzzy
 #| msgid "Processed By"
@@ -5772,13 +5982,13 @@ msgid "Agency (B2B)"
 msgstr "Agentlik (B2B)"
 
 msgid "Individual (B2C)"
-msgstr "Shaxsiy (B2C)"
+msgstr "Jismoniy shaxs (B2C)"
 
 msgid "transactions processed"
-msgstr "qayta ishlangan tranzaksiyalar"
+msgstr "tranzaksiyalar qayta ishlandi"
 
 msgid "Total Amount"
-msgstr "Jami miqdor"
+msgstr "Umumiy summa"
 
 msgid "avg payment"
 msgstr "o'rtacha to'lov"
@@ -5790,7 +6000,7 @@ msgid "Unique Customers"
 msgstr "Noyob mijozlar"
 
 msgid "customers served"
-msgstr "mijoz xizmat qilindi"
+msgstr "mijozlarga xizmat ko'rsatildi"
 
 # Landing page
 #, fuzzy
@@ -5798,46 +6008,55 @@ msgstr "mijoz xizmat qilindi"
 msgid "Orders/mo"
 msgstr "Buyurtmalar/oy"
 
+#, fuzzy
 #| msgid "Search"
 msgid "Map"
-msgstr "Xarita"
+msgstr "Qidirish"
 
 # Landing page
+#, fuzzy
 #| msgid "1 Branch"
 msgid "Add Branch"
-msgstr "Filial qo'shish"
+msgstr "1 ta Filial"
 
 msgid "Main"
-msgstr "Asosiy"
+msgstr ""
 
+#, fuzzy
 #| msgid "org.branches"
 msgid "No branches yet"
-msgstr "Hali filiallar yo'q"
+msgstr "Filiallar"
 
 # Landing page
+#, fuzzy
 #| msgid "3 Staff Members"
 msgid "No staff members"
-msgstr "Xodimlar yo'q"
+msgstr "3 ta Xodim"
 
+#, fuzzy
 #| msgid "Categories"
 msgid "No categories"
-msgstr "Kategoriyalar yo'q"
+msgstr "Kategoriyalar"
 
+#, fuzzy
 #| msgid "Products"
 msgid "Product"
-msgstr "Mahsulot"
+msgstr "Mahsulotlar"
 
+#, fuzzy
 #| msgid "payment.processPayment"
 msgid "No products yet"
-msgstr "Hali mahsulotlar yo'q"
+msgstr "To'lovni qayta ishlash"
 
+#, fuzzy
 #| msgid "org.centers"
 msgid "Recent Orders"
-msgstr "So'nggi buyurtmalar"
+msgstr "Markazlar"
 
+#, fuzzy
 #| msgid "No Orders"
 msgid "No orders yet"
-msgstr "Hali buyurtmalar yo'q"
+msgstr "Buyurtmalar yo'q"
 
 # Services/Orders/Organizations Views Translations
 #, fuzzy
@@ -5853,9 +6072,10 @@ msgstr "Tayyor"
 msgid "Contact support to change"
 msgstr ""
 
+#, fuzzy
 #| msgid "Categories"
 msgid "Center Name"
-msgstr "Markaz nomi"
+msgstr "Kategoriyalar"
 
 #, fuzzy
 #| msgid "Content"
@@ -5868,7 +6088,7 @@ msgid "Configured"
 msgstr "Tasdiqlandi"
 
 msgid "Not set"
-msgstr "O‘rnatilmagan"
+msgstr ""
 
 msgid "Enabled"
 msgstr ""
@@ -5876,25 +6096,30 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
+#, fuzzy
 #| msgid "Basic Information"
 msgid "Contact Information"
-msgstr "Aloqa ma'lumotlari"
+msgstr "Asosiy ma'lumotlar"
 
+#, fuzzy
 #| msgid "form.address"
 msgid "Enter full address"
-msgstr "To'liq manzilni kiriting"
+msgstr "Manzil"
 
+#, fuzzy
 #| msgid "Search logs..."
 msgid "Search staff..."
-msgstr "Xodimlarni qidirish..."
+msgstr "Yozuvlarni qidirish..."
 
+#, fuzzy
 #| msgid "All Rates"
 msgid "All Roles"
-msgstr "Barcha rollar"
+msgstr "Barcha darajalar"
 
+#, fuzzy
 #| msgid "Staff Performance"
 msgid "Staff Member"
-msgstr "Xodim"
+msgstr "Xodimlar samaradorligi"
 
 msgid "Contact"
 msgstr "Aloqa"
@@ -5918,28 +6143,31 @@ msgid "Dashboards"
 msgstr "Boshqaruv panellari"
 
 msgid "Sales Overview"
-msgstr "Savdo boshqaruvi"
+msgstr "Savdo ko'rinishi"
 
 msgid "Finance & Payments"
 msgstr "Moliya va to'lovlar"
 
+#, fuzzy
 #| msgid "Order Reports"
 msgid "Reports"
-msgstr "Hisobotlar"
+msgstr "Buyurtma hisobotlari"
 
+#, fuzzy
 #| msgid "Order Reports"
 msgid "Debtors Report"
-msgstr "Qarzdorlar hisoboti"
+msgstr "Buyurtma hisobotlari"
 
 msgid "General Expense Analytics"
 msgstr "Umumiy xarajatlar tahlili"
 
+#, fuzzy
 #| msgid "users.users"
 msgid "Superuser Tools"
-msgstr "Superuser vositalari"
+msgstr "Foydalanuvchilar"
 
 msgid "Billing & Subscriptions"
-msgstr "Hisob-kitob va obunalar"
+msgstr ""
 
 # Subscription alert translations
 msgid "Срок подписки истек!"
@@ -5948,11 +6176,13 @@ msgstr "Obuna muddati tugadi!"
 #, python-format
 msgid ""
 "\n"
-"                            Ваша подписка завершилась %(date)s. Пожалуйста, продлите подписку для продолжения работы.\n"
+"                            Ваша подписка завершилась %(date)s. Пожалуйста, "
+"продлите подписку для продолжения работы.\n"
 "                            "
 msgstr ""
 "\n"
-"Obunangiz %(date)s sanasida tugadi. Iltimos, ish davom ettirish uchun obunani uzaytiring.\n"
+"Obunangiz %(date)s sanasida tugadi. Iltimos, ish davom ettirish uchun "
+"obunani uzaytiring.\n"
 "                            "
 
 msgid "Подписка заканчивается сегодня!"
@@ -5961,11 +6191,13 @@ msgstr "Obuna bugun tugaydi!"
 #, python-format
 msgid ""
 "\n"
-"                            Ваша подписка истекает сегодня (%(date)s). Продлите подписку, чтобы избежать перерыва в работе.\n"
+"                            Ваша подписка истекает сегодня (%(date)s). "
+"Продлите подписку, чтобы избежать перерыва в работе.\n"
 "                            "
 msgstr ""
 "\n"
-"Obunangiz bugun tugaydi (%(date)s). Ish jarayonida uzilish bo'lmasligi uchun obunani uzaytiring.\n"
+"Obunangiz bugun tugaydi (%(date)s). Ish jarayonida uzilish bo'lmasligi uchun "
+"obunani uzaytiring.\n"
 "                            "
 
 msgid "Подписка заканчивается завтра!"
@@ -5974,11 +6206,13 @@ msgstr "Obuna ertaga tugaydi!"
 #, python-format
 msgid ""
 "\n"
-"                            Ваша подписка истекает завтра (%(date)s). Рекомендуем продлить подписку заранее.\n"
+"                            Ваша подписка истекает завтра (%(date)s). "
+"Рекомендуем продлить подписку заранее.\n"
 "                            "
 msgstr ""
 "\n"
-"Obunangiz ertaga tugaydi (%(date)s). Obunani oldindan uzaytirishni tavsiya qilamiz.\n"
+"Obunangiz ertaga tugaydi (%(date)s). Obunani oldindan uzaytirishni tavsiya "
+"qilamiz.\n"
 "                            "
 
 msgid "Подписка заканчивается"
@@ -5987,11 +6221,13 @@ msgstr "Obuna tugamoqda"
 #, python-format
 msgid ""
 "\n"
-"                            Ваша подписка заканчивается через %(days)s день (%(date)s).\n"
+"                            Ваша подписка заканчивается через %(days)s день "
+"(%(date)s).\n"
 "                            "
 msgid_plural ""
 "\n"
-"                            Ваша подписка заканчивается через %(days)s дня (%(date)s).\n"
+"                            Ваша подписка заканчивается через %(days)s дня "
+"(%(date)s).\n"
 "                            "
 msgstr[0] ""
 "\n"
@@ -6031,8 +6267,9 @@ msgstr "Yozuvlarni qidirish..."
 msgid "Activity Timeline"
 msgstr "Faoliyat tarixi"
 
+#, fuzzy
 msgid "Updated"
-msgstr "Yangilangan"
+msgstr "Yangilandi"
 
 msgid "Logged In"
 msgstr "Tizimga kirdi"
@@ -6055,7 +6292,7 @@ msgid "Field"
 msgstr "Maydon"
 
 msgid "entries"
-msgstr "ta yozuv"
+msgstr "yozuv"
 
 msgid "No Audit Logs Found"
 msgstr "Audit yozuvlari topilmadi"
@@ -6067,14 +6304,15 @@ msgid "Reset Filters"
 msgstr "Filtrlarni tozalash"
 
 msgid "Compare performance across all branches"
-msgstr "Barcha filiallar bo'yicha samaradorlikni taqqoslash"
+msgstr "Barcha filiallar bo'yicha ko'rsatkichlarni solishtirish"
 
 msgid "Customer acquisition and behavior analytics"
-msgstr "Mijozlarni jalb qilish va xulq-atvor tahlili"
+msgstr ""
 
+#, fuzzy
 #| msgid "Export to Excel"
 msgid "Export Excel"
-msgstr "Excel'ga eksport"
+msgstr "Excel ga eksport qilish"
 
 #, fuzzy
 #| msgid "All Rates"
@@ -6094,17 +6332,20 @@ msgstr "Telegram foydalanuvchi"
 msgid "Manually added only"
 msgstr ""
 
+#, fuzzy
 #| msgid "All Customers"
 msgid "Total Customers"
-msgstr "Jami mijozlar"
+msgstr "Barcha mijozlar"
 
+#, fuzzy
 #| msgid "All Centers"
 msgid "Active Customers"
-msgstr "Faol mijozlar"
+msgstr "Barcha markazlar"
 
+#, fuzzy
 #| msgid "Period"
 msgid "New (Period)"
-msgstr "Yangi (Davr)"
+msgstr "Davr"
 
 msgid "Registered through Telegram bot (have Telegram ID)"
 msgstr ""
@@ -6113,7 +6354,7 @@ msgid "Created by staff without Telegram account"
 msgstr ""
 
 msgid "Customer Acquisition Trend"
-msgstr "Mijozlarni jalb qilish tendentsiyasi"
+msgstr ""
 
 #, fuzzy
 #| msgid "Customer"
@@ -6125,17 +6366,20 @@ msgstr "Mijoz"
 msgid "Bot Language"
 msgstr "Tilni tahrirlash"
 
+#, fuzzy
 #| msgid "customers served"
 msgid "Top Customers by Revenue"
-msgstr "Daromad bo'yicha eng yaxshi mijozlar"
+msgstr "mijozlarga xizmat ko'rsatildi"
 
+#, fuzzy
 #| msgid "Total Debt"
 msgid "Total Spent"
-msgstr "Jami sarflangan"
+msgstr "Umumiy qarz"
 
+#, fuzzy
 #| msgid "customers served"
 msgid "No customer data available"
-msgstr "Mijoz ma'lumotlari mavjud emas"
+msgstr "mijozlarga xizmat ko'rsatildi"
 
 #, fuzzy
 #| msgid "Quick search by name or phone..."
@@ -6167,28 +6411,30 @@ msgstr "Mijozlarning to'lanmagan qarzlarini kuzatish va boshqarish"
 msgid "Back to Unit Economy"
 msgstr "Birim iqtisodiyotga qaytish"
 
+#, fuzzy
 #| msgid "Content Type"
 msgid "Client Type"
-msgstr "Mijoz turi"
+msgstr "Kontent turi"
 
+#, fuzzy
 #| msgid "All Users"
 msgid "All Types"
-msgstr "Barcha turlar"
+msgstr "Barcha foydalanuvchilar"
 
 msgid "B2B Only"
-msgstr "Faqat B2B"
+msgstr ""
 
 msgid "B2C Only"
-msgstr "Faqat B2C"
+msgstr ""
 
 msgid "Debt Range"
-msgstr "Qarz diapazoni"
+msgstr "Qarz oralig'i"
 
 msgid "All Amounts"
 msgstr "Barcha miqdorlar"
 
 msgid "Collection Rate"
-msgstr "Yig'ish foizi"
+msgstr "Yig'ish darajasi"
 
 msgid "All Rates"
 msgstr "Barcha darajalar"
@@ -6251,10 +6497,10 @@ msgid "Avg Collection Rate"
 msgstr "O'rtacha yig'ish darajasi"
 
 msgid "All Debtors"
-msgstr "Barcha qarzdorlar"
+msgstr "Barcha qarzdarlar"
 
 msgid "Quick search by name or phone..."
-msgstr "Ism yoki telefon bo'yicha tezkor qidiruv..."
+msgstr "Ism yoki telefon bo'yicha tez qidirish..."
 
 msgid "Export to Excel"
 msgstr "Excel ga eksport qilish"
@@ -6266,7 +6512,7 @@ msgid "Count"
 msgstr "Soni"
 
 msgid "Expected"
-msgstr "Kutilayotgan"
+msgstr "Kutilgan"
 
 msgid "Rate"
 msgstr "Daraja"
@@ -6287,31 +6533,34 @@ msgid "No debtors found"
 msgstr "Qarzdarlar topilmadi"
 
 msgid "Try adjusting your filters or date range"
-msgstr "Boshqa filtrlar yoki sana oralig'ini sinab ko'ring"
+msgstr "Filtrlaringizni yoki sana oralig'ini sozlang"
 
 msgid "No data to export"
 msgstr ""
 
 msgid "Manage Expenses"
-msgstr "Xarajatlarni boshqarish"
+msgstr ""
 
+#, fuzzy
 #| msgid "Total Expected"
 msgid "Total Expenses"
-msgstr "Jami xarajatlar"
+msgstr "Jami kutilmoqda"
 
 msgid "B2B Expenses"
-msgstr "B2B xarajatlar"
+msgstr ""
 
 msgid "B2C Expenses"
-msgstr "B2C xarajatlar"
+msgstr ""
 
+#, fuzzy
 #| msgid "Content Type"
 msgid "Both Types"
-msgstr "Ikkala tur"
+msgstr "Kontent turi"
 
+#, fuzzy
 #| msgid "Expense Tracking"
 msgid "Expenses by Center"
-msgstr "Markazlar bo'yicha xarajatlar"
+msgstr "Xarajatlarni Kuzatish"
 
 #, fuzzy
 #| msgid "View Changes"
@@ -6319,28 +6568,30 @@ msgid "expenses"
 msgstr "O'zgarishlarni ko'rish"
 
 msgid "No branch expenses found for this center"
-msgstr "Bu markaz uchun filial chiqimlari topilmadi"
+msgstr ""
 
+#, fuzzy
 #| msgid "Expense Tracking"
 msgid "Expenses by Branch"
-msgstr "Filiallar bo‘yicha chiqimlar"
+msgstr "Xarajatlarni Kuzatish"
 
 msgid "Avg"
-msgstr "O'rtacha"
+msgstr ""
 
 #, python-format
 msgid "%% of Total"
 msgstr ""
 
 msgid "No expense data available for the selected period"
-msgstr "Tanlangan davr uchun chiqimlar topilmadi"
+msgstr ""
 
+#, fuzzy
 #| msgid "bulk.previewDistribution"
 msgid "Expense Type Distribution"
-msgstr "Chiqim turlari taqsimoti"
+msgstr "Taqsimotni ko'rish"
 
 msgid "Breakdown by customer type (B2B, B2C, Both)"
-msgstr "Mijoz turi bo‘yicha taqsimot (B2B, B2C, Ikkalasi)"
+msgstr ""
 
 msgid "Business"
 msgstr ""
@@ -6353,112 +6604,129 @@ msgstr "Jami yozuvlar"
 msgid "No data available"
 msgstr ""
 
+#, fuzzy
 #| msgid "Sales Statistics"
 msgid "Expense Statistics"
-msgstr "Chiqimlar statistikasi"
+msgstr "Savdo statistikasi"
 
 msgid "Min, Max, Average & Median values"
-msgstr "Min, Maks, O‘rtacha va Median qiymatlar"
+msgstr ""
 
 msgid "Highest Expense"
-msgstr "Eng yuqori chiqim"
+msgstr ""
 
 msgid "Lowest Expense"
-msgstr "Eng past chiqim"
+msgstr ""
 
+#, fuzzy
 #| msgid "services.expenses"
 msgid "Average Expense"
-msgstr "O'rtacha xarajat"
+msgstr "Xarajatlar"
 
+#, fuzzy
 #| msgid "Edit Expense"
 msgid "Median Expense"
-msgstr "Median xarajat"
+msgstr "Xarajatni tahrirlash"
 
+#, fuzzy
 #| msgid "Total Price"
 msgid "Monthly Trend"
-msgstr "Oylik tendentsiya"
+msgstr "Jami narx"
 
+#, fuzzy
 #| msgid "Branch Comparison"
 msgid "Branch Comparison (Top 10)"
-msgstr "Filiallar taqqosi (Top 10)"
+msgstr "Filiallar taqqoslash"
 
+#, fuzzy
 #| msgid "Total Expected"
 msgid "Top 10 Highest Expenses"
-msgstr "Top 10 eng yuqori xarajatlar"
+msgstr "Jami kutilmoqda"
 
+#, fuzzy
 #| msgid "Total Price"
 msgid "Unit Price"
-msgstr "Birlik narxi"
+msgstr "Jami narx"
 
+#, fuzzy
 #| msgid "Total Logs"
 msgid "Total Cost"
-msgstr "Umumiy narx"
+msgstr "Jami yozuvlar"
 
 msgid "Both"
-msgstr "Ikkalasi"
+msgstr ""
 
 msgid "copy"
 msgstr ""
 
+#, fuzzy
 #| msgid "No debtors found"
 msgid "No expenses found"
-msgstr "Xarajatlar topilmadi"
+msgstr "Qarzdarlar topilmadi"
 
+#, fuzzy
 msgid "Financial Report"
-msgstr "Moliyaviy hisobot"
+msgstr "Moliyaviy Hisobotlar"
 
 msgid "Revenue and financial analytics"
-msgstr "Daromad va moliyaviy tahlil"
+msgstr ""
 
 msgid "Daily Revenue Trend"
-msgstr "Kunlik daromad tendentsiyasi"
+msgstr ""
 
 msgid "Revenue by Status"
-msgstr "Holat bo'yicha daromad"
+msgstr ""
 
+#, fuzzy
 #| msgid "Order Reports"
 msgid "Orders Report"
-msgstr "Buyurtmalar hisoboti"
+msgstr "Buyurtma hisobotlari"
 
 msgid "Order statistics and analytics"
-msgstr "Buyurtmalar statistikasi va tahlili"
+msgstr ""
 
 msgid "Name / phone / ID"
 msgstr ""
 
+#, fuzzy
 #| msgid "All Rates"
 msgid "All Statuses"
-msgstr "Barcha statuslar"
+msgstr "Barcha darajalar"
 
 # Debtors Report Translations
+#, fuzzy
 #| msgid "Track and manage outstanding customer debts"
 msgid "Track and analyze staff performance metrics"
-msgstr "Xodimlar samaradorligi ko'rsatkichlarini kuzatish va tahlil qilish"
+msgstr "Mijozlarning to'lanmagan qarzlarini kuzatish va boshqarish"
 
 msgid "Receivables and payment collection analytics"
-msgstr "Qoldiq va to'lovlarni yig'ish tahlili"
+msgstr ""
 
+#, fuzzy
 #| msgid "Agency Token"
 msgid "Copy Price"
-msgstr "Nusxa narxi"
+msgstr "Agentlik tokeni"
 
 msgid "Show"
 msgstr "Ko'rsatish"
 
+#, fuzzy
 #| msgid "Statistics"
 msgid "Static"
-msgstr "Statik"
+msgstr "Statistika"
 
+#, fuzzy
 #| msgid "Pages"
 msgid "Per Page"
-msgstr "Sahifa uchun"
+msgstr "Sahifalar"
 
 msgid "This will also delete all products under this category."
 msgstr ""
 
+#, fuzzy
 #| msgid "Categories"
 msgid "No categories found"
-msgstr "Kategoriyalar topilmadi"
+msgstr "Kategoriyalar"
 
 msgid "Last Month"
 msgstr "O'tgan oy"
@@ -6467,7 +6735,7 @@ msgid "Period Total"
 msgstr "Davr jami"
 
 msgid "All Categories"
-msgstr "Barcha kategoriyalar"
+msgstr "Barcha toifalar"
 
 msgid "Monthly Expenses"
 msgstr "Oylik xarajatlar"
@@ -6509,7 +6777,7 @@ msgid "optional, Iconify name"
 msgstr "ixtiyoriy, Iconify belgisi nomi"
 
 msgid "Create Category"
-msgstr "Kategoriya yaratish"
+msgstr "Toifa yaratish"
 
 msgid "Record Operating Expense"
 msgstr "Operatsion xarajat yozish"
@@ -6583,18 +6851,20 @@ msgstr "%(start)s–%(end)s / %(total)s yozuv ko'rsatilmoqda"
 msgid "Languages Management"
 msgstr "Qarzdorlarni boshqarish"
 
+#, fuzzy
 #| msgid "Languages"
 msgid "Add New Language"
-msgstr "Yangi til qo'shish"
+msgstr "Tillar"
 
 #, fuzzy
 #| msgid "Pages"
 msgid "1st Page"
 msgstr "Sahifalar"
 
+#, fuzzy
 #| msgid "Total Pages"
 msgid "Other Pages"
-msgstr "Boshqa sahifalar"
+msgstr "Jami sahifalar"
 
 msgid "Copy"
 msgstr ""
@@ -6609,17 +6879,20 @@ msgstr "Qarzdarlar topilmadi"
 msgid "languages"
 msgstr "Tillar"
 
+#, fuzzy
 #| msgid "form.firstName"
 msgid "First"
-msgstr "Birinchi"
+msgstr "Ism"
 
+#, fuzzy
 #| msgid "form.lastName"
 msgid "Last"
-msgstr "Oxirgi"
+msgstr "Familiya"
 
+#, fuzzy
 #| msgid "Select branch…"
 msgid "Select Branch"
-msgstr "Filialni tanlang"
+msgstr "Filialni tanlang…"
 
 msgid "Agency Pricing (UZS)"
 msgstr "Agentlik narxlari (UZS)"
@@ -6627,7 +6900,9 @@ msgstr "Agentlik narxlari (UZS)"
 msgid "Ordinary User Pricing (UZS)"
 msgstr "Oddiy foydalanuvchi narxlari (UZS)"
 
-msgid "Pricing fields are optional. Leave as 0 if no additional cost for this language."
+msgid ""
+"Pricing fields are optional. Leave as 0 if no additional cost for this "
+"language."
 msgstr ""
 
 #, fuzzy
@@ -6644,7 +6919,8 @@ msgstr "Ogohlantirish:"
 msgid "Are you sure you want to delete the language:"
 msgstr "Ushbu tilni o'chirishga ishonchingiz komilmi:"
 
-msgid "Note: This may affect existing orders and products that use this language."
+msgid ""
+"Note: This may affect existing orders and products that use this language."
 msgstr ""
 
 #, fuzzy
@@ -6759,8 +7035,12 @@ msgstr "Muammoni qisqacha tasvirlab bering"
 msgid "Help us resolve your issue faster"
 msgstr "Muammoni tezroq hal etishimizga yordam bering"
 
-msgid "The more detail you provide, the quicker and more accurately we can help. Please include:"
-msgstr "Qancha ko'proq ma'lumot bersangiz, shuncha tez va aniq yordam bera olamiz. Iltimos, quyidagilarni kiriting:"
+msgid ""
+"The more detail you provide, the quicker and more accurately we can help. "
+"Please include:"
+msgstr ""
+"Qancha ko'proq ma'lumot bersangiz, shuncha tez va aniq yordam bera olamiz. "
+"Iltimos, quyidagilarni kiriting:"
 
 msgid "Page URL"
 msgstr "Sahifa URL manzili"
@@ -6771,23 +7051,31 @@ msgstr "muammo yuzaga kelayotgan sahifaning to'liq manzilini joylashtiring"
 msgid "What is wrong"
 msgstr "Nima noto'g'ri"
 
-msgid "describe exactly what is happening (error message, incorrect behaviour, etc.)"
-msgstr "nima sodir bo'layotganini aniq tasvirlab bering (xato xabari, noto'g'ri xatti-harakat va h.k.)"
+msgid ""
+"describe exactly what is happening (error message, incorrect behaviour, etc.)"
+msgstr ""
+"nima sodir bo'layotganini aniq tasvirlab bering (xato xabari, noto'g'ri "
+"xatti-harakat va h.k.)"
 
 msgid "What should happen"
 msgstr "Qanday bo'lishi kerak"
 
 msgid "explain what the correct or expected behaviour should be"
-msgstr "to'g'ri yoki kutilgan xatti-harakat qanday bo'lishi kerakligini tushuntiring"
+msgstr ""
+"to'g'ri yoki kutilgan xatti-harakat qanday bo'lishi kerakligini tushuntiring"
 
 msgid "Steps to reproduce"
 msgstr "Takrorlash qadamlari"
 
 msgid "list the steps we can follow to see the problem ourselves"
-msgstr "muammoni o'zimiz ko'rishimiz uchun bajara oladigan qadamlarni sanab o'ting"
+msgstr ""
+"muammoni o'zimiz ko'rishimiz uchun bajara oladigan qadamlarni sanab o'ting"
 
-msgid "Please describe the issue in detail. Include steps to reproduce if relevant."
-msgstr "Iltimos, muammoni batafsil tasvirlang. Agar zarur bo'lsa, takroriy ishlab chiqarish bosqichlarini kiriting."
+msgid ""
+"Please describe the issue in detail. Include steps to reproduce if relevant."
+msgstr ""
+"Iltimos, muammoni batafsil tasvirlang. Agar zarur bo'lsa, takroriy ishlab "
+"chiqarish bosqichlarini kiriting."
 
 #, fuzzy
 #| msgid "payment.cash"
@@ -6926,7 +7214,8 @@ msgid "Takes {nargs} values but 1 was given."
 msgid_plural "Takes {nargs} values but {len} were given."
 msgstr[0] ""
 
-msgid "DeprecationWarning: The {param_type} {name!r} is deprecated.{extra_message}"
+msgid ""
+"DeprecationWarning: The {param_type} {name!r} is deprecated.{extra_message}"
 msgstr ""
 
 #, python-brace-format
@@ -7162,10 +7451,13 @@ msgid "Enter a valid email address."
 msgstr "Manzil"
 
 #. Translators: "letters" means latin letters: a-z and A-Z.
-msgid "Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgid ""
+"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
 msgstr ""
 
-msgid "Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or hyphens."
+msgid ""
+"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
+"hyphens."
 msgstr ""
 
 #, fuzzy, python-format
@@ -7202,17 +7494,27 @@ msgid "Ensure this value is a multiple of step size %(limit_value)s."
 msgstr ""
 
 #, python-format
-msgid "Ensure this value is a multiple of step size %(limit_value)s, starting from %(offset)s, e.g. %(offset)s, %(valid_value1)s, %(valid_value2)s, and so on."
+msgid ""
+"Ensure this value is a multiple of step size %(limit_value)s, starting from "
+"%(offset)s, e.g. %(offset)s, %(valid_value1)s, %(valid_value2)s, and so on."
 msgstr ""
 
 #, python-format
-msgid "Ensure this value has at least %(limit_value)d character (it has %(show_value)d)."
-msgid_plural "Ensure this value has at least %(limit_value)d characters (it has %(show_value)d)."
+msgid ""
+"Ensure this value has at least %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at least %(limit_value)d characters (it has "
+"%(show_value)d)."
 msgstr[0] ""
 
 #, python-format
-msgid "Ensure this value has at most %(limit_value)d character (it has %(show_value)d)."
-msgid_plural "Ensure this value has at most %(limit_value)d characters (it has %(show_value)d)."
+msgid ""
+"Ensure this value has at most %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has "
+"%(show_value)d)."
 msgstr[0] ""
 
 #, fuzzy
@@ -7231,12 +7533,16 @@ msgid_plural "Ensure that there are no more than %(max)s decimal places."
 msgstr[0] ""
 
 #, python-format
-msgid "Ensure that there are no more than %(max)s digit before the decimal point."
-msgid_plural "Ensure that there are no more than %(max)s digits before the decimal point."
+msgid ""
+"Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural ""
+"Ensure that there are no more than %(max)s digits before the decimal point."
 msgstr[0] ""
 
 #, python-format
-msgid "File extension “%(extension)s” is not allowed. Allowed extensions are: %(allowed_extensions)s."
+msgid ""
+"File extension “%(extension)s” is not allowed. Allowed extensions are: "
+"%(allowed_extensions)s."
 msgstr ""
 
 msgid "Null characters are not allowed."
@@ -7274,7 +7580,8 @@ msgstr ""
 #. Translators: The 'lookup_type' is one of 'date', 'year' or
 #. 'month'. Eg: "Title must be unique for pub_date year"
 #, python-format
-msgid "%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgid ""
+"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
 msgstr ""
 
 #, python-format
@@ -7305,22 +7612,30 @@ msgid "Comma-separated integers"
 msgstr "Barcha markazlar"
 
 #, python-format
-msgid "“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD format."
+msgid ""
+"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
+"format."
 msgstr ""
 
 #, python-format
-msgid "“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid date."
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
+"date."
 msgstr ""
 
 msgid "Date (without time)"
 msgstr ""
 
 #, python-format
-msgid "“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ] format."
+msgid ""
+"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[."
+"uuuuuu]][TZ] format."
 msgstr ""
 
 #, python-format
-msgid "“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]) but it is an invalid date/time."
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
+"[TZ]) but it is an invalid date/time."
 msgstr ""
 
 msgid "Date (with time)"
@@ -7336,7 +7651,9 @@ msgid "Decimal number"
 msgstr "Telefon raqami"
 
 #, python-format
-msgid "“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[.uuuuuu] format."
+msgid ""
+"“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[."
+"uuuuuu] format."
 msgstr ""
 
 #, fuzzy
@@ -7417,11 +7734,15 @@ msgid "Text"
 msgstr "Yordam matni"
 
 #, python-format
-msgid "“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] format."
+msgid ""
+"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
+"format."
 msgstr ""
 
 #, python-format
-msgid "“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an invalid time."
+msgid ""
+"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
+"invalid time."
 msgstr ""
 
 msgid "Time"
@@ -7524,13 +7845,16 @@ msgstr ""
 
 #, python-format
 msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
-msgid_plural "Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgid_plural ""
+"Ensure this filename has at most %(max)d characters (it has %(length)d)."
 msgstr[0] ""
 
 msgid "Please either submit a file or check the clear checkbox, not both."
 msgstr ""
 
-msgid "Upload a valid image. The file you uploaded was either not an image or a corrupted image."
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
 msgstr ""
 
 #, python-format
@@ -7566,7 +7890,9 @@ msgid "(Hidden field %(name)s) %(error)s"
 msgstr ""
 
 #, python-format
-msgid "ManagementForm data is missing or has been tampered with. Missing fields: %(field_names)s. You may need to file a bug report if the issue persists."
+msgid ""
+"ManagementForm data is missing or has been tampered with. Missing fields: "
+"%(field_names)s. You may need to file a bug report if the issue persists."
 msgstr ""
 
 #, python-format
@@ -7588,7 +7914,9 @@ msgid "Please correct the duplicate data for %(field)s, which must be unique."
 msgstr ""
 
 #, python-format
-msgid "Please correct the duplicate data for %(field_name)s which must be unique for the %(lookup)s in %(date_field)s."
+msgid ""
+"Please correct the duplicate data for %(field_name)s which must be unique "
+"for the %(lookup)s in %(date_field)s."
 msgstr ""
 
 msgid "Please correct the duplicate values below."
@@ -7606,7 +7934,9 @@ msgid "“%(pk)s” is not a valid value."
 msgstr "To'g'ri miqdor kiriting."
 
 #, python-format
-msgid "%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it may be ambiguous or it may not exist."
+msgid ""
+"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
+"may be ambiguous or it may not exist."
 msgstr ""
 
 #, fuzzy
@@ -7934,19 +8264,36 @@ msgstr ""
 msgid "CSRF verification failed. Request aborted."
 msgstr ""
 
-msgid "You are seeing this message because this HTTPS site requires a “Referer header” to be sent by your web browser, but none was sent. This header is required for security reasons, to ensure that your browser is not being hijacked by third parties."
+msgid ""
+"You are seeing this message because this HTTPS site requires a “Referer "
+"header” to be sent by your web browser, but none was sent. This header is "
+"required for security reasons, to ensure that your browser is not being "
+"hijacked by third parties."
 msgstr ""
 
-msgid "If you have configured your browser to disable “Referer” headers, please re-enable them, at least for this site, or for HTTPS connections, or for “same-origin” requests."
+msgid ""
+"If you have configured your browser to disable “Referer” headers, please re-"
+"enable them, at least for this site, or for HTTPS connections, or for “same-"
+"origin” requests."
 msgstr ""
 
-msgid "If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or including the “Referrer-Policy: no-referrer” header, please remove them. The CSRF protection requires the “Referer” header to do strict referer checking. If you’re concerned about privacy, use alternatives like <a rel=\"noreferrer\" …> for links to third-party sites."
+msgid ""
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
+"including the “Referrer-Policy: no-referrer” header, please remove them. The "
+"CSRF protection requires the “Referer” header to do strict referer checking. "
+"If you’re concerned about privacy, use alternatives like <a "
+"rel=\"noreferrer\" …> for links to third-party sites."
 msgstr ""
 
-msgid "You are seeing this message because this site requires a CSRF cookie when submitting forms. This cookie is required for security reasons, to ensure that your browser is not being hijacked by third parties."
+msgid ""
+"You are seeing this message because this site requires a CSRF cookie when "
+"submitting forms. This cookie is required for security reasons, to ensure "
+"that your browser is not being hijacked by third parties."
 msgstr ""
 
-msgid "If you have configured your browser to disable cookies, please re-enable them, at least for this site, or for “same-origin” requests."
+msgid ""
+"If you have configured your browser to disable cookies, please re-enable "
+"them, at least for this site, or for “same-origin” requests."
 msgstr ""
 
 msgid "More information is available with DEBUG=True."
@@ -7972,7 +8319,9 @@ msgid "No %(verbose_name_plural)s available"
 msgstr ""
 
 #, python-format
-msgid "Future %(verbose_name_plural)s not available because %(class_name)s.allow_future is False."
+msgid ""
+"Future %(verbose_name_plural)s not available because %(class_name)s."
+"allow_future is False."
 msgstr ""
 
 #, python-format
@@ -8009,11 +8358,17 @@ msgid "The install worked successfully! Congratulations!"
 msgstr ""
 
 #, python-format
-msgid "View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgid ""
+"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
+"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
 msgstr ""
 
 #, python-format
-msgid "You are seeing this page because <a href=\"https://docs.djangoproject.com/en/%(version)s/ref/settings/#debug\" target=\"_blank\" rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not configured any URLs."
+msgid ""
+"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
+"%(version)s/ref/settings/#debug\" target=\"_blank\" "
+"rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not "
+"configured any URLs."
 msgstr ""
 
 #, fuzzy
@@ -8230,219 +8585,3 @@ msgstr ""
 #~| msgid "Roles & Permissions"
 #~ msgid "Staff roles & permissions"
 #~ msgstr "Rollar va ruxsatlar"
-
-# Admin message translations
-msgid "A role with this name already exists."
-msgstr "Bu nomdagi rol allaqachon mavjud."
-
-# Admin message translations
-msgid "Branch name is required."
-msgstr "Filial nomi talab qilinadi."
-
-# Admin message translations
-msgid "Center creation is handled by the setup administrator in client edition."
-msgstr "Client edition versiyasida markaz yaratish sozlash administratori tomonidan bajariladi."
-
-# Admin message translations
-msgid "Center name is required."
-msgstr "Markaz nomi talab qilinadi."
-
-# Admin message translations
-msgid "Configuration change request sent to the setup administrator."
-msgstr "Konfiguratsiyani o'zgartirish so'rovi sozlash administratoriga yuborildi."
-
-# Admin message translations
-msgid "Current password is incorrect."
-msgstr "Joriy parol noto'g'ri."
-
-# Admin message translations
-msgid "Current password is required."
-msgstr "Joriy parol talab qilinadi."
-
-# Admin message translations
-msgid "Failed to send email. Please try again later."
-msgstr "Email yuborilmadi. Keyinroq qayta urinib ko'ring."
-
-# Admin message translations
-msgid "First name is required."
-msgstr "Ism talab qilinadi."
-
-# Admin message translations
-msgid "Full name is required."
-msgstr "To'liq ism talab qilinadi."
-
-# Admin message translations
-msgid "Invalid staff member selected."
-msgstr "Noto'g'ri xodim tanlandi."
-
-# Admin message translations
-msgid "Invalid username or password."
-msgstr "Login yoki parol noto'g'ri."
-
-# Admin message translations
-msgid "New password is required."
-msgstr "Yangi parol talab qilinadi."
-
-# Admin message translations
-msgid "Order must be ready or in progress to complete."
-msgstr "Buyurtmani yakunlash uchun u tayyor yoki jarayonda bo'lishi kerak."
-
-# Admin message translations
-msgid "Password changed successfully."
-msgstr "Parol muvaffaqiyatli o'zgartirildi."
-
-# Admin message translations
-msgid "Password must be at least 8 characters long."
-msgstr "Parol kamida 8 ta belgidan iborat bo'lishi kerak."
-
-# Admin message translations
-msgid "Passwords do not match."
-msgstr "Parollar mos emas."
-
-# Admin message translations
-msgid "Phone number is required."
-msgstr "Telefon raqami talab qilinadi."
-
-# Admin message translations
-msgid "Please select a center."
-msgstr "Markazni tanlang."
-
-# Admin message translations
-msgid "Please select a staff member."
-msgstr "Xodimni tanlang."
-
-# Admin message translations
-msgid "Profile updated successfully."
-msgstr "Profil muvaffaqiyatli yangilandi."
-
-# Admin message translations
-msgid "Role name is required."
-msgstr "Rol nomi talab qilinadi."
-
-# Admin message translations
-msgid "Selected owner not found."
-msgstr "Tanlangan egasi topilmadi."
-
-# Admin message translations
-msgid "Staff member must be in the same branch as the order."
-msgstr "Xodim buyurtma bilan bir filialda bo'lishi kerak."
-
-# Admin message translations
-msgid "System roles cannot be deleted."
-msgstr "Tizim rollarini o'chirib bo'lmaydi."
-
-# Admin message translations
-msgid "The Owner role is protected."
-msgstr "Owner roli himoyalangan."
-
-# Admin message translations
-msgid "The password reset link is invalid or has expired."
-msgstr "Parolni tiklash havolasi noto'g'ri yoki muddati tugagan."
-
-# Admin message translations
-msgid "This email is already in use."
-msgstr "Bu email allaqachon ishlatilmoqda."
-
-# Admin message translations
-msgid "This subdomain is already in use by another center."
-msgstr "Bu subdomen boshqa markaz tomonidan ishlatilmoqda."
-
-# Admin message translations
-msgid "User ID is required."
-msgstr "Foydalanuvchi ID talab qilinadi."
-
-# Admin message translations
-msgid "You can only edit settings for your own branch."
-msgstr "Faqat o'z filialingiz sozlamalarini tahrirlashingiz mumkin."
-
-# Admin message translations
-msgid "You can only view settings for your own branch."
-msgstr "Faqat o'z filialingiz sozlamalarini ko'rishingiz mumkin."
-
-# Admin message translations
-msgid "You do not have admin access."
-msgstr "Sizda admin panelga kirish huquqi yo'q."
-
-# Admin message translations
-msgid "You do not have permission to create roles."
-msgstr "Sizda rollar yaratish huquqi yo'q."
-
-# Admin message translations
-msgid "You do not have permission to delete roles."
-msgstr "Sizda rollarni o'chirish huquqi yo'q."
-
-# Admin message translations
-msgid "You do not have permission to edit roles."
-msgstr "Sizda rollarni tahrirlash huquqi yo'q."
-
-# Admin message translations
-msgid "You do not have permission to manage roles."
-msgstr "Sizda rollarni boshqarish huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to assign orders."
-msgstr "Sizda buyurtmalarni biriktirish huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to complete orders."
-msgstr "Sizda buyurtmalarni yakunlash huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to create agencies."
-msgstr "Sizda agentliklar yaratish huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to delete orders."
-msgstr "Sizda buyurtmalarni o'chirish huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to edit branch settings."
-msgstr "Sizda filial sozlamalarini tahrirlash huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to edit this branch."
-msgstr "Sizda bu filialni tahrirlash huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to edit this order."
-msgstr "Sizda bu buyurtmani tahrirlash huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to modify agency status."
-msgstr "Sizda agentlik holatini o'zgartirish huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to receive payments."
-msgstr "Sizda to'lovlarni qabul qilish huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to request changes for this branch."
-msgstr "Sizda bu filial bo'yicha o'zgarish so'rash huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to unassign orders."
-msgstr "Sizda buyurtma biriktirishini olib tashlash huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to view branch settings."
-msgstr "Sizda filial sozlamalarini ko'rish huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to view this order."
-msgstr "Sizda bu buyurtmani ko'rish huquqi yo'q."
-
-# Admin message translations
-msgid "You don't have permission to view this staff member."
-msgstr "Sizda bu xodimni ko'rish huquqi yo'q."
-
-# Admin message translations
-msgid "You have been logged out successfully."
-msgstr "Tizimdan muvaffaqiyatli chiqdingiz."
-
-# Admin message translations
-msgid "You need an admin profile to access this page."
-msgstr "Bu sahifaga kirish uchun admin profilingiz bo'lishi kerak."
-
-# Admin message translations
-msgid "You need an admin profile to view your orders."
-msgstr "Buyurtmalaringizni ko'rish uchun admin profilingiz bo'lishi kerak."

@@ -1,0 +1,91 @@
+{% extends 'layout/layout.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Requests Management" %}{% endblock %}
+
+{% block content %}
+
+<!-- Page Header with Tabs -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
+    <div>
+        <h4 class="mb-4">{% trans "Requests Management" %}</h4>
+        <p class="mb-0 text-secondary-light">{% trans "Manage contact requests and subscription renewal requests" %}</p>
+    </div>
+    <div class="btn-group" role="group" aria-label="Requests Tabs">
+        <a href="?tab=contact" class="btn {% if active_tab == 'contact' %}btn-primary-600 text-white{% else %}btn-outline-primary-600{% endif %}">
+            <i class="ri-mail-send-line me-1"></i> {% trans "Contact Requests" %}
+        </a>
+        <a href="?tab=renewal" class="btn {% if active_tab == 'renewal' %}btn-primary-600 text-white{% else %}btn-outline-primary-600{% endif %}">
+            <i class="ri-refresh-line me-1"></i> {% trans "Renewal Requests" %}
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row gy-4 mb-24">
+    {% if active_tab == 'contact' %}
+        {% include 'landing/partials/contact_stats.html' %}
+    {% else %}
+        {% include 'landing/partials/renewal_stats.html' %}
+    {% endif %}
+</div>
+
+<!-- Filters Card -->
+<div class="card mb-24 radius-8 border">
+    <div class="card-body p-24">
+        <form method="GET" class="row gy-3 gx-3 align-items-end">
+            <input type="hidden" name="tab" value="{{ active_tab }}">
+            <div class="col-md-3">
+                <label class="form-label">{% trans "Status" %}</label>
+                <select name="status" class="form-select">
+                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>{% trans "All" %}</option>
+                    {% if active_tab == 'contact' %}
+                        <option value="new" {% if status_filter == 'new' %}selected{% endif %}>{% trans "New" %}</option>
+                        <option value="contacted" {% if status_filter == 'contacted' %}selected{% endif %}>{% trans "Contacted" %}</option>
+                        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                        <option value="converted" {% if status_filter == 'converted' %}selected{% endif %}>{% trans "Converted" %}</option>
+                        <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>{% trans "Cancelled" %}</option>
+                    {% else %}
+                        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                        <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>{% trans "Approved" %}</option>
+                        <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">{% trans "Date From" %}</label>
+                <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">{% trans "Date To" %}</label>
+                <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">{% trans "Search" %}</label>
+                <input type="text" name="search" class="form-control" placeholder="{% trans 'Search by name, email, org...' %}" value="{{ search_query }}">
+            </div>
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary-600">
+                    <i class="ri-filter-3-line me-1"></i> {% trans "Apply Filters" %}
+                </button>
+                <a href="?tab={{ active_tab }}" class="btn btn-outline-secondary">
+                    <i class="ri-refresh-line me-1"></i> {% trans "Reset" %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Table Section -->
+<div class="card radius-8 border">
+    <div class="card-body p-0">
+        {% if active_tab == 'contact' %}
+            {% include 'landing/partials/contact_table.html' %}
+        {% else %}
+            {% include 'landing/partials/renewal_table.html' %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

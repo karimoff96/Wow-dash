@@ -1,0 +1,108 @@
+{% load i18n %}
+<div class="col-xxl-2 col-md-4 col-sm-6">
+    <div class="card p-3 shadow-sm h-100 radius-8 border">
+        <div class="card-body p-0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="mb-0 w-48-px h-48-px bg-primary-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                        <iconify-icon icon="solar:inbox-line-bold" class="icon"></iconify-icon>
+                    </span>
+                    <div>
+                        <span class="mb-0 fw-medium text-secondary-light">{% trans "Total" %}</span>
+                        <h6 class="fw-semibold mb-0">{{ total_contact }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xxl-2 col-md-4 col-sm-6">
+    <div class="card p-3 shadow-sm h-100 radius-8 border">
+        <div class="card-body p-0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="mb-0 w-48-px h-48-px bg-warning-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                        <iconify-icon icon="solar:hourglass-line-bold" class="icon"></iconify-icon>
+                    </span>
+                    <div>
+                        <span class="mb-0 fw-medium text-secondary-light">{% trans "New" %}</span>
+                        <h6 class="fw-semibold mb-0">{{ new_contact }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xxl-2 col-md-4 col-sm-6">
+    <div class="card p-3 shadow-sm h-100 radius-8 border">
+        <div class="card-body p-0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="mb-0 w-48-px h-48-px bg-info-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                        <iconify-icon icon="solar:phone-calling-bold" class="icon"></iconify-icon>
+                    </span>
+                    <div>
+                        <span class="mb-0 fw-medium text-secondary-light">{% trans "Contacted" %}</span>
+                        <h6 class="fw-semibold mb-0">{{ contacted }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xxl-2 col-md-4 col-sm-6">
+    <div class="card p-3 shadow-sm h-100 radius-8 border">
+        <div class="card-body p-0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="mb-0 w-48-px h-48-px bg-purple-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                        <iconify-icon icon="solar:clock-circle-bold" class="icon"></iconify-icon>
+                    </span>
+                    <div>
+                        <span class="mb-0 fw-medium text-secondary-light">{% trans "Pending" %}</span>
+                        <h6 class="fw-semibold mb-0">{{ pending_contact }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xxl-2 col-md-4 col-sm-6">
+    <div class="card p-3 shadow-sm h-100 radius-8 border">
+        <div class="card-body p-0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="mb-0 w-48-px h-48-px bg-success-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                        <iconify-icon icon="solar:check-circle-bold" class="icon"></iconify-icon>
+                    </span>
+                    <div>
+                        <span class="mb-0 fw-medium text-secondary-light">{% trans "Converted" %}</span>
+                        <h6 class="fw-semibold mb-0">{{ converted_contact }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-xxl-2 col-md-4 col-sm-6">
+    <div class="card p-3 shadow-sm h-100 radius-8 border">
+        <div class="card-body p-0">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-8">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="mb-0 w-48-px h-48-px bg-danger-600 flex-shrink-0 text-white d-flex justify-content-center align-items-center rounded-circle h6 mb-0">
+                        <iconify-icon icon="solar:close-circle-bold" class="icon"></iconify-icon>
+                    </span>
+                    <div>
+                        <span class="mb-0 fw-medium text-secondary-light">{% trans "Cancelled" %}</span>
+                        <h6 class="fw-semibold mb-0">{{ cancelled_contact }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

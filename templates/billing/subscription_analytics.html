@@ -1,0 +1,362 @@
+{% extends 'layout/layout.html' %}
+{% load i18n %}
+{% load static %}
+{% load billing_extras %}
+
+{% block title %}{% trans "Subscription Analytics" %} - {{ center.name }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-body">
+
+    <!-- Center Header -->
+    <div class="card border-0 mb-24">
+        <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div>
+                    <h4 class="mb-8">{{ center.name }}</h4>
+                    <p class="text-secondary-light mb-0">
+                        <i class="ri-global-line"></i> {{ center.subdomain }}.multilang.uz
+                        {% if center.phone %}
+                        | <i class="ri-phone-line"></i> {{ center.phone }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="d-flex gap-2">
+                    {% if analytics.current_subscription %}
+                    <a href="{% url 'billing:subscription_detail' analytics.current_subscription.id %}" class="btn btn-primary-600">
+                        <i class="ri-eye-line"></i> {% trans "View Current Subscription" %}
+                    </a>
+                    {% else %}
+                    <span class="badge bg-secondary text-sm">{% trans "No Active Subscription" %}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row g-3 mb-24">
+        <div class="col-xxl-3 col-sm-6">
+            <div class="card border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-secondary-light text-sm mb-4 d-block">{% trans "Account Age" %}</span>
+                            <h5 class="mb-0">
+                                {% if analytics.account_age_years >= 1 %}
+                                    {{ analytics.account_age_years }} {% trans "years" %}
+                                {% else %}
+                                    {{ analytics.account_age_days }} {% trans "days" %}
+                                {% endif %}
+                            </h5>
+                            <span class="text-secondary-light text-xs">
+                                {% trans "Since" %} {{ analytics.first_subscription_date|date:"d M Y" }}
+                            </span>
+                        </div>
+                        <div class="w-44 h-44 bg-primary-50 text-primary-600 rounded-circle d-flex justify-content-center align-items-center">
+                            <i class="ri-calendar-check-line text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xxl-3 col-sm-6">
+            <div class="card border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-secondary-light text-sm mb-4 d-block">{% trans "Lifetime Value" %}</span>
+                            <h5 class="mb-0" data-bs-toggle="tooltip" title="{{ analytics.lifetime_value|intspace }} UZS">{{ analytics.lifetime_value|compact_number }} UZS</h5>
+                            <span class="text-secondary-light text-xs">
+                                {{ analytics.payment_count }} {% trans "payments" %}
+                            </span>
+                        </div>
+                        <div class="w-44 h-44 bg-success-50 text-success-600 rounded-circle d-flex justify-content-center align-items-center">
+                            <i class="ri-money-dollar-circle-line text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xxl-3 col-sm-6">
+            <div class="card border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-secondary-light text-sm mb-4 d-block">{% trans "Total Subscriptions" %}</span>
+                            <h5 class="mb-0">{{ analytics.total_subscriptions_count }}</h5>
+                            <span class="text-secondary-light text-xs">
+                                {% if analytics.has_used_trial %}
+                                    {% if analytics.trial_converted %}
+                                        <span class="badge bg-success-focus text-success-main">{% trans "Trial Converted" %}</span>
+                                    {% else %}
+                                        <span class="badge bg-warning-focus text-warning-main">{% trans "Used Trial" %}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-secondary-focus text-secondary-main">{% trans "No Trial" %}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="w-44 h-44 bg-info-50 text-info-600 rounded-circle d-flex justify-content-center align-items-center">
+                            <i class="ri-stack-line text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xxl-3 col-sm-6">
+            <div class="card border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <span class="text-secondary-light text-sm mb-4 d-block">{% trans "Avg. Subscription" %}</span>
+                            <h5 class="mb-0">{{ analytics.average_subscription_days }} {% trans "days" %}</h5>
+                            <span class="text-secondary-light text-xs">
+                                {% trans "Average duration" %}
+                            </span>
+                        </div>
+                        <div class="w-44 h-44 bg-purple-50 text-purple-600 rounded-circle d-flex justify-content-center align-items-center">
+                            <i class="ri-time-line text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment History & Monthly Breakdown -->
+    <div class="row g-3 mb-24">
+        <div class="col-xxl-8">
+            <div class="card border-0 h-100">
+                <div class="card-header border-bottom">
+                    <h6 class="mb-0">{% trans "Payment History" %}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Date" %}</th>
+                                    <th>{% trans "Tariff" %}</th>
+                                    <th>{% trans "Duration" %}</th>
+                                    <th>{% trans "Amount" %}</th>
+                                    <th>{% trans "Method" %}</th>
+                                    <th>{% trans "Status" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payment_history %}
+                                <tr>
+                                    <td>{{ payment.payment_date|date:"d M Y" }}</td>
+                                    <td>{{ payment.tariff.title }}</td>
+                                    <td>
+                                        {% if payment.is_trial %}
+                                            {{ payment.tariff.trial_days }} {% trans "days trial" %}
+                                        {% else %}
+                                            {{ payment.pricing.duration_months }} {% trans "months" %}
+                                        {% endif %}
+                                    </td>
+                                    <td class="fw-semibold" data-bs-toggle="tooltip" title="{{ payment.amount_paid|intspace }} {{ payment.pricing.currency }}">{{ payment.amount_paid|compact_number }} {{ payment.pricing.currency }}</td>
+                                    <td>
+                                        {% if payment.payment_method %}
+                                            <span class="badge bg-info-focus text-info-main">{{ payment.payment_method }}</span>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if payment.status == 'active' %}
+                                            <span class="badge bg-success-focus text-success-main">{% trans "Active" %}</span>
+                                        {% elif payment.status == 'expired' %}
+                                            <span class="badge bg-secondary-focus text-secondary-main">{% trans "Expired" %}</span>
+                                        {% elif payment.status == 'pending' %}
+                                            <span class="badge bg-warning-focus text-warning-main">{% trans "Pending" %}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger-focus text-danger-main">{% trans "Cancelled" %}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-secondary-light">{% trans "No payment history" %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xxl-4">
+            <div class="card border-0 h-100">
+                <div class="card-header border-bottom">
+                    <h6 class="mb-0">{% trans "Monthly Revenue" %}</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for month_data in monthly_payments %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-neutral-900 fw-medium">{{ month_data.month|date:"M Y" }}</span>
+                            <div class="text-end">
+                                <div class="fw-semibold" data-bs-toggle="tooltip" title="{{ month_data.total|intspace }} UZS">{{ month_data.total|compact_number }} UZS</div>
+                                <small class="text-secondary-light">{{ month_data.count }} {% trans "payment(s)" %}</small>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-center text-secondary-light">{% trans "No monthly data" %}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Subscriptions -->
+    <div class="card border-0 mb-24">
+        <div class="card-header border-bottom">
+            <h6 class="mb-0">{% trans "All Subscriptions" %} ({{ analytics.all_subscriptions.count }})</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Period" %}</th>
+                            <th>{% trans "Tariff" %}</th>
+                            <th>{% trans "Duration" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Amount" %}</th>
+                            <th>{% trans "Created" %}</th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in analytics.all_subscriptions %}
+                        <tr {% if sub == analytics.current_subscription %}class="table-primary"{% endif %}>
+                            <td>
+                                {{ sub.start_date|date:"d M Y" }} - {{ sub.end_date|date:"d M Y" }}
+                                {% if sub.is_trial %}
+                                    <span class="badge bg-info-focus text-info-main ms-1">{% trans "Trial" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ sub.tariff.title }}</td>
+                            <td>
+                                {% if sub.is_trial %}
+                                    {{ sub.tariff.trial_days }} {% trans "days trial" %}
+                                {% else %}
+                                    {{ sub.pricing.duration_months }} {% trans "months" %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if sub.status == 'active' %}
+                                    <span class="badge bg-success-focus text-success-main">{% trans "Active" %}</span>
+                                {% elif sub.status == 'expired' %}
+                                    <span class="badge bg-secondary-focus text-secondary-main">{% trans "Expired" %}</span>
+                                {% elif sub.status == 'pending' %}
+                                    <span class="badge bg-warning-focus text-warning-main">{% trans "Pending" %}</span>
+                                {% else %}
+                                    <span class="badge bg-danger-focus text-danger-main">{% trans "Cancelled" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if sub.amount_paid %}
+                                    <span data-bs-toggle="tooltip" title="{{ sub.amount_paid|intspace }} UZS">{{ sub.amount_paid|compact_number }} UZS</span>
+                                {% else %}
+                                    <span class="text-secondary-light">{% trans "Free" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ sub.created_at|date:"d M Y" }}</td>
+                            <td>
+                                <a href="{% url 'billing:subscription_detail' sub.id %}" class="btn btn-sm btn-outline-primary-600" title="{% trans 'View Details' %}">
+                                    <i class="ri-eye-line"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complete History Timeline -->
+    <div class="card border-0">
+        <div class="card-header border-bottom">
+            <h6 class="mb-0">{% trans "Complete Subscription History" %} ({{ analytics.all_history.count }})</h6>
+        </div>
+        <div class="card-body">
+            <div class="timeline">
+                {% for entry in analytics.all_history %}
+                <div class="timeline-item mb-24">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="timeline-icon">
+                            {% if entry.action == 'created' %}
+                                <div class="w-40 h-40 bg-success-50 text-success-600 rounded-circle d-flex justify-content-center align-items-center">
+                                    <i class="ri-add-circle-line"></i>
+                                </div>
+                            {% elif entry.action == 'renewed' %}
+                                <div class="w-40 h-40 bg-primary-50 text-primary-600 rounded-circle d-flex justify-content-center align-items-center">
+                                    <i class="ri-refresh-line"></i>
+                                </div>
+                            {% elif entry.action == 'trial_converted' %}
+                                <div class="w-40 h-40 bg-info-50 text-info-600 rounded-circle d-flex justify-content-center align-items-center">
+                                    <i class="ri-arrow-left-right-line"></i>
+                                </div>
+                            {% elif entry.action == 'cancelled' %}
+                                <div class="w-40 h-40 bg-danger-50 text-danger-600 rounded-circle d-flex justify-content-center align-items-center">
+                                    <i class="ri-close-circle-line"></i>
+                                </div>
+                            {% elif entry.action == 'status_changed' %}
+                                <div class="w-40 h-40 bg-warning-50 text-warning-600 rounded-circle d-flex justify-content-center align-items-center">
+                                    <i class="ri-pencil-line"></i>
+                                </div>
+                            {% else %}
+                                <div class="w-40 h-40 bg-secondary-focus text-secondary-light rounded-circle d-flex justify-content-center align-items-center">
+                                    <i class="ri-information-line"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h6 class="mb-0">{{ entry.action|title }}</h6>
+                                <span class="text-secondary-light text-sm">{{ entry.timestamp|date:"d M Y H:i" }}</span>
+                            </div>
+                            <p class="text-secondary-light mb-1">{{ entry.description }}</p>
+                            {% if entry.performed_by %}
+                                <small class="text-secondary-light">
+                                    <i class="ri-user-line"></i> {{ entry.performed_by.get_full_name|default:entry.performed_by.username }}
+                                </small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-secondary-light">{% trans "No history available" %}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    position: relative;
+}
+.timeline-item {
+    position: relative;
+}
+.timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 40px;
+    bottom: -24px;
+    width: 2px;
+    background: #e0e0e0;
+}
+</style>
+{% endblock %}

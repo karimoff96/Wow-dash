@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import logging  # Required for custom UTF8StreamHandler
-from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,26 +20,6 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
-
-
-def _clean_url_prefix(value):
-    value = (value or "").strip()
-    if not value or value == "/":
-        return ""
-    return "/" + value.strip("/")
-
-
-def _split_csv(value):
-    return [item.strip() for item in (value or "").split(",") if item.strip()]
-
-
-def _origin_from_proxy_template(value):
-    if not value:
-        return ""
-    parsed = urlparse(value.replace("{{port}}", "8000"))
-    if not parsed.scheme or not parsed.netloc:
-        return ""
-    return f"{parsed.scheme}://{parsed.netloc}"
 
 # ── Sentry error monitoring ──────────────────────────────────────────────────
 import sentry_sdk
@@ -98,30 +77,25 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = ["*","127.0.0.1", "localhost", "77.42.31.194", "multilang.uz", ".multilang.uz"]
-
-APP_URL_PREFIX = _clean_url_prefix(os.getenv("APP_URL_PREFIX", ""))
-FORCE_SCRIPT_NAME = APP_URL_PREFIX or None
-USE_X_FORWARDED_HOST = os.getenv("USE_X_FORWARDED_HOST", "True").lower() == "true"
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "77.42.31.194", "multilang.uz", ".multilang.uz"]
+    
 # CSRF trusted origins for ngrok and production
 CSRF_TRUSTED_ORIGINS = [
     "https://multilang.uz",
     "https://*.multilang.uz",
 ]
-CSRF_TRUSTED_ORIGINS += _split_csv(os.getenv("CSRF_TRUSTED_ORIGINS", ""))
-_code_server_origin = _origin_from_proxy_template(os.getenv("VSCODE_PROXY_URI"))
-if _code_server_origin and _code_server_origin not in CSRF_TRUSTED_ORIGINS:
-    CSRF_TRUSTED_ORIGINS.append(_code_server_origin)
 
 # Main domain for subdomain extraction
 MAIN_DOMAIN = os.getenv("MAIN_DOMAIN", "multilang.uz")
 
+# ── Support ticketing — dedicated bot & group ────────────────────────────────
+# This bot sends all support ticket notifications to the central support group.
+# The same token is reused from ADMIN_BOT_TOKEN in .env.
+SUPPORT_BOT_TOKEN = os.getenv("ADMIN_BOT_TOKEN", "")
+SUPPORT_TELEGRAM_GROUP_ID = os.getenv("SUPPORT_TELEGRAM_GROUP_ID", "")
 # Base URL used for dashboard deep-links in Telegram notifications
 BASE_URL = os.getenv("BASE_URL", f"https://admin.{os.getenv('MAIN_DOMAIN', 'multilang.uz')}")
-MONITORING_BOT_TOKEN = os.getenv("MONITORING_BOT_TOKEN", "")
-OWNER_TELEGRAM_IDS = os.getenv("OWNER_TELEGRAM_IDS", "")
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 # Application definition
@@ -141,21 +115,25 @@ INSTALLED_APPS = [
     "bot",
     "orders",
     "marketing",
+    "landing",
+    "billing",
     "webapp",
+    "support",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "landing.middleware.RateLimitMiddleware",  # Per-IP throttling for public contact form
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",  # Language detection and activation
     "django.middleware.common.CommonMiddleware",
-    "core.middleware.ProxyPrefixMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "organizations.middleware.SubdomainMiddleware",  # Subdomain-based tenant identification
     "organizations.rbac.RBACMiddleware",
+    "billing.middleware.SubscriptionEnforcementMiddleware",
 ]
 
 ROOT_URLCONF = "WowDash.urls"
@@ -173,6 +151,9 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "organizations.context_processors.rbac_context",
                 "organizations.context_processors.site_settings",
+                "landing.context_processors.contact_requests_count",
+                "billing.context_processors.billing_context",  # Billing & subscription context
+                "support.context_processors.unread_support_replies",
             ],
         },
     },
@@ -247,6 +228,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+STATIC_URL = "static/"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -290,6 +273,7 @@ MODELTRANSLATION_DEFAULT_LANGUAGE = "uz"
 MODELTRANSLATION_LANGUAGES = ("uz", "ru", "en")
 MODELTRANSLATION_TRANSLATION_FILES = (
     "accounts.translations",
+    "billing.translations",
     "core.translations",
     "services.translations",
 )
@@ -298,17 +282,11 @@ MODELTRANSLATION_PREPOPULATE_LANGUAGE = "uz"
 # Auto-populate translation fields when language changes
 MODELTRANSLATION_AUTO_POPULATE = False
 
-STATIC_URL = os.getenv(
-    "STATIC_URL",
-    f"{APP_URL_PREFIX}/static/" if APP_URL_PREFIX else "/static/",
-)
+STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles/")
 # Media files (User uploaded files)
-MEDIA_URL = os.getenv(
-    "MEDIA_URL",
-    f"{APP_URL_PREFIX}/media/" if APP_URL_PREFIX else "/media/",
-)
+MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # =============================================================================

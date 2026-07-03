@@ -1,14 +1,15 @@
 <!-- meta tags and other links -->
 <!DOCTYPE html>
-{% load i18n %}
-{% get_current_language as CURRENT_LANGUAGE %}
-<html lang="{{ CURRENT_LANGUAGE|default:'uz' }}">
+<html lang="en" data-theme="light">
   {% include "../partials/head.html"%}
   <body>
     {% include "../partials/sidebar.html" %}
 
     <main class="dashboard-main">
       {% include "../partials/navbar.html" %}
+      
+      <!-- Subscription Alert Banner -->
+      {% include "../partials/subscription_alert.html" %}
       
         <div class="dashboard-main-body">
             {% include "../partials/breadcrumb.html" with title=title subTitle=subTitle %}

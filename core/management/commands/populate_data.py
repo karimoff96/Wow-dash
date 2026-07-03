@@ -102,7 +102,17 @@ class Command(BaseCommand):
             {
                 "name": "owner",
                 "display_name": "Owner",
-                **Role.get_default_permissions_for_role(Role.OWNER),
+                "can_manage_centers": True,
+                "can_manage_branches": True,
+                "can_manage_staff": True,
+                "can_view_all_orders": True,
+                "can_manage_orders": True,
+                "can_manage_financial": True,
+                "can_manage_reports": True,
+                "can_manage_products": True,
+                "can_manage_customers": True,
+                "can_manage_marketing": True,
+                "can_manage_agencies": True,
             },
             {
                 "name": "manager",

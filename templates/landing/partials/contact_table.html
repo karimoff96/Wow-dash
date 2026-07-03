@@ -1,0 +1,78 @@
+{% load i18n %}
+<div class="table-responsive">
+    <table class="table align-middle mb-0">
+        <thead class="bg-neutral-50">
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Email" %}</th>
+                <th>{% trans "Company" %}</th>
+                <th>{% trans "Phone" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Created" %}</th>
+                <th>{% trans "IP Address" %}</th>
+                <th>{% trans "Actions" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in contact_requests %}
+            <tr>
+                <td class="fw-semibold">{{ req.name }}</td>
+                <td>{{ req.email }}</td>
+                <td>{{ req.company|default:'-' }}</td>
+                <td>{{ req.phone|default:'-' }}</td>
+                <td>
+                    <span class="badge bg-light text-dark text-capitalize">{{ req.get_status_display }}</span>
+                </td>
+                <td>{{ req.created_at|date:"Y-m-d H:i" }}</td>
+                <td>
+                    {% if req.ip_address %}
+                        <span class="text-secondary-light font-monospace" style="font-size:0.8em;">{{ req.ip_address }}</span>
+                    {% else %}
+                        <span class="text-secondary-light">-</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <form method="post" action="{% url 'contact_request_change_status' req.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="contacted">
+                            <button class="btn btn-sm {% if req.status == 'contacted' %}btn-primary text-white{% else %}btn-outline-primary{% endif %}" title="{% trans 'Mark contacted' %}">
+                                <i class="ri-phone-line"></i>
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'contact_request_change_status' req.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="converted">
+                            <button class="btn btn-sm {% if req.status == 'converted' %}btn-success text-white{% else %}btn-outline-success{% endif %}" title="{% trans 'Mark converted' %}">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'contact_request_change_status' req.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="pending">
+                            <button class="btn btn-sm {% if req.status == 'pending' %}btn-warning text-white{% else %}btn-outline-warning{% endif %}" title="{% trans 'Mark pending' %}">
+                                <i class="ri-time-line"></i>
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'contact_request_change_status' req.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="cancelled">
+                            <button class="btn btn-sm {% if req.status == 'cancelled' %}btn-danger text-white{% else %}btn-outline-danger{% endif %}" title="{% trans 'Cancel' %}">
+                                <i class="ri-close-circle-line"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center py-4 text-secondary-light">{% trans "No contact requests found" %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="p-16">
+    {% include 'layout/pagination.html' with page_obj=contact_requests %}
+</div>

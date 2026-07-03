@@ -57,7 +57,7 @@
                                 </td>
                                 <td>
                                     {% if cat.expense_count == 0 %}
-                                    <form method="post" action="{% url 'generalExpenseCategoryDelete' cat.id %}" class="d-inline" onsubmit="return confirm(t('expenseCategory.deleteConfirm'))">
+                                    <form method="post" action="{% url 'generalExpenseCategoryDelete' cat.id %}" class="d-inline" onsubmit="return confirm('{% trans "Delete this category?" %}')">
                                         {% csrf_token %}
                                         <button type="submit" class="w-32-px h-32-px bg-danger-focus text-danger-main radius-8 d-flex align-items-center justify-content-center border-0 bg-transparent" title="{% trans 'Delete' %}">
                                             <iconify-icon icon="mingcute:delete-2-line" class="menu-icon"></iconify-icon>

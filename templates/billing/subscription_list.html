@@ -1,0 +1,223 @@
+{% extends "layout/layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Subscriptions - Billing" %}{% endblock %}
+
+{% block content %}
+<div class="dashboard-main-body">
+
+    <!-- Statistics Cards -->
+    <div class="row gy-4 mb-24">
+        <div class="col-xxl-3 col-sm-6">
+            <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-1">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-md">{% trans "Total" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ total_subscriptions }}</h6>
+                        </div>
+                        <div class="w-44 h-44 bg-primary-600 text-white rounded-circle d-flex justify-content-center align-items-center">
+                            <iconify-icon icon="solar:document-add-bold" class="text-2xl"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3 col-sm-6">
+            <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-2">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-md">{% trans "Active" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ active_count }}</h6>
+                        </div>
+                        <div class="w-44 h-44 bg-success-main text-white rounded-circle d-flex justify-content-center align-items-center">
+                            <iconify-icon icon="solar:check-circle-bold" class="text-2xl"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3 col-sm-6">
+            <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-3">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-md">{% trans "Expiring Soon" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ expiring_soon }}</h6>
+                        </div>
+                        <div class="w-44 h-44 bg-warning-main text-white rounded-circle d-flex justify-content-center align-items-center">
+                            <iconify-icon icon="solar:danger-triangle-bold" class="text-2xl"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-3 col-sm-6">
+            <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-4">
+                <div class="card-body p-0">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                        <div>
+                            <span class="mb-2 fw-medium text-secondary-light text-md">{% trans "Expired" %}</span>
+                            <h6 class="fw-semibold mb-0">{{ expired_count }}</h6>
+                        </div>
+                        <div class="w-44 h-44 bg-danger-main text-white rounded-circle d-flex justify-content-center align-items-center">
+                            <iconify-icon icon="solar:close-circle-bold" class="text-2xl"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Table -->
+    <div class="card">
+        <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div class="d-flex flex-wrap align-items-center gap-3 w-100">
+                <form method="get" class="row g-2 w-100 align-items-end">
+                    <div class="col-md-2 col-sm-4">
+                        <label class="form-label text-sm mb-6">{% trans "Status" %}</label>
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="all" {% if status_filter == 'all' %}selected{% endif %}>{% trans "All Status" %}</option>
+                            <option value="active" {% if status_filter == 'active' %}selected{% endif %}>{% trans "Active" %}</option>
+                            <option value="expired" {% if status_filter == 'expired' %}selected{% endif %}>{% trans "Expired" %}</option>
+                            <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                            <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>{% trans "Cancelled" %}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-sm-4">
+                        <label class="form-label text-sm mb-6">{% trans "Tariff" %}</label>
+                        <select name="tariff" class="form-select" onchange="this.form.submit()">
+                            <option value="">{% trans "All Tariffs" %}</option>
+                            {% for tariff in tariffs %}
+                            <option value="{{ tariff.id }}" {% if tariff_filter == tariff.id|stringformat:'s' %}selected{% endif %}>{{ tariff.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-sm-4">
+                        <label class="form-label text-sm mb-6">{% trans "Start From" %}</label>
+                        <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
+                    </div>
+                    <div class="col-md-2 col-sm-4">
+                        <label class="form-label text-sm mb-6">{% trans "End To" %}</label>
+                        <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
+                    </div>
+                    <div class="col-md-2 col-sm-4">
+                        <label class="form-label text-sm mb-6">{% trans "Sort" %}</label>
+                        <select name="sort" class="form-select" onchange="this.form.submit()">
+                            <option value="-end_date" {% if sort_by == '-end_date' %}selected{% endif %}>{% trans "End Date (Latest)" %}</option>
+                            <option value="end_date" {% if sort_by == 'end_date' %}selected{% endif %}>{% trans "End Date (Oldest)" %}</option>
+                            <option value="-start_date" {% if sort_by == '-start_date' %}selected{% endif %}>{% trans "Start Date (Latest)" %}</option>
+                            <option value="start_date" {% if sort_by == 'start_date' %}selected{% endif %}>{% trans "Start Date (Oldest)" %}</option>
+                            <option value="organization__name" {% if sort_by == 'organization__name' %}selected{% endif %}>{% trans "Organization (A-Z)" %}</option>
+                            <option value="-organization__name" {% if sort_by == '-organization__name' %}selected{% endif %}>{% trans "Organization (Z-A)" %}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-sm-4">
+                        <label class="form-label text-sm mb-6">{% trans "Search" %}</label>
+                        <div class="d-flex gap-2">
+                            <input type="text" name="search" class="form-control" placeholder="{% trans 'Search...' %}" value="{{ search_query }}">
+                            <button type="submit" class="btn btn-primary-600">
+                                <iconify-icon icon="solar:magnifer-bold"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table bordered-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>{% trans "ID" %}</th>
+                            <th>{% trans "Organization" %}</th>
+                            <th>{% trans "Tariff" %}</th>
+                            <th>{% trans "Duration" %}</th>
+                            <th>{% trans "Start Date" %}</th>
+                            <th>{% trans "End Date" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in subscriptions %}
+                        <tr>
+                            <td>{{ sub.id }}</td>
+                            <td>{{ sub.organization.name }}</td>
+                            <td>{{ sub.tariff.title }}</td>
+                            <td>
+                                {% if sub.is_trial %}
+                                    {{ sub.tariff.trial_days }} {% trans "day(s) trial" %}
+                                {% else %}
+                                    {{ sub.pricing.duration_months }} {% trans "month(s)" %}
+                                {% endif %}
+                            </td>
+                            <td>{{ sub.start_date|date:"Y-m-d" }}</td>
+                            <td>{{ sub.end_date|date:"Y-m-d" }}</td>
+                            <td>
+                                {% if sub.status == 'active' %}
+                                <span class="badge bg-success-600 text-white px-12 py-6">{% trans "Active" %}</span>
+                                {% elif sub.status == 'expired' %}
+                                <span class="badge bg-danger-600 text-white px-12 py-6">{% trans "Expired" %}</span>
+                                {% elif sub.status == 'pending' %}
+                                <span class="badge bg-warning-600 text-white px-12 py-6">{% trans "Pending" %}</span>
+                                {% else %}
+                                <span class="badge bg-secondary-600 text-white px-12 py-6">{{ sub.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'billing:subscription_detail' sub.id %}" 
+                                   class="btn btn-sm btn-primary-600 no-hover-effect"
+                                   title="{% trans 'View' %}"
+                                   data-bs-toggle="tooltip">
+                                    <iconify-icon icon="solar:eye-bold" class="text-white"></iconify-icon>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <p class="text-secondary-light">{% trans "No subscriptions found." %}</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination (same as centers_list.html) -->
+            {% if subscriptions.has_other_pages %}
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-24">
+                <span class="text-secondary-light text-sm">
+                    {% trans "Showing" %} {{ subscriptions.start_index }} {% trans "to" %} {{ subscriptions.end_index }} {% trans "of" %} {{ subscriptions.paginator.count }}
+                </span>
+                <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
+                    {% if subscriptions.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ subscriptions.previous_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if tariff_filter %}&tariff={{ tariff_filter }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">
+                            <iconify-icon icon="ep:d-arrow-left"></iconify-icon>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% for num in subscriptions.paginator.page_range %}
+                        {% if subscriptions.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > subscriptions.number|add:'-3' and num < subscriptions.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if tariff_filter %}&tariff={{ tariff_filter }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if subscriptions.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ subscriptions.next_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if tariff_filter %}&tariff={{ tariff_filter }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}">
+                            <iconify-icon icon="ep:d-arrow-right"></iconify-icon>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

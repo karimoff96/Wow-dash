@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             show: true,
                             total: {
                                 show: true,
-                                label: t('common.total'),
+                                label: 'Total',
                                 formatter: function(w) {
                                     var total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
                                     return formatShortNumber(total);
@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             tooltip: {
-                theme: 'light',
+                theme: 'dark',
                 fillSeriesColor: false,
                 y: {
                     formatter: function(val) {
@@ -545,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             grid: { borderColor: '#E4E7EC', strokeDashArray: 3 },
             tooltip: {
-                theme: 'light',
+                theme: 'dark',
                 y: {
                     formatter: function(val) { return val.toLocaleString() + ' UZS'; },
                     title: { formatter: function() { return ''; } }
@@ -891,7 +891,7 @@ function formatNumber(num) {
 
 function exportDebtorsToExcel() {
     if (!allDebtorsData || allDebtorsData.length === 0) {
-        alert(t('report.noDataToExport'));
+        alert('No data to export');
         return;
     }
     

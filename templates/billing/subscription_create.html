@@ -1,0 +1,209 @@
+{% extends "layout/layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Create Subscription" %}{% endblock %}
+
+{% block content %}
+<div class="dashboard-main-body">
+    <div class="d-flex justify-content-end gap-3 mb-24">
+        <ul class="d-flex align-items-center gap-2">
+            <li class="fw-medium">
+                <a href="{% url 'billing:centers_list' %}" class="d-flex align-items-center gap-1 hover-text-primary">
+                    <iconify-icon icon="solar:arrow-left-bold" class="icon text-lg"></iconify-icon>
+                    {% trans "Back to Centers" %}
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        <label class="form-label">{% trans "Select Tariff" %} *</label>
+                        <select name="tariff" id="tariffSelect" class="form-select" required>
+                            <option value="">{% trans "Choose tariff..." %}</option>
+                            {% for tariff in tariffs %}
+                            <option value="{{ tariff.id }}" data-pricing='{{ tariff.pricing.all|safe }}'>
+                                {{ tariff.title }} - 
+                                {% if tariff.max_branches %}{{ tariff.max_branches }}{% else %}∞{% endif %} branches, 
+                                {% if tariff.max_staff %}{{ tariff.max_staff }}{% else %}∞{% endif %} staff
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6" id="pricingContainer">
+                        <label class="form-label">{% trans "Select Duration & Price" %} <span id="pricingRequired">*</span></label>
+                        <select name="pricing" id="pricingSelect" class="form-select">
+                            <option value="">{% trans "Select tariff first..." %}</option>
+                        </select>
+                        <small class="text-muted" id="trialNote" style="display:none;">
+                            <i class="ri-information-line"></i> {% trans "Free trial - no payment required" %}
+                        </small>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">{% trans "Start Date" %} *</label>
+                        <input type="date" name="start_date" class="form-control" required value="{% now 'Y-m-d' %}">
+                    </div>
+
+                    <div class="col-md-6" id="statusContainer">
+                        <label class="form-label">{% trans "Status" %} *</label>
+                        <select name="status" id="statusSelect" class="form-select">
+                            <option value="pending">{% trans "Pending" %}</option>
+                            <option value="active">{% trans "Active" %}</option>
+                        </select>
+                        <small class="text-muted" id="trialStatusNote" style="display:none;">
+                            <i class="ri-information-line"></i> {% trans "Trial subscriptions are automatically active" %}
+                        </small>
+                    </div>
+
+                    <div class="col-md-6" id="amountContainer">
+                        <label class="form-label">{% trans "Amount Paid" %}</label>
+                        <input type="number" step="0.01" name="amount_paid" id="amountPaid" class="form-control" placeholder="0.00">
+                    </div>
+
+                    <div class="col-md-6" id="paymentMethodContainer">
+                        <label class="form-label">{% trans "Payment Method" %}</label>
+                        <select name="payment_method" id="paymentMethod" class="form-select">
+                            <option value="">{% trans "Not specified" %}</option>
+                            <option value="cash">{% trans "Cash" %}</option>
+                            <option value="bank_transfer">{% trans "Bank Transfer" %}</option>
+                            <option value="click">Click</option>
+                            <option value="payme">Payme</option>
+                            <option value="uzum">Uzum</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6" id="transactionContainer">
+                        <label class="form-label">{% trans "Transaction ID" %}</label>
+                        <input type="text" name="transaction_id" id="transactionId" class="form-control" placeholder="{% trans 'Optional' %}">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">{% trans "Notes" %}</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="{% trans 'Optional notes...' %}"></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" 
+                                class="btn btn-primary-600"
+                                title="{% trans 'Create Subscription' %}"
+                                data-bs-toggle="tooltip">
+                            <iconify-icon icon="solar:add-circle-bold"></iconify-icon>
+                        </button>
+                        <a href="{% url 'billing:centers_list' %}" 
+                           class="btn btn-secondary-600"
+                           title="{% trans 'Cancel' %}"
+                           data-bs-toggle="tooltip">
+                            <iconify-icon icon="solar:close-circle-bold"></iconify-icon>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Tariff data with trial info
+const tariffData = {
+    {% for tariff in tariffs %}
+    {{ tariff.id }}: {
+        isTrial: {{ tariff.is_trial|lower }},
+        trialDays: {{ tariff.trial_days|default:"0" }},
+        pricing: [
+            {% for pricing in tariff.pricing.all %}
+            {
+                id: {{ pricing.id }},
+                duration: {{ pricing.duration_months }},
+                price: {{ pricing.price }},
+                currency: '{{ pricing.currency }}',
+                discount: {{ pricing.discount_percentage }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+};
+
+document.getElementById('tariffSelect').addEventListener('change', function() {
+    const tariffId = parseInt(this.value);
+    const pricingSelect = document.getElementById('pricingSelect');
+    const pricingRequired = document.getElementById('pricingRequired');
+    const trialNote = document.getElementById('trialNote');
+    const trialStatusNote = document.getElementById('trialStatusNote');
+    const statusSelect = document.getElementById('statusSelect');
+    const amountPaid = document.getElementById('amountPaid');
+    const paymentMethod = document.getElementById('paymentMethod');
+    const transactionId = document.getElementById('transactionId');
+    
+    pricingSelect.innerHTML = '<option value="">{% trans "Choose duration..." %}</option>';
+    
+    if (!tariffId) {
+        pricingSelect.innerHTML = '<option value="">{% trans "Select tariff first..." %}</option>';
+        return;
+    }
+    
+    if (!tariffData[tariffId]) {
+        console.error('Tariff data not found for ID:', tariffId);
+        pricingSelect.innerHTML = '<option value="">{% trans "No pricing data available" %}</option>';
+        return;
+    }
+    
+    const tariff = tariffData[tariffId];
+    console.log('Selected tariff:', tariff);
+    
+    // Handle trial tariff
+    if (tariff.isTrial) {
+        pricingSelect.disabled = true;
+        pricingSelect.required = false;
+        pricingRequired.style.display = 'none';
+        trialNote.style.display = 'block';
+        trialStatusNote.style.display = 'block';
+        
+        // Set trial info - use a placeholder value that won't be used
+        pricingSelect.innerHTML = `<option value="trial" selected>{% trans "Free Trial" %} - ${tariff.trialDays} {% trans "days" %}</option>`;
+        
+        // Disable payment fields
+        statusSelect.value = 'active';
+        statusSelect.disabled = true;
+        amountPaid.value = '0.00';
+        amountPaid.disabled = true;
+        paymentMethod.value = '';
+        paymentMethod.disabled = true;
+        transactionId.value = '';
+        transactionId.disabled = true;
+    } else {
+        pricingSelect.disabled = false;
+        pricingSelect.required = true;
+        pricingRequired.style.display = 'inline';
+        trialNote.style.display = 'none';
+        trialStatusNote.style.display = 'none';
+        
+        // Enable payment fields
+        statusSelect.disabled = false;
+        amountPaid.disabled = false;
+        paymentMethod.disabled = false;
+        transactionId.disabled = false;
+        
+        // Check if pricing options exist
+        if (!tariff.pricing || tariff.pricing.length === 0) {
+            pricingSelect.innerHTML = '<option value="">{% trans "No pricing options available for this tariff" %}</option>';
+            console.warn('No pricing options for tariff:', tariffId);
+            return;
+        }
+        
+        // Add pricing options
+        tariff.pricing.forEach(pricing => {
+            const discountText = pricing.discount > 0 ? ` (${pricing.discount}% off)` : '';
+            pricingSelect.innerHTML += `<option value="${pricing.id}">${pricing.duration} month(s) - ${pricing.price.toFixed(0)} ${pricing.currency}${discountText}</option>`;
+        });
+    }
+});
+</script>
+{% endblock %}

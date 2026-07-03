@@ -1,4 +1,4 @@
-    // ================================ Column Charts Chart Start ================================
+    // ================================ Column Charts Chart Start ================================ 
     var options = {
         series: [{
             name: 'Net Profit',
@@ -10,7 +10,7 @@
         colors: ['#487FFF', '#FF9F29'],
         labels: ['Active', 'New', 'Total'],
         legend: {
-            show: false
+            show: false 
         },
         chart: {
             type: 'bar',
@@ -67,10 +67,10 @@
 
     var chart = new ApexCharts(document.querySelector("#columnChart"), options);
     chart.render();
-  // ================================ Column Charts Chart End ================================
+  // ================================ Column Charts Chart End ================================ 
 
 
-    // ================================ Column with Group Label chart Start ================================
+    // ================================ Column with Group Label chart Start ================================ 
     var options = {
       series: [{
           name: "Sales",
@@ -175,10 +175,10 @@
 
     var chart = new ApexCharts(document.querySelector("#columnGroupBarChart"), options);
     chart.render();
-  // ================================ Column with Group Label chart End ================================
+  // ================================ Column with Group Label chart End ================================ 
 
-
-    // ================================ Group Column Bar chart Start ================================
+  
+    // ================================ Group Column Bar chart Start ================================ 
     var options = {
         series: [{
             name: 'PRODUCT A',
@@ -267,9 +267,9 @@
 
     var chart = new ApexCharts(document.querySelector("#groupColumnBarChart"), options);
     chart.render();
-    // ================================ Group Column Bar chart End ================================
+    // ================================ Group Column Bar chart End ================================ 
 
-    // ================================ Bars Up Down (Earning Statistics) chart Start ================================
+    // ================================ Bars Up Down (Earning Statistics) chart Start ================================ 
     var options = {
         series: [
             {
@@ -286,10 +286,10 @@
             type: "bar",
             height: 263,
             fontFamily: "Poppins, sans-serif",
-            toolbar: {
+            toolbar: { 
                 show: false,
             },
-        },
+        }, 
         colors: ["#487FFF", "#EF4A00"],
         plotOptions: {
             bar: {
@@ -323,7 +323,7 @@
         xaxis: {
             show: false,
             categories: [
-                "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
+                "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", 
                 "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
             ],
             axisBorder: {
@@ -345,7 +345,7 @@
             enabled: true,
             shared: true,
             intersect: false,
-            theme: "light",
+            theme: "dark",
             x: {
                 show: false,
             },
@@ -353,4 +353,4 @@
     };
     var chart = new ApexCharts(document.querySelector("#upDownBarchart"), options);
     chart.render();
-      // ================================ Bars Up Down (Earning Statistics) chart End ================================
+      // ================================ Bars Up Down (Earning Statistics) chart End ================================ 

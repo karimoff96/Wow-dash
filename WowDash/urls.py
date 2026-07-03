@@ -16,12 +16,12 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 from WowDash import home_views
 from WowDash import reports_views
-import re
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import redirect
 
 @login_required
@@ -29,20 +29,51 @@ def test_select2(request):
     return render(request, 'test_select2.html')
 
 
+def subdomain_required_view(request):
+    """Redirect to main domain if accessed without subdomain."""
+    return HttpResponse(
+        "Please access this page through your organization's subdomain (e.g., yourcompany.multilang.uz)",
+        status=400
+    )
+
+
 def main_domain_index(request):
-    """Client edition root: dashboard for signed-in users, login otherwise."""
-    if request.user.is_authenticated:
+    """Route index based on subdomain presence."""
+    subdomain = getattr(request, 'subdomain', None)
+    
+    if subdomain == 'admin':
+        # admin.multilang.uz -> superuser admin dashboard
+        # TODO: Create custom superuser admin view
         return home_views.index(request)
-    return redirect("admin_login")
+    elif subdomain:
+        # Has other subdomain -> show center dashboard
+        return home_views.index(request)
+    else:
+        # No subdomain -> show landing page
+        from landing.views import home
+        return home(request)
+
+
+def superuser_admin_panel(request):
+    """Superuser admin panel for managing all centers (dev access at /super)."""
+    # TODO: Add superuser permission check
+    # For now, just show the dashboard
+    return home_views.index(request)
 
 
 urlpatterns = [
     # Django Admin Panel (accessible on all subdomains at /admin)
     path("admin/", admin.site.urls),
     
+    # Superuser Admin Panel (dev environment shortcut)
+    path("super/", superuser_admin_panel, name="superuser_admin"),
+    
     # Root path - dynamic based on subdomain
     path("", main_domain_index, name="index"),
-
+    
+    # Landing Page URLs (only work on main domain)
+    path("", include("landing.urls")),
+    
     path("test-select2/", test_select2, name="test_select2"),
     
     # Dashboard (accessible on subdomains)
@@ -61,6 +92,10 @@ urlpatterns = [
     path("marketing/", include("marketing.urls")),
     # Core utilities (notifications, etc.)
     path("core/", include("core.urls")),
+    # Billing & Subscriptions (Superuser only)
+    path("billing/", include("billing.urls")),
+    # Support ticketing system
+    path("support/", include("support.urls")),
     # home routes
     path("index", home_views.index, name="index"),
     path("view-details", home_views.viewDetails, name="viewDetails"),
@@ -145,21 +180,5 @@ from orders.payme_webhook import PaymeWebhookView
 urlpatterns += [path("payme/webhook/<int:center_id>/", PaymeWebhookView.as_view(), name="payme_webhook_center")]
 
 if settings.DEBUG:
-    from django.contrib.staticfiles.views import serve as staticfiles_serve
-
-    if "://" not in settings.STATIC_URL:
-        static_url_path = settings.STATIC_URL.lstrip("/")
-        urlpatterns += [
-            re_path(
-                rf"^{re.escape(static_url_path)}(?P<path>.*)$",
-                staticfiles_serve,
-                name="staticfiles_prefixed",
-            ),
-        ]
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    if settings.STATIC_URL != "/static/":
-        urlpatterns += [
-            re_path(r"^static/(?P<path>.*)$", staticfiles_serve, name="staticfiles_fallback"),
-        ]
-    if settings.MEDIA_URL != "/media/":
-        urlpatterns += static("/media/", document_root=settings.MEDIA_ROOT)

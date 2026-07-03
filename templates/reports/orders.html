@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load translation_filters %} 
 {% load number_filters %}
+{% load billing_extras %}
 
 {% block content %}
 <style>
@@ -416,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (dailyLabels && dailyLabels.length > 0) {
         try {
             var orderChart = new ApexCharts(document.querySelector("#orderTrendChart"), {
-                series: [{ name: t('table.orders'), data: dailyValues }],
+                series: [{ name: 'Orders', data: dailyValues }],
                 chart: { type: 'bar', height: 300, toolbar: { show: false } },
                 colors: ['#487FFF'],
                 plotOptions: { bar: { borderRadius: 4, columnWidth: '60%' } },
@@ -429,10 +430,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     labels: { style: { colors: '#9CA3AF', fontSize: '12px' } }
                 },
                 tooltip: {
-                    theme: 'light',
+                    theme: 'dark',
                     x: { show: true },
                     y: {
-                        formatter: function(val) { return val + ' ' + t('table.orders'); },
+                        formatter: function(val) { return val + ' orders'; },
                         title: { formatter: function() { return ''; } }
                     },
                     marker: { show: false },
@@ -470,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 show: true,
                                 total: {
                                     show: true,
-                                    label: t('common.total'),
+                                    label: 'Total',
                                     formatter: function(w) {
                                         return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
                                     }
@@ -481,11 +482,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 tooltip: {
                     enabled: true,
-                    theme: 'light',
+                    theme: 'dark',
                     fillSeriesColor: false,
                     y: {
                         formatter: function(val) {
-                            return val + ' ' + t('table.orders');
+                            return val + ' orders';
                         }
                     }
                 }

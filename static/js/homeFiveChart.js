@@ -1,4 +1,4 @@
-    // ================================ Bars Up Down (Earning Statistics) chart Start ================================
+    // ================================ Bars Up Down (Earning Statistics) chart Start ================================ 
     var options = {
       series: [
           {
@@ -15,10 +15,10 @@
           type: "bar",
           height: 263,
           fontFamily: "Poppins, sans-serif",
-          toolbar: {
+          toolbar: { 
               show: false,
           },
-      },
+      }, 
       colors: ["#487FFF", "#EF4A00"],
       plotOptions: {
           bar: {
@@ -52,7 +52,7 @@
       xaxis: {
           show: false,
           categories: [
-              "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
+              "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", 
               "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
           ],
           axisBorder: {
@@ -74,7 +74,7 @@
           enabled: true,
           shared: true,
           intersect: false,
-          theme: "light",
+          theme: "dark",
           x: {
               show: false,
           },
@@ -82,9 +82,9 @@
   };
   var chart = new ApexCharts(document.querySelector("#upDownBarchart"), options);
   chart.render();
-    // ================================ Bars Up Down (Earning Statistics) chart End ================================
-
-    // ================================ Semi Circle Gauge (Daily Conversion) chart Start ================================
+    // ================================ Bars Up Down (Earning Statistics) chart End ================================ 
+    
+    // ================================ Semi Circle Gauge (Daily Conversion) chart Start ================================ 
     var options = {
         series: [75],
         chart: {
@@ -129,9 +129,9 @@
         },
         fill: {
             type: 'gradient',
-            colors: ['#9DBAFF'],
+            colors: ['#9DBAFF'], 
             gradient: {
-                shade: 'light',
+                shade: 'dark',
                 type: 'horizontal',
                 shadeIntensity: 0.5,
                 gradientToColors: ['#487FFF'],
@@ -149,9 +149,9 @@
 
     var chart = new ApexCharts(document.querySelector("#semiCircleGauge"), options);
     chart.render();
-    // ================================ Semi Circle Gauge (Daily Conversion) chart End ================================
+    // ================================ Semi Circle Gauge (Daily Conversion) chart End ================================ 
 
-    // ================================ Area chart Start ================================
+    // ================================ Area chart Start ================================ 
     function createChart(chartId, chartColor) {
 
         let currentYear = new Date().getFullYear();
@@ -200,26 +200,26 @@
                 lines: {
                     show: false
                 }
-            },
+            },   
             yaxis: {
                 lines: {
                     show: false
                 }
-            },
+            },  
             row: {
                 colors: undefined,
                 opacity: 0.5
-            },
+            },  
             column: {
                 colors: undefined,
                 opacity: 0.5
-            },
+            },  
             padding: {
                 top: -3,
                 right: 0,
                 bottom: 0,
                 left: 0
-            },
+            },  
         },
         fill: {
             type: 'gradient',
@@ -271,9 +271,9 @@
 
     // Call the function for each chart with the desired ID and color
     createChart('areaChart', '#FF9F29');
-    // ================================ Area chart End ================================
+    // ================================ Area chart End ================================ 
 
-    // ================================ Bar chart (Today Income0 Start ================================
+    // ================================ Bar chart (Today Income0 Start ================================ 
     var options = {
       series: [{
           name: "Sales",
@@ -371,18 +371,18 @@
 
     var chart = new ApexCharts(document.querySelector("#dailyIconBarChart"), options);
     chart.render();
-    // ================================ Bar chart (Today Income0 End ================================
+    // ================================ Bar chart (Today Income0 End ================================ 
 
-  // ================================ My Portfolio Donut chart Start ================================
-    var options = {
+  // ================================ My Portfolio Donut chart Start ================================ 
+    var options = { 
       series: [70, 30],
       colors: ['#FF9F29', '#487FFF'],
       labels: ['Female', 'Male'] ,
       legend: {
-          show: false
+          show: false 
       },
       chart: {
-        type: 'donut',
+        type: 'donut',    
         height: 230,
         sparkline: {
           enabled: true // Remove whitespace
@@ -421,9 +421,9 @@
 
     var chart = new ApexCharts(document.querySelector("#statisticsDonutChart"), options);
     chart.render();
-  // ================================ My Portfolio Donut chart End ================================
+  // ================================ My Portfolio Donut chart End ================================ 
 
-  // ================================ J Vector Map Start ================================
+  // ================================ J Vector Map Start ================================ 
   $('#world-map').vectorMap(
     {
       map: 'world_mill_en',
@@ -492,10 +492,10 @@
       selectedRegions: [],
       enableZoom: false,
       hoverColor: '#fff',
-    });
-  // ================================ J Vector Map End ================================
+    }); 
+  // ================================ J Vector Map End ================================ 
 
-  // ================================ Total Transaction line chart Start ================================
+  // ================================ Total Transaction line chart Start ================================ 
   var options = {
     series: [{
       name: "This month",
@@ -580,7 +580,7 @@
         show: false
       },
       crosshairs: {
-        show: true,
+        show: true, 
         width: 20,
         stroke: {
           width: 0
@@ -602,4 +602,4 @@
 
   var chart = new ApexCharts(document.querySelector("#transactionLineChart"), options);
   chart.render();
-  // ================================ Total Transaction line chart End ================================
+  // ================================ Total Transaction line chart End ================================ 

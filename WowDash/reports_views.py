@@ -26,6 +26,7 @@ from organizations.rbac import (
     any_permission_required,
     permission_required,
 )
+from billing.decorators import require_feature
 
 
 # Period choices for the unified filter
@@ -155,6 +156,7 @@ def get_period_dates(period, custom_from=None, custom_to=None):
 
 
 @login_required(login_url="admin_login")
+@require_feature('financial_reports')
 @permission_required('can_view_financial_reports')
 def financial_reports(request):
     """Financial reports view with revenue analytics - requires can_view_financial_reports permission"""
@@ -349,6 +351,7 @@ def financial_reports(request):
 
 
 @login_required(login_url="admin_login")
+@require_feature('analytics_basic')
 @any_permission_required('can_view_reports', 'can_view_analytics')
 def order_reports(request):
     """Order analytics and reports - requires can_view_reports or can_view_analytics permission"""
@@ -507,6 +510,7 @@ def order_reports(request):
 
 
 @login_required(login_url="admin_login")
+@require_feature('staff_performance')
 @any_permission_required('can_view_reports', 'can_view_analytics')
 def staff_performance(request):
     """Staff performance reports - requires can_view_reports or can_view_analytics permission"""
@@ -693,6 +697,7 @@ def staff_performance(request):
 
 
 @login_required(login_url="admin_login")
+@require_feature('analytics_advanced')
 @permission_required('can_view_analytics')
 def branch_comparison(request):
     """Compare branch performance - requires can_view_analytics permission"""
@@ -797,6 +802,7 @@ def branch_comparison(request):
 
 
 @login_required(login_url="admin_login")
+@require_feature('analytics_advanced')
 @any_permission_required('can_view_analytics', 'can_view_customers')
 def customer_analytics(request):
     """Customer analytics - requires can_view_analytics or can_view_customers permission"""
@@ -990,6 +996,7 @@ def customer_analytics(request):
 
 
 @login_required(login_url="admin_login")
+@require_feature('export_reports')
 @permission_required('can_export_data')
 def export_report(request, report_type):
     """
@@ -1242,6 +1249,7 @@ def my_statistics(request):
 # ============ UNIT ECONOMY ANALYTICS ============
 
 @login_required(login_url="admin_login")
+@require_feature('debt_tracking')
 @any_permission_required('can_view_financial_reports', 'can_manage_financial')
 def unit_economy(request):
     """
@@ -1340,6 +1348,7 @@ def unit_economy(request):
 
 
 @login_required(login_url="admin_login")
+@require_feature('debt_tracking')
 @permission_required('can_view_financial_reports')
 def unit_economy_api(request):
     """
@@ -1406,6 +1415,7 @@ def unit_economy_api(request):
 
 
 @login_required(login_url="admin_login")
+@require_feature('debt_tracking')
 @any_permission_required('can_view_financial_reports', 'can_manage_orders', 'can_view_reports')
 def debtors_report(request):
     """
@@ -1556,6 +1566,7 @@ def debtors_report(request):
 
 
 @login_required(login_url="admin_login")
+@require_feature('general_expenses')
 @any_permission_required('can_view_expenses', 'can_manage_expenses', 'can_view_financial_reports')
 def expense_analytics_report(request):
     """

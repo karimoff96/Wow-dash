@@ -1,0 +1,145 @@
+{% load i18n %}
+
+{% if subscription_alert %}
+<div class="subscription-alert {{ subscription_alert.bg_class }} {{ subscription_alert.text_class }}" 
+     id="subscription-alert-{{ subscription_alert.level }}"
+     data-alert-level="{{ subscription_alert.level }}"
+     data-dismissible="{{ subscription_alert.dismissible|yesno:'true,false' }}"
+     data-dismiss-hours="{{ subscription_alert.dismiss_hours|default:'0' }}">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center justify-content-between py-3">
+            <div class="d-flex align-items-center gap-3 flex-grow-1">
+                <i class="{{ subscription_alert.icon }} fs-24"></i>
+                <div>
+                    {% if subscription_alert.days < 0 %}
+                        <strong>{% trans "Срок подписки истек!" %}</strong>
+                        <span class="ms-2">
+                            {% blocktrans with date=subscription_alert.end_date %}
+                            Ваша подписка завершилась {{ date }}. Пожалуйста, продлите подписку для продолжения работы.
+                            {% endblocktrans %}
+                        </span>
+                    {% elif subscription_alert.days == 0 %}
+                        <strong>{% trans "Подписка заканчивается сегодня!" %}</strong>
+                        <span class="ms-2">
+                            {% blocktrans with date=subscription_alert.end_date %}
+                            Ваша подписка истекает сегодня ({{ date }}). Продлите подписку, чтобы избежать перерыва в работе.
+                            {% endblocktrans %}
+                        </span>
+                    {% elif subscription_alert.days == 1 %}
+                        <strong>{% trans "Подписка заканчивается завтра!" %}</strong>
+                        <span class="ms-2">
+                            {% blocktrans with date=subscription_alert.end_date %}
+                            Ваша подписка истекает завтра ({{ date }}). Рекомендуем продлить подписку заранее.
+                            {% endblocktrans %}
+                        </span>
+                    {% else %}
+                        <strong>{% trans "Подписка заканчивается" %}</strong>
+                        <span class="ms-2">
+                            {% blocktrans count days=subscription_alert.days with date=subscription_alert.end_date %}
+                            Ваша подписка заканчивается через {{ days }} день ({{ date }}).
+                            {% plural %}
+                            Ваша подписка заканчивается через {{ days }} дня ({{ date }}).
+                            {% endblocktrans %}
+                        </span>
+                    {% endif %}
+                    {% if user.is_superuser %}
+                    <a href="{% url 'billing:tariff_list' %}" class="ms-3 text-decoration-underline fw-semibold">
+                        {% trans "Управление тарифами" %}
+                    </a>
+                    {% else %}
+                    <a href="{% url 'billing:request_renewal' %}" class="ms-3 text-decoration-underline fw-semibold">
+                        {% trans "Продлить подписку" %}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if subscription_alert.dismissible %}
+            <button type="button" class="btn-close ms-3" onclick="dismissAlert('{{ subscription_alert.level }}', {{ subscription_alert.dismiss_hours }})" aria-label="{% trans 'Закрыть' %}"></button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .subscription-alert {
+        position: relative;
+        z-index: 1040;
+        border-bottom: 2px solid rgba(0,0,0,0.1);
+    }
+    
+    .subscription-alert .btn-close {
+        opacity: 0.7;
+    }
+    
+    .subscription-alert .btn-close:hover {
+        opacity: 1;
+    }
+    
+    /* Different color schemes */
+    .subscription-alert.bg-info-100 {
+        background-color: #e7f5ff !important;
+    }
+    
+    .subscription-alert.bg-warning-100 {
+        background-color: #fff3cd !important;
+    }
+    
+    .subscription-alert.bg-warning-600 {
+        background-color: #ffc107 !important;
+    }
+    
+    .subscription-alert.bg-danger-600 {
+        background-color: #dc3545 !important;
+    }
+    
+    .subscription-alert.text-info-600 {
+        color: #0c63e4 !important;
+    }
+    
+    .subscription-alert.text-warning-600 {
+        color: #997404 !important;
+    }
+    
+    .subscription-alert.text-white {
+        color: #ffffff !important;
+    }
+    
+    .subscription-alert.text-white a {
+        color: #ffffff !important;
+    }
+    
+    .subscription-alert.text-white .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+</style>
+
+<script>
+function dismissAlert(level, hours) {
+    // Set cookie to dismiss alert for specified hours
+    const expiresDate = new Date();
+    expiresDate.setHours(expiresDate.getHours() + hours);
+    document.cookie = `subscription_alert_${level}_dismissed=true; expires=${expiresDate.toUTCString()}; path=/`;
+    
+    // Hide the alert
+    const alertElement = document.getElementById(`subscription-alert-${level}`);
+    if (alertElement) {
+        alertElement.style.display = 'none';
+    }
+}
+
+// Check if alert was dismissed
+document.addEventListener('DOMContentLoaded', function() {
+    const alertElement = document.querySelector('[data-dismissible="true"]');
+    if (alertElement) {
+        const level = alertElement.getAttribute('data-alert-level');
+        const cookieName = `subscription_alert_${level}_dismissed`;
+        
+        // Check if cookie exists
+        if (document.cookie.split(';').some((item) => item.trim().startsWith(cookieName + '='))) {
+            alertElement.style.display = 'none';
+        }
+    }
+});
+</script>
+{% endif %}

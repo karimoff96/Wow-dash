@@ -436,7 +436,8 @@ function formatShort(num) {
     return num.toFixed(0);
 }
 function getThemeColors() {
-    return { textColor: '#6C757D', gridColor: '#E4E7EC', bgColor: '#ffffff', tooltipTheme: 'light' };
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    return { textColor: isDark ? '#9CA3AF' : '#6C757D', gridColor: isDark ? '#374151' : '#E4E7EC', bgColor: isDark ? '#1F2937' : '#ffffff', tooltipTheme: isDark ? 'dark' : 'light' };
 }
 
 // Update stat cards
@@ -469,7 +470,7 @@ function initOrdersChart(initialPeriod = 'yearly') {
     const colors = getThemeColors();
     const data = ordersData[initialPeriod];
     ordersChart = new ApexCharts(document.querySelector("#ordersChart"), {
-        series: [{ name: t('table.orders'), data: data.chartData }],
+        series: [{ name: 'Orders', data: data.chartData }],
         chart: { type: 'area', height: 264, toolbar: { show: false } },
         colors: ['#487FFF'],
         fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1 } },
@@ -479,9 +480,9 @@ function initOrdersChart(initialPeriod = 'yearly') {
         yaxis: { labels: { style: { colors: colors.textColor, fontSize: '12px' } } },
         grid: { borderColor: colors.gridColor, strokeDashArray: 3 },
         tooltip: {
-            theme: 'light',
+            theme: 'dark',
             x: { show: true },
-            y: { formatter: val => formatNumber(val) + ' ' + t('table.orders'), title: { formatter: () => '' } },
+            y: { formatter: val => formatNumber(val) + ' orders', title: { formatter: () => '' } },
             marker: { show: false }
         }
     });
@@ -491,7 +492,7 @@ function initOrdersChart(initialPeriod = 'yearly') {
 function updateOrdersChart(period) {
     const data = ordersData[period];
     ordersChart.updateOptions({ xaxis: { categories: data.chartLabels } });
-    ordersChart.updateSeries([{ name: t('table.orders'), data: data.chartData }]);
+    ordersChart.updateSeries([{ name: 'Orders', data: data.chartData }]);
 }
 
 // Status Donut Chart
@@ -529,8 +530,8 @@ function initStatusDonutChart(initialPeriod = 'yearly') {
         colors: data.colors,
         legend: { show: false },
         dataLabels: { enabled: false },
-        tooltip: { theme: 'light', fillSeriesColor: false, y: { formatter: val => formatNumber(val) + ' ' + t('table.orders'), title: { formatter: series => series } }, marker: { show: true } },
-        plotOptions: { pie: { donut: { size: '70%', labels: { show: true, name: { show: true, fontSize: '12px', color: colors.textColor }, value: { show: true, fontSize: '14px', fontWeight: 600, color: colors.textColor, formatter: val => formatShort(val) }, total: { show: true, label: t('common.total'), color: colors.textColor, formatter: w => w.globals.seriesTotals.reduce((a,b) => a+b, 0) } } } } }
+        tooltip: { theme: 'dark', fillSeriesColor: false, y: { formatter: val => formatNumber(val) + ' orders', title: { formatter: series => series } }, marker: { show: true } },
+        plotOptions: { pie: { donut: { size: '70%', labels: { show: true, name: { show: true, fontSize: '12px', color: colors.textColor }, value: { show: true, fontSize: '14px', fontWeight: 600, color: colors.textColor, formatter: val => formatShort(val) }, total: { show: true, label: 'Total', color: colors.textColor, formatter: w => w.globals.seriesTotals.reduce((a,b) => a+b, 0) } } } } }
     });
     statusDonutChart.render();
     updateStatusLegend(initialPeriod);
