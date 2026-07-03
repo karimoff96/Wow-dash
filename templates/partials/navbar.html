@@ -1,3 +1,4 @@
+{% load static %}
 <div class="navbar-header">
     <div class="row align-items-center justify-content-between">
         <div class="col-auto">
@@ -17,10 +18,9 @@
         </div>
         <div class="col-auto">
             <div class="d-flex flex-wrap align-items-center gap-3">
-                <button type="button" data-theme-toggle class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"></button>
                 <div class="dropdown d-none d-sm-inline-block">
                     <button class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center" type="button" data-bs-toggle="dropdown">
-                        <img src="/static/images/flags/en.png" alt="Language" class="w-24-px h-24-px object-fit-cover rounded-circle lang-flag-indicator">
+                        <img src="{% static 'images/flags/en.png' %}" alt="Language" class="w-24-px h-24-px object-fit-cover rounded-circle lang-flag-indicator">
                     </button>
                     <div class="dropdown-menu to-top dropdown-menu-sm">
                         <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
@@ -33,7 +33,7 @@
                             <div class="form-check style-check d-flex align-items-center justify-content-between mb-16 lang-option" data-lang="uz">
                                 <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="uzbek">
                                     <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="/static/images/flags/uz.png" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
+                                        <img src="{% static 'images/flags/uz.png' %}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
                                         <span class="text-md fw-semibold mb-0">O'zbekcha</span>
                                     </span>
                                 </label>
@@ -43,7 +43,7 @@
                             <div class="form-check style-check d-flex align-items-center justify-content-between mb-16 lang-option" data-lang="ru">
                                 <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="russian">
                                     <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="/static/images/flags/ru.png" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
+                                        <img src="{% static 'images/flags/ru.png' %}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
                                         <span class="text-md fw-semibold mb-0">Русский</span>
                                     </span>
                                 </label>
@@ -53,7 +53,7 @@
                             <div class="form-check style-check d-flex align-items-center justify-content-between lang-option" data-lang="en">
                                 <label class="form-check-label line-height-1 fw-medium text-secondary-light" for="english">
                                     <span class="text-black hover-bg-transparent hover-text-primary d-flex align-items-center gap-3">
-                                        <img src="/static/images/flags/en.png" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
+                                        <img src="{% static 'images/flags/en.png' %}" alt="" class="w-36-px h-36-px bg-success-subtle text-success-main rounded-circle flex-shrink-0">
                                         <span class="text-md fw-semibold mb-0">English</span>
                                     </span>
                                 </label>

@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -12,13 +11,11 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
-"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 # Home Views Translations
 msgid "Email"
@@ -67,7 +64,7 @@ msgid "Received"
 msgstr "Получено"
 
 msgid "Confirmed"
-msgstr ""
+msgstr "Подтверждено"
 
 msgid "In Process"
 msgstr "В процессе"
@@ -79,7 +76,7 @@ msgid "Done"
 msgstr "Выполнено"
 
 msgid "Cancelled"
-msgstr "Отменена"
+msgstr "Отменено"
 
 msgid "No Orders"
 msgstr "Нет заказов"
@@ -93,20 +90,18 @@ msgstr "Продажи"
 msgid "Today"
 msgstr "Сегодня"
 
-#, fuzzy
 msgid "This Week"
-msgstr "Эта неделя"
+msgstr "На этой неделе"
 
 msgid "This Month"
-msgstr "Этот месяц"
+msgstr "В этом месяце"
 
 #, fuzzy
 msgid "This Year"
 msgstr "В этом году"
 
-#, fuzzy
 msgid "Custom Range"
-msgstr "Пользовательский период"
+msgstr "Произвольный период"
 
 msgid "Finance & Analytics"
 msgstr "Финансы и аналитика"
@@ -155,10 +150,10 @@ msgid "Added Manually"
 msgstr "Добавил"
 
 msgid "Agencies"
-msgstr ""
+msgstr "Агентства"
 
 msgid "Regular"
-msgstr ""
+msgstr "Обычный"
 
 msgid "Customer Analytics"
 msgstr "Аналитика клиентов"
@@ -170,7 +165,7 @@ msgid "My Statistics"
 msgstr "Моя статистика"
 
 msgid "Your Personal Performance"
-msgstr "Ваша личная эффективность"
+msgstr "Ваши личные показатели эффективности"
 
 msgid "Unit Economy"
 msgstr "Юнит-экономика"
@@ -178,10 +173,9 @@ msgstr "Юнит-экономика"
 msgid "Reports / Unit Economy"
 msgstr "Отчеты / Юнит-экономика"
 
-#, fuzzy
 #| msgid "Expense Analytics"
 msgid "Expense Analytics Report"
-msgstr "Аналитика расходов"
+msgstr "Отчет по аналитике расходов"
 
 msgid "Detailed expense analysis by center, branch, and type"
 msgstr "Детальный анализ расходов по центру, филиалу и типу"
@@ -205,7 +199,7 @@ msgid "Name of the card holder"
 msgstr "Имя держателя карты"
 
 msgid "Help Text"
-msgstr "Текст справки"
+msgstr "Текст помощи"
 
 msgid "Help text shown in bot"
 msgstr "Текст справки, показываемый в боте"
@@ -217,31 +211,31 @@ msgid "Description of the branch/center"
 msgstr "Описание филиала/центра"
 
 msgid "About Us"
-msgstr ""
+msgstr "О нас"
 
 msgid "About us information"
 msgstr ""
 
 msgid "Working Hours"
-msgstr ""
+msgstr "Рабочие часы"
 
 msgid "e.g., Mon-Fri: 9:00-18:00, Sat: 10:00-15:00"
 msgstr ""
 
 msgid "Support Phone"
-msgstr ""
+msgstr "Телефон поддержки"
 
 msgid "Phone number for customer support"
 msgstr ""
 
 msgid "Support Telegram"
-msgstr ""
+msgstr "Telegram поддержки"
 
 msgid "Telegram username for support (e.g., @support_bot)"
 msgstr ""
 
 msgid "Guide Link"
-msgstr ""
+msgstr "Ссылка на руководство"
 
 msgid "URL to a guide (Telegram message, YouTube video, documentation, etc.)"
 msgstr ""
@@ -259,36 +253,34 @@ msgid "Reserved Field 3"
 msgstr ""
 
 msgid "Created At"
-msgstr ""
+msgstr "Создано"
 
 msgid "Updated At"
-msgstr ""
+msgstr "Дата обновления"
 
 msgid "Additional Info"
 msgstr ""
 
 msgid "Translation Center"
-msgstr ""
+msgstr "Центр перевода"
 
-msgid ""
-"The center this user belongs to. Same Telegram user can have separate "
-"accounts per center."
+msgid "The center this user belongs to. Same Telegram user can have separate accounts per center."
 msgstr ""
 
 msgid "Telegram User ID"
-msgstr ""
+msgstr "ID пользователя Telegram"
 
 msgid "Username"
-msgstr ""
+msgstr "Имя пользователя"
 
 msgid "Full Name"
-msgstr ""
+msgstr "Полное имя"
 
 msgid "Phone Number"
-msgstr ""
+msgstr "Номер телефона"
 
 msgid "Language"
-msgstr ""
+msgstr "Язык"
 
 msgid "Registration Step"
 msgstr ""
@@ -312,7 +304,7 @@ msgid "Is Agency"
 msgstr ""
 
 msgid "Agency"
-msgstr ""
+msgstr "Агентство"
 
 msgid "Telegram User"
 msgstr ""
@@ -350,13 +342,12 @@ msgstr ""
 msgid "Bot User States"
 msgstr ""
 
-#, fuzzy
 #| msgid "All Users"
 msgid "Add User"
-msgstr "Все пользователи"
+msgstr "Добавить пользователя"
 
 msgid "Users List"
-msgstr ""
+msgstr "Список пользователей"
 
 msgid "Used in Tariffs"
 msgstr ""
@@ -504,7 +495,7 @@ msgid "Trial subscription information"
 msgstr "Информация о подписке"
 
 msgid "Payment Information"
-msgstr "Информация об оплате"
+msgstr "Платёжная информация"
 
 msgid "Status"
 msgstr "Статус"
@@ -513,7 +504,7 @@ msgid "Days Left"
 msgstr ""
 
 msgid "Payment"
-msgstr "Платеж"
+msgstr "Оплата"
 
 #, fuzzy
 #| msgid "Total Subscriptions"
@@ -531,8 +522,7 @@ msgstr "Период"
 msgid "No admin profile found."
 msgstr ""
 
-msgid ""
-"Your subscription has expired or is not active. Please renew to continue."
+msgid "Your subscription has expired or is not active. Please renew to continue."
 msgstr ""
 
 msgid "No active subscription found."
@@ -541,22 +531,17 @@ msgstr ""
 msgid "This feature is not available in your current plan. Please upgrade."
 msgstr ""
 
-msgid ""
-"You have reached your branch limit. Upgrade your plan to add more branches."
+msgid "You have reached your branch limit. Upgrade your plan to add more branches."
 msgstr ""
 
 msgid "You have reached your staff limit. Upgrade your plan to add more users."
 msgstr ""
 
-msgid ""
-"You have reached your monthly order limit. Upgrade your plan or wait for "
-"next month."
+msgid "You have reached your monthly order limit. Upgrade your plan or wait for next month."
 msgstr ""
 
 #, python-format
-msgid ""
-"You have reached your monthly broadcast limit (%(used)s/%(limit)s). Upgrade "
-"your plan or wait for next month."
+msgid "You have reached your monthly broadcast limit (%(used)s/%(limit)s). Upgrade your plan or wait for next month."
 msgstr ""
 
 #, fuzzy
@@ -575,7 +560,7 @@ msgid "Category"
 msgstr "Категория"
 
 msgid "Active"
-msgstr "Активен"
+msgstr "Активный"
 
 #, fuzzy
 #| msgid "Features"
@@ -727,8 +712,7 @@ msgstr "Экспорт в Excel"
 msgid "Debt & Receivables Tracking"
 msgstr ""
 
-msgid ""
-"Unit economy analytics: outstanding balances, top debtors, collection rates"
+msgid "Unit economy analytics: outstanding balances, top debtors, collection rates"
 msgstr ""
 
 # Integration Features (4)
@@ -786,13 +770,13 @@ msgid "Create custom staff roles with RBAC"
 msgstr ""
 
 msgid "Branch Settings"
-msgstr "Настройки Филиалов"
+msgstr "Настройки филиала"
 
 msgid "Customize settings per branch"
 msgstr ""
 
 msgid "Agency Management"
-msgstr ""
+msgstr "Управление агентствами"
 
 msgid "Create and manage B2B agency partners with agency-specific pricing"
 msgstr ""
@@ -832,9 +816,7 @@ msgstr "Отслеживайте и управляйте непогашенны�
 msgid "General (Operating) Expenses"
 msgstr "Новый операционный расход"
 
-msgid ""
-"Track operational costs: rent, salaries, stationery, repairs — not tied to "
-"individual orders"
+msgid "Track operational costs: rent, salaries, stationery, repairs — not tied to individual orders"
 msgstr ""
 
 msgid "Comprehensive Audit Logs"
@@ -916,7 +898,7 @@ msgid "Duration (Months)"
 msgstr "Продолжительность"
 
 msgid "Price"
-msgstr ""
+msgstr "Цена"
 
 msgid "Currency"
 msgstr ""
@@ -972,10 +954,9 @@ msgstr "Автопродление"
 msgid "Amount Paid"
 msgstr "Сумма оплаты"
 
-#, fuzzy
 #| msgid "Payment"
 msgid "Payment Date"
-msgstr "Платеж"
+msgstr "Дата платежа"
 
 msgid "Payment Method"
 msgstr "Способ оплаты"
@@ -984,10 +965,10 @@ msgid "Transaction ID"
 msgstr "ID транзакции"
 
 msgid "Notes"
-msgstr "Примечания"
+msgstr "Заметки"
 
 msgid "Created By"
-msgstr ""
+msgstr "Создано"
 
 #, fuzzy
 #| msgid "Subscriptions"
@@ -1026,26 +1007,24 @@ msgstr "Количество"
 msgid "Marketing Posts Sent"
 msgstr "Маркетинговые Инструменты"
 
-#, fuzzy
 #| msgid "Total Received"
 msgid "Total Revenue"
-msgstr "Всего получено"
+msgstr "Общий доход"
 
 #, fuzzy
 #| msgid "No Orders"
 msgid "Bot Orders"
 msgstr "Нет заказов"
 
-#, fuzzy
 #| msgid "All Orders"
 msgid "Manual Orders"
-msgstr "Все заказы"
+msgstr "Ручные заказы"
 
 msgid "Usage Tracking"
 msgstr "Отслеживание использования"
 
 msgid "Action"
-msgstr ""
+msgstr "Действия"
 
 #, fuzzy
 #| msgid "Processed By"
@@ -1112,9 +1091,7 @@ msgid "Tariff updated successfully!"
 msgstr "Тариф успешно обновлён!"
 
 #, python-brace-format
-msgid ""
-"Cannot delete tariff '{tariff.title}'. It has {subscription_count} "
-"subscription(s) associated with it."
+msgid "Cannot delete tariff '{tariff.title}'. It has {subscription_count} subscription(s) associated with it."
 msgstr ""
 
 #, python-brace-format
@@ -1126,10 +1103,9 @@ msgstr ""
 msgid "All Translation Centers"
 msgstr "Все центры"
 
-#, fuzzy
 #| msgid "Center"
 msgid "Centers"
-msgstr "Центр"
+msgstr "Центры"
 
 msgid "This subscription is not a trial subscription."
 msgstr ""
@@ -1202,9 +1178,7 @@ msgstr "Продлить подписку"
 msgid "Please select a subscription duration."
 msgstr "Выберите продолжительность"
 
-msgid ""
-"Your renewal request has been submitted successfully! Our team will contact "
-"you shortly to process the payment."
+msgid "Your renewal request has been submitted successfully! Our team will contact you shortly to process the payment."
 msgstr ""
 
 #, fuzzy
@@ -1244,9 +1218,7 @@ msgstr "Нет заказов"
 msgid "Archived Orders"
 msgstr "Все заказы"
 
-msgid ""
-"Manual archiving should be triggered from the center's admin page or via "
-"management command."
+msgid "Manual archiving should be triggered from the center's admin page or via management command."
 msgstr ""
 
 msgid "Trigger manual archive"
@@ -1289,25 +1261,25 @@ msgid "Code"
 msgstr ""
 
 msgid "Region"
-msgstr ""
+msgstr "Регион"
 
 msgid "Regions"
 msgstr ""
 
 msgid "District"
-msgstr ""
+msgstr "Район"
 
 msgid "Districts"
 msgstr ""
 
 msgid "Title"
-msgstr ""
+msgstr "Заголовок"
 
 msgid "Body"
 msgstr ""
 
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 msgid "Created at"
 msgstr ""
@@ -1316,13 +1288,13 @@ msgid "Updated at"
 msgstr ""
 
 msgid "Create"
-msgstr ""
+msgstr "Создать"
 
 msgid "Update"
-msgstr ""
+msgstr "Обновить"
 
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 msgid "View"
 msgstr "Просмотр"
@@ -1334,7 +1306,7 @@ msgid "Logout"
 msgstr ""
 
 msgid "Assign"
-msgstr ""
+msgstr "Назначить"
 
 msgid "Status Change"
 msgstr ""
@@ -1346,7 +1318,7 @@ msgid "User"
 msgstr "Пользователь"
 
 msgid "Content Type"
-msgstr ""
+msgstr "Тип контента"
 
 msgid "Object ID"
 msgstr ""
@@ -1355,7 +1327,7 @@ msgid "Target"
 msgstr ""
 
 msgid "Details"
-msgstr ""
+msgstr "Детали"
 
 msgid "Changes"
 msgstr ""
@@ -1373,7 +1345,7 @@ msgid "Receipt Pending Verification"
 msgstr ""
 
 msgid "New Order"
-msgstr ""
+msgstr "Новый заказ"
 
 msgid "Order Cancelled"
 msgstr ""
@@ -1381,10 +1353,9 @@ msgstr ""
 msgid "Order Completed"
 msgstr ""
 
-#, fuzzy
 #| msgid "status.paymentConfirmed"
 msgid "Payment Confirmed"
-msgstr "Подтверждено"
+msgstr "Оплата подтверждена"
 
 msgid "New User Registered"
 msgstr ""
@@ -1401,7 +1372,7 @@ msgid "Type"
 msgstr "Тип"
 
 msgid "Message"
-msgstr ""
+msgstr "Сообщение"
 
 msgid "Is Read"
 msgstr ""
@@ -1458,10 +1429,9 @@ msgstr ""
 msgid "Channel ID where archive is uploaded"
 msgstr ""
 
-#, fuzzy
 #| msgid "No Orders"
 msgid "Total Orders"
-msgstr "Нет заказов"
+msgstr "Всего заказов"
 
 msgid "Number of orders included in archive"
 msgstr ""
@@ -1491,10 +1461,9 @@ msgstr "Необязательные примечания об этом прод
 msgid "File Archive"
 msgstr "Архивы Исторических Файлов"
 
-#, fuzzy
 #| msgid "Location"
 msgid "Notifications"
-msgstr "Местоположение"
+msgstr "Уведомления"
 
 #, fuzzy
 #| msgid "All Actions"
@@ -1508,23 +1477,21 @@ msgid "System activity and audit trail"
 msgstr "Системная активность и журнал аудита"
 
 msgid "New"
-msgstr ""
+msgstr "Новый"
 
-#, fuzzy
 #| msgid "Contact Requests"
 msgid "Contacted"
-msgstr "Запросы на контакт"
+msgstr "Связались"
 
 msgid "Converted"
-msgstr ""
+msgstr "Конвертирован"
 
-#, fuzzy
 #| msgid "Companies"
 msgid "Company"
-msgstr "Компании"
+msgstr "Компания"
 
 msgid "Phone"
-msgstr ""
+msgstr "Телефон"
 
 msgid "Internal Notes"
 msgstr ""
@@ -1590,7 +1557,7 @@ msgid "Targeting"
 msgstr ""
 
 msgid "Scheduling"
-msgstr ""
+msgstr "Планирование"
 
 msgid "Errors"
 msgstr ""
@@ -1611,22 +1578,22 @@ msgid "Custom Segment"
 msgstr ""
 
 msgid "Draft"
-msgstr ""
+msgstr "Черновик"
 
 msgid "Scheduled"
-msgstr ""
+msgstr "Запланировано"
 
 msgid "Sending"
-msgstr ""
+msgstr "Отправляется"
 
 msgid "Sent"
-msgstr ""
+msgstr "Отправлено"
 
 msgid "Paused"
-msgstr ""
+msgstr "Приостановлено"
 
 msgid "Failed"
-msgstr ""
+msgstr "Ошибка"
 
 msgid "Text Only"
 msgstr ""
@@ -1644,19 +1611,19 @@ msgid "Internal title for identification"
 msgstr ""
 
 msgid "Message Content"
-msgstr ""
+msgstr "Содержимое сообщения"
 
 msgid "Message text (supports HTML: <b>, <i>, <a>, <code>)"
 msgstr ""
 
 msgid "Media File"
-msgstr ""
+msgstr "Медиа файл"
 
 msgid "Image, video, or document to send with message"
 msgstr ""
 
 msgid "Target Scope"
-msgstr ""
+msgstr "Охват цели"
 
 msgid "Target Center"
 msgstr ""
@@ -1705,7 +1672,7 @@ msgid "Leave empty to send immediately"
 msgstr ""
 
 msgid "Total Recipients"
-msgstr ""
+msgstr "Всего получателей"
 
 msgid "Sent Count"
 msgstr ""
@@ -1717,10 +1684,10 @@ msgid "Failed Count"
 msgstr ""
 
 msgid "Sent At"
-msgstr ""
+msgstr "Отправлено"
 
 msgid "Completed At"
-msgstr ""
+msgstr "Завершено"
 
 msgid "Last Error"
 msgstr ""
@@ -1735,7 +1702,7 @@ msgid "All Platform Users"
 msgstr ""
 
 msgid "Delivered"
-msgstr ""
+msgstr "Доставлено"
 
 msgid "Blocked by User"
 msgstr ""
@@ -1878,7 +1845,7 @@ msgid "Marketing post updated successfully."
 msgstr ""
 
 msgid "Edit Marketing Post"
-msgstr ""
+msgstr "Редактировать пост"
 
 msgid "You don't have access to delete this post."
 msgstr ""
@@ -1954,7 +1921,7 @@ msgid "Telegram file ID for quick file access without downloading"
 msgstr ""
 
 msgid "Pages"
-msgstr ""
+msgstr "Страницы"
 
 msgid "Order file"
 msgstr ""
@@ -1996,17 +1963,16 @@ msgid "Document Type"
 msgstr ""
 
 msgid "Total Pages"
-msgstr ""
+msgstr "Всего страниц"
 
 msgid "Translation Language"
 msgstr ""
 
-msgid ""
-"The target language selected by user from category's available languages"
+msgid "The target language selected by user from category's available languages"
 msgstr ""
 
 msgid "Payment Type"
-msgstr ""
+msgstr "Тип оплаты"
 
 #, fuzzy
 #| msgid "All Orders"
@@ -2024,10 +1990,10 @@ msgid "Payment Source"
 msgstr "История платежей"
 
 msgid "Receipt"
-msgstr ""
+msgstr "Квитанция"
 
 msgid "Total Price"
-msgstr ""
+msgstr "Итоговая цена"
 
 msgid "Number of Copies"
 msgstr ""
@@ -2036,7 +2002,7 @@ msgid "Additional copies needed (0 means only original)"
 msgstr ""
 
 msgid "Name Clarifications"
-msgstr ""
+msgstr "Уточнения имён"
 
 msgid "Full names typed by the user to avoid misreading handwriting"
 msgstr ""
@@ -2045,13 +2011,13 @@ msgid "Files"
 msgstr ""
 
 msgid "Additional Supply Documents"
-msgstr ""
+msgstr "Дополнительные документы снабжения"
 
 msgid "Supplementary documents provided alongside the main order files"
 msgstr ""
 
 msgid "Assigned To"
-msgstr ""
+msgstr "Назначено"
 
 msgid "Assigned By"
 msgstr ""
@@ -2072,7 +2038,7 @@ msgid "Total amount received so far"
 msgstr ""
 
 msgid "Extra Fee"
-msgstr ""
+msgstr "Дополнительная плата"
 
 msgid "Additional charges (rush fee, special handling, etc.)"
 msgstr ""
@@ -2181,15 +2147,14 @@ msgid "Verified At"
 msgstr ""
 
 msgid "Receipts"
-msgstr ""
+msgstr "Квитанции"
 
 msgid "Bank Transfer"
 msgstr "Банковский перевод"
 
-#, fuzzy
 #| msgid "Payment"
 msgid "Card Payment"
-msgstr "Платеж"
+msgstr "Оплата картой"
 
 msgid "Customer"
 msgstr "Клиент"
@@ -2197,10 +2162,9 @@ msgstr "Клиент"
 msgid "The customer/agency who made the payment"
 msgstr ""
 
-#, fuzzy
 #| msgid "payment.paidAmount"
 msgid "Payment Amount"
-msgstr "Оплаченная сумма"
+msgstr "Сумма платежа"
 
 msgid "Total amount received from customer"
 msgstr ""
@@ -2217,7 +2181,7 @@ msgid "Uploaded receipt image/PDF for card payments"
 msgstr ""
 
 msgid "Processed By"
-msgstr "Обработал"
+msgstr "Принято"
 
 msgid "Admin user who recorded this payment"
 msgstr ""
@@ -2226,7 +2190,7 @@ msgid "Branch where payment was processed"
 msgstr ""
 
 msgid "Orders Paid"
-msgstr "Оплаченные заказы"
+msgstr "Заказов оплачено"
 
 msgid "Number of orders this payment was applied to"
 msgstr ""
@@ -2247,23 +2211,21 @@ msgstr "Остаток долга"
 msgid "Customer remaining debt after this payment"
 msgstr ""
 
-#, fuzzy
 #| msgid "Total Payments"
 msgid "Bulk Payments"
-msgstr "Всего платежей"
+msgstr "Массовые платежи"
 
 #, fuzzy
 #| msgid "Total Debt"
 msgid "Old Price"
 msgstr "Общий долг"
 
-#, fuzzy
 #| msgid "Total Debt"
 msgid "New Price"
-msgstr "Общий долг"
+msgstr "Новая цена"
 
 msgid "Reason"
-msgstr ""
+msgstr "Причина"
 
 msgid "Why was the price changed?"
 msgstr ""
@@ -2390,10 +2352,9 @@ msgstr ""
 msgid "Last Response Payload"
 msgstr ""
 
-#, fuzzy
 #| msgid "Usage Tracking"
 msgid "Payme Transaction"
-msgstr "Отслеживание использования"
+msgstr "Транзакция Payme"
 
 #, fuzzy
 #| msgid "Usage Tracking"
@@ -2427,72 +2388,67 @@ msgstr "Редактировать заказ"
 msgid "Orders Assigned to Me"
 msgstr "Заказы, назначенные мне"
 
-msgid ""
-"Please select a customer or enable manual order and fill in customer details"
-msgstr ""
+msgid "Please select a customer or enable manual order and fill in customer details"
+msgstr "Выберите клиента или включите ручной заказ и заполните данные клиента"
 
 msgid "Please provide customer's first name and phone number for manual orders"
-msgstr ""
+msgstr "Для ручного заказа укажите имя и телефон клиента"
 
 msgid "Please fill in all required fields (product and branch)"
-msgstr ""
+msgstr "Заполните все обязательные поля (продукт и филиал)"
 
 msgid "You don't have access to the selected customer."
-msgstr ""
+msgstr "У вас нет доступа к выбранному клиенту."
 
 msgid "You don't have access to the selected branch."
-msgstr ""
+msgstr "У вас нет доступа к выбранному филиалу."
 
 msgid "Order created successfully"
-msgstr ""
+msgstr "Заказ успешно создан"
 
-#, fuzzy
 #| msgid "Created"
 msgid "Create Order"
-msgstr "Создано"
+msgstr "Создание заказа"
 
 msgid "Create a new order manually"
-msgstr ""
+msgstr "Создайте новый заказ вручную"
 
 msgid "Subdomain"
-msgstr ""
+msgstr "Поддомен"
 
-msgid ""
-"Unique subdomain for this center (e.g., 'center1' for center1.alltranslation."
-"uz)"
+msgid "Unique subdomain for this center (e.g., 'center1' for center1.alltranslation.uz)"
 msgstr ""
 
 msgid "Owner"
-msgstr ""
+msgstr "Владелец"
 
 msgid "Logo"
 msgstr ""
 
 msgid "Address"
-msgstr ""
+msgstr "Адрес"
 
 msgid "Location URL"
-msgstr ""
+msgstr "URL местоположения"
 
 msgid "Google Maps or Yandex Maps URL"
 msgstr ""
 
 msgid "Bot Token"
-msgstr ""
+msgstr "Токен бота"
 
 msgid "Telegram Bot Token for this center (unique, superuser only)"
 msgstr ""
 
-#, fuzzy
 #| msgid "form.username"
 msgid "Bot Username"
-msgstr "Логин"
+msgstr "Имя пользователя бота"
 
 msgid "Telegram Bot username without @ (e.g., 'my_translation_bot')"
 msgstr ""
 
 msgid "Company Orders Channel ID"
-msgstr ""
+msgstr "ID канала заказов компании"
 
 msgid "Telegram channel ID for all company orders and file archives"
 msgstr ""
@@ -2502,19 +2458,14 @@ msgstr ""
 msgid "Payme Enabled"
 msgstr "Возможности"
 
-msgid ""
-"Enable Payme card payment integration for this center. When enabled, bot "
-"users are redirected to Payme checkout instead of uploading a receipt."
+msgid "Enable Payme card payment integration for this center. When enabled, bot users are redirected to Payme checkout instead of uploading a receipt."
 msgstr ""
 
-#, fuzzy
 #| msgid "Payment"
 msgid "Payme Merchant ID"
-msgstr "Платеж"
+msgstr "Payme Merchant ID"
 
-msgid ""
-"Per-center Payme merchant ID. Leave blank to use the global "
-"PAYME_MERCHANT_ID setting."
+msgid "Per-center Payme merchant ID. Leave blank to use the global PAYME_MERCHANT_ID setting."
 msgstr ""
 
 msgid "Payme Sandbox Secret Key"
@@ -2534,28 +2485,26 @@ msgstr ""
 msgid "Payme Sandbox Mode"
 msgstr "Способ оплаты"
 
-msgid ""
-"Use Payme test environment (test.paycom.uz). Enable while testing; disable "
-"when going live with production credentials."
+msgid "Use Payme test environment (test.paycom.uz). Enable while testing; disable when going live with production credentials."
 msgstr ""
 
 msgid "Translation Centers"
-msgstr ""
+msgstr "Центры перевода"
 
 msgid "Cannot delete center with active bot token. Remove the bot token first."
 msgstr ""
 
 msgid "Main Branch"
-msgstr ""
+msgstr "Главный филиал"
 
 msgid "B2C Orders Channel ID"
-msgstr ""
+msgstr "ID канала B2C заказов"
 
 msgid "Telegram channel ID for B2C (individual customer) orders"
 msgstr ""
 
 msgid "B2B Orders Channel ID"
-msgstr ""
+msgstr "ID канала B2B заказов"
 
 msgid "Telegram channel ID for B2B (agency/business) orders"
 msgstr ""
@@ -2570,13 +2519,13 @@ msgid "Branches"
 msgstr "Филиалы"
 
 msgid "Display Name"
-msgstr ""
+msgstr "Отображаемое имя"
 
 msgid "System Role"
 msgstr ""
 
 msgid "System roles cannot be deleted"
-msgstr ""
+msgstr "Системные роли нельзя удалить"
 
 msgid "Can manage centers (full access)"
 msgstr ""
@@ -2906,8 +2855,7 @@ msgstr ""
 msgid "Can manage bulk payments"
 msgstr "Финансы и платежи"
 
-msgid ""
-"Can process bulk payments for customer/agency debts across multiple orders"
+msgid "Can process bulk payments for customer/agency debts across multiple orders"
 msgstr ""
 
 msgid "Can assign bulk payment permission"
@@ -2917,31 +2865,31 @@ msgid "Can grant the bulk payment permission to other users"
 msgstr ""
 
 msgid "Role"
-msgstr ""
+msgstr "Роль"
 
 msgid "Roles"
 msgstr ""
 
 msgid "Center Management"
-msgstr ""
+msgstr "Управление центром"
 
 msgid "Branch Management"
-msgstr ""
+msgstr "Управление филиалом"
 
 msgid "Staff Management"
-msgstr ""
+msgstr "Управление персоналом"
 
 msgid "Order Management"
-msgstr ""
+msgstr "Управление заказами"
 
 msgid "Financial"
 msgstr "Финансы"
 
 msgid "Reports & Analytics"
-msgstr ""
+msgstr "Отчеты и аналитика"
 
 msgid "Products"
-msgstr "Товары"
+msgstr "Продукты"
 
 msgid "Expenses"
 msgstr "Расходы"
@@ -2953,221 +2901,212 @@ msgid "Customers"
 msgstr "Клиенты"
 
 msgid "Marketing & Broadcasts"
-msgstr ""
+msgstr "Маркетинг и рассылки"
 
 msgid "Full Center Management"
-msgstr ""
+msgstr "Полное управление центром"
 
 msgid "View Centers"
-msgstr ""
+msgstr "Просмотр центров"
 
 msgid "Create Centers"
-msgstr ""
+msgstr "Создание центров"
 
 msgid "Edit Centers"
-msgstr ""
+msgstr "Редактирование центров"
 
 msgid "Delete Centers"
-msgstr ""
+msgstr "Удаление центров"
 
 msgid "Full Branch Management"
-msgstr ""
+msgstr "Полное управление филиалом"
 
 msgid "View Branches"
-msgstr ""
+msgstr "Просмотр филиалов"
 
 msgid "Create Branches"
-msgstr ""
+msgstr "Создание филиалов"
 
 msgid "Edit Branches"
-msgstr ""
+msgstr "Редактирование филиалов"
 
 msgid "Delete Branches"
-msgstr ""
+msgstr "Удаление филиалов"
 
 msgid "Full Staff Management"
-msgstr ""
+msgstr "Полное управление персоналом"
 
 msgid "View Staff"
-msgstr ""
+msgstr "Просмотр сотрудников"
 
 msgid "Create Staff"
-msgstr ""
+msgstr "Создать сотрудника"
 
 msgid "Edit Staff"
-msgstr ""
+msgstr "Редактирование сотрудников"
 
 msgid "Delete Staff"
 msgstr ""
 
 msgid "Full Order Management"
-msgstr ""
+msgstr "Полное управление заказами"
 
 msgid "View All Orders"
-msgstr ""
+msgstr "Просмотр всех заказов"
 
 msgid "View Own Orders"
-msgstr ""
+msgstr "Просмотр своих заказов"
 
 msgid "Create Orders"
-msgstr ""
+msgstr "Создание заказов"
 
 msgid "Edit Orders"
-msgstr ""
+msgstr "Редактирование заказов"
 
 msgid "Delete Orders"
-msgstr ""
+msgstr "Удаление заказов"
 
 msgid "Assign Orders"
-msgstr ""
+msgstr "Назначение заказов"
 
 msgid "Update Order Status"
-msgstr ""
+msgstr "Обновление статуса заказов"
 
 msgid "Complete Orders"
-msgstr ""
+msgstr "Завершение заказов"
 
 msgid "Cancel Orders"
-msgstr ""
+msgstr "Отмена заказов"
 
 msgid "Full Financial Management"
-msgstr ""
+msgstr "Полное управление финансами"
 
 msgid "Receive Payments"
-msgstr ""
+msgstr "Прием платежей"
 
 msgid "View Financial Reports"
-msgstr ""
+msgstr "Просмотр финансовых отчетов"
 
 msgid "Apply Discounts"
-msgstr ""
+msgstr "Применение скидок"
 
 msgid "Refund Orders"
-msgstr ""
+msgstr "Возврат заказов"
 
 msgid "Full Reports Management"
-msgstr ""
+msgstr "Полное управление отчетами"
 
 msgid "View Reports"
-msgstr ""
+msgstr "Просмотр отчетов"
 
 msgid "View Analytics"
-msgstr ""
+msgstr "Просмотр аналитики"
 
 msgid "Export Data"
-msgstr ""
+msgstr "Экспорт данных"
 
 msgid "Full Product Management"
-msgstr ""
+msgstr "Полное управление продуктами"
 
 msgid "View Products"
-msgstr ""
+msgstr "Просмотр продуктов"
 
 msgid "Create Products"
-msgstr ""
+msgstr "Создание продуктов"
 
 msgid "Edit Products"
-msgstr ""
+msgstr "Редактирование продуктов"
 
 msgid "Delete Products"
-msgstr ""
+msgstr "Удаление продуктов"
 
 msgid "Full Expense Management"
-msgstr ""
+msgstr "Полное управление расходами"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "View Expenses"
-msgstr "Расходы"
+msgstr "Просмотр расходов"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "Create Expenses"
-msgstr "Расходы"
+msgstr "Создание расходов"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "Edit Expenses"
-msgstr "Расходы"
+msgstr "Редактирование расходов"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "Delete Expenses"
-msgstr "Расходы"
+msgstr "Удаление расходов"
 
 msgid "Full Language Management"
-msgstr ""
+msgstr "Полное управление языками"
 
-#, fuzzy
 #| msgid "Languages"
 msgid "View Languages"
-msgstr "Языки"
+msgstr "Просмотр языков"
 
-#, fuzzy
 #| msgid "Languages"
 msgid "Create Languages"
-msgstr "Языки"
+msgstr "Добавление языков"
 
-#, fuzzy
 #| msgid "Languages"
 msgid "Edit Languages"
-msgstr "Языки"
+msgstr "Редактирование языков"
 
-#, fuzzy
 #| msgid "Languages"
 msgid "Delete Languages"
-msgstr "Языки"
+msgstr "Удаление языков"
 
 msgid "Full Customer Management"
-msgstr ""
+msgstr "Полное управление клиентами"
 
 msgid "View Customers"
-msgstr ""
+msgstr "Просмотр клиентов"
 
 msgid "Edit Customers"
-msgstr ""
+msgstr "Редактирование клиентов"
 
 msgid "Delete Customers"
-msgstr ""
+msgstr "Удаление клиентов"
 
 msgid "Full Marketing Management"
-msgstr ""
+msgstr "Полное управление маркетингом"
 
 msgid "Create Marketing Posts"
-msgstr ""
+msgstr "Создание маркетинговых объявлений"
 
 msgid "Send Branch Broadcasts"
-msgstr ""
+msgstr "Отправка сообщений филиала"
 
 msgid "Send Center Broadcasts"
-msgstr ""
+msgstr "Отправка сообщений центра"
 
 msgid "View Broadcast Stats"
-msgstr ""
+msgstr "Просмотр статистики сообщений"
 
 msgid "Manage Branch Settings"
 msgstr ""
 
 msgid "View Branch Settings"
-msgstr ""
+msgstr "Просмотр настроек филиала"
 
 msgid "Full Agency Management"
-msgstr ""
+msgstr "Полное управление агентствами"
 
 msgid "View Agencies"
-msgstr ""
+msgstr "Просмотр агентств"
 
 msgid "Create Agencies"
-msgstr ""
+msgstr "Создание агентств"
 
 msgid "Edit Agencies"
-msgstr ""
+msgstr "Редактирование агентств"
 
 msgid "Delete Agencies"
-msgstr ""
+msgstr "Удаление агентств"
 
-msgid ""
-"Full control over all center operations - overrides individual permissions"
+msgid "Full control over all center operations - overrides individual permissions"
 msgstr ""
 
 msgid "View translation center details and settings"
@@ -3182,8 +3121,7 @@ msgstr ""
 msgid "Delete translation centers (requires removing bot token first)"
 msgstr ""
 
-msgid ""
-"Full control over all branch operations - overrides individual permissions"
+msgid "Full control over all branch operations - overrides individual permissions"
 msgstr ""
 
 msgid "View branch details and settings"
@@ -3198,8 +3136,7 @@ msgstr ""
 msgid "Delete branches from the system"
 msgstr ""
 
-msgid ""
-"Full control over all staff operations - overrides individual permissions"
+msgid "Full control over all staff operations - overrides individual permissions"
 msgstr ""
 
 msgid "View staff profiles and details"
@@ -3214,8 +3151,7 @@ msgstr ""
 msgid "Remove staff members from the system"
 msgstr ""
 
-msgid ""
-"Full control over all order operations - overrides individual permissions"
+msgid "Full control over all order operations - overrides individual permissions"
 msgstr ""
 
 msgid "View all orders in the center/branch, not just assigned ones"
@@ -3245,8 +3181,7 @@ msgstr ""
 msgid "Cancel active orders"
 msgstr ""
 
-msgid ""
-"Full control over all financial operations - overrides individual permissions"
+msgid "Full control over all financial operations - overrides individual permissions"
 msgstr ""
 
 msgid "Accept and record customer payments"
@@ -3261,8 +3196,7 @@ msgstr ""
 msgid "Process refunds for completed or cancelled orders"
 msgstr ""
 
-msgid ""
-"Full control over all report operations - overrides individual permissions"
+msgid "Full control over all report operations - overrides individual permissions"
 msgstr ""
 
 msgid "Access performance and activity reports"
@@ -3274,8 +3208,7 @@ msgstr ""
 msgid "Export data to Excel, PDF, or other formats"
 msgstr ""
 
-msgid ""
-"Full control over all product operations - overrides individual permissions"
+msgid "Full control over all product operations - overrides individual permissions"
 msgstr ""
 
 msgid "View product and service listings"
@@ -3290,8 +3223,7 @@ msgstr ""
 msgid "Remove services and products from the system"
 msgstr ""
 
-msgid ""
-"Full control over all expense operations - overrides individual permissions"
+msgid "Full control over all expense operations - overrides individual permissions"
 msgstr ""
 
 msgid "View expense records and reports"
@@ -3306,8 +3238,7 @@ msgstr ""
 msgid "Remove expense records from the system"
 msgstr ""
 
-msgid ""
-"Full control over all language operations - overrides individual permissions"
+msgid "Full control over all language operations - overrides individual permissions"
 msgstr ""
 
 msgid "View language list and pricing"
@@ -3322,8 +3253,7 @@ msgstr ""
 msgid "Remove languages from the system"
 msgstr ""
 
-msgid ""
-"Full control over all customer operations - overrides individual permissions"
+msgid "Full control over all customer operations - overrides individual permissions"
 msgstr ""
 
 msgid "View customer information and history"
@@ -3335,8 +3265,7 @@ msgstr ""
 msgid "Remove customer records from the system"
 msgstr ""
 
-msgid ""
-"Full control over all marketing operations - overrides individual permissions"
+msgid "Full control over all marketing operations - overrides individual permissions"
 msgstr ""
 
 msgid "Create and edit marketing posts and announcements"
@@ -3357,8 +3286,7 @@ msgstr ""
 msgid "View branch settings without the ability to edit"
 msgstr ""
 
-msgid ""
-"Full control over all agency operations - overrides individual permissions"
+msgid "Full control over all agency operations - overrides individual permissions"
 msgstr ""
 
 msgid "View list of agency partners and their details"
@@ -3418,7 +3346,7 @@ msgid "Both B2B & B2C"
 msgstr ""
 
 msgid "Expense Name"
-msgstr ""
+msgstr "Название расхода"
 
 msgid "Price for Original"
 msgstr ""
@@ -3433,7 +3361,7 @@ msgid "Cost of this expense per copy document"
 msgstr ""
 
 msgid "Expense Type"
-msgstr ""
+msgstr "Тип расхода"
 
 msgid "Whether this expense applies to B2B, B2C, or both"
 msgstr ""
@@ -3442,7 +3370,7 @@ msgid "Branch this expense belongs to"
 msgstr ""
 
 msgid "Expense"
-msgstr ""
+msgstr "Расход"
 
 msgid "Branch this language belongs to"
 msgstr ""
@@ -3504,13 +3432,11 @@ msgstr ""
 msgid "Written Verification Required"
 msgstr ""
 
-msgid ""
-"If enabled, the bot will ask users to type full names from their documents "
-"to avoid misspelling handwritten names."
+msgid "If enabled, the bot will ask users to type full names from their documents to avoid misspelling handwritten names."
 msgstr ""
 
 msgid "Charging Type"
-msgstr ""
+msgstr "Тип расчета"
 
 msgid "Main Service"
 msgstr ""
@@ -3537,10 +3463,10 @@ msgid "User Copy Price (Fixed)"
 msgstr ""
 
 msgid "Minimum Pages"
-msgstr ""
+msgstr "Минимум страниц"
 
 msgid "Estimated Days"
-msgstr ""
+msgstr "Ориентировочные дни"
 
 msgid "Expenses associated with this product"
 msgstr ""
@@ -3548,10 +3474,9 @@ msgstr ""
 msgid "Document Types"
 msgstr ""
 
-#, fuzzy
 #| msgid "Categories"
 msgid "Category Name"
-msgstr "Категории"
+msgstr "Название категории"
 
 msgid "Iconify Icon"
 msgstr ""
@@ -3581,7 +3506,7 @@ msgid "Repayment deadline for credit expenses."
 msgstr "Срок погашения кредитного расхода."
 
 msgid "Paid"
-msgstr ""
+msgstr "Оплачено"
 
 msgid "Mark as paid once a nasiya (credit) expense is settled."
 msgstr "Отметьте как оплаченное, когда расход погашён."
@@ -3614,8 +3539,7 @@ msgstr "Категории"
 msgid "Category Details"
 msgstr "Детали категории"
 
-msgid ""
-"Dynamic pricing requires an upgraded plan. Category set to static pricing."
+msgid "Dynamic pricing requires an upgraded plan. Category set to static pricing."
 msgstr ""
 
 msgid "Add Category"
@@ -3724,11 +3648,8 @@ msgstr "Категории расходов"
 msgid "Manage Operating Expense Categories"
 msgstr "Управление категориями расходов"
 
-msgid ""
-"Cannot delete category that has expenses. Reassign or delete them first."
-msgstr ""
-"Невозможно удалить категорию с расходами. Сначала переназначьте или удалите "
-"их."
+msgid "Cannot delete category that has expenses. Reassign or delete them first."
+msgstr "Невозможно удалить категорию с расходами. Сначала переназначьте или удалите их."
 
 # Services/Orders/Organizations Views Translations
 msgid "Category deleted."
@@ -3737,15 +3658,10 @@ msgstr "Категория удалена."
 msgid "Auto-resolved: no staff response within the SLA period"
 msgstr ""
 
-msgid ""
-"This ticket was automatically resolved because no response was received "
-"within the expected timeframe. If your issue is still unresolved, please "
-"open a new ticket."
+msgid "This ticket was automatically resolved because no response was received within the expected timeframe. If your issue is still unresolved, please open a new ticket."
 msgstr ""
 
-msgid ""
-"This ticket is taking longer than expected to resolve. Our support team is "
-"aware and working on it."
+msgid "This ticket is taking longer than expected to resolve. Our support team is aware and working on it."
 msgstr ""
 
 #, fuzzy
@@ -3878,7 +3794,7 @@ msgid "Tickets"
 msgstr ""
 
 msgid "Staff"
-msgstr "Сотрудники"
+msgstr "Сотрудник"
 
 msgid "Support"
 msgstr "Поддержка"
@@ -3956,9 +3872,7 @@ msgstr "Мои запросы"
 msgid "All Tickets"
 msgstr "Все пользователи"
 
-msgid ""
-"Your account is not linked to a center. Please ask your administrator to "
-"assign you to a center before submitting tickets."
+msgid "Your account is not linked to a center. Please ask your administrator to assign you to a center before submitting tickets."
 msgstr ""
 
 msgid "New Ticket"
@@ -3966,7 +3880,7 @@ msgstr "Новый запрос"
 
 # Support & Services Features (2)
 msgid "Support Tickets"
-msgstr "Мои запросы"
+msgstr "Заявки в поддержку"
 
 #, fuzzy
 #| msgid "Date is required."
@@ -4011,7 +3925,7 @@ msgid "Ticket has been resolved."
 msgstr ""
 
 msgid "Support Inbox"
-msgstr "Служба поддержки"
+msgstr "Входящие поддержки"
 
 msgid "Reply sent to staff."
 msgstr ""
@@ -4074,13 +3988,12 @@ msgstr "Подписки"
 msgid "Sort"
 msgstr "Сортировать"
 
-#, fuzzy
 #| msgid "Name: A to Z"
 msgid "Name (A-Z)"
-msgstr "Имя: от А до Я"
+msgstr "Имя (А-Я)"
 
 msgid "Name (Z-A)"
-msgstr ""
+msgstr "Имя (Я-А)"
 
 #, fuzzy
 #| msgid "End Date"
@@ -4137,7 +4050,7 @@ msgid "Search by center name or subdomain..."
 msgstr "Быстрый поиск по имени или телефону..."
 
 msgid "Sort By"
-msgstr "Сортировать"
+msgstr "Сортировать по"
 
 #, fuzzy
 #| msgid "Total Payments"
@@ -4220,7 +4133,7 @@ msgid "No centers found"
 msgstr "Должники не найдены"
 
 msgid "Previous"
-msgstr "Предыдущее"
+msgstr "Предыдущая"
 
 msgid "Next"
 msgstr "Следующая"
@@ -4281,10 +4194,7 @@ msgstr "Выберите продолжительность"
 msgid "Select tariff first..."
 msgstr "Сначала выберите тариф..."
 
-msgid ""
-"After conversion, the trial subscription will be replaced with a paid "
-"subscription starting today. Please ensure payment is collected before "
-"converting."
+msgid "After conversion, the trial subscription will be replaced with a paid subscription starting today. Please ensure payment is collected before converting."
 msgstr ""
 
 msgid "Convert to Paid Subscription"
@@ -4320,9 +4230,7 @@ msgstr "Заказы (этот месяц)"
 msgid "Request Subscription Renewal"
 msgstr "Продлить подписку"
 
-msgid ""
-"Select a tariff plan and duration to renew your subscription. Our team will "
-"contact you to complete the payment."
+msgid "Select a tariff plan and duration to renew your subscription. Our team will contact you to complete the payment."
 msgstr ""
 
 #, fuzzy
@@ -4353,9 +4261,7 @@ msgstr "Общая сумма"
 msgid "Select Subscription Duration"
 msgstr "Выберите продолжительность"
 
-msgid ""
-"Choose how long you want to extend your subscription. Longer durations often "
-"have better rates."
+msgid "Choose how long you want to extend your subscription. Longer durations often have better rates."
 msgstr ""
 
 #, fuzzy
@@ -4416,8 +4322,7 @@ msgstr ""
 msgid "Our team will contact you via email or phone to arrange payment"
 msgstr ""
 
-msgid ""
-"After payment confirmation, your subscription will be extended automatically"
+msgid "After payment confirmation, your subscription will be extended automatically"
 msgstr ""
 
 msgid "Submit Renewal Request"
@@ -4428,8 +4333,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Select Pricing Duration"
-msgid ""
-"Please select a subscription duration from the options below the tariff cards"
+msgid "Please select a subscription duration from the options below the tariff cards"
 msgstr "Выберите продолжительность"
 
 msgid "Submitting..."
@@ -4515,15 +4419,14 @@ msgid "All Subscriptions"
 msgstr "Подписки"
 
 msgid "Created"
-msgstr "Создано"
+msgstr "Создан"
 
 msgid "Free"
 msgstr ""
 
-#, fuzzy
 #| msgid "actions.viewDetails"
 msgid "View Details"
-msgstr "Просмотр деталей"
+msgstr "Посмотреть детали"
 
 #, fuzzy
 #| msgid "Total Subscriptions"
@@ -4653,16 +4556,13 @@ msgstr "Продлить"
 msgid "Subscription Ended"
 msgstr "Подписка завершена"
 
-msgid ""
-"Your subscription has expired and access to this panel has been disabled."
+msgid "Your subscription has expired and access to this panel has been disabled."
 msgstr ""
 
 msgid "What to do next"
 msgstr ""
 
-msgid ""
-"Please contact your administrator to renew your subscription. Once renewed, "
-"you will regain full access."
+msgid "Please contact your administrator to renew your subscription. Once renewed, you will regain full access."
 msgstr ""
 
 #, fuzzy
@@ -4678,18 +4578,16 @@ msgstr ""
 msgid "Subscriptions - Billing"
 msgstr "Подписки"
 
-#, fuzzy
 #| msgid "Total Logs"
 msgid "Total"
-msgstr "Всего записей"
+msgstr "Всего"
 
 msgid "Expiring Soon"
 msgstr ""
 
-#, fuzzy
 #| msgid "Status"
 msgid "All Status"
-msgstr "Статус"
+msgstr "Все статусы"
 
 #, fuzzy
 #| msgid "Available Tariffs"
@@ -4772,9 +4670,7 @@ msgstr "Выберите тарифный план..."
 msgid "Select Pricing Duration"
 msgstr "Выберите продолжительность"
 
-msgid ""
-"If the tariff has pricing, choose a duration. If it has none, renewal keeps "
-"the current end date (treated as unlimited/manual)."
+msgid "If the tariff has pricing, choose a duration. If it has none, renewal keeps the current end date (treated as unlimited/manual)."
 msgstr ""
 
 msgid "New End Date"
@@ -4786,12 +4682,8 @@ msgstr "Оставьте пустым, если оплата еще не пол�
 msgid "Optional notes about this renewal..."
 msgstr "Необязательные примечания об этом продлении..."
 
-msgid ""
-"Renewing will extend the subscription period. Status will be set to "
-"'Pending' until payment is confirmed."
-msgstr ""
-"Продление увеличит срок подписки. Статус будет установлен как 'Ожидание' до "
-"подтверждения оплаты."
+msgid "Renewing will extend the subscription period. Status will be set to 'Pending' until payment is confirmed."
+msgstr "Продление увеличит срок подписки. Статус будет установлен как 'Ожидание' до подтверждения оплаты."
 
 msgid "Available Tariffs"
 msgstr "Доступные тарифы"
@@ -4884,13 +4776,12 @@ msgstr "Включённые функции"
 msgid "Select features available in this tariff plan"
 msgstr "В этом плане нет доступных функций"
 
-#, fuzzy
 #| msgid "Select Tariff & Duration"
 msgid "Select All"
-msgstr "Выберите тариф и срок"
+msgstr "Выбрать все"
 
 msgid "Deselect All"
-msgstr ""
+msgstr "Отменить все"
 
 #, fuzzy
 #| msgid "Services"
@@ -4905,8 +4796,7 @@ msgstr ""
 msgid "Basic Products"
 msgstr "Товары"
 
-msgid ""
-"Define translation services with base prices (language pairs, document types)"
+msgid "Define translation services with base prices (language pairs, document types)"
 msgstr ""
 
 #, fuzzy
@@ -4914,8 +4804,7 @@ msgstr ""
 msgid "Advanced Products"
 msgstr "Добавить продукт"
 
-msgid ""
-"Multiple service variants, category grouping, and per-service customization"
+msgid "Multiple service variants, category grouping, and per-service customization"
 msgstr ""
 
 #, fuzzy
@@ -4926,9 +4815,7 @@ msgstr "Ценообразование по Языкам"
 msgid "Set unique rates for each language direction (e.g. RU→EN vs RU→DE)"
 msgstr ""
 
-msgid ""
-"Auto-calculate order total by page count × per-page rate for each language "
-"pair"
+msgid "Auto-calculate order total by page count × per-page rate for each language pair"
 msgstr ""
 
 #, fuzzy
@@ -4936,9 +4823,7 @@ msgstr ""
 msgid "Basic Orders"
 msgstr "Нет заказов"
 
-msgid ""
-"Accept orders, update statuses (New → In Progress → Done), view full order "
-"history"
+msgid "Accept orders, update statuses (New → In Progress → Done), view full order history"
 msgstr ""
 
 #, fuzzy
@@ -4946,27 +4831,19 @@ msgstr ""
 msgid "Advanced Orders"
 msgstr "Расширенное Управление Заказами"
 
-msgid ""
-"Bulk-select orders and apply actions; filter by date, status, staff, branch "
-"or language pair"
+msgid "Bulk-select orders and apply actions; filter by date, status, staff, branch or language pair"
 msgstr ""
 
-msgid ""
-"Distribute orders to specific employees; track who is currently working on "
-"each order"
+msgid "Distribute orders to specific employees; track who is currently working on each order"
 msgstr ""
 
-msgid ""
-"Record one payment covering several orders at once; supports partial "
-"payments and debt carry-over"
+msgid "Record one payment covering several orders at once; supports partial payments and debt carry-over"
 msgstr ""
 
 msgid "Extra Fees"
 msgstr ""
 
-msgid ""
-"Add manual surcharges (urgency, notary, courier) or discounts to any order "
-"after creation"
+msgid "Add manual surcharges (urgency, notary, courier) or discounts to any order after creation"
 msgstr ""
 
 #, fuzzy
@@ -4979,32 +4856,22 @@ msgstr "Расходы"
 msgid "Payment Management"
 msgstr "Способ оплаты"
 
-msgid ""
-"Record cash / card / online payments, upload receipts, and mark orders as "
-"fully or partially paid"
+msgid "Record cash / card / online payments, upload receipts, and mark orders as fully or partially paid"
 msgstr ""
 
-msgid ""
-"Create and download PDF invoices per client; essential for B2B billing and "
-"formal payments"
+msgid "Create and download PDF invoices per client; essential for B2B billing and formal payments"
 msgstr ""
 
-msgid ""
-"Log costs tied to specific orders (translator fees, printing, materials, "
-"postage)"
+msgid "Log costs tied to specific orders (translator fees, printing, materials, postage)"
 msgstr ""
 
-msgid ""
-"Record overhead not linked to orders: office rent, staff salaries, "
-"stationery, utilities"
+msgid "Record overhead not linked to orders: office rent, staff salaries, stationery, utilities"
 msgstr ""
 
 msgid "Archive Access"
 msgstr ""
 
-msgid ""
-"View, search and restore completed orders auto-archived to Telegram channel; "
-"zero data loss"
+msgid "View, search and restore completed orders auto-archived to Telegram channel; zero data loss"
 msgstr ""
 
 #, fuzzy
@@ -5012,9 +4879,7 @@ msgstr ""
 msgid "Customers & Agencies"
 msgstr "Аналитика клиентов"
 
-msgid ""
-"Onboard B2B partners with dedicated pricing, credit limits and separate "
-"analytics per agency"
+msgid "Onboard B2B partners with dedicated pricing, credit limits and separate analytics per agency"
 msgstr ""
 
 # Marketing & Communications Features (2)
@@ -5023,9 +4888,7 @@ msgstr ""
 msgid "Marketing Campaigns"
 msgstr "Инструменты Маркетинговых Кампаний"
 
-msgid ""
-"Compose Telegram posts with text, images or documents; manage drafts and "
-"campaign history"
+msgid "Compose Telegram posts with text, images or documents; manage drafts and campaign history"
 msgstr ""
 
 #, fuzzy
@@ -5033,32 +4896,22 @@ msgstr ""
 msgid "Broadcast Messaging"
 msgstr "Массовые Рассылки Сообщений"
 
-msgid ""
-"Send a broadcast to all or filtered customers; schedule delivery and track "
-"open / delivery stats"
+msgid "Send a broadcast to all or filtered customers; schedule delivery and track open / delivery stats"
 msgstr ""
 
 msgid "Analytics & Reports"
 msgstr "Аналитика и отчеты"
 
-msgid ""
-"Daily and monthly order volume, completion rate, and a summary dashboard for "
-"quick overview"
+msgid "Daily and monthly order volume, completion rate, and a summary dashboard for quick overview"
 msgstr ""
 
-msgid ""
-"Cross-branch comparison, revenue time-series, top clients by order count and "
-"total spend"
+msgid "Cross-branch comparison, revenue time-series, top clients by order count and total spend"
 msgstr ""
 
-msgid ""
-"Income vs. expense breakdown with profit margin per period, branch or "
-"language pair"
+msgid "Income vs. expense breakdown with profit margin per period, branch or language pair"
 msgstr ""
 
-msgid ""
-"Per-employee report: orders completed, revenue generated, avg. turnaround "
-"time"
+msgid "Per-employee report: orders completed, revenue generated, avg. turnaround time"
 msgstr ""
 
 #, fuzzy
@@ -5066,13 +4919,10 @@ msgstr ""
 msgid "Custom Reports"
 msgstr "Клиенты"
 
-msgid ""
-"Build ad-hoc reports by combining any date range, branch, staff, service or "
-"status filters"
+msgid "Build ad-hoc reports by combining any date range, branch, staff, service or status filters"
 msgstr ""
 
-msgid ""
-"Download any report or data table as Excel / PDF / CSV with a single click"
+msgid "Download any report or data table as Excel / PDF / CSV with a single click"
 msgstr ""
 
 #, fuzzy
@@ -5080,9 +4930,7 @@ msgstr ""
 msgid "Debt Tracking"
 msgstr "Отслеживание использования"
 
-msgid ""
-"Outstanding balance per client, top-debtors list, collection rate and "
-"overdue alerts"
+msgid "Outstanding balance per client, top-debtors list, collection rate and overdue alerts"
 msgstr ""
 
 # Sidebar Translations
@@ -5097,9 +4945,7 @@ msgstr "Организация"
 msgid "Multi-Branch"
 msgstr "Несколько Филиалов"
 
-msgid ""
-"Add multiple branches under one account; each has its own staff, orders, "
-"pricing and settings"
+msgid "Add multiple branches under one account; each has its own staff, orders, pricing and settings"
 msgstr ""
 
 #, fuzzy
@@ -5107,19 +4953,13 @@ msgstr ""
 msgid "Custom Roles"
 msgstr "Клиенты"
 
-msgid ""
-"Create roles (Translator, Manager, etc.) and precisely control what each "
-"role can view or do"
+msgid "Create roles (Translator, Manager, etc.) and precisely control what each role can view or do"
 msgstr ""
 
-msgid ""
-"Override global settings per branch: working hours, pricing rules, Telegram "
-"bot, notifications"
+msgid "Override global settings per branch: working hours, pricing rules, Telegram bot, notifications"
 msgstr ""
 
-msgid ""
-"Full history of who changed what and when — order edits, payment records, "
-"status changes, logins"
+msgid "Full history of who changed what and when — order edits, payment records, status changes, logins"
 msgstr ""
 
 #, fuzzy
@@ -5132,17 +4972,13 @@ msgstr "Интеграция"
 msgid "Telegram Bot"
 msgstr "Интеграция Telegram Бота"
 
-msgid ""
-"Customers place orders, get instant price estimates and status notifications "
-"via your Telegram bot"
+msgid "Customers place orders, get instant price estimates and status notifications via your Telegram bot"
 msgstr ""
 
 msgid "Webhooks"
 msgstr ""
 
-msgid ""
-"Configure your bot's webhook URL so Telegram delivers messages to your "
-"server in real time"
+msgid "Configure your bot's webhook URL so Telegram delivers messages to your server in real time"
 msgstr ""
 
 # Integration Features (4)
@@ -5156,9 +4992,7 @@ msgstr "Доступ к REST API"
 msgid "On Request"
 msgstr "Запросы на контакт"
 
-msgid ""
-"REST API to connect MultiLang data with your own tools, CRM or automation "
-"scripts"
+msgid "REST API to connect MultiLang data with your own tools, CRM or automation scripts"
 msgstr ""
 
 #, fuzzy
@@ -5166,9 +5000,7 @@ msgstr ""
 msgid "Third-Party"
 msgstr "Сторонние Интеграции"
 
-msgid ""
-"Connect payment gateways (Payme, etc.) and other external services to the "
-"platform"
+msgid "Connect payment gateways (Payme, etc.) and other external services to the platform"
 msgstr ""
 
 msgid "Pricing Options"
@@ -5183,9 +5015,7 @@ msgstr ""
 msgid "Full price per month without any discount"
 msgstr ""
 
-msgid ""
-"No pricing options. Add one below or leave empty to show 'Contact admin' on "
-"the public page."
+msgid "No pricing options. Add one below or leave empty to show 'Contact admin' on the public page."
 msgstr ""
 
 #, fuzzy
@@ -5216,13 +5046,11 @@ msgstr "Редактировать тариф"
 #, python-format
 msgid ""
 "\n"
-"                    This tariff has %(counter)s subscription. Changes may "
-"affect active subscriptions.\n"
+"                    This tariff has %(counter)s subscription. Changes may affect active subscriptions.\n"
 "                    "
 msgid_plural ""
 "\n"
-"                    This tariff has %(counter)s subscriptions. Changes may "
-"affect active subscriptions.\n"
+"                    This tariff has %(counter)s subscriptions. Changes may affect active subscriptions.\n"
 "                    "
 msgstr[0] ""
 msgstr[1] ""
@@ -5239,7 +5067,7 @@ msgid "Create New Tariff"
 msgstr ""
 
 msgid "Inactive"
-msgstr "Неактивна"
+msgstr "Неактивный"
 
 msgid "Orders/Month"
 msgstr "Заказы/Месяц"
@@ -5257,7 +5085,7 @@ msgid "subscription(s)"
 msgstr "подписок"
 
 msgid "Edit"
-msgstr ""
+msgstr "Редактировать"
 
 msgid "No Tariffs Found"
 msgstr "Тарифы не найдены"
@@ -5275,7 +5103,7 @@ msgid "Please mark it as inactive instead or delete the subscriptions first."
 msgstr ""
 
 msgid "Are you sure you want to delete"
-msgstr ""
+msgstr "Вы уверены, что хотите удалить"
 
 msgid "This action cannot be undone."
 msgstr "Это действие нельзя отменить."
@@ -5444,10 +5272,10 @@ msgid "Broadcasts"
 msgstr ""
 
 msgid "Revenue"
-msgstr ""
+msgstr "Доход"
 
 msgid "UZS"
-msgstr ""
+msgstr "UZS"
 
 #, fuzzy
 #| msgid "No debtors found"
@@ -5477,12 +5305,11 @@ msgid "Page"
 msgstr ""
 
 msgid "items"
-msgstr ""
+msgstr "записей"
 
-#, fuzzy
 #| msgid "View Complete History"
 msgid "Completed"
-msgstr "Посмотреть полную историю"
+msgstr "Завершено"
 
 #, fuzzy
 #| msgid "User"
@@ -5517,46 +5344,39 @@ msgstr ""
 msgid "View all notifications"
 msgstr "Посмотреть полную аналитику"
 
-#, fuzzy
 #| msgid "No Orders"
 msgid "Today's Orders"
-msgstr "Нет заказов"
+msgstr "Заказы за сегодня"
 
 msgid "vs yesterday"
-msgstr ""
+msgstr "по сравнению со вчера"
 
 msgid "Today's Revenue"
-msgstr ""
+msgstr "Доход за сегодня"
 
-#, fuzzy
 #| msgid "Collection Rate"
 msgid "Completion Rate"
-msgstr "Коэффициент сбора"
+msgstr "Процент выполнения"
 
-#, fuzzy
 #| msgid "View Complete History"
 msgid "completed today"
-msgstr "Посмотреть полную историю"
+msgstr "завершено сегодня"
 
-#, fuzzy
 #| msgid "Pending"
 msgid "Pending Orders"
-msgstr "Ожидание"
+msgstr "Ожидающие заказы"
 
-#, fuzzy
 #| msgid "From"
 msgid "Date From"
-msgstr "С"
+msgstr "Дата от"
 
-#, fuzzy
 #| msgid "Date"
 msgid "Date To"
-msgstr "Дата"
+msgstr "Дата до"
 
-#, fuzzy
 #| msgid "Companies"
 msgid "Has Company"
-msgstr "Компании"
+msgstr "Есть компания"
 
 msgid "Yes"
 msgstr "Да"
@@ -5565,21 +5385,20 @@ msgid "No"
 msgstr "Нет"
 
 msgid "Has Phone"
-msgstr ""
+msgstr "Есть телефон"
 
 msgid "Newest First"
-msgstr ""
+msgstr "Сначала новые"
 
 msgid "Oldest First"
-msgstr ""
+msgstr "Сначала старые"
 
 msgid "Search by name, email, company, phone or message"
 msgstr ""
 
-#, fuzzy
 #| msgid "message.info"
 msgid "Message from"
-msgstr "Информация"
+msgstr "Сообщение от"
 
 #, fuzzy
 #| msgid "message.info"
@@ -5587,7 +5406,7 @@ msgid "Message:"
 msgstr "Информация"
 
 msgid "Internal Notes:"
-msgstr ""
+msgstr "Внутренние заметки:"
 
 #, fuzzy
 #| msgid "Optional notes about this renewal..."
@@ -5597,15 +5416,13 @@ msgstr "Необязательные примечания об этом прод
 msgid "Close"
 msgstr "Закрыть"
 
-#, fuzzy
 #| msgid "Notes"
 msgid "Save Notes"
-msgstr "Примечания"
+msgstr "Сохранить заметки"
 
-#, fuzzy
 #| msgid "Update Status"
 msgid "Change Status"
-msgstr "Обновить статус"
+msgstr "Изменить статус"
 
 #, fuzzy
 #| msgid "Contact Requests"
@@ -5699,10 +5516,9 @@ msgstr "Не указано"
 msgid "Create your first broadcast to reach your customers."
 msgstr "Создайте свой первый тарифный план, чтобы начать предлагать подписки"
 
-#, fuzzy
 #| msgid "Created"
 msgid "Create Post"
-msgstr "Создано"
+msgstr "Создать пост"
 
 msgid "Bulk Payment & Top Up"
 msgstr "Массовый платеж и пополнение"
@@ -5726,10 +5542,9 @@ msgstr "Клиенты"
 msgid "Outstanding Orders"
 msgstr ""
 
-#, fuzzy
 #| msgid "Orders"
 msgid "orders"
-msgstr "Заказы"
+msgstr "заказов"
 
 msgid "Average Debt"
 msgstr ""
@@ -5755,10 +5570,9 @@ msgstr ""
 msgid "View All Debtors"
 msgstr "Все должники"
 
-#, fuzzy
 #| msgid "Customer"
 msgid "Search Customer"
-msgstr "Клиент"
+msgstr "Поиск клиента"
 
 #, fuzzy
 #| msgid "Quick search by name or phone..."
@@ -5850,18 +5664,16 @@ msgstr "Обработать платеж"
 msgid "Paid by"
 msgstr ""
 
-#, fuzzy
 #| msgid "Days Remaining"
 msgid "Remaining"
-msgstr "Осталось дней"
+msgstr "Осталось"
 
 msgid "Failed to search customers"
 msgstr ""
 
-#, fuzzy
 #| msgid "No debtors found"
 msgid "No customers found"
-msgstr "Должники не найдены"
+msgstr "Клиенты не найдены"
 
 msgid "Failed to load customer debt details"
 msgstr ""
@@ -5918,19 +5730,18 @@ msgstr "В процессе"
 msgid "Failed to process payment"
 msgstr "Обработать платеж"
 
-#, fuzzy
 #| msgid "bulk.remainingDebt"
 msgid "Remaining Debt"
-msgstr "Остаток долга"
+msgstr "Оставшийся долг"
 
 msgid "Total Assigned"
 msgstr "Всего назначено"
 
 msgid "My Assigned Orders"
-msgstr "Мои назначенные заказы"
+msgstr "Мои Назначенные Заказы"
 
 msgid "No Orders Assigned"
-msgstr "Заказы не назначены"
+msgstr "Заказы Не Назначены"
 
 msgid "You don't have any orders assigned to you yet."
 msgstr "Вам ещё не назначено ни одного заказа."
@@ -5972,10 +5783,10 @@ msgid "%(count)s record(s) found"
 msgstr ""
 
 msgid "View All"
-msgstr ""
+msgstr "Показать все"
 
 msgid "New Payment"
-msgstr "Новый платеж"
+msgstr "Новый платёж"
 
 #, fuzzy
 #| msgid "Notes"
@@ -6014,7 +5825,7 @@ msgid ""
 msgstr "Показано %(start)s–%(end)s из %(total)s записей"
 
 msgid "All Payment Methods"
-msgstr "Все методы оплаты"
+msgstr "Все способы оплаты"
 
 msgid "All Customers"
 msgstr "Все клиенты"
@@ -6023,10 +5834,10 @@ msgid "Agency (B2B)"
 msgstr "Агентство (B2B)"
 
 msgid "Individual (B2C)"
-msgstr "Частное лицо (B2C)"
+msgstr "Физическое лицо (B2C)"
 
 msgid "transactions processed"
-msgstr "транзакций обработано"
+msgstr "обработанных транзакций"
 
 msgid "Total Amount"
 msgstr "Общая сумма"
@@ -6035,13 +5846,13 @@ msgid "avg payment"
 msgstr "средний платеж"
 
 msgid "fully paid"
-msgstr "полностью оплачены"
+msgstr "полностью оплачено"
 
 msgid "Unique Customers"
 msgstr "Уникальных клиентов"
 
 msgid "customers served"
-msgstr "обслужено клиентов"
+msgstr "клиентов обслужено"
 
 # Landing page
 #, fuzzy
@@ -6049,55 +5860,46 @@ msgstr "обслужено клиентов"
 msgid "Orders/mo"
 msgstr "Заказов/месяц"
 
-#, fuzzy
 #| msgid "Search"
 msgid "Map"
-msgstr "Поиск"
+msgstr "Карта"
 
 # Landing page
-#, fuzzy
 #| msgid "1 Branch"
 msgid "Add Branch"
-msgstr "1 Филиал"
+msgstr "Добавить филиал"
 
 msgid "Main"
-msgstr ""
+msgstr "Основной"
 
-#, fuzzy
 #| msgid "Branches"
 msgid "No branches yet"
-msgstr "Филиалы"
+msgstr "Пока нет филиалов"
 
 # Landing page
-#, fuzzy
 #| msgid "3 Staff Members"
 msgid "No staff members"
-msgstr "3 Сотрудника"
+msgstr "Нет сотрудников"
 
-#, fuzzy
 #| msgid "Categories"
 msgid "No categories"
-msgstr "Категории"
+msgstr "Нет категорий"
 
-#, fuzzy
 #| msgid "Products"
 msgid "Product"
-msgstr "Товары"
+msgstr "Продукт"
 
-#, fuzzy
 #| msgid "payment.processPayment"
 msgid "No products yet"
-msgstr "Обработать платеж"
+msgstr "Пока нет продуктов"
 
-#, fuzzy
 #| msgid "org.centers"
 msgid "Recent Orders"
-msgstr "Центры"
+msgstr "Последние заказы"
 
-#, fuzzy
 #| msgid "No Orders"
 msgid "No orders yet"
-msgstr "Нет заказов"
+msgstr "Пока нет заказов"
 
 # Services/Orders/Organizations Views Translations
 #, fuzzy
@@ -6113,10 +5915,9 @@ msgstr "Готово"
 msgid "Contact support to change"
 msgstr ""
 
-#, fuzzy
 #| msgid "Categories"
 msgid "Center Name"
-msgstr "Категории"
+msgstr "Название центра"
 
 msgid "Bot"
 msgstr ""
@@ -6124,10 +5925,9 @@ msgstr ""
 msgid "Configured"
 msgstr ""
 
-#, fuzzy
 #| msgid "Not specified"
 msgid "Not set"
-msgstr "Не указано"
+msgstr "Не задано"
 
 #, fuzzy
 #| msgid "Features"
@@ -6137,39 +5937,34 @@ msgstr "Возможности"
 msgid "Disabled"
 msgstr ""
 
-#, fuzzy
 #| msgid "Basic Information"
 msgid "Contact Information"
-msgstr "Основная информация"
+msgstr "Контактная информация"
 
-#, fuzzy
 #| msgid "form.address"
 msgid "Enter full address"
-msgstr "Адрес"
+msgstr "Введите полный адрес"
 
-#, fuzzy
 #| msgid "Search logs..."
 msgid "Search staff..."
-msgstr "Поиск записей..."
+msgstr "Поиск сотрудников..."
 
-#, fuzzy
 #| msgid "All Rates"
 msgid "All Roles"
-msgstr "Все коэффициенты"
+msgstr "Все роли"
 
-#, fuzzy
 #| msgid "Staff Performance"
 msgid "Staff Member"
-msgstr "Эффективность сотрудников"
+msgstr "Сотрудник"
 
 msgid "Contact"
-msgstr "Контакты"
+msgstr "Контакт"
 
 msgid "Companies"
 msgstr "Компании"
 
 msgid "Roles & Permissions"
-msgstr "Роли и разрешения"
+msgstr "Роли и права"
 
 msgid "My Branch"
 msgstr "Мой филиал"
@@ -6184,7 +5979,7 @@ msgid "Dashboards"
 msgstr "Дашборды"
 
 msgid "Sales Overview"
-msgstr "Обзор продаж"
+msgstr "Продажи"
 
 msgid "Finance & Payments"
 msgstr "Финансы и платежи"
@@ -6193,7 +5988,7 @@ msgid "Reports"
 msgstr "Отчеты"
 
 msgid "Debtors Report"
-msgstr "Отчет о должниках"
+msgstr "Отчёт по должникам"
 
 msgid "General Expense Analytics"
 msgstr "Аналитика общих расходов"
@@ -6211,13 +6006,11 @@ msgstr "Срок подписки истек!"
 #, python-format
 msgid ""
 "\n"
-"                            Ваша подписка завершилась %(date)s. Пожалуйста, "
-"продлите подписку для продолжения работы.\n"
+"                            Ваша подписка завершилась %(date)s. Пожалуйста, продлите подписку для продолжения работы.\n"
 "                            "
 msgstr ""
 "\n"
-"Ваша подписка завершилась %(date)s. Пожалуйста, продлите подписку для "
-"продолжения работы.\n"
+"Ваша подписка завершилась %(date)s. Пожалуйста, продлите подписку для продолжения работы.\n"
 "                            "
 
 msgid "Подписка заканчивается сегодня!"
@@ -6226,13 +6019,11 @@ msgstr "Подписка заканчивается сегодня!"
 #, python-format
 msgid ""
 "\n"
-"                            Ваша подписка истекает сегодня (%(date)s). "
-"Продлите подписку, чтобы избежать перерыва в работе.\n"
+"                            Ваша подписка истекает сегодня (%(date)s). Продлите подписку, чтобы избежать перерыва в работе.\n"
 "                            "
 msgstr ""
 "\n"
-"Ваша подписка истекает сегодня (%(date)s). Продлите подписку, чтобы избежать "
-"перерыва в работе.\n"
+"Ваша подписка истекает сегодня (%(date)s). Продлите подписку, чтобы избежать перерыва в работе.\n"
 "                            "
 
 msgid "Подписка заканчивается завтра!"
@@ -6241,13 +6032,11 @@ msgstr "Подписка заканчивается завтра!"
 #, python-format
 msgid ""
 "\n"
-"                            Ваша подписка истекает завтра (%(date)s). "
-"Рекомендуем продлить подписку заранее.\n"
+"                            Ваша подписка истекает завтра (%(date)s). Рекомендуем продлить подписку заранее.\n"
 "                            "
 msgstr ""
 "\n"
-"Ваша подписка истекает завтра (%(date)s). Рекомендуем продлить подписку "
-"заранее.\n"
+"Ваша подписка истекает завтра (%(date)s). Рекомендуем продлить подписку заранее.\n"
 "                            "
 
 msgid "Подписка заканчивается"
@@ -6256,13 +6045,11 @@ msgstr "Подписка заканчивается"
 #, python-format
 msgid ""
 "\n"
-"                            Ваша подписка заканчивается через %(days)s день "
-"(%(date)s).\n"
+"                            Ваша подписка заканчивается через %(days)s день (%(date)s).\n"
 "                            "
 msgid_plural ""
 "\n"
-"                            Ваша подписка заканчивается через %(days)s дня "
-"(%(date)s).\n"
+"                            Ваша подписка заканчивается через %(days)s дня (%(date)s).\n"
 "                            "
 msgstr[0] ""
 "\n"
@@ -6294,7 +6081,7 @@ msgid "Total Logs"
 msgstr "Всего записей"
 
 msgid "From"
-msgstr "С"
+msgstr "От"
 
 msgid "To"
 msgstr "До"
@@ -6348,10 +6135,10 @@ msgid "Reset Filters"
 msgstr ""
 
 msgid "Compare performance across all branches"
-msgstr "Сравнение показателей по всем филиалам"
+msgstr "Сравнение эффективности всех филиалов"
 
 msgid "Customer acquisition and behavior analytics"
-msgstr ""
+msgstr "Анализ привлечения и поведения клиентов"
 
 #, fuzzy
 #| msgid "Export to Excel"
@@ -6376,20 +6163,17 @@ msgstr "Интеграция Telegram Бота"
 msgid "Manually added only"
 msgstr ""
 
-#, fuzzy
 #| msgid "All Customers"
 msgid "Total Customers"
-msgstr "Все клиенты"
+msgstr "Всего клиентов"
 
-#, fuzzy
 #| msgid "All Centers"
 msgid "Active Customers"
-msgstr "Все центры"
+msgstr "Активные клиенты"
 
-#, fuzzy
 #| msgid "Period"
 msgid "New (Period)"
-msgstr "Период"
+msgstr "Новые (Период)"
 
 msgid "Registered through Telegram bot (have Telegram ID)"
 msgstr ""
@@ -6398,7 +6182,7 @@ msgid "Created by staff without Telegram account"
 msgstr ""
 
 msgid "Customer Acquisition Trend"
-msgstr ""
+msgstr "Тренд привлечения клиентов"
 
 #, fuzzy
 #| msgid "Customers"
@@ -6410,20 +6194,17 @@ msgstr "Клиенты"
 msgid "Bot Language"
 msgstr "Редактировать язык"
 
-#, fuzzy
 #| msgid "customers served"
 msgid "Top Customers by Revenue"
-msgstr "обслужено клиентов"
+msgstr "Топ клиентов по доходу"
 
-#, fuzzy
 #| msgid "Total Debt"
 msgid "Total Spent"
-msgstr "Общий долг"
+msgstr "Всего потрачено"
 
-#, fuzzy
 #| msgid "No history available"
 msgid "No customer data available"
-msgstr "История недоступна"
+msgstr "Данные о клиентах недоступны"
 
 #, fuzzy
 #| msgid "Quick search by name or phone..."
@@ -6453,21 +6234,19 @@ msgstr "Отслеживайте и управляйте непогашенны�
 msgid "Back to Unit Economy"
 msgstr "Вернуться к Unit Economy"
 
-#, fuzzy
 #| msgid "Action Type"
 msgid "Client Type"
-msgstr "Тип действия"
+msgstr "Тип клиента"
 
-#, fuzzy
 #| msgid "All Users"
 msgid "All Types"
-msgstr "Все пользователи"
+msgstr "Все типы"
 
 msgid "B2B Only"
-msgstr ""
+msgstr "Только B2B"
 
 msgid "B2C Only"
-msgstr ""
+msgstr "Только B2C"
 
 msgid "Debt Range"
 msgstr "Диапазон долга"
@@ -6476,7 +6255,7 @@ msgid "All Amounts"
 msgstr "Все суммы"
 
 msgid "Collection Rate"
-msgstr "Коэффициент сбора"
+msgstr "Процент сбора"
 
 msgid "All Rates"
 msgstr "Все коэффициенты"
@@ -6557,7 +6336,7 @@ msgid "Expected"
 msgstr "Ожидается"
 
 msgid "Rate"
-msgstr "Коэффициент"
+msgstr "Ставка"
 
 msgid "Pay debt for"
 msgstr "Оплатить долг для"
@@ -6580,35 +6359,29 @@ msgstr "Попробуйте изменить фильтры или диапаз
 msgid "No data to export"
 msgstr ""
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "Manage Expenses"
-msgstr "Расходы"
+msgstr "Управление расходами"
 
-#, fuzzy
 #| msgid "Total Expected"
 msgid "Total Expenses"
-msgstr "Всего ожидается"
+msgstr "Всего расходов"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "B2B Expenses"
-msgstr "Расходы"
+msgstr "B2B расходы"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "B2C Expenses"
-msgstr "Расходы"
+msgstr "B2C расходы"
 
-#, fuzzy
 #| msgid "All Users"
 msgid "Both Types"
-msgstr "Все пользователи"
+msgstr "Оба типа"
 
-#, fuzzy
 #| msgid "Expense Tracking"
 msgid "Expenses by Center"
-msgstr "Отслеживание Расходов"
+msgstr "Расходы по центрам"
 
 #, fuzzy
 #| msgid "Expenses"
@@ -6616,30 +6389,28 @@ msgid "expenses"
 msgstr "Расходы"
 
 msgid "No branch expenses found for this center"
-msgstr ""
+msgstr "Нет данных по расходам филиалов для этого центра"
 
-#, fuzzy
 #| msgid "Expense Tracking"
 msgid "Expenses by Branch"
-msgstr "Отслеживание Расходов"
+msgstr "Расходы по филиалам"
 
 msgid "Avg"
-msgstr ""
+msgstr "Среднее"
 
 #, python-format
 msgid "%% of Total"
 msgstr ""
 
 msgid "No expense data available for the selected period"
-msgstr ""
+msgstr "Нет данных о расходах за выбранный период"
 
-#, fuzzy
 #| msgid "bulk.previewDistribution"
 msgid "Expense Type Distribution"
-msgstr "Предпросмотр распределения"
+msgstr "Распределение типов расходов"
 
 msgid "Breakdown by customer type (B2B, B2C, Both)"
-msgstr ""
+msgstr "Разбивка по типу клиента (B2B, B2C, оба)"
 
 msgid "Business"
 msgstr ""
@@ -6654,121 +6425,104 @@ msgstr "Всего записей"
 msgid "No data available"
 msgstr "История недоступна"
 
-#, fuzzy
 #| msgid "Sales Statistics"
 msgid "Expense Statistics"
-msgstr "Статистика продаж"
+msgstr "Статистика расходов"
 
 msgid "Min, Max, Average & Median values"
-msgstr ""
+msgstr "Мин, Макс, Среднее и Медиана"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "Highest Expense"
-msgstr "Расходы"
+msgstr "Наибольший расход"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "Lowest Expense"
-msgstr "Расходы"
+msgstr "Наименьший расход"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "Average Expense"
-msgstr "Расходы"
+msgstr "Средний расход"
 
-#, fuzzy
 #| msgid "Edit Expense"
 msgid "Median Expense"
-msgstr "Редактировать расход"
+msgstr "Медианный расход"
 
-#, fuzzy
 #| msgid "No Orders"
 msgid "Monthly Trend"
-msgstr "Нет заказов"
+msgstr "Месячный тренд"
 
-#, fuzzy
 #| msgid "Branch Comparison"
 msgid "Branch Comparison (Top 10)"
-msgstr "Сравнение филиалов"
+msgstr "Сравнение филиалов (Топ 10)"
 
-#, fuzzy
 #| msgid "Expenses"
 msgid "Top 10 Highest Expenses"
-msgstr "Расходы"
+msgstr "Топ 10 наибольших расходов"
 
-#, fuzzy
 #| msgid "Total Debt"
 msgid "Unit Price"
-msgstr "Общий долг"
+msgstr "Цена за единицу"
 
-#, fuzzy
 #| msgid "Total Logs"
 msgid "Total Cost"
-msgstr "Всего записей"
+msgstr "Общая стоимость"
 
 msgid "Both"
-msgstr ""
+msgstr "Оба"
 
 msgid "copy"
 msgstr ""
 
-#, fuzzy
 #| msgid "No debtors found"
 msgid "No expenses found"
-msgstr "Должники не найдены"
+msgstr "Расходы не найдены"
 
-#, fuzzy
 #| msgid "Financial Reports"
 msgid "Financial Report"
-msgstr "Финансовые отчеты"
+msgstr "Финансовый отчет"
 
 msgid "Revenue and financial analytics"
-msgstr ""
+msgstr "Анализ доходов и финансов"
 
 msgid "Daily Revenue Trend"
-msgstr ""
+msgstr "Ежедневный тренд дохода"
 
 msgid "Revenue by Status"
-msgstr ""
+msgstr "Доход по статусам"
 
-#, fuzzy
 #| msgid "Order Reports"
 msgid "Orders Report"
-msgstr "Отчеты по заказам"
+msgstr "Отчёт по заказам"
 
 msgid "Order statistics and analytics"
-msgstr ""
+msgstr "Статистика и аналитика заказов"
 
 msgid "Name / phone / ID"
 msgstr ""
 
-#, fuzzy
 #| msgid "All Rates"
 msgid "All Statuses"
-msgstr "Все коэффициенты"
+msgstr "Все статусы"
 
 # Debtors Report Translations
-#, fuzzy
 #| msgid "Track and manage outstanding customer debts"
 msgid "Track and analyze staff performance metrics"
-msgstr "Отслеживайте и управляйте непогашенными долгами клиентов"
+msgstr "Отслеживание и анализ показателей эффективности сотрудников"
 
 msgid "Receivables and payment collection analytics"
-msgstr ""
+msgstr "Аналитика остатков и сбора платежей"
 
-#, fuzzy
 #| msgid "Services"
 msgid "Copy Price"
-msgstr "Услуги"
+msgstr "Цена копии"
 
 msgid "Show"
 msgstr "Показать"
 
-#, fuzzy
 #| msgid "Status"
 msgid "Static"
-msgstr "Статус"
+msgstr "Статический"
 
 msgid "Per Page"
 msgstr "За страницу"
@@ -6776,10 +6530,9 @@ msgstr "За страницу"
 msgid "This will also delete all products under this category."
 msgstr ""
 
-#, fuzzy
 #| msgid "Categories"
 msgid "No categories found"
-msgstr "Категории"
+msgstr "Категории не найдены"
 
 msgid "Last Month"
 msgstr "Прошлый месяц"
@@ -6904,18 +6657,16 @@ msgstr "Показано %(start)s–%(end)s из %(total)s записей"
 msgid "Languages Management"
 msgstr "Управление должниками"
 
-#, fuzzy
 #| msgid "Languages"
 msgid "Add New Language"
-msgstr "Языки"
+msgstr "Добавить новый язык"
 
 msgid "1st Page"
 msgstr "1-я страница"
 
-#, fuzzy
 #| msgid "Other"
 msgid "Other Pages"
-msgstr "Другое"
+msgstr "Другие страницы"
 
 msgid "Copy"
 msgstr ""
@@ -6930,20 +6681,17 @@ msgstr "Должники не найдены"
 msgid "languages"
 msgstr "Языки"
 
-#, fuzzy
 #| msgid "form.firstName"
 msgid "First"
-msgstr "Имя"
+msgstr "Первая"
 
-#, fuzzy
 #| msgid "form.lastName"
 msgid "Last"
-msgstr "Фамилия"
+msgstr "Последняя"
 
-#, fuzzy
 #| msgid "Select branch…"
 msgid "Select Branch"
-msgstr "Выберите филиал…"
+msgstr "Выберите филиал"
 
 msgid "Agency Pricing (UZS)"
 msgstr "Цены для агентств (UZS)"
@@ -6951,9 +6699,7 @@ msgstr "Цены для агентств (UZS)"
 msgid "Ordinary User Pricing (UZS)"
 msgstr "Цены для обычных пользователей (UZS)"
 
-msgid ""
-"Pricing fields are optional. Leave as 0 if no additional cost for this "
-"language."
+msgid "Pricing fields are optional. Leave as 0 if no additional cost for this language."
 msgstr ""
 
 #, fuzzy
@@ -6970,8 +6716,7 @@ msgstr "Предупреждение:"
 msgid "Are you sure you want to delete the language:"
 msgstr "Вы уверены, что хотите удалить язык:"
 
-msgid ""
-"Note: This may affect existing orders and products that use this language."
+msgid "Note: This may affect existing orders and products that use this language."
 msgstr ""
 
 #, fuzzy
@@ -7084,12 +6829,8 @@ msgstr "Краткое описание проблемы"
 msgid "Help us resolve your issue faster"
 msgstr "Помогите нам решить вашу проблему быстрее"
 
-msgid ""
-"The more detail you provide, the quicker and more accurately we can help. "
-"Please include:"
-msgstr ""
-"Чем подробнее вы опишете проблему, тем быстрее и точнее мы сможем помочь. "
-"Пожалуйста, укажите:"
+msgid "The more detail you provide, the quicker and more accurately we can help. Please include:"
+msgstr "Чем подробнее вы опишете проблему, тем быстрее и точнее мы сможем помочь. Пожалуйста, укажите:"
 
 msgid "Page URL"
 msgstr "URL страницы"
@@ -7100,11 +6841,8 @@ msgstr "вставьте полный адрес страницы, на кото
 msgid "What is wrong"
 msgstr "Что именно не так"
 
-msgid ""
-"describe exactly what is happening (error message, incorrect behaviour, etc.)"
-msgstr ""
-"опишите точно, что происходит (сообщение об ошибке, некорректное поведение и "
-"т.д.)"
+msgid "describe exactly what is happening (error message, incorrect behaviour, etc.)"
+msgstr "опишите точно, что происходит (сообщение об ошибке, некорректное поведение и т.д.)"
 
 msgid "What should happen"
 msgstr "Как должно быть"
@@ -7116,15 +6854,10 @@ msgid "Steps to reproduce"
 msgstr "Шаги для воспроизведения"
 
 msgid "list the steps we can follow to see the problem ourselves"
-msgstr ""
-"перечислите шаги, которые мы можем выполнить, чтобы самостоятельно "
-"воспроизвести проблему"
+msgstr "перечислите шаги, которые мы можем выполнить, чтобы самостоятельно воспроизвести проблему"
 
-msgid ""
-"Please describe the issue in detail. Include steps to reproduce if relevant."
-msgstr ""
-"Пожалуйста, опишите проблему подробно. Включите шаги для воспроизведения, "
-"если применимо."
+msgid "Please describe the issue in detail. Include steps to reproduce if relevant."
+msgstr "Пожалуйста, опишите проблему подробно. Включите шаги для воспроизведения, если применимо."
 
 #, fuzzy
 #| msgid "payment.cash"
@@ -7271,8 +7004,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-msgid ""
-"DeprecationWarning: The {param_type} {name!r} is deprecated.{extra_message}"
+msgid "DeprecationWarning: The {param_type} {name!r} is deprecated.{extra_message}"
 msgstr ""
 
 #, python-brace-format
@@ -7521,13 +7253,10 @@ msgid "Enter a valid email address."
 msgstr "Адрес"
 
 #. Translators: "letters" means latin letters: a-z and A-Z.
-msgid ""
-"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgid "Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
 msgstr ""
 
-msgid ""
-"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
-"hyphens."
+msgid "Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or hyphens."
 msgstr ""
 
 #, fuzzy, python-format
@@ -7564,30 +7293,20 @@ msgid "Ensure this value is a multiple of step size %(limit_value)s."
 msgstr ""
 
 #, python-format
-msgid ""
-"Ensure this value is a multiple of step size %(limit_value)s, starting from "
-"%(offset)s, e.g. %(offset)s, %(valid_value1)s, %(valid_value2)s, and so on."
+msgid "Ensure this value is a multiple of step size %(limit_value)s, starting from %(offset)s, e.g. %(offset)s, %(valid_value1)s, %(valid_value2)s, and so on."
 msgstr ""
 
 #, python-format
-msgid ""
-"Ensure this value has at least %(limit_value)d character (it has "
-"%(show_value)d)."
-msgid_plural ""
-"Ensure this value has at least %(limit_value)d characters (it has "
-"%(show_value)d)."
+msgid "Ensure this value has at least %(limit_value)d character (it has %(show_value)d)."
+msgid_plural "Ensure this value has at least %(limit_value)d characters (it has %(show_value)d)."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
 #, python-format
-msgid ""
-"Ensure this value has at most %(limit_value)d character (it has "
-"%(show_value)d)."
-msgid_plural ""
-"Ensure this value has at most %(limit_value)d characters (it has "
-"%(show_value)d)."
+msgid "Ensure this value has at most %(limit_value)d character (it has %(show_value)d)."
+msgid_plural "Ensure this value has at most %(limit_value)d characters (it has %(show_value)d)."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -7615,19 +7334,15 @@ msgstr[2] ""
 msgstr[3] ""
 
 #, python-format
-msgid ""
-"Ensure that there are no more than %(max)s digit before the decimal point."
-msgid_plural ""
-"Ensure that there are no more than %(max)s digits before the decimal point."
+msgid "Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural "Ensure that there are no more than %(max)s digits before the decimal point."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
 #, python-format
-msgid ""
-"File extension “%(extension)s” is not allowed. Allowed extensions are: "
-"%(allowed_extensions)s."
+msgid "File extension “%(extension)s” is not allowed. Allowed extensions are: %(allowed_extensions)s."
 msgstr ""
 
 msgid "Null characters are not allowed."
@@ -7665,8 +7380,7 @@ msgstr ""
 #. Translators: The 'lookup_type' is one of 'date', 'year' or
 #. 'month'. Eg: "Title must be unique for pub_date year"
 #, python-format
-msgid ""
-"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgid "%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
 msgstr ""
 
 #, python-format
@@ -7697,30 +7411,22 @@ msgid "Comma-separated integers"
 msgstr "Все центры"
 
 #, python-format
-msgid ""
-"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
-"format."
+msgid "“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD format."
 msgstr ""
 
 #, python-format
-msgid ""
-"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
-"date."
+msgid "“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid date."
 msgstr ""
 
 msgid "Date (without time)"
 msgstr ""
 
 #, python-format
-msgid ""
-"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[."
-"uuuuuu]][TZ] format."
+msgid "“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ] format."
 msgstr ""
 
 #, python-format
-msgid ""
-"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
-"[TZ]) but it is an invalid date/time."
+msgid "“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]) but it is an invalid date/time."
 msgstr ""
 
 msgid "Date (with time)"
@@ -7736,9 +7442,7 @@ msgid "Decimal number"
 msgstr "Номер заказа"
 
 #, python-format
-msgid ""
-"“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[."
-"uuuuuu] format."
+msgid "“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[.uuuuuu] format."
 msgstr ""
 
 #, fuzzy
@@ -7817,15 +7521,11 @@ msgid "Text"
 msgstr "Текст справки"
 
 #, python-format
-msgid ""
-"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
-"format."
+msgid "“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] format."
 msgstr ""
 
 #, python-format
-msgid ""
-"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
-"invalid time."
+msgid "“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an invalid time."
 msgstr ""
 
 msgid "Time"
@@ -7928,8 +7628,7 @@ msgstr ""
 
 #, python-format
 msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
-msgid_plural ""
-"Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgid_plural "Ensure this filename has at most %(max)d characters (it has %(length)d)."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -7938,9 +7637,7 @@ msgstr[3] ""
 msgid "Please either submit a file or check the clear checkbox, not both."
 msgstr ""
 
-msgid ""
-"Upload a valid image. The file you uploaded was either not an image or a "
-"corrupted image."
+msgid "Upload a valid image. The file you uploaded was either not an image or a corrupted image."
 msgstr ""
 
 #, python-format
@@ -7976,9 +7673,7 @@ msgid "(Hidden field %(name)s) %(error)s"
 msgstr ""
 
 #, python-format
-msgid ""
-"ManagementForm data is missing or has been tampered with. Missing fields: "
-"%(field_names)s. You may need to file a bug report if the issue persists."
+msgid "ManagementForm data is missing or has been tampered with. Missing fields: %(field_names)s. You may need to file a bug report if the issue persists."
 msgstr ""
 
 #, python-format
@@ -8006,9 +7701,7 @@ msgid "Please correct the duplicate data for %(field)s, which must be unique."
 msgstr ""
 
 #, python-format
-msgid ""
-"Please correct the duplicate data for %(field_name)s which must be unique "
-"for the %(lookup)s in %(date_field)s."
+msgid "Please correct the duplicate data for %(field_name)s which must be unique for the %(lookup)s in %(date_field)s."
 msgstr ""
 
 msgid "Please correct the duplicate values below."
@@ -8026,9 +7719,7 @@ msgid "“%(pk)s” is not a valid value."
 msgstr "Введите корректную сумму."
 
 #, python-format
-msgid ""
-"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
-"may be ambiguous or it may not exist."
+msgid "%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it may be ambiguous or it may not exist."
 msgstr ""
 
 #, fuzzy
@@ -8378,36 +8069,19 @@ msgstr ""
 msgid "CSRF verification failed. Request aborted."
 msgstr ""
 
-msgid ""
-"You are seeing this message because this HTTPS site requires a “Referer "
-"header” to be sent by your web browser, but none was sent. This header is "
-"required for security reasons, to ensure that your browser is not being "
-"hijacked by third parties."
+msgid "You are seeing this message because this HTTPS site requires a “Referer header” to be sent by your web browser, but none was sent. This header is required for security reasons, to ensure that your browser is not being hijacked by third parties."
 msgstr ""
 
-msgid ""
-"If you have configured your browser to disable “Referer” headers, please re-"
-"enable them, at least for this site, or for HTTPS connections, or for “same-"
-"origin” requests."
+msgid "If you have configured your browser to disable “Referer” headers, please re-enable them, at least for this site, or for HTTPS connections, or for “same-origin” requests."
 msgstr ""
 
-msgid ""
-"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
-"including the “Referrer-Policy: no-referrer” header, please remove them. The "
-"CSRF protection requires the “Referer” header to do strict referer checking. "
-"If you’re concerned about privacy, use alternatives like <a "
-"rel=\"noreferrer\" …> for links to third-party sites."
+msgid "If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or including the “Referrer-Policy: no-referrer” header, please remove them. The CSRF protection requires the “Referer” header to do strict referer checking. If you’re concerned about privacy, use alternatives like <a rel=\"noreferrer\" …> for links to third-party sites."
 msgstr ""
 
-msgid ""
-"You are seeing this message because this site requires a CSRF cookie when "
-"submitting forms. This cookie is required for security reasons, to ensure "
-"that your browser is not being hijacked by third parties."
+msgid "You are seeing this message because this site requires a CSRF cookie when submitting forms. This cookie is required for security reasons, to ensure that your browser is not being hijacked by third parties."
 msgstr ""
 
-msgid ""
-"If you have configured your browser to disable cookies, please re-enable "
-"them, at least for this site, or for “same-origin” requests."
+msgid "If you have configured your browser to disable cookies, please re-enable them, at least for this site, or for “same-origin” requests."
 msgstr ""
 
 msgid "More information is available with DEBUG=True."
@@ -8441,9 +8115,7 @@ msgid "No %(verbose_name_plural)s available"
 msgstr ""
 
 #, python-format
-msgid ""
-"Future %(verbose_name_plural)s not available because %(class_name)s."
-"allow_future is False."
+msgid "Future %(verbose_name_plural)s not available because %(class_name)s.allow_future is False."
 msgstr ""
 
 #, python-format
@@ -8480,17 +8152,11 @@ msgid "The install worked successfully! Congratulations!"
 msgstr ""
 
 #, python-format
-msgid ""
-"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
-"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgid "View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
 msgstr ""
 
 #, python-format
-msgid ""
-"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
-"%(version)s/ref/settings/#debug\" target=\"_blank\" "
-"rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not "
-"configured any URLs."
+msgid "You are seeing this page because <a href=\"https://docs.djangoproject.com/en/%(version)s/ref/settings/#debug\" target=\"_blank\" rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not configured any URLs."
 msgstr ""
 
 msgid "Django Documentation"
@@ -8725,3 +8391,219 @@ msgstr ""
 #~| msgid "Roles & Permissions"
 #~ msgid "Staff roles & permissions"
 #~ msgstr "Роли и разрешения"
+
+# Admin message translations
+msgid "A role with this name already exists."
+msgstr "Роль с таким названием уже существует."
+
+# Admin message translations
+msgid "Branch name is required."
+msgstr "Название филиала обязательно."
+
+# Admin message translations
+msgid "Center creation is handled by the setup administrator in client edition."
+msgstr "В client edition создание центра выполняет администратор настройки."
+
+# Admin message translations
+msgid "Center name is required."
+msgstr "Название центра обязательно."
+
+# Admin message translations
+msgid "Configuration change request sent to the setup administrator."
+msgstr "Запрос на изменение конфигурации отправлен администратору настройки."
+
+# Admin message translations
+msgid "Current password is incorrect."
+msgstr "Текущий пароль неверен."
+
+# Admin message translations
+msgid "Current password is required."
+msgstr "Текущий пароль обязателен."
+
+# Admin message translations
+msgid "Failed to send email. Please try again later."
+msgstr "Не удалось отправить email. Повторите попытку позже."
+
+# Admin message translations
+msgid "First name is required."
+msgstr "Имя обязательно."
+
+# Admin message translations
+msgid "Full name is required."
+msgstr "Полное имя обязательно."
+
+# Admin message translations
+msgid "Invalid staff member selected."
+msgstr "Выбран неверный сотрудник."
+
+# Admin message translations
+msgid "Invalid username or password."
+msgstr "Неверное имя пользователя или пароль."
+
+# Admin message translations
+msgid "New password is required."
+msgstr "Новый пароль обязателен."
+
+# Admin message translations
+msgid "Order must be ready or in progress to complete."
+msgstr "Для завершения заказ должен быть готов или в работе."
+
+# Admin message translations
+msgid "Password changed successfully."
+msgstr "Пароль успешно изменен."
+
+# Admin message translations
+msgid "Password must be at least 8 characters long."
+msgstr "Пароль должен содержать не менее 8 символов."
+
+# Admin message translations
+msgid "Passwords do not match."
+msgstr "Пароли не совпадают."
+
+# Admin message translations
+msgid "Phone number is required."
+msgstr "Номер телефона обязателен."
+
+# Admin message translations
+msgid "Please select a center."
+msgstr "Выберите центр."
+
+# Admin message translations
+msgid "Please select a staff member."
+msgstr "Выберите сотрудника."
+
+# Admin message translations
+msgid "Profile updated successfully."
+msgstr "Профиль успешно обновлен."
+
+# Admin message translations
+msgid "Role name is required."
+msgstr "Название роли обязательно."
+
+# Admin message translations
+msgid "Selected owner not found."
+msgstr "Выбранный владелец не найден."
+
+# Admin message translations
+msgid "Staff member must be in the same branch as the order."
+msgstr "Сотрудник должен быть в том же филиале, что и заказ."
+
+# Admin message translations
+msgid "System roles cannot be deleted."
+msgstr "Системные роли нельзя удалить."
+
+# Admin message translations
+msgid "The Owner role is protected."
+msgstr "Роль Owner защищена."
+
+# Admin message translations
+msgid "The password reset link is invalid or has expired."
+msgstr "Ссылка для сброса пароля недействительна или истекла."
+
+# Admin message translations
+msgid "This email is already in use."
+msgstr "Этот email уже используется."
+
+# Admin message translations
+msgid "This subdomain is already in use by another center."
+msgstr "Этот поддомен уже используется другим центром."
+
+# Admin message translations
+msgid "User ID is required."
+msgstr "ID пользователя обязателен."
+
+# Admin message translations
+msgid "You can only edit settings for your own branch."
+msgstr "Вы можете редактировать настройки только своего филиала."
+
+# Admin message translations
+msgid "You can only view settings for your own branch."
+msgstr "Вы можете просматривать настройки только своего филиала."
+
+# Admin message translations
+msgid "You do not have admin access."
+msgstr "У вас нет доступа к админ-панели."
+
+# Admin message translations
+msgid "You do not have permission to create roles."
+msgstr "У вас нет прав на создание ролей."
+
+# Admin message translations
+msgid "You do not have permission to delete roles."
+msgstr "У вас нет прав на удаление ролей."
+
+# Admin message translations
+msgid "You do not have permission to edit roles."
+msgstr "У вас нет прав на редактирование ролей."
+
+# Admin message translations
+msgid "You do not have permission to manage roles."
+msgstr "У вас нет прав на управление ролями."
+
+# Admin message translations
+msgid "You don't have permission to assign orders."
+msgstr "У вас нет прав назначать заказы."
+
+# Admin message translations
+msgid "You don't have permission to complete orders."
+msgstr "У вас нет прав завершать заказы."
+
+# Admin message translations
+msgid "You don't have permission to create agencies."
+msgstr "У вас нет прав создавать агентства."
+
+# Admin message translations
+msgid "You don't have permission to delete orders."
+msgstr "У вас нет прав удалять заказы."
+
+# Admin message translations
+msgid "You don't have permission to edit branch settings."
+msgstr "У вас нет прав редактировать настройки филиала."
+
+# Admin message translations
+msgid "You don't have permission to edit this branch."
+msgstr "У вас нет прав редактировать этот филиал."
+
+# Admin message translations
+msgid "You don't have permission to edit this order."
+msgstr "У вас нет прав редактировать этот заказ."
+
+# Admin message translations
+msgid "You don't have permission to modify agency status."
+msgstr "У вас нет прав изменять статус агентства."
+
+# Admin message translations
+msgid "You don't have permission to receive payments."
+msgstr "У вас нет прав принимать платежи."
+
+# Admin message translations
+msgid "You don't have permission to request changes for this branch."
+msgstr "У вас нет прав запрашивать изменения для этого филиала."
+
+# Admin message translations
+msgid "You don't have permission to unassign orders."
+msgstr "У вас нет прав снимать назначение заказов."
+
+# Admin message translations
+msgid "You don't have permission to view branch settings."
+msgstr "У вас нет прав просматривать настройки филиала."
+
+# Admin message translations
+msgid "You don't have permission to view this order."
+msgstr "У вас нет прав просматривать этот заказ."
+
+# Admin message translations
+msgid "You don't have permission to view this staff member."
+msgstr "У вас нет прав просматривать этого сотрудника."
+
+# Admin message translations
+msgid "You have been logged out successfully."
+msgstr "Вы успешно вышли из системы."
+
+# Admin message translations
+msgid "You need an admin profile to access this page."
+msgstr "Для доступа к этой странице нужен профиль администратора."
+
+# Admin message translations
+msgid "You need an admin profile to view your orders."
+msgstr "Для просмотра ваших заказов нужен профиль администратора."

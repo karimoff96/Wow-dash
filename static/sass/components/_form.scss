@@ -1,4 +1,4 @@
-.form-select, .form-control, textarea {  
+.form-select, .form-control, textarea {
   border: 1px solid var(--input-form-light);
   color: var(--text-primary-light) !important;
   background-color: var(--white);
@@ -28,7 +28,7 @@
   }
 }
 
-[dir="rtl"] { 
+[dir="rtl"] {
   .form-select {
     background-position-x: left;
   }
@@ -125,7 +125,7 @@
   padding-left: 0;
   gap: 12px;
   &.style-check {
-    .form-check-input { 
+    .form-check-input {
       &::before {
         width: calc(100% + 1px);
         height: calc(100% + 1px);
@@ -134,7 +134,7 @@
       }
       &::after {
         position: absolute;
-        content: "\EB7A"; 
+        content: "\EB7A";
         font-family: 'remixicon';
         display: inline-block;
         left: 50%;
@@ -154,7 +154,7 @@
           opacity: 1;
         }
       }
-    }  
+    }
   }
   .form-check-input {
     border: 1px solid var(--text-secondary-light);
@@ -207,7 +207,7 @@
     .form-check-input {
       &:checked[type=radio] {
         border-color: var(--primary-600);
-        
+
       }
       &:checked {
         &::before {
@@ -223,7 +223,7 @@
     .form-check-input {
       &:checked[type=radio] {
         border-color: var(--success-600);
-        
+
       }
       &:checked {
         &::before {
@@ -239,7 +239,7 @@
     .form-check-input {
       &:checked[type=radio] {
         border-color: var(--warning-600);
-        
+
       }
       &:checked {
         &::before {
@@ -255,7 +255,7 @@
     .form-check-input {
       &:checked[type=radio] {
         border-color: var(--danger-600);
-        
+
       }
       &:checked {
         &::before {
@@ -271,7 +271,7 @@
     .form-check-input {
       &:checked[type=radio] {
         border-color: var(--info-600);
-        
+
       }
       &:checked {
         &::before {
@@ -287,7 +287,7 @@
     .form-check-input {
       &:checked[type=radio] {
         border-color: var(--lilac-600);
-        
+
       }
       &:checked {
         &::before {
@@ -303,7 +303,7 @@
     .form-check-input {
       &:checked[type=radio] {
         border-color: var(--neutral-600);
-        
+
       }
       &:checked {
         &::before {
@@ -322,7 +322,7 @@
 .form-switch {
   padding-inline-start: 0;
   .form-check-input {
-    box-shadow: none !important;  
+    box-shadow: none !important;
     margin: 0;
     position: relative;
     background-color: var(--neutral-400);
@@ -339,7 +339,7 @@
       ~ .form-check-label {
         color: var(--text-primary-light) !important;
       }
-    }    
+    }
     &::before {
       position: absolute;
       content: "";
@@ -365,7 +365,7 @@
         ~ .form-check-label {
           color: var(--primary-600) !important;
         }
-      }    
+      }
     }
   }
   &-info {
@@ -375,7 +375,7 @@
         ~ .form-check-label {
           color: var(--info-600) !important;
         }
-      }    
+      }
     }
   }
   &-success {
@@ -385,7 +385,7 @@
         ~ .form-check-label {
           color: var(--success-600) !important;
         }
-      }    
+      }
     }
   }
   &-danger {
@@ -395,7 +395,7 @@
         ~ .form-check-label {
           color: var(--danger-600) !important;
         }
-      }    
+      }
     }
   }
   &-warning {
@@ -405,7 +405,7 @@
         ~ .form-check-label {
           color: var(--warning-600) !important;
         }
-      }    
+      }
     }
   }
   &-dark {
@@ -415,7 +415,7 @@
         ~ .form-check-label {
           color: var(--neutral-900) !important;
         }
-      }    
+      }
     }
   }
   &-purple {
@@ -425,7 +425,7 @@
         ~ .form-check-label {
           color: var(--lilac-600) !important;
         }
-      }    
+      }
     }
   }
 }
@@ -493,20 +493,5 @@ select option {
     .form-control {
       padding-inline-start: rem(95px);
     }
-  }
-}
-/* custom form fields css end */
-
-[data-theme=dark] {
-  .form-select {
-    background-image: url(../images/arrow-down.png);
-    background-size: 11px 7px;
-    background-repeat: no-repeat;
-  }
-  .btn-close {
-    background-image: url(../images/times.png);
-    background-size: auto;
-    background-repeat: no-repeat;
-    opacity: 1
   }
 }

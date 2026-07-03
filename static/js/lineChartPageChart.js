@@ -519,7 +519,7 @@
         fill: {
           type: 'gradient',
           gradient: {
-            shade: 'dark',
+            shade: 'light',
             gradientToColors: [ '#0E53F4'],
             shadeIntensity: 1,
             type: 'horizontal',

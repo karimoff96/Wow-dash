@@ -111,8 +111,8 @@ class Command(BaseCommand):
 ✅ Admin bot is configured correctly!
 
 You will receive notifications for:
-• 📧 Contact form submissions from landing page
-• 🔄 Subscription renewal requests from customers
+• 🔐 Security and configuration events
+• ⚙️ Operational health checks
 
 <i>This is a test message from Django management command.</i>
             """.strip()

@@ -12,12 +12,13 @@ from django.core.paginator import Paginator
 from django.db.models import Q, Count, OuterRef, Subquery
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.contrib.contenttypes.models import ContentType
 
 from .models import TranslationCenter, Branch, Role, AdminUser
+from .credential_locks import build_center_setup_status, build_branch_setup_status
 from .rbac import (
     permission_required,
     any_permission_required,
-    owner_required,
     get_user_branches,
     get_user_staff,
     can_edit_staff,
@@ -25,10 +26,37 @@ from .rbac import (
     can_view_staff_required,
 )
 from core.audit import log_create, log_update, log_delete
-from billing.decorators import require_feature, require_active_subscription, check_branch_limit, check_staff_limit
+from core.models import AdminNotification
 
 logger = logging.getLogger(__name__)
 audit_logger = logging.getLogger('audit')
+
+
+def _create_configuration_request(request, target, message, branch=None):
+    center = target if isinstance(target, TranslationCenter) else target.center
+    content_type = ContentType.objects.get_for_model(target)
+    user_label = request.user.get_full_name() or request.user.username
+    message = (message or "").strip()
+    if not message:
+        message = "Please update locked setup configuration."
+
+    notification = AdminNotification.objects.create(
+        notification_type=AdminNotification.TYPE_OTHER,
+        content_type=content_type,
+        object_id=target.pk,
+        title=f"Configuration change requested: {target}",
+        message=f"Requested by {user_label}: {message}",
+        center=center,
+        branch=branch,
+    )
+    log_update(
+        user=request.user,
+        target=target,
+        changes={"configuration_request": {"notification_id": notification.pk}},
+        details="Requested setup-only configuration change.",
+        request=request,
+    )
+    return notification
 
 
 # ============ Translation Center Views ============
@@ -71,7 +99,11 @@ def center_list(request):
 @login_required(login_url="admin_login")
 @permission_required('can_create_centers')
 def center_create(request):
-    """Create a new translation center - Superuser only"""
+    """Create the initial translation center or allow setup admins to add one."""
+    if not request.user.is_superuser and TranslationCenter.objects.exists():
+        messages.error(request, _("Center creation is handled by the setup administrator in client edition."))
+        return redirect("center_list")
+
     # Get available owners for superuser selection
     available_owners = None
     if request.user.is_superuser:
@@ -97,21 +129,13 @@ def center_create(request):
                 try:
                     owner = User.objects.get(pk=owner_id, is_active=True)
                 except User.DoesNotExist:
-                    messages.error(request, "Selected owner not found.")
+                    messages.error(request, _("Selected owner not found."))
                     return redirect("center_create")
         
-        # Bot fields - only superuser can set bot_token
-        bot_token = None
-        company_orders_channel_id = request.POST.get("company_orders_channel_id", "").strip() or None
-        if request.user.is_superuser:
-            bot_token = request.POST.get("bot_token", "").strip() or None
-
         if not name:
-            messages.error(request, "Center name is required.")
+            messages.error(request, _("Center name is required."))
         elif subdomain and TranslationCenter.objects.filter(subdomain=subdomain).exists():
-            messages.error(request, "This subdomain is already in use by another center.")
-        elif bot_token and TranslationCenter.objects.filter(bot_token=bot_token).exists():
-            messages.error(request, "This bot token is already in use by another center.")
+            messages.error(request, _("This subdomain is already in use by another center."))
         else:
             center = TranslationCenter.objects.create(
                 name=name,
@@ -121,8 +145,6 @@ def center_create(request):
                 email=email or None,
                 address=address or None,
                 location_url=location_url or None,
-                bot_token=bot_token,
-                company_orders_channel_id=company_orders_channel_id,
             )
             messages.success(
                 request, f'Translation center "{name}" created successfully!'
@@ -136,6 +158,7 @@ def center_create(request):
         "subTitle_i18n": "common.addNewTranslationCenter",
         "is_superuser": request.user.is_superuser,
         "available_owners": available_owners,
+        "center_setup_status": build_center_setup_status(None),
     }
     return render(request, "organizations/center_form.html", context)
 
@@ -161,18 +184,10 @@ def center_edit(request, center_id):
 
     if request.method == "POST":
         if request.user.is_superuser:
-            # Superusers can edit everything
+            # Dashboard edits are operational only; setup-only credentials live in Django admin.
             name = request.POST.get("name", "").strip()
             subdomain = request.POST.get("subdomain", "").strip().lower() or None
             is_active = request.POST.get("is_active") == "on"
-            bot_token = request.POST.get("bot_token", "").strip() or None
-            bot_username = request.POST.get("bot_username", "").strip().lstrip("@") or None
-            company_orders_channel_id = request.POST.get("company_orders_channel_id", "").strip() or None
-            payme_enabled = request.POST.get("payme_enabled") == "on"
-            payme_merchant_id = request.POST.get("payme_merchant_id", "").strip()
-            payme_secret_key = request.POST.get("payme_secret_key", "").strip()
-            payme_secret_key_prod = request.POST.get("payme_secret_key_prod", "").strip()
-            payme_sandbox = request.POST.get("payme_sandbox") == "on"
 
             # Owner change
             if available_owners:
@@ -182,7 +197,7 @@ def center_edit(request, center_id):
                         new_owner = User.objects.get(pk=owner_id, is_active=True)
                         center.owner = new_owner
                     except User.DoesNotExist:
-                        messages.error(request, "Selected owner not found.")
+                        messages.error(request, _("Selected owner not found."))
                         return redirect("center_edit", center_id=center_id)
         else:
             # Non-superusers: only contact fields allowed
@@ -205,11 +220,9 @@ def center_edit(request, center_id):
         location_url = request.POST.get("location_url", "").strip()
 
         if not name:
-            messages.error(request, "Center name is required.")
+            messages.error(request, _("Center name is required."))
         elif subdomain and TranslationCenter.objects.filter(subdomain=subdomain).exclude(pk=center_id).exists():
-            messages.error(request, "This subdomain is already in use by another center.")
-        elif bot_token and TranslationCenter.objects.filter(bot_token=bot_token).exclude(pk=center_id).exists():
-            messages.error(request, "This bot token is already in use by another center.")
+            messages.error(request, _("This subdomain is already in use by another center."))
         else:
             center.name = name
             center.subdomain = subdomain
@@ -218,14 +231,6 @@ def center_edit(request, center_id):
             center.address = address or None
             center.location_url = location_url or None
             center.is_active = is_active
-            center.bot_token = bot_token
-            center.bot_username = bot_username
-            center.company_orders_channel_id = company_orders_channel_id
-            center.payme_enabled = payme_enabled
-            center.payme_sandbox = payme_sandbox
-            center.payme_merchant_id = payme_merchant_id
-            center.payme_secret_key = payme_secret_key
-            center.payme_secret_key_prod = payme_secret_key_prod
             center.save()
             messages.success(request, f'Center "{name}" updated successfully!')
             return redirect("center_list")
@@ -238,16 +243,38 @@ def center_edit(request, center_id):
         "center": center,
         "is_superuser": request.user.is_superuser,
         "available_owners": available_owners,
+        "center_setup_status": build_center_setup_status(center),
     }
     return render(request, "organizations/center_form.html", context)
+
+
+@login_required(login_url="admin_login")
+@permission_required('can_edit_centers')
+@require_POST
+def request_center_configuration_change(request, center_id):
+    """Create an admin notification for a locked center configuration change."""
+    if request.user.is_superuser:
+        center = get_object_or_404(TranslationCenter, pk=center_id)
+    else:
+        profile = getattr(request.user, 'admin_profile', None)
+        if not profile or profile.center_id != center_id:
+            from django.http import HttpResponseForbidden
+            return HttpResponseForbidden("You don't have access to this center.")
+        center = get_object_or_404(TranslationCenter, pk=center_id)
+
+    _create_configuration_request(
+        request=request,
+        target=center,
+        message=request.POST.get("message", ""),
+    )
+    messages.success(request, _("Configuration change request sent to the setup administrator."))
+    return redirect("center_edit", center_id=center_id)
 
 
 @login_required(login_url="admin_login")
 @permission_required('can_view_centers')
 def center_detail(request, center_id):
     """View translation center details with branches, staff, categories, products"""
-    from datetime import date
-    from django.db.models import Q as DQ
     from services.models import Category, Product
     from orders.models import Order
     from accounts.models import BotUser
@@ -261,58 +288,6 @@ def center_detail(request, center_id):
             from django.http import HttpResponseForbidden
             return HttpResponseForbidden("You don't have access to this center.")
         center = get_object_or_404(TranslationCenter, pk=center_id)
-
-    # Subscription snapshot — superusers see admin strip; owners see plan card
-    subscription_info = None
-    lifetime_days = (date.today() - center.created_at.date()).days if center.created_at else None
-    subscription = getattr(center, "subscription", None)
-    if subscription:
-        period_days = None
-        elapsed_pct = None
-        if subscription.start_date and subscription.end_date:
-            period_days = (subscription.end_date - subscription.start_date).days
-            elapsed = (date.today() - subscription.start_date).days
-            elapsed_pct = min(100, max(0, int(elapsed * 100 / period_days))) if period_days else 0
-
-        tariff = subscription.tariff
-        # Feature labels the founder cares about
-        _feature_map = [
-            ('orders_basic',       'Orders'),
-            ('orders_advanced',    'Advanced Orders'),
-            ('analytics_basic',    'Analytics'),
-            ('analytics_advanced', 'Advanced Analytics'),
-            ('marketing_basic',    'Marketing'),
-            ('broadcast_messages', 'Broadcasts'),
-            ('telegram_bot',       'Telegram Bot'),
-            ('bulk_payments',      'Bulk Payments'),
-            ('multi_branch',       'Multi-Branch'),
-            ('agency_management',  'Agencies'),
-            ('export_reports',     'Export Reports'),
-            ('api_access',         'API Access'),
-            ('audit_logs',         'Audit Logs'),
-        ]
-        enabled_features = [label for code, label in _feature_map if tariff.has_feature(code)]
-
-        subscription_info = {
-            "tariff": tariff.title,
-            "tariff_slug": tariff.slug,
-            "status": subscription.status,
-            "is_active": subscription.is_active(),
-            "start_date": subscription.start_date,
-            "end_date": subscription.end_date,
-            "days_remaining": subscription.days_remaining(),
-            "period_days": period_days,
-            "elapsed_pct": elapsed_pct,
-            "duration_months": subscription.pricing.duration_months if subscription.pricing else None,
-            "is_trial": subscription.is_trial,
-            "lifetime_days": lifetime_days,
-            "max_branches": tariff.max_branches,
-            "max_staff": tariff.max_staff,
-            "max_monthly_orders": tariff.max_monthly_orders,
-            "enabled_features": enabled_features,
-        }
-    else:
-        subscription_info = {"tariff": None, "status": "missing", "lifetime_days": lifetime_days}
 
     # Get branches for this center
     branches = (
@@ -389,7 +364,6 @@ def center_detail(request, center_id):
         ).count(),
         "total_orders": Order.objects.filter(branch__center=center).count(),
         "total_customers": BotUser.objects.filter(branch__center=center).count(),
-        "subscription_info": subscription_info,
     }
     return render(request, "organizations/center_detail.html", context)
 
@@ -446,9 +420,6 @@ def branch_list(request):
 
 
 @login_required(login_url="admin_login")
-@require_active_subscription
-@require_feature('multi_branch')
-@check_branch_limit
 @permission_required("can_manage_branches")
 def branch_create(request, center_id=None):
     """Create a new branch"""
@@ -479,16 +450,13 @@ def branch_create(request, center_id=None):
         address = request.POST.get("address", "").strip()
         phone = request.POST.get("phone", "").strip()
         location_url = request.POST.get("location_url", "").strip()
-        # Channel fields
-        b2c_orders_channel_id = request.POST.get("b2c_orders_channel_id", "").strip() or None
-        b2b_orders_channel_id = request.POST.get("b2b_orders_channel_id", "").strip() or None
         # Bot settings
         show_pricelist = request.POST.get("show_pricelist") == "on"
 
         if not name:
-            messages.error(request, "Branch name is required.")
+            messages.error(request, _("Branch name is required."))
         elif not center_id:
-            messages.error(request, "Please select a center.")
+            messages.error(request, _("Please select a center."))
         else:
             center = get_object_or_404(centers, pk=center_id)
             branch = Branch.objects.create(
@@ -499,8 +467,6 @@ def branch_create(request, center_id=None):
                 address=address or None,
                 phone=phone or None,
                 location_url=location_url or None,
-                b2c_orders_channel_id=b2c_orders_channel_id,
-                b2b_orders_channel_id=b2b_orders_channel_id,
                 show_pricelist=show_pricelist,
             )
             messages.success(request, f'Branch "{name}" created successfully!')
@@ -514,6 +480,7 @@ def branch_create(request, center_id=None):
         "centers": centers,
         "selected_center": center,
         "regions": regions,
+        "branch_setup_status": build_branch_setup_status(None),
     }
     return render(request, "organizations/branch_form.html", context)
 
@@ -604,7 +571,7 @@ def branch_edit(request, branch_id):
     if not request.user.is_superuser:
         profile = getattr(request.user, 'admin_profile', None)
         if not profile or profile.center_id != branch.center_id:
-            messages.error(request, "You don't have permission to edit this branch.")
+            messages.error(request, _("You don't have permission to edit this branch."))
             return redirect("branch_list")
 
     regions = Region.objects.filter(is_active=True)
@@ -622,14 +589,11 @@ def branch_edit(request, branch_id):
         phone = request.POST.get("phone", "").strip()
         location_url = request.POST.get("location_url", "").strip()
         is_active = request.POST.get("is_active") == "on"
-        # Channel fields
-        b2c_orders_channel_id = request.POST.get("b2c_orders_channel_id", "").strip() or None
-        b2b_orders_channel_id = request.POST.get("b2b_orders_channel_id", "").strip() or None
         # Bot settings
         show_pricelist = request.POST.get("show_pricelist") == "on"
 
         if not name:
-            messages.error(request, "Branch name is required.")
+            messages.error(request, _("Branch name is required."))
         else:
             branch.name = name
             branch.region_id = region_id or None
@@ -638,8 +602,6 @@ def branch_edit(request, branch_id):
             branch.phone = phone or None
             branch.location_url = location_url or None
             branch.is_active = is_active
-            branch.b2c_orders_channel_id = b2c_orders_channel_id
-            branch.b2b_orders_channel_id = b2b_orders_channel_id
             branch.show_pricelist = show_pricelist
             branch.save()
             messages.success(request, f'Branch "{name}" updated successfully!')
@@ -657,8 +619,32 @@ def branch_edit(request, branch_id):
         "branch": branch,
         "regions": regions,
         "districts": districts,
+        "branch_setup_status": build_branch_setup_status(branch),
     }
     return render(request, "organizations/branch_form.html", context)
+
+
+@login_required(login_url="admin_login")
+@any_permission_required("can_edit_branches", "can_manage_branches")
+@require_POST
+def request_branch_configuration_change(request, branch_id):
+    """Create an admin notification for locked branch channel configuration."""
+    branch = get_object_or_404(Branch, pk=branch_id)
+
+    if not request.user.is_superuser:
+        profile = getattr(request.user, 'admin_profile', None)
+        if not profile or profile.center_id != branch.center_id:
+            messages.error(request, _("You don't have permission to request changes for this branch."))
+            return redirect("branch_list")
+
+    _create_configuration_request(
+        request=request,
+        target=branch,
+        branch=branch,
+        message=request.POST.get("message", ""),
+    )
+    messages.success(request, _("Configuration change request sent to the setup administrator."))
+    return redirect("branch_edit", branch_id=branch_id)
 
 
 # ============ Staff Management Views ============
@@ -746,7 +732,6 @@ def staff_list(request):
 
 
 @login_required(login_url="admin_login")
-@check_staff_limit
 @any_permission_required("can_create_staff", "can_manage_staff")
 def staff_create(request):
     """Create a new staff member"""
@@ -1081,10 +1066,10 @@ def staff_detail(request, staff_id):
         if not accessible_staff.filter(pk=staff_id).exists():
             if request.admin_profile and request.admin_profile.center:
                 if staff_member.center and staff_member.center.id != request.admin_profile.center.id:
-                    messages.error(request, "You don't have permission to view this staff member.")
+                    messages.error(request, _("You don't have permission to view this staff member."))
                     return redirect("staff_list")
             else:
-                messages.error(request, "You don't have permission to view this staff member.")
+                messages.error(request, _("You don't have permission to view this staff member."))
                 return redirect("staff_list")
 
     # Determine if user can edit this staff member
@@ -1374,17 +1359,36 @@ def api_create_user(request):
         return JsonResponse({"success": False, "error": str(e)})
 
 
-# ============ Role Management Views (Superuser Only) ============
+# ============ Role Management Views ============
+
+
+def _can_manage_roles(request):
+    if request.user.is_superuser:
+        return True
+
+    admin_profile = getattr(request, "admin_profile", None)
+    return bool(
+        admin_profile
+        and admin_profile.is_active
+        and admin_profile.has_permission("can_manage_staff")
+    )
+
+
+def _manageable_roles(request):
+    roles = Role.objects.all()
+    if not request.user.is_superuser:
+        roles = roles.exclude(name=Role.OWNER)
+    return roles
 
 
 @login_required(login_url="admin_login")
 def role_list(request):
-    """List all roles - superuser only"""
-    if not request.user.is_superuser:
-        messages.error(request, "Only superusers can manage roles.")
+    """List roles available to the current permission manager."""
+    if not _can_manage_roles(request):
+        messages.error(request, _("You do not have permission to manage roles."))
         return redirect("index")
 
-    roles = Role.objects.annotate(user_count=Count("users")).order_by(
+    roles = _manageable_roles(request).annotate(user_count=Count("users")).order_by(
         "-is_system_role", "name"
     )
 
@@ -1400,12 +1404,10 @@ def role_list(request):
 
 
 @login_required(login_url="admin_login")
-@require_active_subscription
-@require_feature('custom_roles')
 def role_create(request):
-    """Create a new role - superuser only"""
-    if not request.user.is_superuser:
-        messages.error(request, "Only superusers can create roles.")
+    """Create a new non-owner role."""
+    if not _can_manage_roles(request):
+        messages.error(request, _("You do not have permission to create roles."))
         return redirect("index")
 
     available_permissions = Role.get_all_permissions()
@@ -1417,9 +1419,11 @@ def role_create(request):
         is_active = request.POST.get("is_active") == "on"
 
         if not name:
-            messages.error(request, "Role name is required.")
+            messages.error(request, _("Role name is required."))
+        elif name == Role.OWNER and not request.user.is_superuser:
+            messages.error(request, _("The Owner role is protected."))
         elif Role.objects.filter(name=name).exists():
-            messages.error(request, "A role with this name already exists.")
+            messages.error(request, _("A role with this name already exists."))
         else:
             role = Role.objects.create(
                 name=name,
@@ -1452,12 +1456,12 @@ def role_create(request):
 
 @login_required(login_url="admin_login")
 def role_edit(request, role_id):
-    """Edit a role - superuser only"""
-    if not request.user.is_superuser:
-        messages.error(request, "Only superusers can edit roles.")
+    """Edit a role available to the current permission manager."""
+    if not _can_manage_roles(request):
+        messages.error(request, _("You do not have permission to edit roles."))
         return redirect("index")
 
-    role = get_object_or_404(Role, pk=role_id)
+    role = get_object_or_404(_manageable_roles(request), pk=role_id)
     available_permissions = Role.get_all_permissions()
 
     if request.method == "POST":
@@ -1469,8 +1473,11 @@ def role_edit(request, role_id):
         if not role.is_system_role:
             name = request.POST.get("name", "").strip().lower().replace(" ", "_")
             if name and name != role.name:
+                if name == Role.OWNER and not request.user.is_superuser:
+                    messages.error(request, _("The Owner role is protected."))
+                    return redirect("role_edit", role_id=role_id)
                 if Role.objects.filter(name=name).exclude(pk=role.pk).exists():
-                    messages.error(request, "A role with this name already exists.")
+                    messages.error(request, _("A role with this name already exists."))
                     return redirect("role_edit", role_id=role_id)
                 role.name = name
 
@@ -1507,15 +1514,15 @@ def role_edit(request, role_id):
 
 @login_required(login_url="admin_login")
 def role_delete(request, role_id):
-    """Delete a role - superuser only, cannot delete system roles"""
-    if not request.user.is_superuser:
-        messages.error(request, "Only superusers can delete roles.")
+    """Delete a non-system role available to the current permission manager."""
+    if not _can_manage_roles(request):
+        messages.error(request, _("You do not have permission to delete roles."))
         return redirect("index")
 
-    role = get_object_or_404(Role, pk=role_id)
+    role = get_object_or_404(_manageable_roles(request), pk=role_id)
 
     if role.is_system_role:
-        messages.error(request, "System roles cannot be deleted.")
+        messages.error(request, _("System roles cannot be deleted."))
         return redirect("role_list")
 
     if role.users.exists():
@@ -1543,8 +1550,6 @@ from django.views.decorators.http import require_POST
 
 @login_required(login_url="admin_login")
 @permission_required('can_edit_centers')
-@require_active_subscription
-@require_feature('webhooks')
 @require_POST
 def setup_center_webhook(request, center_id):
     """Set up Telegram webhook for a center - superuser only"""
@@ -1616,8 +1621,6 @@ def get_center_webhook_info(request, center_id):
 
 
 @login_required(login_url="admin_login")
-@require_active_subscription
-@require_feature('branch_settings')
 @any_permission_required('can_view_branch_settings', 'can_manage_branch_settings', 'can_manage_branches')
 def branch_settings(request, branch_id):
     """
@@ -1631,7 +1634,7 @@ def branch_settings(request, branch_id):
     # Permission check
     if not request.user.is_superuser:
         if not request.admin_profile:
-            messages.error(request, "You need an admin profile to access this page.")
+            messages.error(request, _("You need an admin profile to access this page."))
             return redirect('index')
         
         # Check if user has permission (branch settings OR branch management)
@@ -1640,14 +1643,14 @@ def branch_settings(request, branch_id):
         has_branch_manage = request.admin_profile.has_permission('can_manage_branches')
         
         if not (has_view_perm or has_manage_perm or has_branch_manage):
-            messages.error(request, "You don't have permission to view branch settings.")
+            messages.error(request, _("You don't have permission to view branch settings."))
             return redirect('branch_detail', branch_id=branch_id)
         
         # Check if user has access to this branch (needs can_manage_branches to edit other branches)
         if not request.admin_profile.has_permission('can_manage_branches'):
             user_branch = request.admin_profile.branch
             if user_branch and user_branch.id != branch_id:
-                messages.error(request, "You can only view settings for your own branch.")
+                messages.error(request, _("You can only view settings for your own branch."))
                 return redirect('branch_detail', branch_id=user_branch.id)
     
     # Get or create additional info for this branch
@@ -1686,7 +1689,7 @@ def branch_settings_edit(request, branch_id):
     # Permission check
     if not request.user.is_superuser:
         if not request.admin_profile:
-            messages.error(request, "You need an admin profile to access this page.")
+            messages.error(request, _("You need an admin profile to access this page."))
             return redirect('index')
         
         # Check if user has permission (can_manage_branch_settings OR can_manage_branches)
@@ -1696,14 +1699,14 @@ def branch_settings_edit(request, branch_id):
         )
         
         if not has_manage_perm:
-            messages.error(request, "You don't have permission to edit branch settings.")
+            messages.error(request, _("You don't have permission to edit branch settings."))
             return redirect('branch_settings', branch_id=branch_id)
         
         # Check if user has access to this branch (needs can_manage_branches to edit other branches)
         if not request.admin_profile.has_permission('can_manage_branches'):
             user_branch = request.admin_profile.branch
             if user_branch and user_branch.id != branch_id:
-                messages.error(request, "You can only edit settings for your own branch.")
+                messages.error(request, _("You can only edit settings for your own branch."))
                 return redirect('branch_settings', branch_id=user_branch.id)
     
     # Get or create additional info for this branch

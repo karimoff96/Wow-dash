@@ -75,26 +75,7 @@
   }
 }
 
-[data-theme-toggle] {
-  font-size: 0;
-  position: relative;
-  &::after {
-    position: absolute;
-    content: "\f1bf";
-    font-family: remixicon;
-    font-style: normal;
-    font-size: rem(20px);
-    color: var(--text-primary-light);
-  }
-  &[aria-label="dark"] {
-    &::after {
-      content: "\ef6f";
-      color: #fff;
-    }
-  }
-}
-
 .positioned-icon {
   inset-inline-start: 16px;
-  
+
 }

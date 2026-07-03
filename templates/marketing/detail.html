@@ -151,7 +151,7 @@
                     <form method="post" action="{% url 'marketing_send' post.id %}" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-success" 
-                                onclick="return confirm('Are you sure you want to send this broadcast to {{ post.total_recipients }} recipients?')">
+                                onclick="return confirm(t('marketing.confirmSendBroadcast'))">
                             <iconify-icon icon="mdi:send" class="me-2"></iconify-icon>
                             <span data-i18n="marketing.sendNow">Send Now</span>
                         </button>
@@ -176,9 +176,9 @@
                     </form>
                     <form method="post" action="{% url 'marketing_cancel' post.id %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Cancel this broadcast?')">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm(t('marketing.confirmCancelBroadcast'))">
                             <iconify-icon icon="mdi:close" class="me-2"></iconify-icon>
-                            Cancel
+                            <span data-i18n="common.cancel">Cancel</span>
                         </button>
                     </form>
                 </div>
@@ -408,7 +408,7 @@
             <form method="post" action="{% url 'marketing_delete' post.id %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-outline-danger w-100" 
-                        onclick="return confirm('Are you sure you want to delete this post?')">
+                        onclick="return confirm(t('marketing.confirmDeletePost'))">
                     <iconify-icon icon="mdi:delete" class="me-2"></iconify-icon>
                     <span data-i18n="marketing.deletePost">Delete Post</span>
                 </button>

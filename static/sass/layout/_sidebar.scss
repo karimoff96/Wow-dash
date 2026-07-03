@@ -169,42 +169,6 @@
   }
 }
 
-[data-theme="dark"] {
-  .sidebar {
-    &.active {
-      &:hover {
-        .sidebar-logo {
-          img {
-            &.light-logo {
-              display: none;
-            }
-            &.dark-logo {
-              display: inline-block;
-            }
-          }
-        }
-      }
-      .sidebar-logo {
-        img {
-          &.light-logo {
-            display: none;
-          }
-        }
-      }
-    }
-    &-logo {
-      img {
-        &.light-logo {
-          display: none;
-        }
-        &.dark-logo {
-          display: inline-block;
-        }
-      }
-    }
-  }
-}
-
 .sidebar-menu {
   li {
     &.dropdown {
@@ -249,7 +213,7 @@
         color: #fff;
         &:hover {
           color: #fff;
-        } 
+        }
       }
     }
     a {

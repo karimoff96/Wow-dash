@@ -1064,8 +1064,10 @@ const allPermissions = [
     'can_manage_products', 'can_view_products', 'can_create_products', 'can_edit_products', 'can_delete_products',
     // Expenses
     'can_manage_expenses', 'can_view_expenses', 'can_create_expenses', 'can_edit_expenses', 'can_delete_expenses',
+    // Languages
+    'can_manage_languages', 'can_view_languages', 'can_create_languages', 'can_edit_languages', 'can_delete_languages',
     // Customers
-    'can_manage_customers', 'can_view_customers', 'can_edit_customers', 'can_delete_customers',
+    'can_manage_customers', 'can_view_customers', 'can_create_customers', 'can_edit_customers', 'can_delete_customers',
     // Marketing
     'can_manage_marketing', 'can_create_marketing_posts', 'can_send_branch_broadcasts', 'can_send_center_broadcasts', 'can_view_broadcast_stats',
     // Branch Settings
@@ -1088,7 +1090,8 @@ const masterPermissions = {
     'can_manage_reports': ['can_view_reports', 'can_view_analytics', 'can_export_data'],
     'can_manage_products': ['can_view_products', 'can_create_products', 'can_edit_products', 'can_delete_products'],
     'can_manage_expenses': ['can_view_expenses', 'can_create_expenses', 'can_edit_expenses', 'can_delete_expenses'],
-    'can_manage_customers': ['can_view_customers', 'can_edit_customers', 'can_delete_customers'],
+    'can_manage_languages': ['can_view_languages', 'can_create_languages', 'can_edit_languages', 'can_delete_languages'],
+    'can_manage_customers': ['can_view_customers', 'can_create_customers', 'can_edit_customers', 'can_delete_customers'],
     'can_manage_marketing': ['can_create_marketing_posts', 'can_send_branch_broadcasts', 'can_send_center_broadcasts', 'can_view_broadcast_stats'],
     'can_manage_branch_settings': ['can_view_branch_settings'],
     'can_manage_agencies': ['can_view_agencies', 'can_create_agencies', 'can_edit_agencies', 'can_delete_agencies'],
@@ -1101,7 +1104,7 @@ const templates = {
         // All master permissions
         'can_manage_centers': true, 'can_manage_branches': true, 'can_manage_staff': true,
         'can_manage_orders': true, 'can_manage_financial': true, 'can_manage_reports': true,
-        'can_manage_products': true, 'can_manage_expenses': true, 'can_manage_customers': true, 'can_manage_marketing': true,
+        'can_manage_products': true, 'can_manage_expenses': true, 'can_manage_languages': true, 'can_manage_customers': true, 'can_manage_marketing': true,
         'can_manage_agencies': true, 'can_manage_branch_settings': true, 'can_manage_audit_logs': true,
         // All granular permissions
         'can_view_centers': true, 'can_create_centers': true, 'can_edit_centers': true, 'can_delete_centers': true,
@@ -1114,7 +1117,8 @@ const templates = {
         'can_view_reports': true, 'can_view_analytics': true, 'can_export_data': true,
         'can_view_products': true, 'can_create_products': true, 'can_edit_products': true, 'can_delete_products': true,
         'can_view_expenses': true, 'can_create_expenses': true, 'can_edit_expenses': true, 'can_delete_expenses': true,
-        'can_view_customers': true, 'can_edit_customers': true, 'can_delete_customers': true,
+        'can_view_languages': true, 'can_create_languages': true, 'can_edit_languages': true, 'can_delete_languages': true,
+        'can_view_customers': true, 'can_create_customers': true, 'can_edit_customers': true, 'can_delete_customers': true,
         'can_create_marketing_posts': true, 'can_send_branch_broadcasts': true, 'can_send_center_broadcasts': true, 'can_view_broadcast_stats': true,
         'can_manage_branch_settings': true, 'can_view_branch_settings': true,
         'can_view_agencies': true, 'can_create_agencies': true, 'can_edit_agencies': true, 'can_delete_agencies': true,

@@ -326,12 +326,7 @@ function formatNumber(num) {
 }
 
 function getThemeColors() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    return {
-        textColor: isDark ? '#9CA3AF' : '#6C757D',
-        gridColor: isDark ? '#374151' : '#E4E7EC',
-        bgColor: isDark ? '#1F2937' : '#ffffff'
-    };
+    return { textColor: '#6C757D', gridColor: '#E4E7EC', bgColor: '#ffffff', tooltipTheme: 'light' };
 }
 
 const STATUS_ICONS = {
@@ -393,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Daily Performance Chart (matching index.html style)
     if (dailyLabels.length > 0) {
         const dailyOptions = {
-            series: [{ name: 'Orders', data: dailyCounts }],
+            series: [{ name: t('table.orders'), data: dailyCounts }],
             chart: { type: 'bar', height: 180, toolbar: { show: false } },
             colors: ['#487FFF'],
             plotOptions: { bar: { borderRadius: 4, columnWidth: '50%' } },
@@ -413,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             grid: { borderColor: colors.gridColor, strokeDashArray: 3 },
-            tooltip: { theme: 'dark', x: { show: true }, y: { formatter: function(val) { return val + ' orders'; }, title: { formatter: function() { return ''; } } }, marker: { show: false } }
+            tooltip: { theme: 'light', x: { show: true }, y: { formatter: function(val) { return val + ' ' + t('table.orders'); }, title: { formatter: function() { return ''; } } }, marker: { show: false } }
         };
         new ApexCharts(document.querySelector("#dailyPerformanceChart"), dailyOptions).render();
     } else {
@@ -465,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function() {
             colors: statusColors,
             legend: { show: false },
             dataLabels: { enabled: false },
-            tooltip: { theme: 'dark', fillSeriesColor: false, y: { formatter: function(val) { return val + ' orders'; }, title: { formatter: function(series) { return series; } } }, marker: { show: true } },
+            tooltip: { theme: 'light', fillSeriesColor: false, y: { formatter: function(val) { return val + ' ' + t('table.orders'); }, title: { formatter: function(series) { return series; } } }, marker: { show: true } },
             plotOptions: {
                 pie: {
                     donut: {
@@ -474,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             show: true,
                             name: { show: true, fontSize: '12px', color: colors.textColor },
                             value: { show: true, fontSize: '16px', fontWeight: 600, color: colors.textColor },
-                            total: { show: true, label: 'Total', color: colors.textColor, formatter: function(w) { return w.globals.seriesTotals.reduce((a, b) => a + b, 0); } }
+                            total: { show: true, label: t('common.total'), color: colors.textColor, formatter: function(w) { return w.globals.seriesTotals.reduce((a, b) => a + b, 0); } }
                         }
                     }
                 }

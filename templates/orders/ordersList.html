@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load permission_tags %}
-{% load billing_extras %}
+{% load number_filters %}
 
 {% block content %}
 <!-- View Mode Toggle -->
@@ -564,12 +564,12 @@ $(document).ready(function() {
         console.log('Apply clicked. Action:', action, 'Selected:', selectedCount);
         
         if (!action) {
-            alert('Please select an action');
+            alert(t('common.selectAction'));
             return;
         }
         
         if (selectedCount === 0) {
-            alert('Please select at least one order');
+            alert(t('orders.itemsToDelete'));
             return;
         }
         
@@ -677,13 +677,13 @@ $(document).ready(function() {
         console.log('Deleting orders:', selectedIds);
         
         if (selectedIds.length === 0) {
-            alert('No orders selected');
+            alert(t('orders.noOrdersSelected'));
             return;
         }
         
         // Disable button and show loading
         const $btn = $(this);
-        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Deleting...');
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>' + t('common.deleting'));
         
         // Prepare form data
         const formData = new FormData();
@@ -708,7 +708,7 @@ $(document).ready(function() {
                     // Reload page
                     location.reload();
                 } else {
-                    alert('Error: ' + response.message);
+                    alert(t('common.error') + ': ' + response.message);
                     $btn.prop('disabled', false).html('<iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon> <span data-i18n="common.delete">Delete</span>');
                 }
             },
@@ -716,8 +716,8 @@ $(document).ready(function() {
                 console.error('Delete error:', xhr, status, error);
                 console.error('Response:', xhr.responseText);
                 const response = xhr.responseJSON;
-                const errorMsg = response ? response.message : (xhr.responseText || 'Failed to delete orders');
-                alert('Error: ' + errorMsg);
+                const errorMsg = response ? response.message : (xhr.responseText || t('orders.bulkDeleteWarning'));
+                alert(t('common.error') + ': ' + errorMsg);
                 $btn.prop('disabled', false).html('<iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon> <span data-i18n="common.delete">Delete</span>');
             }
         });

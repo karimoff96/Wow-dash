@@ -6,6 +6,11 @@ const translations = {
         ru: 'Поиск',
         en: 'Search'
     },
+    'filter.search': {
+        uz: 'Qidirish',
+        ru: 'Поиск',
+        en: 'Search'
+    },
     'nav.chooseLanguage': {
         uz: 'Tilni tanlang',
         ru: 'Выберите язык',
@@ -2165,6 +2170,11 @@ const translations = {
         uz: 'Parolni unutdingizmi?',
         ru: 'Забыли пароль?',
         en: 'Forgot Password?'
+    },
+    'auth.enterEmail': {
+        uz: 'Email kiriting',
+        ru: 'Введите email',
+        en: 'Enter Email'
     },
 
     // ========== ORDERS ==========
@@ -6944,6 +6954,16 @@ const translations = {
         ru: 'Сохранение...',
         en: 'Saving...'
     },
+    'common.creating': {
+        uz: 'Yaratilmoqda...',
+        ru: 'Создание...',
+        en: 'Creating...'
+    },
+    'common.deleting': {
+        uz: 'O\'chirilmoqda...',
+        ru: 'Удаление...',
+        en: 'Deleting...'
+    },
     'common.errorOccurred': {
         uz: 'Xato yuz berdi.',
         ru: 'Произошла ошибка.',
@@ -6953,6 +6973,181 @@ const translations = {
         uz: "Server xatosi. Iltimos, qayta urinib ko'ring.",
         ru: 'Ошибка сервера. Пожалуйста, попробуйте ещё раз.',
         en: 'Server error. Please try again.'
+    },
+    'common.networkError': {
+        uz: "Tarmoq xatosi. Iltimos, qayta urinib ko'ring.",
+        ru: 'Ошибка сети. Пожалуйста, попробуйте ещё раз.',
+        en: 'Network error. Please try again.'
+    },
+    'validation.requiredFields': {
+        uz: "Iltimos, barcha majburiy maydonlarni to'ldiring.",
+        ru: 'Пожалуйста, заполните все обязательные поля.',
+        en: 'Please fill in all required fields.'
+    },
+    'validation.passwordMin6': {
+        uz: "Parol kamida 6 ta belgidan iborat bo'lishi kerak.",
+        ru: 'Пароль должен содержать минимум 6 символов.',
+        en: 'Password must be at least 6 characters.'
+    },
+    'payment.recordedSuccessfully': {
+        uz: "To'lov muvaffaqiyatli qayd etildi!",
+        ru: 'Оплата успешно записана!',
+        en: 'Payment recorded successfully!'
+    },
+    'payment.recordFailed': {
+        uz: "To'lovni qayd etib bo'lmadi.",
+        ru: 'Не удалось записать оплату.',
+        en: 'Failed to record payment.'
+    },
+    'payment.recordPayment': {
+        uz: "To'lovni qayd etish",
+        ru: 'Записать оплату',
+        en: 'Record Payment'
+    },
+    'report.noDataToExport': {
+        uz: "Eksport qilish uchun ma'lumot yo'q.",
+        ru: 'Нет данных для экспорта.',
+        en: 'No data to export.'
+    },
+    'orders.noOrdersSelected': {
+        uz: 'Buyurtmalar tanlanmagan.',
+        ru: 'Заказы не выбраны.',
+        en: 'No orders selected.'
+    },
+    'location.regionCreated': {
+        uz: 'Viloyat muvaffaqiyatli yaratildi!',
+        ru: 'Регион успешно создан!',
+        en: 'Region created successfully!'
+    },
+    'location.regionCreateFailed': {
+        uz: 'Viloyatni yaratib bo\'lmadi.',
+        ru: 'Не удалось создать регион.',
+        en: 'Failed to create region.'
+    },
+    'location.regionCreateError': {
+        uz: 'Viloyat yaratishda xato yuz berdi.',
+        ru: 'Произошла ошибка при создании региона.',
+        en: 'An error occurred while creating the region.'
+    },
+    'location.districtCreated': {
+        uz: 'Tuman muvaffaqiyatli yaratildi!',
+        ru: 'Район успешно создан!',
+        en: 'District created successfully!'
+    },
+    'location.districtCreateFailed': {
+        uz: 'Tumanni yaratib bo\'lmadi.',
+        ru: 'Не удалось создать район.',
+        en: 'Failed to create district.'
+    },
+    'location.districtCreateError': {
+        uz: 'Tuman yaratishda xato yuz berdi.',
+        ru: 'Произошла ошибка при создании района.',
+        en: 'An error occurred while creating the district.'
+    },
+    'language.created': {
+        uz: 'Til muvaffaqiyatli yaratildi!',
+        ru: 'Язык успешно создан!',
+        en: 'Language created successfully!'
+    },
+    'language.createFailed': {
+        uz: 'Tilni yaratib bo\'lmadi.',
+        ru: 'Не удалось создать язык.',
+        en: 'Failed to create language.'
+    },
+    'language.createError': {
+        uz: 'Til yaratishda xato yuz berdi.',
+        ru: 'Произошла ошибка при создании языка.',
+        en: 'An error occurred while creating the language.'
+    },
+    'language.deleteFailed': {
+        uz: 'Tilni o\'chirib bo\'lmadi.',
+        ru: 'Не удалось удалить язык.',
+        en: 'Failed to delete language.'
+    },
+    'language.deleteLanguage': {
+        uz: 'Tilni o\'chirish',
+        ru: 'Удалить язык',
+        en: 'Delete Language'
+    },
+    'language.selectBranch': {
+        uz: 'Iltimos, filialni tanlang.',
+        ru: 'Пожалуйста, выберите филиал.',
+        en: 'Please select a branch.'
+    },
+    'language.noLanguagesForBranch': {
+        uz: 'Bu filial uchun tillar yo\'q. Yuqoridagi tugma orqali til qo\'shing.',
+        ru: 'Для этого филиала языков нет. Добавьте язык кнопкой выше.',
+        en: 'No languages for this branch. Add one using the button above.'
+    },
+    'language.loadFailed': {
+        uz: 'Tillarni yuklab bo\'lmadi.',
+        ru: 'Не удалось загрузить языки.',
+        en: 'Failed to load languages.'
+    },
+    'language.nameAndShortRequired': {
+        uz: 'Til nomi va qisqa nom majburiy.',
+        ru: 'Название языка и короткое название обязательны.',
+        en: 'Both Language Name and Short Name are required.'
+    },
+    'category.deleteConfirmCascade': {
+        uz: 'Bu kategoriyani o\'chirmoqchimisiz? Kategoriyadagi barcha mahsulotlar ham o\'chiriladi.',
+        ru: 'Вы уверены, что хотите удалить эту категорию? Все продукты в категории также будут удалены.',
+        en: 'Are you sure you want to delete this category? All products in this category will also be deleted.'
+    },
+    'expense.deleteConfirm': {
+        uz: 'Bu xarajatni o\'chirmoqchimisiz?',
+        ru: 'Удалить этот расход?',
+        en: 'Delete this expense?'
+    },
+    'expenseCategory.deleteConfirm': {
+        uz: 'Bu xarajat kategoriyasini o\'chirmoqchimisiz?',
+        ru: 'Удалить эту категорию расходов?',
+        en: 'Delete this category?'
+    },
+    'comments.deleteConfirm': {
+        uz: 'Bu izohni o\'chirmoqchimisiz?',
+        ru: 'Удалить этот комментарий?',
+        en: 'Delete this comment?'
+    },
+    'expense.enterExpenseName': {
+        uz: 'Iltimos, xarajat nomini kiriting.',
+        ru: 'Пожалуйста, введите название расхода.',
+        en: 'Please enter an expense name.'
+    },
+    'expense.selectCenterAndBranch': {
+        uz: 'Iltimos, markaz va filialni tanlang.',
+        ru: 'Пожалуйста, выберите центр и филиал.',
+        en: 'Please select a center and branch.'
+    },
+    'expense.createError': {
+        uz: 'Xarajat yaratishda xato yuz berdi.',
+        ru: 'Произошла ошибка при создании расхода.',
+        en: 'An error occurred while creating the expense.'
+    },
+    'user.createdOwner': {
+        uz: 'Foydalanuvchi yaratildi va egasi sifatida tanlandi!',
+        ru: 'Пользователь создан и выбран владельцем!',
+        en: 'User created successfully and selected as owner!'
+    },
+    'user.createFailed': {
+        uz: 'Foydalanuvchini yaratib bo\'lmadi.',
+        ru: 'Не удалось создать пользователя.',
+        en: 'Failed to create user.'
+    },
+    'marketing.confirmSendBroadcast': {
+        uz: 'Bu xabarni tanlangan qabul qiluvchilarga yubormoqchimisiz?',
+        ru: 'Отправить эту рассылку выбранным получателям?',
+        en: 'Are you sure you want to send this broadcast to the selected recipients?'
+    },
+    'marketing.confirmCancelBroadcast': {
+        uz: 'Bu yuborishni bekor qilmoqchimisiz?',
+        ru: 'Отменить эту рассылку?',
+        en: 'Cancel this broadcast?'
+    },
+    'marketing.confirmDeletePost': {
+        uz: 'Bu postni o\'chirmoqchimisiz?',
+        ru: 'Вы уверены, что хотите удалить этот пост?',
+        en: 'Are you sure you want to delete this post?'
     },
     'common.saveChange': {
         uz: "O'zgarishni saqlash",
@@ -10031,6 +10226,368 @@ const translations = {
         ru: 'Всего расходов',
         en: 'Total Expenses'
     },
+    'report.chartNotLoaded': {
+        uz: 'Grafik kutubxonasi yuklanmadi',
+        ru: 'Библиотека графиков не загружена',
+        en: 'Chart library was not loaded'
+    },
+    'report.noOrderData': {
+        uz: 'Bu davr uchun buyurtma ma\'lumotlari yo\'q',
+        ru: 'Нет данных по заказам за этот период',
+        en: 'No order data for this period'
+    },
+    'report.noStatusData': {
+        uz: 'Statuslar bo\'yicha ma\'lumot yo\'q',
+        ru: 'Нет данных по статусам',
+        en: 'No status data'
+    },
+    'report.noOrdersThisMonth': {
+        uz: 'Bu oy buyurtmalar yo\'q',
+        ru: 'В этом месяце заказов нет',
+        en: 'No orders this month'
+    },
+    'report.noDataThisMonth': {
+        uz: 'Bu oy uchun ma\'lumot yo\'q',
+        ru: 'Нет данных за этот месяц',
+        en: 'No data this month'
+    },
+
+    // ========== COMMON LITERAL FALLBACKS ==========
+    'literal.pageNavigation': {
+        uz: 'Sahifa navigatsiyasi',
+        ru: 'Навигация по страницам',
+        en: 'Page navigation'
+    },
+    'literal.pagination': {
+        uz: 'Sahifalash',
+        ru: 'Пагинация',
+        en: 'Pagination'
+    },
+    'literal.notificationsPagination': {
+        uz: 'Bildirishnomalar sahifalashi',
+        ru: 'Пагинация уведомлений',
+        en: 'Notifications pagination'
+    },
+    'literal.activeStatus': {
+        uz: 'Faollik holati',
+        ru: 'Статус активности',
+        en: 'Active Status'
+    },
+    'literal.descriptionInEnglish': {
+        uz: 'Tavsif ingliz tilida',
+        ru: 'Описание на английском',
+        en: 'Description in English'
+    },
+    'literal.inEnglish': {
+        uz: 'Ingliz tilida',
+        ru: 'На английском',
+        en: 'In English'
+    },
+    'literal.inUzbek': {
+        uz: 'O\'zbek tilida',
+        ru: 'На узбекском',
+        en: 'In Uzbek'
+    },
+    'literal.uzbekDescription': {
+        uz: 'Tavsif o\'zbek tilida',
+        ru: 'Описание на узбекском',
+        en: 'Description in Uzbek'
+    },
+    'literal.optionalLower': {
+        uz: 'ixtiyoriy',
+        ru: 'необязательно',
+        en: 'optional'
+    },
+    'literal.firstPageShort': {
+        uz: '1-sahifa',
+        ru: '1-я страница',
+        en: '1st Page'
+    },
+    'literal.createLanguage': {
+        uz: 'Til yaratish',
+        ru: 'Создать язык',
+        en: 'Create Language'
+    },
+    'literal.optionalPricingHint': {
+        uz: 'Narx maydonlari ixtiyoriy. Bu til uchun qo\'shimcha narx bo\'lmasa 0 qoldiring.',
+        ru: 'Поля цен необязательны. Оставьте 0, если для этого языка нет дополнительной стоимости.',
+        en: 'Pricing fields are optional. Leave as 0 if no additional cost for this language.'
+    },
+    'literal.selectExpensesForProduct': {
+        uz: 'Mahsulotga bog\'lanadigan xarajatlarni tanlang',
+        ru: 'Выберите расходы для связи с продуктом',
+        en: 'Select Expenses to Associate with Product'
+    },
+    'literal.expenseLinkedToBranch': {
+        uz: 'Xarajat tanlangan filialga bog\'lanadi.',
+        ru: 'Расход будет связан с выбранным филиалом.',
+        en: 'The expense will be linked to the selected branch.'
+    },
+    'literal.expenseTypeHint': {
+        uz: 'Bu xarajat B2B, B2C yoki ikkalasiga tegishli ekanini tanlang.',
+        ru: 'Выберите, относится ли расход к B2B, B2C или обоим типам.',
+        en: 'Whether this expense applies to B2B, B2C, or both.'
+    },
+    'literal.title': {
+        uz: 'Sarlavha',
+        ru: 'Заголовок',
+        en: 'Title'
+    },
+    'literal.internalTitle': {
+        uz: 'Ichki sarlavha',
+        ru: 'Внутренний заголовок',
+        en: 'Internal Title'
+    },
+    'literal.messagePreview': {
+        uz: 'Xabar ko\'rinishi',
+        ru: 'Предпросмотр сообщения',
+        en: 'Message Preview'
+    },
+    'literal.startTypingPreview': {
+        uz: 'Ko\'rish uchun yozishni boshlang...',
+        ru: 'Начните вводить, чтобы увидеть предпросмотр...',
+        en: 'Start typing to see preview...'
+    },
+    'literal.supportedHtml': {
+        uz: 'Qo\'llab-quvvatlanadigan HTML',
+        ru: 'Поддерживаемый HTML',
+        en: 'Supported HTML'
+    },
+    'literal.scheduleOptional': {
+        uz: 'Rejalashtirish (ixtiyoriy)',
+        ru: 'Расписание (необязательно)',
+        en: 'Schedule (Optional)'
+    },
+    'literal.confirmSend': {
+        uz: 'Tasdiqlash va yuborish',
+        ru: 'Подтвердить и отправить',
+        en: 'Confirm & Send'
+    },
+    'literal.backToDetails': {
+        uz: 'Tafsilotlarga qaytish',
+        ru: 'Назад к деталям',
+        en: 'Back to Details'
+    },
+    'literal.deliveryIssues': {
+        uz: 'Yetkazish muammolari',
+        ru: 'Проблемы доставки',
+        en: 'Delivery Issues'
+    },
+    'literal.deliveryFailed': {
+        uz: 'Yetkazib bo\'lmadi',
+        ru: 'Доставка не удалась',
+        en: 'Delivery failed'
+    },
+    'literal.userBlockedBot': {
+        uz: 'Foydalanuvchi botni bloklagan',
+        ru: 'Пользователь заблокировал бота',
+        en: 'User blocked the bot'
+    },
+    'literal.addRegion': {
+        uz: 'Viloyat qo\'shish',
+        ru: 'Добавить регион',
+        en: 'Add Region'
+    },
+    'literal.addDistrict': {
+        uz: 'Tuman qo\'shish',
+        ru: 'Добавить район',
+        en: 'Add District'
+    },
+    'literal.addNewRegion': {
+        uz: 'Yangi viloyat qo\'shish',
+        ru: 'Добавить новый регион',
+        en: 'Add New Region'
+    },
+    'literal.addNewDistrict': {
+        uz: 'Yangi tuman qo\'shish',
+        ru: 'Добавить новый район',
+        en: 'Add New District'
+    },
+    'literal.createRegion': {
+        uz: 'Viloyat yaratish',
+        ru: 'Создать регион',
+        en: 'Create Region'
+    },
+    'literal.createDistrict': {
+        uz: 'Tuman yaratish',
+        ru: 'Создать район',
+        en: 'Create District'
+    },
+    'literal.districtName': {
+        uz: 'Tuman nomi',
+        ru: 'Название района',
+        en: 'District Name'
+    },
+    'literal.code': {
+        uz: 'Kod',
+        ru: 'Код',
+        en: 'Code'
+    },
+    'literal.centerStatus': {
+        uz: 'Markaz holati',
+        ru: 'Статус центра',
+        en: 'Center Status'
+    },
+    'literal.googleMapsUrl': {
+        uz: 'Google Maps yoki Yandex Maps havolasi',
+        ru: 'Ссылка Google Maps или Yandex Maps',
+        en: 'Google Maps or Yandex Maps URL'
+    },
+    'literal.botSettings': {
+        uz: 'Bot sozlamalari',
+        ru: 'Настройки бота',
+        en: 'Bot Settings'
+    },
+    'literal.backToBranch': {
+        uz: 'Filialga qaytish',
+        ru: 'Назад к филиалу',
+        en: 'Back to Branch'
+    },
+    'literal.helpTextBot': {
+        uz: 'Yordam matni (bot)',
+        ru: 'Текст помощи (бот)',
+        en: 'Help Text (Bot)'
+    },
+    'literal.aboutUsBot': {
+        uz: 'Biz haqimizda (bot)',
+        ru: 'О нас (бот)',
+        en: 'About Us (Bot)'
+    },
+    'literal.otherServicesBot': {
+        uz: 'Boshqa xizmatlar (bot)',
+        ru: 'Другие услуги (бот)',
+        en: 'Other Services (Bot)'
+    },
+    'literal.availableLanguages': {
+        uz: 'Mavjud tillar',
+        ru: 'Доступные языки',
+        en: 'Available Languages'
+    },
+    'literal.noLanguagesAvailable': {
+        uz: 'Mavjud tillar yo\'q.',
+        ru: 'Нет доступных языков.',
+        en: 'No languages available.'
+    },
+    'literal.noExpenseData': {
+        uz: 'Xarajat ma\'lumotlari mavjud emas.',
+        ru: 'Данные о расходах недоступны.',
+        en: 'No expense data available.'
+    },
+    'literal.noBranchData': {
+        uz: 'Filial ma\'lumotlari mavjud emas',
+        ru: 'Данные филиалов недоступны',
+        en: 'No branch data available'
+    },
+    'literal.noPerformanceData': {
+        uz: 'Samaradorlik ma\'lumotlari mavjud emas',
+        ru: 'Данные эффективности недоступны',
+        en: 'No performance data available'
+    },
+    'literal.noProductsLinked': {
+        uz: 'Bu xarajatga mahsulotlar bog\'lanmagan.',
+        ru: 'К этому расходу продукты не привязаны.',
+        en: 'No products linked to this expense.'
+    },
+    'literal.noSpecificPermissions': {
+        uz: 'Maxsus ruxsatlar biriktirilmagan.',
+        ru: 'Специальные разрешения не назначены.',
+        en: 'No specific permissions assigned.'
+    },
+    'literal.noOrdersAssigned': {
+        uz: 'Hali buyurtmalar biriktirilmagan',
+        ru: 'Заказы еще не назначены',
+        en: 'No orders assigned yet'
+    },
+    'literal.noOrdersCreated': {
+        uz: 'Hali buyurtmalar yaratilmagan',
+        ru: 'Заказы еще не созданы',
+        en: 'No orders created yet'
+    },
+    'literal.pendingReceipts': {
+        uz: 'Kutilayotgan kvitansiyalar',
+        ru: 'Ожидающие квитанции',
+        en: 'Pending receipts'
+    },
+    'literal.overdue': {
+        uz: 'Muddati o\'tgan!',
+        ru: 'Просрочено!',
+        en: 'Overdue!'
+    },
+    'literal.dueToday': {
+        uz: 'Bugun muddati tugaydi!',
+        ru: 'Срок сегодня!',
+        en: 'Due today!'
+    },
+    'literal.copyTransactionId': {
+        uz: 'Tranzaksiya ID nusxalash',
+        ru: 'Скопировать ID транзакции',
+        en: 'Copy transaction ID'
+    },
+    'literal.deleteComment': {
+        uz: 'Izohni o\'chirish',
+        ru: 'Удалить комментарий',
+        en: 'Delete comment'
+    },
+    'literal.enterAmount': {
+        uz: 'Summani kiriting',
+        ru: 'Введите сумму',
+        en: 'Enter amount'
+    },
+    'literal.writeInternalNote': {
+        uz: 'Ichki izoh yozing...',
+        ru: 'Напишите внутреннюю заметку...',
+        en: 'Write an internal note...'
+    },
+    'literal.ordersCount': {
+        uz: 'Buyurtmalar soni',
+        ru: 'Количество заказов',
+        en: 'Orders Count'
+    },
+    'literal.collection': {
+        uz: 'Undirish',
+        ru: 'Сбор',
+        en: 'Collection'
+    },
+    'literal.allAmounts': {
+        uz: 'Barcha summalar',
+        ru: 'Все суммы',
+        en: 'All Amounts'
+    },
+    'literal.allRates': {
+        uz: 'Barcha foizlar',
+        ru: 'Все ставки',
+        en: 'All Rates'
+    },
+    'literal.loadingDebtors': {
+        uz: 'Qarzdorlar yuklanmoqda...',
+        ru: 'Загрузка должников...',
+        en: 'Loading debtors...'
+    },
+    'literal.failedLoadDebtors': {
+        uz: 'Qarzdorlarni yuklab bo\'lmadi. Qayta urinib ko\'ring.',
+        ru: 'Не удалось загрузить должников. Повторите попытку.',
+        en: 'Failed to load debtors. Please try again.'
+    },
+    'literal.nameOrPhone': {
+        uz: 'Ism yoki telefon...',
+        ru: 'Имя или телефон...',
+        en: 'Name or phone...'
+    },
+    'literal.cardTransfer': {
+        uz: 'Karta orqali o\'tkazma',
+        ru: 'Перевод на карту',
+        en: 'Card Transfer'
+    },
+    'literal.completedLower': {
+        uz: 'bajarildi',
+        ru: 'выполнено',
+        en: 'completed'
+    },
+    'literal.noOrdersLower': {
+        uz: 'buyurtmalar yo\'q',
+        ru: 'нет заказов',
+        en: 'no orders'
+    },
 
     // ========== SERVICES / PRODUCT DETAIL ==========
     'product.fixedPrice': {
@@ -10047,26 +10604,72 @@ const translations = {
 
 // Language management
 const LanguageManager = {
-    currentLang: localStorage.getItem('dashboardLanguage') || 'uz',
+    supportedLanguages: ['uz', 'ru', 'en'],
+    currentLang: 'uz',
+
+    normalizeLanguage(lang) {
+        return this.supportedLanguages.includes(lang) ? lang : null;
+    },
+
+    getCookie(name) {
+        const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+    },
+
+    setCookie(lang) {
+        document.cookie = `django_language=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+    },
+
+    resolveInitialLanguage() {
+        const cookieLang = this.normalizeLanguage(this.getCookie('django_language'));
+        const storedLang = this.normalizeLanguage(localStorage.getItem('dashboardLanguage'));
+        const serverLang = this.normalizeLanguage(window.CURRENT_LANGUAGE);
+        return {
+            cookieLang,
+            storedLang,
+            serverLang,
+            lang: cookieLang || storedLang || serverLang || 'uz'
+        };
+    },
 
     init() {
-        // Set Django cookie without reload during init
-        document.cookie = `django_language=${this.currentLang}; path=/; max-age=31536000; SameSite=Lax`;
+        const resolved = this.resolveInitialLanguage();
+        this.currentLang = resolved.lang;
+        window.currentLanguage = this.currentLang;
+
+        if (localStorage.getItem('dashboardLanguage') !== this.currentLang) {
+            localStorage.setItem('dashboardLanguage', this.currentLang);
+        }
+
+        this.setCookie(this.currentLang);
+        document.documentElement.lang = this.currentLang;
+
+        if (!resolved.cookieLang && resolved.storedLang && resolved.serverLang && resolved.storedLang !== resolved.serverLang) {
+            window.location.reload();
+            return;
+        }
+
         this.translatePage();
         this.updateLanguageIndicator();
     },
 
     setLanguage(lang) {
+        lang = this.normalizeLanguage(lang);
+        if (!lang) {
+            return;
+        }
+
         // Only reload if language is actually changing
         if (lang === this.currentLang) {
             return;
         }
         
         this.currentLang = lang;
+        window.currentLanguage = lang;
         localStorage.setItem('dashboardLanguage', lang);
         
         // Set Django language cookie for backend translation
-        document.cookie = `django_language=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+        this.setCookie(lang);
         
         // Reload page to apply backend translations
         window.location.reload();
@@ -10077,6 +10680,156 @@ const LanguageManager = {
             return translations[key][this.currentLang];
         }
         return key;
+    },
+
+    buildEnglishTextMap() {
+        if (this.englishTextMap) {
+            return this.englishTextMap;
+        }
+
+        this.englishTextMap = Object.keys(translations).reduce((map, key) => {
+            const entry = translations[key];
+            const target = entry[this.currentLang];
+            if (target) {
+                this.supportedLanguages.forEach(lang => {
+                    if (!entry[lang]) return;
+                    const normalized = this.normalizeText(entry[lang]);
+                    if (!normalized) return;
+                    map.set(normalized, target);
+                    map.set(normalized.toLowerCase(), target);
+                });
+            }
+            return map;
+        }, new Map());
+
+        return this.englishTextMap;
+    },
+
+    normalizeText(text) {
+        return String(text || '').replace(/…/g, '...').replace(/\s+/g, ' ').trim();
+    },
+
+    translateLiteral(text) {
+        const original = String(text || '');
+        const normalized = this.normalizeText(original);
+        if (!normalized) return original;
+
+        const map = this.buildEnglishTextMap();
+        const direct = map.get(normalized);
+        if (direct) return original.replace(normalized, direct);
+
+        const lowerDirect = map.get(normalized.toLowerCase());
+        if (lowerDirect) return original.replace(normalized, lowerDirect);
+
+        const requiredMatch = normalized.match(/^(.+?)\s+\*$/);
+        if (requiredMatch && map.has(requiredMatch[1])) {
+            return original.replace(normalized, `${map.get(requiredMatch[1])} *`);
+        }
+
+        const colonMatch = normalized.match(/^(.+?):$/);
+        if (colonMatch && map.has(colonMatch[1])) {
+            return original.replace(normalized, `${map.get(colonMatch[1])}:`);
+        }
+
+        const parenMatch = normalized.match(/^\((.+?)\)$/);
+        if (parenMatch && map.has(parenMatch[1])) {
+            return original.replace(normalized, `(${map.get(parenMatch[1])})`);
+        }
+
+        return original;
+    },
+
+    shouldSkipAutoTranslate(node) {
+        const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+        if (!element) return true;
+        return Boolean(element.closest(
+            'script, style, code, pre, textarea, option, svg, canvas, .no-auto-i18n, .translatable-name, .translatable-desc, .smart-number'
+        ));
+    },
+
+    translateTextNode(node) {
+        if (!node || node.nodeType !== Node.TEXT_NODE || this.shouldSkipAutoTranslate(node)) {
+            return;
+        }
+
+        const translated = this.translateLiteral(node.nodeValue);
+        if (translated !== node.nodeValue) {
+            node.nodeValue = translated;
+        }
+    },
+
+    translateAttributes(root) {
+        const scope = root && root.querySelectorAll ? root : document;
+        scope.querySelectorAll('[placeholder]:not([data-i18n-placeholder]), [title]:not([data-i18n-title]), [aria-label]').forEach(element => {
+            if (this.shouldSkipAutoTranslate(element)) return;
+
+            ['placeholder', 'title', 'aria-label'].forEach(attribute => {
+                if (!element.hasAttribute(attribute)) return;
+                const value = element.getAttribute(attribute);
+                const translated = this.translateLiteral(value);
+                if (translated !== value) {
+                    element.setAttribute(attribute, translated);
+                    if (attribute === 'title') {
+                        element.setAttribute('data-bs-original-title', translated);
+                    }
+                }
+            });
+        });
+    },
+
+    translateTextNodes(root) {
+        const scope = root || document.body;
+        if (!scope) return;
+
+        if (scope.nodeType === Node.TEXT_NODE) {
+            this.translateTextNode(scope);
+            return;
+        }
+
+        if (scope.nodeType !== Node.ELEMENT_NODE && scope.nodeType !== Node.DOCUMENT_NODE) {
+            return;
+        }
+
+        const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, {
+            acceptNode: (node) => this.shouldSkipAutoTranslate(node)
+                ? NodeFilter.FILTER_REJECT
+                : NodeFilter.FILTER_ACCEPT
+        });
+
+        const nodes = [];
+        while (walker.nextNode()) {
+            nodes.push(walker.currentNode);
+        }
+        nodes.forEach(node => this.translateTextNode(node));
+    },
+
+    translateFragment(root) {
+        this.translateAttributes(root);
+        this.translateTextNodes(root);
+    },
+
+    observeDynamicContent() {
+        if (this.dynamicObserver || !document.body || typeof MutationObserver === 'undefined') {
+            return;
+        }
+
+        let scheduled = false;
+        this.dynamicObserver = new MutationObserver((mutations) => {
+            if (scheduled) return;
+
+            const hasAddedNodes = mutations.some(mutation => mutation.addedNodes && mutation.addedNodes.length);
+            if (!hasAddedNodes) return;
+
+            scheduled = true;
+            window.requestAnimationFrame(() => {
+                scheduled = false;
+                mutations.forEach(mutation => {
+                    mutation.addedNodes.forEach(node => this.translateFragment(node));
+                });
+            });
+        });
+
+        this.dynamicObserver.observe(document.body, { childList: true, subtree: true });
     },
 
     translatePage() {
@@ -10163,13 +10916,17 @@ const LanguageManager = {
             const match = h6.textContent.match(/#([\w\-]+)/);
             h6.textContent = match ? `${prefix} #${match[1]}` : prefix;
         });
+
+        this.translateFragment(document.body);
+        this.observeDynamicContent();
     },
 
     updateLanguageIndicator() {
+        const staticUrl = (window.STATIC_URL || '/static/').replace(/\/?$/, '/');
         const flagMap = {
-            uz: '/static/images/flags/uz.png',
-            ru: '/static/images/flags/ru.png',
-            en: '/static/images/flags/en.png'
+            uz: `${staticUrl}images/flags/uz.png`,
+            ru: `${staticUrl}images/flags/ru.png`,
+            en: `${staticUrl}images/flags/en.png`
         };
 
         const langFlag = document.querySelector('.lang-flag-indicator');
@@ -10187,6 +10944,18 @@ const LanguageManager = {
         });
     }
 };
+
+function buildTranslationsByLanguage(source) {
+    return Object.keys(source).reduce((result, key) => {
+        Object.keys(source[key]).forEach((lang) => {
+            if (!result[lang]) result[lang] = {};
+            result[lang][key] = source[key][lang];
+        });
+        return result;
+    }, {});
+}
+
+LanguageManager.currentLang = LanguageManager.resolveInitialLanguage().lang;
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', function () {
@@ -10206,4 +10975,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Export for use in other scripts
 window.LanguageManager = LanguageManager;
+window.dashboardTranslations = translations;
+window.translations = buildTranslationsByLanguage(translations);
+window.currentLanguage = LanguageManager.currentLang;
 window.t = (key) => LanguageManager.translate(key);

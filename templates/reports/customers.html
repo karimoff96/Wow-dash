@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
             xaxis: { categories: acquisitionLabels, labels: { style: { colors: '#9CA3AF', fontSize: '11px' } }, tooltip: { enabled: false } },
             yaxis: { labels: { style: { colors: '#9CA3AF', fontSize: '12px' } } },
             grid: { borderColor: '#E4E7EC', strokeDashArray: 3 },
-            tooltip: { theme: 'dark', y: { formatter: val => val + ' customers' } }
+            tooltip: { theme: 'light', y: { formatter: val => val + ' ' + t('common.customers') } }
         }).render();
     } else {
         document.querySelector("#acquisitionChart").innerHTML = '<div class="d-flex flex-column align-items-center justify-content-center py-5 text-secondary-light"><iconify-icon icon="solar:users-group-rounded-line-duotone" class="text-4xl mb-2"></iconify-icon><span>' + (window.LanguageManager ? LanguageManager.translate('reports.noDataAvailable') : 'No new customers in this period') + '</span></div>';
@@ -557,8 +557,8 @@ document.addEventListener('DOMContentLoaded', function() {
             colors: ['#487FFF', '#3abef9', '#22c55e'],
             legend: { show: false },
             dataLabels: { enabled: false },
-            plotOptions: { pie: { donut: { size: '65%', labels: { show: true, total: { show: true, label: 'Total', fontSize: '11px', color: '#9CA3AF' } } } } },
-            tooltip: { y: { formatter: val => val + ' users' } }
+            plotOptions: { pie: { donut: { size: '65%', labels: { show: true, total: { show: true, label: t('common.total'), fontSize: '11px', color: '#9CA3AF' } } } } },
+            tooltip: { y: { formatter: val => val + ' ' + t('table.users') } }
         }).render();
     } else {
         document.querySelector("#langChart").innerHTML = `<div class="text-center text-secondary-light py-4">${t('common.noData')}</div>`;

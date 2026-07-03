@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const shortName = languageShortNameInput.value.trim().toUpperCase();
         
         if (!name || !shortName) {
-            languageError.textContent = 'Both fields are required.';
+            languageError.textContent = t('validation.bothFieldsRequired');
             languageError.classList.remove('d-none');
             return;
         }
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Disable button and show loading
         saveLanguageBtn.disabled = true;
-        saveLanguageBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Creating...';
+        saveLanguageBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> ' + t('common.creating');
         languageError.classList.add('d-none');
         
         // Send AJAX request
@@ -320,19 +320,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 addLanguageModal.hide();
 
                 // Show success message
-                alert('Language created successfully!');
+                alert(t('language.created'));
             } else {
                 languageError.textContent = data.error;
                 languageError.classList.remove('d-none');
             }
         })
         .catch(error => {
-            languageError.textContent = 'An error occurred. Please try again.';
+            languageError.textContent = t('common.errorOccurred');
             languageError.classList.remove('d-none');
         })
         .finally(() => {
             saveLanguageBtn.disabled = false;
-            saveLanguageBtn.innerHTML = '<iconify-icon icon="mdi:content-save" class="me-1"></iconify-icon> Create Language';
+            saveLanguageBtn.innerHTML = '<iconify-icon icon="mdi:content-save" class="me-1"></iconify-icon> ' + t('literal.createLanguage');
         });
     });
     

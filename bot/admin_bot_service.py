@@ -1,10 +1,8 @@
 """
 Admin Bot Notification Service
 
-This module handles sending administrative notifications to superuser(s)
-via a separate Telegram bot for:
-- Contact form submissions from landing page
-- Subscription renewal requests from customers
+This module handles sending administrative alerts to configured technical
+recipients via a separate Telegram bot.
 
 Bot: @uzmultilang_bot
 Token: 8014558483:AAFQfx4OXxWHMujEK_AXNHfqHMJxIWHy2HM
@@ -176,21 +174,6 @@ if ADMIN_TELEGRAM_ID:
         ADMIN_TELEGRAM_IDS = []
 
 
-# Emoji maps for status-aware summaries
-CONTACT_STATUS_EMOJI = {
-    'new': '🆕',
-    'contacted': '📞',
-    'pending': '⏳',
-    'converted': '✅',
-    'cancelled': '⛔',
-}
-
-RENEWAL_STATUS_EMOJI = {
-    'renewal_requested': '⏳',
-    'renewal_approved': '✅',
-    'renewal_rejected': '❌',
-}
-
 # Cache bot instance
 _admin_bot = None
 
@@ -207,27 +190,6 @@ def get_admin_bot():
             logger.error(f"Failed to create admin bot: {e}")
             return None
     return _admin_bot
-
-
-def format_contact_request_summary(contact_request, updated_at=None):
-    """Build a concise, status-aware summary for contact requests."""
-    status_label = contact_request.get_status_display()
-    status_emoji = CONTACT_STATUS_EMOJI.get(contact_request.status, 'ℹ️')
-    received_at = timezone.localtime(contact_request.created_at).strftime('%Y-%m-%d %H:%M')
-    updated_display = timezone.localtime(updated_at).strftime('%Y-%m-%d %H:%M') if updated_at else received_at
-    company = contact_request.company or 'N/A'
-    phone = contact_request.phone or 'N/A'
-
-    return (
-        f"📩 <b>Contact Request</b> #{contact_request.id}\n"
-        f"{status_emoji} <b>Status:</b> {status_label}\n"
-        f"👤 <b>Name:</b> {contact_request.name}\n"
-        f"📧 <b>Email:</b> {contact_request.email}\n"
-        f"🏢 <b>Company:</b> {company}\n"
-        f"📱 <b>Phone/Telegram:</b> {phone}\n"
-        f"💬 <b>Message:</b> {contact_request.message}\n"
-        f"⏰ <b>Updated:</b> {updated_display} (Tashkent)"
-    )
 
 
 def send_security_alert(message: str) -> bool:
@@ -257,248 +219,6 @@ def send_security_alert(message: str) -> bool:
             logger.error(f"Unexpected error sending security alert to {admin_id}: {e}")
 
     return sent_any
-
-
-def format_renewal_request_summary(subscription_history, status_action=None, updated_at=None):
-    """Build status-aware summary for renewal requests."""
-    status_action = status_action or subscription_history.action
-    status_emoji = RENEWAL_STATUS_EMOJI.get(status_action, 'ℹ️')
-    status_label_map = {
-        'renewal_requested': 'Pending review',
-        'renewal_approved': 'Approved',
-        'renewal_rejected': 'Rejected',
-    }
-    status_label = status_label_map.get(status_action, status_action)
-
-    subscription = subscription_history.subscription
-    organization = subscription.organization
-    user = subscription_history.performed_by
-
-    requested_at = timezone.localtime(subscription_history.timestamp).strftime('%Y-%m-%d %H:%M')
-    updated_display = timezone.localtime(updated_at).strftime('%Y-%m-%d %H:%M') if updated_at else requested_at
-
-    return (
-        f"🔄 <b>Renewal Request</b> #{subscription_history.id}\n"
-        f"{status_emoji} <b>Status:</b> {status_label}\n"
-        f"🏢 <b>Organization:</b> {organization.name}\n"
-        f"👤 <b>Requested by:</b> {user.get_full_name() or user.username} ({user.email})\n"
-        f"📋 <b>Current Tariff:</b> {subscription.tariff.title}\n"
-        f"📅 <b>Ends:</b> {subscription.end_date.strftime('%Y-%m-%d')}\n"
-        f"📝 <b>Details:</b> {subscription_history.description}\n"
-        f"⏰ <b>Updated:</b> {updated_display} (Tashkent)"
-    )
-
-
-def send_contact_request_notification(contact_request):
-    """
-    Send notification to admin(s) when new contact request is received.
-    Sends to all configured admin Telegram IDs (users and channels).
-    
-    Args:
-        contact_request: ContactRequest model instance
-    """
-    logger.info(f"Attempting to send contact request notification for {contact_request.name}")
-    
-    if not ADMIN_TELEGRAM_IDS:
-        logger.warning(f"ADMIN_TELEGRAM_IDS not configured. Current value: {ADMIN_TELEGRAM_IDS}. Skipping notification.")
-        return False
-    
-    if not ADMIN_BOT_TOKEN:
-        logger.error(f"ADMIN_BOT_TOKEN not configured. Cannot send notification.")
-        return False
-    
-    bot = get_admin_bot()
-    if not bot:
-        logger.error("Admin bot not available - get_admin_bot() returned None")
-        return False
-    
-    try:
-        message = format_contact_request_summary(contact_request)
-        
-        # Send to all admin IDs
-        success_count = 0
-        failed_ids = []
-        message_saved = False
-        
-        for admin_id in ADMIN_TELEGRAM_IDS:
-            try:
-                logger.info(f"Sending message to telegram ID: {admin_id}")
-                sent_message = bot.send_message(
-                    chat_id=admin_id,
-                    text=message,
-                    parse_mode="HTML"
-                )
-                if not message_saved:
-                    contact_request.admin_telegram_message_id = sent_message.message_id
-                    contact_request.admin_telegram_chat_id = admin_id
-                    contact_request.save(update_fields=['admin_telegram_message_id', 'admin_telegram_chat_id'])
-                    message_saved = True
-                success_count += 1
-                logger.info(f"✅ Sent to {admin_id}")
-            except ApiTelegramException as e:
-                logger.error(f"❌ Failed to send to {admin_id}: {e}")
-                failed_ids.append(admin_id)
-            except Exception as e:
-                logger.error(f"❌ Unexpected error sending to {admin_id}: {e}")
-                failed_ids.append(admin_id)
-        
-        if success_count > 0:
-            logger.info(f"✅ Contact request notification sent to {success_count}/{len(ADMIN_TELEGRAM_IDS)} recipients")
-            if failed_ids:
-                logger.warning(f"⚠️ Failed to send to: {failed_ids}")
-            return True
-        else:
-            logger.error(f"❌ Failed to send contact notification to all recipients")
-            return False
-        
-    except Exception as e:
-        logger.error(f"❌ Unexpected error in send_contact_request_notification: {e}")
-        import traceback
-        logger.error(traceback.format_exc())
-        return False
-
-
-def update_contact_request_notification(contact_request):
-    """Edit the existing admin message to reflect the latest contact status."""
-    if not ADMIN_TELEGRAM_IDS:
-        logger.warning("ADMIN_TELEGRAM_IDS not configured. Skipping contact status edit.")
-        return False
-
-    bot = get_admin_bot()
-    if not bot:
-        logger.error("Admin bot not available for contact status edit")
-        return False
-
-    message_text = format_contact_request_summary(contact_request, updated_at=timezone.now())
-
-    # If we do not have a stored message reference, send a fresh summary
-    if not contact_request.admin_telegram_message_id or not contact_request.admin_telegram_chat_id:
-        logger.info("No existing admin message ID for contact request; sending a new summary instead of editing.")
-        return send_contact_request_notification(contact_request)
-
-    try:
-        bot.edit_message_text(
-            chat_id=contact_request.admin_telegram_chat_id,
-            message_id=contact_request.admin_telegram_message_id,
-            text=message_text,
-            parse_mode="HTML"
-        )
-        logger.info(
-            f"✏️ Updated contact request message {contact_request.admin_telegram_message_id} "
-            f"for chat {contact_request.admin_telegram_chat_id}"
-        )
-        return True
-    except ApiTelegramException as e:
-        logger.warning(f"Edit failed for contact request message; sending new summary. Error: {e}")
-        # Try sending a new message as fallback
-        return send_contact_request_notification(contact_request)
-    except Exception as e:
-        logger.error(f"Unexpected error editing contact request message: {e}")
-        return False
-
-
-def send_renewal_request_notification(subscription_history):
-    """
-    Send notification to admin(s) when renewal request is submitted.
-    Sends to all configured admin Telegram IDs (users and channels).
-    
-    Args:
-        subscription_history: SubscriptionHistory model instance with action='renewal_requested'
-    """
-    if not ADMIN_TELEGRAM_IDS:
-        logger.warning("ADMIN_TELEGRAM_IDS not configured. Skipping notification.")
-        return False
-    
-    bot = get_admin_bot()
-    if not bot:
-        logger.error("Admin bot not available")
-        return False
-    
-    try:
-        subscription = subscription_history.subscription
-        organization = subscription.organization
-        user = subscription_history.performed_by
-        
-        message = format_renewal_request_summary(subscription_history)
-        
-        # Send to all admin IDs
-        success_count = 0
-        failed_ids = []
-        message_saved = False
-        
-        for admin_id in ADMIN_TELEGRAM_IDS:
-            try:
-                sent_message = bot.send_message(
-                    chat_id=admin_id,
-                    text=message,
-                    parse_mode="HTML"
-                )
-                if not message_saved:
-                    subscription_history.admin_telegram_message_id = sent_message.message_id
-                    subscription_history.admin_telegram_chat_id = admin_id
-                    subscription_history.save(update_fields=['admin_telegram_message_id', 'admin_telegram_chat_id'])
-                    message_saved = True
-                success_count += 1
-                logger.info(f"✅ Renewal notification sent to {admin_id}")
-            except ApiTelegramException as e:
-                logger.error(f"❌ Failed to send renewal notification to {admin_id}: {e}")
-                failed_ids.append(admin_id)
-            except Exception as e:
-                logger.error(f"❌ Unexpected error sending renewal notification to {admin_id}: {e}")
-                failed_ids.append(admin_id)
-        
-        if success_count > 0:
-            logger.info(f"Renewal request notification sent to {success_count}/{len(ADMIN_TELEGRAM_IDS)} recipients for {organization.name}")
-            if failed_ids:
-                logger.warning(f"⚠️ Failed to send to: {failed_ids}")
-            return True
-        else:
-            logger.error(f"Failed to send renewal notification to all recipients")
-            return False
-        
-    except Exception as e:
-        logger.error(f"Error sending renewal request notification: {e}")
-        return False
-
-def update_renewal_request_notification(subscription_history, status_action):
-    """Edit the existing admin message for a renewal request when it is processed."""
-    if not ADMIN_TELEGRAM_IDS:
-        logger.warning("ADMIN_TELEGRAM_IDS not configured. Skipping renewal status edit.")
-        return False
-
-    bot = get_admin_bot()
-    if not bot:
-        logger.error("Admin bot not available for renewal status edit")
-        return False
-
-    message_text = format_renewal_request_summary(
-        subscription_history,
-        status_action=status_action,
-        updated_at=timezone.now(),
-    )
-
-    if not subscription_history.admin_telegram_message_id or not subscription_history.admin_telegram_chat_id:
-        logger.info("No existing admin message ID for renewal request; sending a new summary instead of editing.")
-        return send_renewal_request_notification(subscription_history)
-
-    try:
-        bot.edit_message_text(
-            chat_id=subscription_history.admin_telegram_chat_id,
-            message_id=subscription_history.admin_telegram_message_id,
-            text=message_text,
-            parse_mode="HTML"
-        )
-        logger.info(
-            f"✏️ Updated renewal request message {subscription_history.admin_telegram_message_id} "
-            f"for chat {subscription_history.admin_telegram_chat_id}"
-        )
-        return True
-    except ApiTelegramException as e:
-        logger.warning(f"Edit failed for renewal request message; sending new summary. Error: {e}")
-        return send_renewal_request_notification(subscription_history)
-    except Exception as e:
-        logger.error(f"Unexpected error editing renewal request message: {e}")
-        return False
 
 
 def set_admin_telegram_id(telegram_ids):
@@ -549,9 +269,9 @@ Hello, {username}!
 
 <b>Your Telegram ID:</b> <code>{user_id}</code>
 
-This bot sends administrative notifications for:
-• 📧 Contact form submissions from landing page
-• 🔄 Subscription renewal requests
+This bot sends administrative alerts for:
+• 🔐 Security and configuration events
+• ⚙️ Operational health checks
 
 <b>Available Commands:</b>
 /start or /help - Show this message
@@ -620,8 +340,8 @@ This bot sends administrative notifications for:
             status_text += f"\n  • {admin_id} - {id_type} {is_you}"
         
         status_text += "\n\n<b>Notification Types:</b>"
-        status_text += "\n  ✅ Contact form submissions"
-        status_text += "\n  ✅ Subscription renewal requests"
+        status_text += "\n  ✅ Security and configuration alerts"
+        status_text += "\n  ✅ Operational health notifications"
         
         try:
             bot.reply_to(message, status_text, parse_mode="HTML")

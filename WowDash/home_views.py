@@ -11,7 +11,6 @@ from organizations.rbac import (
     get_user_customers,
     any_permission_required,
 )
-from billing.decorators import require_feature
 from organizations.models import AdminUser
 import json
 
@@ -354,7 +353,6 @@ def widgets(request):
 
 
 @login_required(login_url="admin_login")
-@require_feature('analytics_basic')
 @any_permission_required('can_view_reports', 'can_view_analytics')
 def sales(request):
     """Sales Dashboard - requires can_view_reports or can_view_analytics permission"""
@@ -815,7 +813,6 @@ def sales(request):
 
 
 @login_required(login_url="admin_login")
-@require_feature('financial_reports')
 @any_permission_required('can_view_financial_reports', 'can_view_analytics')
 def finance(request):
     """Finance/Analytics page - requires can_view_financial_reports or can_view_analytics permission"""

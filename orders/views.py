@@ -17,13 +17,11 @@ from .models import Order, OrderMedia, OrderPriceChange, PaymeTransaction
 logger = logging.getLogger(__name__)
 from organizations.rbac import (
     get_user_orders, get_user_staff, get_user_branches,
-    admin_profile_required, role_required, manager_or_owner_required,
     permission_required, any_permission_required
 )
 from organizations.models import AdminUser, Branch, TranslationCenter
 from core.audit import log_action, log_order_assign, log_status_change
 from bot.notification_service import send_order_notification
-from billing.decorators import require_feature, require_active_subscription, check_order_limit
 from django.views.decorators.http import require_GET
 from core.throttling import throttle
 
@@ -176,8 +174,6 @@ def api_payme_transaction_detail(request, tx_id):
 
 
 @login_required(login_url='admin_login')
-@require_active_subscription
-@require_feature('orders_basic')
 @any_permission_required('can_view_all_orders', 'can_view_own_orders', 'can_manage_orders')
 def ordersList(request):
     """List orders with search and filter - Permission-based access"""
@@ -453,8 +449,6 @@ def ordersList(request):
 
 
 @login_required(login_url='admin_login')
-@require_active_subscription
-@require_feature('orders_basic')
 @any_permission_required('can_view_all_orders', 'can_view_own_orders', 'can_manage_orders')
 def orderDetail(request, order_id):
     """View order details with permission-based access control"""
@@ -478,7 +472,7 @@ def orderDetail(request, order_id):
                 can_view = True
     
     if not can_view:
-        messages.error(request, "You don't have permission to view this order.")
+        messages.error(request, _("You don't have permission to view this order."))
         return redirect('orders:ordersList')
     
     # Get all order permissions for current user
@@ -573,8 +567,6 @@ def orderDetail(request, order_id):
 
 
 @login_required(login_url='admin_login')
-@require_active_subscription
-@require_feature('orders_advanced')
 @any_permission_required('can_edit_orders', 'can_manage_orders')
 def orderEdit(request, order_id):
     """Edit an order - permission-based access control"""
@@ -592,7 +584,7 @@ def orderEdit(request, order_id):
     
     # Check permission using granular permission system
     if not has_order_permission(request, 'can_edit_orders', order):
-        messages.error(request, "You don't have permission to edit this order.")
+        messages.error(request, _("You don't have permission to edit this order."))
         return redirect('orders:orderDetail', order_id=order_id)
     
     # Get accessible centers and branches
@@ -986,8 +978,6 @@ def updateOrderStatus(request, order_id):
 
 @login_required(login_url='admin_login')
 @require_POST
-@require_active_subscription
-@require_feature('orders_advanced')
 @any_permission_required('can_delete_orders', 'can_manage_orders')
 def deleteOrder(request, order_id):
     """Delete an order - permission-based access control"""
@@ -996,7 +986,7 @@ def deleteOrder(request, order_id):
         
         # Check permission using granular permission system
         if not has_order_permission(request, 'can_delete_orders', order):
-            messages.error(request, "You don't have permission to delete orders.")
+            messages.error(request, _("You don't have permission to delete orders."))
             return redirect('orders:ordersList')
         
         # Store order info before deletion
@@ -1038,18 +1028,18 @@ def assignOrder(request, order_id):
     
     # Check permission using granular permission system
     if not has_order_permission(request, 'can_assign_orders', order):
-        messages.error(request, "You don't have permission to assign orders.")
+        messages.error(request, _("You don't have permission to assign orders."))
         return redirect('orders:orderDetail', order_id=order_id)
     
     staff_id = request.POST.get('staff_id')
     if not staff_id:
-        messages.error(request, "Please select a staff member.")
+        messages.error(request, _("Please select a staff member."))
         return redirect('orders:orderDetail', order_id=order_id)
     
     try:
         staff_member = AdminUser.objects.get(pk=staff_id, is_active=True)
     except AdminUser.DoesNotExist:
-        messages.error(request, "Invalid staff member selected.")
+        messages.error(request, _("Invalid staff member selected."))
         return redirect('orders:orderDetail', order_id=order_id)
     
     # For superusers, allow any assignment - also set the order's branch if not set
@@ -1060,7 +1050,7 @@ def assignOrder(request, order_id):
     else:
         # Verify staff is in the same branch as the order (if order has a branch)
         if order.branch and staff_member.branch != order.branch:
-            messages.error(request, "Staff member must be in the same branch as the order.")
+            messages.error(request, _("Staff member must be in the same branch as the order."))
             return redirect('orders:orderDetail', order_id=order_id)
     
     # Assign the order
@@ -1097,7 +1087,7 @@ def unassignOrder(request, order_id):
     
     # Check permission using granular permission system
     if not has_order_permission(request, 'can_assign_orders', order):
-        messages.error(request, "You don't have permission to unassign orders.")
+        messages.error(request, _("You don't have permission to unassign orders."))
         return redirect('orders:orderDetail', order_id=order_id)
     
     # Clear assignment
@@ -1134,8 +1124,6 @@ def unassignOrder(request, order_id):
 
 @login_required(login_url='admin_login')
 @require_POST
-@require_active_subscription
-@require_feature('orders_advanced')
 def bulk_delete_orders(request):
     """Bulk delete multiple orders - permission-based access control"""
     # Try both formats: order_ids[] and order_ids
@@ -1201,7 +1189,7 @@ def receivePayment(request, order_id):
     
     # Check permission using granular permission system
     if not has_order_permission(request, 'can_receive_payments', order):
-        messages.error(request, "You don't have permission to receive payments.")
+        messages.error(request, _("You don't have permission to receive payments."))
         return redirect('orders:orderDetail', order_id=order_id)
     
     # Mark payment received
@@ -1230,12 +1218,12 @@ def completeOrder(request, order_id):
     
     # Check permission using granular permission system
     if not has_order_permission(request, 'can_complete_orders', order):
-        messages.error(request, "You don't have permission to complete orders.")
+        messages.error(request, _("You don't have permission to complete orders."))
         return redirect('orders:orderDetail', order_id=order_id)
     
     # Check if order is ready to be completed
     if order.status not in ['ready', 'in_progress']:
-        messages.error(request, "Order must be ready or in progress to complete.")
+        messages.error(request, _("Order must be ready or in progress to complete."))
         return redirect('orders:orderDetail', order_id=order_id)
     
     # Mark completed
@@ -1313,7 +1301,6 @@ def api_order_stats(request):
 
 
 @login_required(login_url='admin_login')
-@require_feature('orders_basic')
 @throttle(max_calls=30, period=60, key_prefix='api_poll')  # max 30 polls/min per user
 def api_poll_new_orders(request):
     """
@@ -1478,7 +1465,7 @@ def api_branch_staff(request, branch_id):
 def myOrders(request):
     """List orders assigned to the current user (for staff)"""
     if not request.admin_profile:
-        messages.error(request, "You need an admin profile to view your orders.")
+        messages.error(request, _("You need an admin profile to view your orders."))
         return redirect('index')
     
     orders = Order.objects.filter(
@@ -1528,9 +1515,6 @@ def myOrders(request):
 
 
 @login_required(login_url='admin_login')
-@require_active_subscription
-@require_feature('orders_basic')
-@check_order_limit
 @permission_required('can_create_orders')
 def orderCreate(request):
     """Create a new order - requires can_create_orders permission"""
@@ -1770,8 +1754,6 @@ from orders.payment_service import PaymentService, PaymentError
 
 @login_required(login_url="admin_login")
 @require_POST
-@require_active_subscription
-@require_feature('payment_management')
 @any_permission_required('can_receive_payments', 'can_manage_financial', 'can_manage_orders')
 def record_order_payment(request, order_id):
     """
@@ -1860,7 +1842,6 @@ def record_order_payment(request, order_id):
 
 
 @login_required(login_url="admin_login")
-@require_feature('extra_fees')
 @require_POST
 @any_permission_required('can_edit_orders', 'can_manage_orders')
 def add_order_extra_fee(request, order_id):
@@ -2268,7 +2249,6 @@ def edit_order_price(request, order_id):
 # ─────────────────────────────────────────────────────────────────────────────
 
 @login_required(login_url='admin_login')
-@require_active_subscription
 @any_permission_required('can_view_all_orders', 'can_view_own_orders', 'can_manage_orders')
 def add_order_comment(request, order_id):
     """AJAX: add an internal comment to an order."""
@@ -2320,7 +2300,6 @@ def add_order_comment(request, order_id):
 
 
 @login_required(login_url='admin_login')
-@require_active_subscription
 def delete_order_comment(request, order_id, comment_id):
     """AJAX: delete an internal comment (own comment, or superuser/manager)."""
     from django.http import JsonResponse
@@ -2497,7 +2476,6 @@ _INVOICE_STRINGS = {
 
 
 @login_required(login_url='admin_login')
-@require_active_subscription
 @any_permission_required('can_view_all_orders', 'can_view_own_orders', 'can_manage_orders')
 def order_invoice_pdf(request, order_id):
     """
@@ -2530,7 +2508,7 @@ def order_invoice_pdf(request, order_id):
     if not can_view and request.admin_profile and order.assigned_to == request.admin_profile:
         can_view = has_order_permission(request, 'can_view_own_orders', order)
     if not can_view:
-        messages.error(request, "You don't have permission to view this order.")
+        messages.error(request, _("You don't have permission to view this order."))
         return redirect('orders:ordersList')
 
     price_breakdown = order.get_price_breakdown()

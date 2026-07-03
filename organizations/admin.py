@@ -1,12 +1,55 @@
 from django.contrib import admin
 from .models import TranslationCenter, Branch, Role, AdminUser
+from .credential_locks import (
+    BRANCH_SETUP_FIELDS,
+    CENTER_SETUP_FIELDS,
+    SETUP_FIELD_LABELS,
+    is_configured,
+    mask_identifier,
+    setup_change_summary,
+)
+from core.audit import log_update
 
 
 class BranchInline(admin.TabularInline):
     model = Branch
     extra = 0
-    fields = ['name', 'region', 'district', 'phone', 'is_main', 'is_active']
-    readonly_fields = []
+    fields = ['name', 'region', 'district', 'phone', 'is_main', 'is_active',
+              'b2c_orders_channel_id', 'b2b_orders_channel_id']
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return list(BRANCH_SETUP_FIELDS)
+        return []
+
+
+def _initial_setup_summary(obj, fields):
+    changes = {}
+    for field in fields:
+        value = getattr(obj, field, None)
+        if isinstance(value, bool) and not value:
+            if field == "payme_sandbox" and getattr(obj, "payme_enabled", False):
+                pass
+            else:
+                continue
+        if not is_configured(value) and not isinstance(value, bool):
+            continue
+
+        if field == "payme_sandbox":
+            display = "Sandbox" if value else "Production"
+        elif field == "payme_enabled":
+            display = "Enabled" if value else "Disabled"
+        elif field in {"bot_token", "payme_secret_key", "payme_secret_key_prod"}:
+            display = "Configured" if is_configured(value) else "Missing"
+        else:
+            display = mask_identifier(value) or "Missing"
+
+        changes[field] = {
+            "label": str(SETUP_FIELD_LABELS.get(field, field)),
+            "old": "Missing",
+            "new": display,
+        }
+    return changes
 
 
 @admin.register(TranslationCenter)
@@ -26,7 +69,8 @@ class TranslationCenterAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
         ('Payme Integration', {
-            'fields': ('payme_enabled', 'payme_sandbox', 'payme_merchant_id', 'payme_secret_key'),
+            'fields': ('payme_enabled', 'payme_sandbox', 'payme_merchant_id',
+                       'payme_secret_key', 'payme_secret_key_prod'),
             'classes': ('collapse',),
             'description': (
                 'Enable Payme card payment for this center. '
@@ -36,6 +80,32 @@ class TranslationCenterAdmin(admin.ModelAdmin):
         }),
     )
 
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return list(CENTER_SETUP_FIELDS)
+        return []
+
+    def save_model(self, request, obj, form, change):
+        old_obj = None
+        if change and obj.pk:
+            old_obj = TranslationCenter.objects.get(pk=obj.pk)
+
+        super().save_model(request, obj, form, change)
+
+        changes = (
+            setup_change_summary(old_obj, obj, CENTER_SETUP_FIELDS)
+            if change
+            else _initial_setup_summary(obj, CENTER_SETUP_FIELDS)
+        )
+        if changes:
+            log_update(
+                user=request.user,
+                target=obj,
+                changes=changes,
+                details="Setup-only center configuration changed.",
+                request=request,
+            )
+
 
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
@@ -43,6 +113,43 @@ class BranchAdmin(admin.ModelAdmin):
     list_filter = ['center', 'region', 'is_main', 'show_pricelist', 'is_active']
     search_fields = ['name', 'center__name', 'region__name']
     ordering = ['center', '-is_main', 'name']
+    fieldsets = (
+        (None, {
+            'fields': ('center', 'region', 'district', 'name', 'address', 'phone',
+                       'location_url', 'is_main', 'show_pricelist', 'is_active'),
+        }),
+        ('Telegram Routing', {
+            'fields': ('b2c_orders_channel_id', 'b2b_orders_channel_id'),
+            'classes': ('collapse',),
+            'description': 'Setup-only Telegram channel IDs for order routing.',
+        }),
+    )
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return list(BRANCH_SETUP_FIELDS)
+        return []
+
+    def save_model(self, request, obj, form, change):
+        old_obj = None
+        if change and obj.pk:
+            old_obj = Branch.objects.get(pk=obj.pk)
+
+        super().save_model(request, obj, form, change)
+
+        changes = (
+            setup_change_summary(old_obj, obj, BRANCH_SETUP_FIELDS)
+            if change
+            else _initial_setup_summary(obj, BRANCH_SETUP_FIELDS)
+        )
+        if changes:
+            log_update(
+                user=request.user,
+                target=obj,
+                changes=changes,
+                details="Setup-only branch configuration changed.",
+                request=request,
+            )
 
 
 @admin.register(Role)

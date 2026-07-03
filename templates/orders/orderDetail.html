@@ -2,7 +2,6 @@
 {% load static %}
 {% load permission_tags %}
 {% load number_filters %}
-{% load billing_extras %}
 
 {% block content %}
 <div class="row gy-4">
@@ -1346,7 +1345,7 @@ async function submitPayment() {
         const data = await response.json();
         
         if (data.success) {
-            showAlert('Payment recorded successfully!', 'success');
+            showAlert(t('payment.recordedSuccessfully'), 'success');
             updatePaymentDisplay(data);
             
             // Reload page after 1.5 seconds to update all UI
@@ -1354,13 +1353,13 @@ async function submitPayment() {
                 window.location.reload();
             }, 1500);
         } else {
-            showAlert(data.error || 'Failed to record payment', 'danger');
+            showAlert(data.error || t('payment.recordFailed'), 'danger');
         }
     } catch (error) {
-        showAlert('An error occurred: ' + error.message, 'danger');
+        showAlert(t('common.error') + ': ' + error.message, 'danger');
     } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<iconify-icon icon="mdi:check" class="me-1"></iconify-icon> Record Payment';
+        submitBtn.innerHTML = '<iconify-icon icon="mdi:check" class="me-1"></iconify-icon> ' + t('payment.recordPayment');
     }
 }
 {% endif %}
@@ -1388,7 +1387,7 @@ document.getElementById('savePriceChangeBtn')?.addEventListener('click', async f
 
     // Client-side validation
     if (!newPrice || !reason) {
-        errDiv.textContent = 'Both fields are required.';
+        errDiv.textContent = t('validation.bothFieldsRequired');
         errDiv.classList.remove('d-none');
         return;
     }
@@ -1406,20 +1405,20 @@ document.getElementById('savePriceChangeBtn')?.addEventListener('click', async f
         const resp = await fetch(EDIT_PRICE_URL, { method: 'POST', body: fd, headers: {'X-Requested-With': 'XMLHttpRequest'} });
         const data = await resp.json();
         if (!data.success) {
-            errDiv.textContent = data.error || 'An error occurred.';
+            errDiv.textContent = data.error || t('common.errorOccurred');
             errDiv.classList.remove('d-none');
             this.disabled = false;
-            this.innerHTML = '<iconify-icon icon="solar:check-circle-bold" class="me-1"></iconify-icon> Save Change';
+            this.innerHTML = '<iconify-icon icon="solar:check-circle-bold" class="me-1"></iconify-icon> ' + t('common.saveChange');
             return;
         }
         // Success — reload to show updated price and history entry
         bootstrap.Modal.getInstance(document.getElementById('editPriceModal'))?.hide();
         window.location.href = window.location.href;
     } catch (err) {
-        errDiv.textContent = 'Server error. Please try again.';
+        errDiv.textContent = t('common.serverError');
         errDiv.classList.remove('d-none');
         this.disabled = false;
-        this.innerHTML = '<iconify-icon icon="solar:check-circle-bold" class="me-1"></iconify-icon> Save Change';
+        this.innerHTML = '<iconify-icon icon="solar:check-circle-bold" class="me-1"></iconify-icon> ' + t('common.saveChange');
     }
 });
 {% endif %}
@@ -1501,7 +1500,7 @@ document.getElementById('savePriceChangeBtn')?.addEventListener('click', async f
     document.getElementById('commentList')?.addEventListener('click', async function (e) {
         const btn = e.target.closest('.btn-delete-comment');
         if (!btn) return;
-        if (!confirm('Delete this comment?')) return;
+        if (!confirm(t('comments.deleteConfirm'))) return;
 
         const id = btn.dataset.commentId;
         const fd = new FormData();

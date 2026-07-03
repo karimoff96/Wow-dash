@@ -1003,84 +1003,14 @@ def send_status_notification(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Order)
 def track_order_creation(sender, instance, created, **kwargs):
-    """Track order creation in usage statistics"""
-    if created:
-        try:
-            # Get organization from branch
-            if not instance.branch:
-                return
-            
-            organization = instance.branch.center
-            if not organization:
-                return
-            
-            # Import here to avoid circular imports
-            from billing.models import UsageTracking
-            
-            # Get or create tracking for current month
-            tracking = UsageTracking.get_or_create_current_month(organization)
-            
-            # Determine if it's a bot order or manual order
-            # Bot orders have bot_user with user_id (Telegram ID)
-            # Manual orders have bot_user but user_id is None
-            is_bot_order = bool(instance.bot_user and instance.bot_user.user_id)
-            
-            # Increment order counter
-            tracking.increment_orders(is_bot_order=is_bot_order)
-            
-            logger.info(f"✓ Tracked order #{instance.id} for {organization.name} (bot={is_bot_order})")
-        except Exception as e:
-            logger.error(f"✗ Failed to track order creation: {e}")
-            import traceback
-            traceback.print_exc()
+    """Billing usage tracking is removed in the client edition."""
+    return None
 
 
 @receiver(post_save, sender=Order)
 def track_order_revenue(sender, instance, **kwargs):
-    """Track revenue when order status changes to paid/completed"""
-    # Check if status changed to a paid status
-    if hasattr(instance, '_old_status'):
-        old_status = instance._old_status
-        new_status = instance.status
-        
-        # Track revenue when order becomes paid for the first time
-        paid_statuses = ['payment_confirmed', 'completed', 'ready']
-        
-        # Only track if transitioning TO a paid status FROM a non-paid status
-        if new_status in paid_statuses and old_status not in paid_statuses:
-            try:
-                if not instance.branch:
-                    return
-                
-                organization = instance.branch.center
-                if not organization:
-                    return
-                
-                # Import here to avoid circular imports
-                from billing.models import UsageTracking
-                from datetime import date
-                
-                # Get or create tracking for current month
-                today = date.today()
-                tracking, created = UsageTracking.objects.get_or_create(
-                    organization=organization,
-                    year=today.year,
-                    month=today.month,
-                    defaults={
-                        'branches_count': organization.branches.count(),
-                        'staff_count': organization.get_staff_count(),
-                    }
-                )
-                
-                # Add revenue
-                tracking.total_revenue += instance.total_price
-                tracking.save(update_fields=['total_revenue', 'updated_at'])
-                
-                logger.info(f"✓ Tracked revenue {instance.total_price} for {organization.name} (Order #{instance.id}: {old_status} → {new_status})")
-            except Exception as e:
-                logger.error(f"✗ Failed to track order revenue: {e}")
-                import traceback
-                traceback.print_exc()
+    """Billing usage tracking is removed in the client edition."""
+    return None
 
 
 @receiver(post_delete, sender=Order)

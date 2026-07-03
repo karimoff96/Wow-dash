@@ -32,25 +32,13 @@ def admin_login(request):
 
         if user is not None:
             if user.is_staff or user.is_superuser:
-                # Check subscription status before granting access (superusers bypass)
-                if not user.is_superuser:
-                    from django.urls import reverse as _reverse
-                    profile = getattr(user, "admin_profile", None)
-                    center = getattr(profile, "center", None) if profile else None
-                    subscription = getattr(center, "subscription", None) if center else None
-                    if subscription is not None and not subscription.is_active():
-                        messages.error(
-                            request,
-                            "Your subscription has ended. Please contact your administrator to restore access.",
-                        )
-                        return render(request, "authentication/signin.html")
                 login(request, user)
                 next_url = request.GET.get("next", "index")
                 return redirect(next_url)
             else:
-                messages.error(request, "You do not have admin access.")
+                messages.error(request, _("You do not have admin access."))
         else:
-            messages.error(request, "Invalid username or password.")
+            messages.error(request, _("Invalid username or password."))
 
     return render(request, "authentication/signin.html")
 
@@ -58,7 +46,7 @@ def admin_login(request):
 def admin_logout(request):
     """Admin logout view"""
     logout(request)
-    messages.success(request, "You have been logged out successfully.")
+    messages.success(request, _("You have been logged out successfully."))
     return redirect("admin_login")
 
 
@@ -109,7 +97,7 @@ def forgot_password(request):
                     request, "Password reset link has been sent to your email."
                 )
             except Exception as e:
-                messages.error(request, "Failed to send email. Please try again later.")
+                messages.error(request, _("Failed to send email. Please try again later."))
 
         except User.DoesNotExist:
             # Don't reveal that user doesn't exist for security
@@ -135,9 +123,9 @@ def reset_password(request, uidb64, token):
             confirm_password = request.POST.get("confirm_password")
 
             if password != confirm_password:
-                messages.error(request, "Passwords do not match.")
+                messages.error(request, _("Passwords do not match."))
             elif len(password) < 8:
-                messages.error(request, "Password must be at least 8 characters long.")
+                messages.error(request, _("Password must be at least 8 characters long."))
             else:
                 user.set_password(password)
                 user.save()
@@ -150,7 +138,7 @@ def reset_password(request, uidb64, token):
             request, "authentication/resetPassword.html", {"valid_link": True}
         )
     else:
-        messages.error(request, "The password reset link is invalid or has expired.")
+        messages.error(request, _("The password reset link is invalid or has expired."))
         return redirect("forgot_password")
 
 
@@ -210,7 +198,7 @@ def addUser(request):
         # Check permission for creating agencies
         if is_agency and not (request.user.is_superuser or 
                              (request.admin_profile and (request.admin_profile.role.can_manage_agencies or request.admin_profile.role.can_create_agencies))):
-            messages.error(request, "You don't have permission to create agencies.")
+            messages.error(request, _("You don't have permission to create agencies."))
             context = {
                 "title": "Add User",
                 "subTitle": "Add User",
@@ -221,26 +209,11 @@ def addUser(request):
             }
             return render(request, "users/addUser.html", context)
 
-        # Check tariff feature for agency management
-        if is_agency and not request.user.is_superuser:
-            _center = request.admin_profile.center if request.admin_profile else None
-            if _center and hasattr(_center, 'subscription') and not _center.subscription.tariff.has_feature('agency_management'):
-                messages.error(request, "Agency management is not available in your current plan. Please upgrade.")
-                context = {
-                    "title": "Add User",
-                    "subTitle": "Add User",
-                    "agencies": agencies,
-                    "centers": centers,
-                    "branches": branches,
-                    "languages": BotUser.LANGUAGES,
-                }
-                return render(request, "users/addUser.html", context)
-
         # Validation
         if not name:
-            messages.error(request, "Full name is required.")
+            messages.error(request, _("Full name is required."))
         elif not phone:
-            messages.error(request, "Phone number is required.")
+            messages.error(request, _("Phone number is required."))
         else:
             try:
                 # Create the BotUser
@@ -437,7 +410,7 @@ def editUser(request, user_id):
         if is_agency != user.is_agency:  # Agency status is being changed
             if is_agency and not (request.user.is_superuser or 
                                  (request.admin_profile and (request.admin_profile.role.can_manage_agencies or request.admin_profile.role.can_create_agencies))):
-                messages.error(request, "You don't have permission to create agencies.")
+                messages.error(request, _("You don't have permission to create agencies."))
                 context = {
                     "title": "Edit User",
                     "subTitle": "Edit User",
@@ -450,23 +423,7 @@ def editUser(request, user_id):
                 return render(request, "users/editUser.html", context)
             elif not is_agency and not (request.user.is_superuser or 
                                        (request.admin_profile and (request.admin_profile.role.can_manage_agencies or request.admin_profile.role.can_edit_agencies))):
-                messages.error(request, "You don't have permission to modify agency status.")
-                context = {
-                    "title": "Edit User",
-                    "subTitle": "Edit User",
-                    "user": user,
-                    "agencies": agencies,
-                    "centers": centers,
-                    "branches": branches,
-                    "languages": BotUser.LANGUAGES,
-                }
-                return render(request, "users/editUser.html", context)
-
-        # Check tariff feature for agency management
-        if is_agency and not request.user.is_superuser:
-            _center = request.admin_profile.center if request.admin_profile else None
-            if _center and hasattr(_center, 'subscription') and not _center.subscription.tariff.has_feature('agency_management'):
-                messages.error(request, "Agency management is not available in your current plan. Please upgrade.")
+                messages.error(request, _("You don't have permission to modify agency status."))
                 context = {
                     "title": "Edit User",
                     "subTitle": "Edit User",
@@ -480,9 +437,9 @@ def editUser(request, user_id):
 
         # Validation
         if not name:
-            messages.error(request, "Full name is required.")
+            messages.error(request, _("Full name is required."))
         elif not phone:
-            messages.error(request, "Phone number is required.")
+            messages.error(request, _("Phone number is required."))
         else:
             try:
                 # Update the BotUser
@@ -595,7 +552,7 @@ def userDetail(request):
 
     user_id = request.GET.get("id")
     if not user_id:
-        messages.error(request, "User ID is required.")
+        messages.error(request, _("User ID is required."))
         return redirect("usersList")
 
     user = get_object_or_404(BotUser, id=user_id)
@@ -656,12 +613,12 @@ def updateProfile(request):
 
         # Validation
         if not first_name:
-            messages.error(request, "First name is required.")
+            messages.error(request, _("First name is required."))
             return redirect("viewProfile")
 
         # Check if email is already used by another user (only if email is provided)
         if email and User.objects.filter(email=email).exclude(pk=user.pk).exists():
-            messages.error(request, "This email is already in use.")
+            messages.error(request, _("This email is already in use."))
             return redirect("viewProfile")
 
         try:
@@ -692,7 +649,7 @@ def updateProfile(request):
                 # Non-superusers without an admin profile should never happen in normal
                 # use — skip silently so we don't create a ghost role-less record.
 
-            messages.success(request, "Profile updated successfully.")
+            messages.success(request, _("Profile updated successfully."))
             return redirect("dashboard")
         except Exception as e:
             messages.error(request, f"Error updating profile: {str(e)}")
@@ -713,23 +670,23 @@ def changePassword(request):
 
         # Validation
         if not current_password:
-            messages.error(request, "Current password is required.")
+            messages.error(request, _("Current password is required."))
             return redirect("viewProfile")
 
         if not user.check_password(current_password):
-            messages.error(request, "Current password is incorrect.")
+            messages.error(request, _("Current password is incorrect."))
             return redirect("viewProfile")
 
         if not new_password:
-            messages.error(request, "New password is required.")
+            messages.error(request, _("New password is required."))
             return redirect("viewProfile")
 
         if len(new_password) < 8:
-            messages.error(request, "Password must be at least 8 characters long.")
+            messages.error(request, _("Password must be at least 8 characters long."))
             return redirect("viewProfile")
 
         if new_password != confirm_password:
-            messages.error(request, "Passwords do not match.")
+            messages.error(request, _("Passwords do not match."))
             return redirect("viewProfile")
 
         try:
@@ -737,7 +694,7 @@ def changePassword(request):
             user.save()
             # Keep the user logged in after password change
             update_session_auth_hash(request, user)
-            messages.success(request, "Password changed successfully.")
+            messages.success(request, _("Password changed successfully."))
             return redirect("dashboard")
         except Exception as e:
             messages.error(request, f"Error changing password: {str(e)}")

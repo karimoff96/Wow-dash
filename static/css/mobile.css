@@ -1041,11 +1041,3 @@
            col-sm-6 = 50% at 576px+ which is correct */
     }
 }
-
-/* ================================================
-   32. DARK THEME MOBILE COMPATIBILITY
-   ================================================ */
-
-[data-theme="dark"] .sidebar-backdrop {
-    background: rgba(0, 0, 0, 0.7);
-}

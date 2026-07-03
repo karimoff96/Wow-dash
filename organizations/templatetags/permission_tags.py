@@ -182,13 +182,16 @@ def get_user_permissions(context):
         'can_view_all_orders', 'can_view_own_orders', 'can_create_orders', 'can_edit_orders',
         'can_delete_orders', 'can_assign_orders', 'can_update_order_status', 'can_complete_orders',
         'can_cancel_orders', 'can_manage_orders', 'can_manage_financial', 'can_receive_payments', 'can_view_financial_reports',
-        'can_apply_discounts', 'can_refund_orders', 'can_manage_reports', 'can_view_reports', 'can_view_analytics',
+        'can_apply_discounts', 'can_refund_orders', 'can_edit_price', 'can_manage_reports', 'can_view_reports', 'can_view_analytics',
         'can_export_data', 'can_manage_products', 'can_view_products', 'can_create_products', 'can_edit_products', 'can_delete_products',
         'can_manage_expenses', 'can_view_expenses', 'can_create_expenses', 'can_edit_expenses', 'can_delete_expenses',
+        'can_manage_languages', 'can_view_languages', 'can_create_languages', 'can_edit_languages', 'can_delete_languages',
         'can_manage_customers', 'can_view_customers', 'can_create_customers', 'can_edit_customers', 'can_delete_customers',
         'can_manage_marketing', 'can_create_marketing_posts', 'can_send_branch_broadcasts', 'can_send_center_broadcasts',
         'can_view_broadcast_stats', 'can_manage_branch_settings', 'can_view_branch_settings',
         'can_manage_agencies', 'can_view_agencies', 'can_create_agencies', 'can_edit_agencies', 'can_delete_agencies',
+        'can_manage_audit_logs', 'can_view_audit_logs', 'can_export_audit_logs', 'can_grant_audit_permissions',
+        'can_manage_bulk_payments', 'can_assign_bulk_payment_permission',
     ]
     for field in permission_fields:
         # Use AdminUser.has_permission for consistency and to support aliases/master permissions

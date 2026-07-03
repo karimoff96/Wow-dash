@@ -7,6 +7,7 @@ urlpatterns = [
     path('centers/create/', views.center_create, name='center_create'),
     path('centers/<int:center_id>/', views.center_detail, name='center_detail'),
     path('centers/<int:center_id>/edit/', views.center_edit, name='center_edit'),
+    path('centers/<int:center_id>/configuration-request/', views.request_center_configuration_change, name='request_center_configuration_change'),
     
     # Branches
     path('branches/', views.branch_list, name='branch_list'),
@@ -14,6 +15,7 @@ urlpatterns = [
     path('branches/create/<int:center_id>/', views.branch_create, name='branch_create_for_center'),
     path('branches/<int:branch_id>/', views.branch_detail, name='branch_detail'),
     path('branches/<int:branch_id>/edit/', views.branch_edit, name='branch_edit'),
+    path('branches/<int:branch_id>/configuration-request/', views.request_branch_configuration_change, name='request_branch_configuration_change'),
     
     # Branch Settings (Additional Info)
     path('branches/<int:branch_id>/settings/', views.branch_settings, name='branch_settings'),

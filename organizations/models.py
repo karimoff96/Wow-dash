@@ -159,30 +159,6 @@ class TranslationCenter(models.Model):
             is_active=True
         ).distinct().count()
     
-    def has_active_subscription(self):
-        """Check if center has an active subscription"""
-        return hasattr(self, 'subscription') and self.subscription.is_active()
-    
-    def get_subscription_status(self):
-        """Get current subscription status"""
-        if not hasattr(self, 'subscription'):
-            return {'has_subscription': False}
-        
-        sub = self.subscription
-        return {
-            'has_subscription': True,
-            'is_active': sub.is_active(),
-            'tariff': sub.tariff.title,
-            'days_remaining': sub.days_remaining(),
-            'end_date': sub.end_date,
-        }
-        # Auto-create default branch for new centers
-        if is_new:
-            Branch.objects.create(
-                center=self, name=f"{self.name} - Main Branch", is_main=True
-            )
-
-
 class Branch(models.Model):
     """Physical branch location of a translation center"""
 
@@ -532,6 +508,7 @@ class Role(models.Model):
             "can_view_financial_reports",
             "can_apply_discounts",
             "can_refund_orders",
+            "can_edit_price",
             # Reports & Analytics (master first)
             "can_manage_reports",
             "can_view_reports",
@@ -738,6 +715,7 @@ class Role(models.Model):
                 "permissions": [
                     "can_manage_customers",
                     "can_view_customers",
+                    "can_create_customers",
                     "can_edit_customers",
                     "can_delete_customers",
                 ],
@@ -773,6 +751,26 @@ class Role(models.Model):
                     "can_create_agencies",
                     "can_edit_agencies",
                     "can_delete_agencies",
+                ],
+            },
+            "audit_logs": {
+                "title": _("Audit Logs"),
+                "icon": "fa-clipboard-list",
+                "color": "secondary",
+                "permissions": [
+                    "can_manage_audit_logs",
+                    "can_view_audit_logs",
+                    "can_export_audit_logs",
+                    "can_grant_audit_permissions",
+                ],
+            },
+            "bulk_payments": {
+                "title": _("Bulk Payments"),
+                "icon": "fa-money-check",
+                "color": "warning",
+                "permissions": [
+                    "can_manage_bulk_payments",
+                    "can_assign_bulk_payment_permission",
                 ],
             },
         }
@@ -816,6 +814,7 @@ class Role(models.Model):
             "can_view_financial_reports": _("View Financial Reports"),
             "can_apply_discounts": _("Apply Discounts"),
             "can_refund_orders": _("Refund Orders"),
+            "can_edit_price": _("Edit Order Price"),
             # Reports & Analytics
             "can_manage_reports": _("Full Reports Management"),
             "can_view_reports": _("View Reports"),
@@ -842,6 +841,7 @@ class Role(models.Model):
             # Customers
             "can_manage_customers": _("Full Customer Management"),
             "can_view_customers": _("View Customers"),
+            "can_create_customers": _("Create Customers"),
             "can_edit_customers": _("Edit Customers"),
             "can_delete_customers": _("Delete Customers"),
             # Marketing & Broadcasts
@@ -859,6 +859,14 @@ class Role(models.Model):
             "can_create_agencies": _("Create Agencies"),
             "can_edit_agencies": _("Edit Agencies"),
             "can_delete_agencies": _("Delete Agencies"),
+            # Audit Logs
+            "can_manage_audit_logs": _("Full Audit Log Management"),
+            "can_view_audit_logs": _("View Audit Logs"),
+            "can_export_audit_logs": _("Export Audit Logs"),
+            "can_grant_audit_permissions": _("Grant Audit Permissions"),
+            # Bulk Payments
+            "can_manage_bulk_payments": _("Manage Bulk Payments"),
+            "can_assign_bulk_payment_permission": _("Assign Bulk Payment Permission"),
         }
     
     @classmethod
@@ -900,6 +908,7 @@ class Role(models.Model):
             "can_view_financial_reports": _("Access financial reports and revenue data"),
             "can_apply_discounts": _("Apply discounts to orders"),
             "can_refund_orders": _("Process refunds for completed or cancelled orders"),
+            "can_edit_price": _("Edit order pricing during order processing"),
             # Reports & Analytics
             "can_manage_reports": _("Full control over all report operations - overrides individual permissions"),
             "can_view_reports": _("Access performance and activity reports"),
@@ -926,6 +935,7 @@ class Role(models.Model):
             # Customers
             "can_manage_customers": _("Full control over all customer operations - overrides individual permissions"),
             "can_view_customers": _("View customer information and history"),
+            "can_create_customers": _("Create new customer profiles"),
             "can_edit_customers": _("Edit customer records and contact information"),
             "can_delete_customers": _("Remove customer records from the system"),
             # Marketing & Broadcasts
@@ -943,6 +953,14 @@ class Role(models.Model):
             "can_create_agencies": _("Create new agency profiles and generate invitation links"),
             "can_edit_agencies": _("Edit agency information and reset invitation links"),
             "can_delete_agencies": _("Remove agency profiles from the system"),
+            # Audit Logs
+            "can_manage_audit_logs": _("Full control over audit logs - overrides individual audit permissions"),
+            "can_view_audit_logs": _("View system audit logs and activity history"),
+            "can_export_audit_logs": _("Export audit log data"),
+            "can_grant_audit_permissions": _("Assign audit permissions to lower-level users"),
+            # Bulk Payments
+            "can_manage_bulk_payments": _("Process bulk payments across multiple customer or agency debts"),
+            "can_assign_bulk_payment_permission": _("Grant bulk payment permission to other users"),
         }
 
     @classmethod
@@ -985,6 +1003,7 @@ class Role(models.Model):
                 "can_view_financial_reports": True,
                 "can_apply_discounts": True,
                 "can_refund_orders": True,
+                "can_edit_price": True,
                 # Reports
                 "can_manage_reports": True,
                 "can_view_reports": True,
@@ -996,9 +1015,22 @@ class Role(models.Model):
                 "can_create_products": True,
                 "can_edit_products": True,
                 "can_delete_products": True,
+                # Expenses
+                "can_manage_expenses": True,
+                "can_view_expenses": True,
+                "can_create_expenses": True,
+                "can_edit_expenses": True,
+                "can_delete_expenses": True,
+                # Languages
+                "can_manage_languages": True,
+                "can_view_languages": True,
+                "can_create_languages": True,
+                "can_edit_languages": True,
+                "can_delete_languages": True,
                 # Customers
                 "can_manage_customers": True,
                 "can_view_customers": True,
+                "can_create_customers": True,
                 "can_edit_customers": True,
                 "can_delete_customers": True,
                 # Marketing & Broadcasts
@@ -1016,6 +1048,14 @@ class Role(models.Model):
                 "can_create_agencies": True,
                 "can_edit_agencies": True,
                 "can_delete_agencies": True,
+                # Audit Logs
+                "can_manage_audit_logs": True,
+                "can_view_audit_logs": True,
+                "can_export_audit_logs": True,
+                "can_grant_audit_permissions": True,
+                # Bulk Payments
+                "can_manage_bulk_payments": True,
+                "can_assign_bulk_payment_permission": True,
             },
             cls.MANAGER: {
                 # Centers (view only)
@@ -1376,6 +1416,7 @@ class AdminUser(models.Model):
             'can_view_financial_reports': ['can_manage_financial'],
             'can_apply_discounts': ['can_manage_financial'],
             'can_refund_orders': ['can_manage_financial'],
+            'can_edit_price': ['can_manage_financial'],
             # Reports & Analytics
             'can_view_reports': ['can_manage_reports'],
             'can_view_analytics': ['can_manage_reports'],
@@ -1392,6 +1433,10 @@ class AdminUser(models.Model):
             'can_create_agencies': ['can_manage_agencies'],
             'can_edit_agencies': ['can_manage_agencies'],
             'can_delete_agencies': ['can_manage_agencies'],
+            # Audit Logs
+            'can_view_audit_logs': ['can_manage_audit_logs'],
+            'can_export_audit_logs': ['can_manage_audit_logs'],
+            'can_grant_audit_permissions': ['can_manage_audit_logs'],
         }
         
         # Check if any master permission grants this permission
@@ -1403,52 +1448,6 @@ class AdminUser(models.Model):
         
         return False
     
-    def has_subscription_feature(self, feature_code):
-        """
-        Check if user's organization subscription includes a specific feature.
-        This enables subscription-based feature gating.
-        
-        Args:
-            feature_code: String code of the feature (e.g., 'advanced_analytics', 'telegram_bot')
-        
-        Returns:
-            Boolean indicating if subscription grants access to this feature
-            
-        Example:
-            if admin_profile.has_subscription_feature('advanced_analytics'):
-                # Show analytics dashboard
-        """
-        # Superusers always have access to all features
-        if hasattr(self, 'user') and self.user and self.user.is_superuser:
-            return True
-        
-        # Check if user has a center with an active subscription
-        if not self.center:
-            return False
-        
-        try:
-            subscription = self.center.subscription
-            return subscription.has_feature(feature_code)
-        except Exception:
-            # No subscription or subscription model not available
-            return False
-    
-    def get_subscription_features(self):
-        """
-        Get all features available in user's organization subscription.
-        
-        Returns:
-            QuerySet of Feature objects or empty queryset
-        """
-        if not self.center:
-            return None
-        
-        try:
-            subscription = self.center.subscription
-            return subscription.get_features()
-        except Exception:
-            return None
-
     def get_accessible_branches(self):
         """Get branches this user can access based on their role permissions"""
         # Users with order-viewing or management permissions should see branches
