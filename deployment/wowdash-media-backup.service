@@ -1,0 +1,10 @@
+[Unit]
+Description=WowDash rolling local media snapshot
+
+[Service]
+Type=oneshot
+User=wowdash
+Group=wowdash
+ExecStart=/bin/bash /home/Wow-dash/scripts/backup_media.sh
+Nice=15
+IOSchedulingClass=idle

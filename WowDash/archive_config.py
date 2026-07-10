@@ -31,7 +31,8 @@ class ArchiveConfig:
     # Minimum total size (in MB) before triggering automatic archiving
     # Set to 0 to archive regardless of size
     # Recommendation: 50-100 MB
-    MIN_SIZE_MB = int(os.getenv('ARCHIVE_MIN_SIZE_MB', '100'))
+    # Daily retention is age-based; do not leave small eligible orders behind.
+    MIN_SIZE_MB = int(os.getenv('ARCHIVE_MIN_SIZE_MB', '0'))
     
     # Maximum archive size (in MB) - splits into multiple archives if exceeded
     # Telegram Bot API hard limit is 50 MB per file (NOT 2GB - that's the client app limit)
@@ -128,8 +129,8 @@ class ArchiveConfig:
         if cls.MIN_AGE_DAYS < 1:
             warnings.append("⚠️  MIN_AGE_DAYS is less than 1 day - might archive too aggressively")
         
-        if cls.MAX_SIZE_MB > 1900:
-            warnings.append("⚠️  MAX_SIZE_MB exceeds recommended 1500MB - might fail Telegram uploads")
+        if cls.MAX_SIZE_MB > 45:
+            warnings.append("❌ MAX_SIZE_MB exceeds the safe 45 MB Telegram Bot API limit")
         
         if cls.COMPRESSION_LEVEL not in range(10):
             warnings.append(f"❌ COMPRESSION_LEVEL must be 0-9, got {cls.COMPRESSION_LEVEL}")
@@ -153,7 +154,7 @@ class ArchivePresets:
     AGGRESSIVE = {
         'MIN_AGE_DAYS': 3,
         'MIN_SIZE_MB': 10,
-        'MAX_SIZE_MB': 500,
+        'MAX_SIZE_MB': 45,
         'MAX_ORDERS_PER_BATCH': 100,
         'COMPRESSION_LEVEL': 9,
         'DELETE_LOCAL_FILES': True,
@@ -161,8 +162,8 @@ class ArchivePresets:
     
     BALANCED = {
         'MIN_AGE_DAYS': 7,
-        'MIN_SIZE_MB': 50,
-        'MAX_SIZE_MB': 800,
+        'MIN_SIZE_MB': 25,
+        'MAX_SIZE_MB': 45,
         'MAX_ORDERS_PER_BATCH': 200,
         'COMPRESSION_LEVEL': 6,
         'DELETE_LOCAL_FILES': True,
@@ -170,8 +171,8 @@ class ArchivePresets:
     
     CONSERVATIVE = {
         'MIN_AGE_DAYS': 30,
-        'MIN_SIZE_MB': 100,
-        'MAX_SIZE_MB': 1500,
+        'MIN_SIZE_MB': 45,
+        'MAX_SIZE_MB': 45,
         'MAX_ORDERS_PER_BATCH': 500,
         'COMPRESSION_LEVEL': 3,
         'DELETE_LOCAL_FILES': False,

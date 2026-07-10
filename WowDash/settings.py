@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import logging  # Required for custom UTF8StreamHandler
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -315,7 +316,49 @@ CELERY_TASK_ACKS_LATE = True
 # Dedicated queue for broadcasts so heavy tasks don't starve lighter ones
 CELERY_TASK_ROUTES = {
     "marketing.send_broadcast": {"queue": "broadcasts"},
+    "telegram.process_update": {"queue": "telegram"},
+    "maintenance.*": {"queue": "maintenance"},
+    "workflow.*": {"queue": "maintenance"},
 }
+CELERY_BEAT_SCHEDULE = {
+    "cancel-expired-payme-orders": {
+        "task": "maintenance.cancel_expired_payme",
+        "schedule": crontab(minute="*/5"),
+    },
+    "expire-subscriptions": {
+        "task": "maintenance.expire_subscriptions",
+        "schedule": crontab(minute=5),
+    },
+    "cleanup-bot-states": {
+        "task": "maintenance.cleanup_bot_states",
+        "schedule": crontab(minute=15),
+    },
+    "archive-completed-orders": {
+        "task": "maintenance.archive_completed_orders",
+        "schedule": crontab(hour=2, minute=0),
+    },
+    "notify-overdue-orders": {
+        "task": "maintenance.notify_overdue_orders",
+        "schedule": crontab(hour=9, minute=0),
+    },
+    "system-health": {
+        "task": "maintenance.system_health",
+        "schedule": crontab(minute="*/5"),
+    },
+    "workflow-automation": {
+        "task": "workflow.automation",
+        "schedule": crontab(minute="*/10"),
+    },
+}
+
+ARCHIVE_RETENTION_DAYS = int(os.getenv("ARCHIVE_MIN_AGE_DAYS", "30"))
+ARCHIVE_OPERATION_MODE = os.getenv("ARCHIVE_OPERATION_MODE", "inventory")
+DISK_WARNING_PERCENT = int(os.getenv("DISK_WARNING_PERCENT", "70"))
+DISK_HIGH_PERCENT = int(os.getenv("DISK_HIGH_PERCENT", "80"))
+DISK_CRITICAL_PERCENT = int(os.getenv("DISK_CRITICAL_PERCENT", "90"))
+CELERY_BACKLOG_ALERT_THRESHOLD = int(os.getenv("CELERY_BACKLOG_ALERT_THRESHOLD", "1000"))
+ARCHIVE_STALE_HOURS = int(os.getenv("ARCHIVE_STALE_HOURS", "30"))
+BACKUP_STALE_HOURS = int(os.getenv("BACKUP_STALE_HOURS", "30"))
 
 # =============================================================================
 # FIELD ENCRYPTION KEY (for sensitive DB fields: bot_token, payme keys)

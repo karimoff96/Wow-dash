@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from django.utils.translation import gettext as _
+from django.db.models import Q, Sum
+from django.core.paginator import Paginator
 from core.models import FileArchive
 from core.storage_service import StorageArchiveService
 from organizations.rbac import permission_required
@@ -25,9 +27,41 @@ def archive_list(request):
         return redirect('index')
     
     archives = FileArchive.objects.filter(center=user_center).order_by('-archive_date')
+
+    query = request.GET.get('q', '').strip()
+    branch_id = request.GET.get('branch', '').strip()
+    verification = request.GET.get('verification', '').strip()
+    date_from = request.GET.get('date_from', '').strip()
+    date_to = request.GET.get('date_to', '').strip()
+
+    if query:
+        query_filter = Q(archive_name__icontains=query) | Q(sha256__icontains=query)
+        if query.isdigit():
+            query_filter |= Q(orders__center_order_number=int(query)) | Q(orders__id=int(query))
+        archives = archives.filter(query_filter)
+    if branch_id.isdigit():
+        archives = archives.filter(orders__branch_id=int(branch_id))
+    if verification:
+        archives = archives.filter(verification_status=verification)
+    if date_from:
+        archives = archives.filter(archive_date__date__gte=date_from)
+    if date_to:
+        archives = archives.filter(archive_date__date__lte=date_to)
+
+    archives = archives.distinct()
+    page = Paginator(archives, 30).get_page(request.GET.get('page'))
     
     context = {
-        'archives': archives,
+        'archives': page,
+        'branches': user_center.branches.filter(is_active=True).order_by('name'),
+        'verification_choices': FileArchive.VERIFICATION_CHOICES,
+        'filters': {
+            'q': query,
+            'branch': branch_id,
+            'verification': verification,
+            'date_from': date_from,
+            'date_to': date_to,
+        },
         'page_title': _('File Archives'),
     }
     return render(request, 'archive_list.html', context)
@@ -66,21 +100,29 @@ def trigger_archive(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'POST required'}, status=405)
     
-    user_center = getattr(request.user.admin_profile, 'center', None)
-    
+    from organizations.models import TranslationCenter
+    center_id = request.POST.get('center_id')
+    user_center = TranslationCenter.objects.filter(pk=center_id).first() if center_id else None
     if not user_center:
-        return JsonResponse({'success': False, 'error': _('No center access')}, status=403)
+        return JsonResponse({'success': False, 'error': _('center_id is required')}, status=400)
     
     # Get options
     force = request.POST.get('force', 'false').lower() == 'true'
     age_days = int(request.POST.get('age_days', 30))
+    mode = request.POST.get('mode', 'inventory')
+    if mode not in {'inventory', 'canary', 'live'}:
+        return JsonResponse({'success': False, 'error': _('Invalid archive mode')}, status=400)
+    if mode == 'live' and request.POST.get('confirm_delete') != 'true':
+        return JsonResponse({'success': False, 'error': _('Live mode requires confirm_delete=true')}, status=400)
     
     # Run archiving
     service = StorageArchiveService()
     result = service.archive_orders(
         center=user_center,
         age_days=age_days,
-        force=force
+        force=force,
+        mode=mode,
+        created_by=request.user,
     )
     
     if result['success']:
@@ -107,11 +149,15 @@ def archive_stats(request):
         return JsonResponse({'error': _('No center access')}, status=403)
     
     archives = FileArchive.objects.filter(center=user_center)
+    aggregates = archives.aggregate(
+        total_orders=Sum('total_orders'),
+        total_bytes=Sum('source_size_bytes'),
+    )
     
     stats = {
         'total_archives': archives.count(),
-        'total_orders_archived': sum(a.total_orders for a in archives),
-        'total_size_mb': sum(a.size_mb for a in archives),
+        'total_orders_archived': aggregates['total_orders'] or 0,
+        'total_size_mb': (aggregates['total_bytes'] or 0) / (1024 * 1024),
         'latest_archive': None
     }
     

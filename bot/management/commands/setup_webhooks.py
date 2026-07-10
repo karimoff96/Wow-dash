@@ -1,5 +1,8 @@
 from django.core.management.base import BaseCommand
-from bot.webhook_manager import setup_all_webhooks, setup_webhook_for_center, get_webhook_info
+from bot.webhook_manager import (
+    get_webhook_info, remove_webhook_for_center, setup_all_webhooks,
+    setup_webhook_for_center,
+)
 from organizations.models import TranslationCenter
 
 
@@ -10,7 +13,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--action',
             type=str,
-            choices=['setup', 'setup-all', 'info', 'list'],
+            choices=['setup', 'setup-all', 'remove', 'info', 'list'],
             default='list',
             help='Action to perform: setup (single center), setup-all, info, list'
         )
@@ -39,6 +42,11 @@ class Command(BaseCommand):
                 self.stderr.write(self.style.ERROR('--center-id is required for setup'))
                 return
             self.setup_single(center_id, base_url)
+        elif action == 'remove':
+            if not center_id:
+                self.stderr.write(self.style.ERROR('--center-id is required for remove'))
+                return
+            self.remove_single(center_id)
         elif action == 'info':
             if not center_id:
                 self.stderr.write(self.style.ERROR('--center-id is required for info'))
@@ -137,3 +145,18 @@ class Command(BaseCommand):
                 ))
         else:
             self.stdout.write(self.style.ERROR(f"Error: {info.get('error')}"))
+
+    def remove_single(self, center_id):
+        """Remove a webhook and return one center to polling delivery."""
+        try:
+            center = TranslationCenter.objects.get(id=center_id)
+        except TranslationCenter.DoesNotExist:
+            self.stderr.write(self.style.ERROR(f'Center with ID {center_id} not found'))
+            return
+        result = remove_webhook_for_center(center)
+        if result['success']:
+            self.stdout.write(self.style.SUCCESS(
+                f"✅ Webhook removed for {center.name}; delivery mode is polling"
+            ))
+        else:
+            self.stdout.write(self.style.ERROR(f"❌ Failed: {result.get('error')}"))

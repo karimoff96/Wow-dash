@@ -13,6 +13,7 @@ import os
 import gzip
 import shutil
 import subprocess
+import hashlib
 from datetime import datetime
 from pathlib import Path
 from django.core.management.base import BaseCommand
@@ -29,6 +30,8 @@ class Command(BaseCommand):
             default=30,
             help='Number of backups to keep (default: 30)'
         )
+        parser.add_argument('--encrypt', action='store_true', help='Encrypt the compressed backup before retention')
+        parser.add_argument('--upload-telegram', action='store_true', help='Upload encrypted backup parts to the platform backup channel')
         parser.add_argument(
             '--backup-dir',
             type=str,
@@ -60,16 +63,20 @@ class Command(BaseCommand):
         
         try:
             if 'postgresql' in db_engine:
-                self._backup_postgresql(db_settings, backup_dir, timestamp)
+                backup_path = self._backup_postgresql(db_settings, backup_dir, timestamp)
             elif 'sqlite3' in db_engine:
-                self._backup_sqlite(db_settings, backup_dir, timestamp)
+                backup_path = self._backup_sqlite(db_settings, backup_dir, timestamp)
             else:
                 self.stdout.write(
                     self.style.ERROR(f'Unsupported database engine: {db_engine}')
                 )
                 return
             
-            # Rotate old backups
+            if options['encrypt']:
+                backup_path = self._encrypt_backup(backup_path)
+            if options['upload_telegram']:
+                self._upload_to_telegram(backup_path)
+
             self._rotate_backups(backup_dir, keep_backups)
             
             self.stdout.write(
@@ -133,6 +140,7 @@ class Command(BaseCommand):
         
         file_size = compressed_file.stat().st_size / (1024 * 1024)
         self.stdout.write(f'Backup size: {file_size:.2f} MB')
+        return compressed_file
 
     def _backup_sqlite(self, db_settings, backup_dir, timestamp):
         """Backup SQLite database"""
@@ -160,12 +168,75 @@ class Command(BaseCommand):
         
         file_size = compressed_file.stat().st_size / (1024 * 1024)
         self.stdout.write(f'Backup size: {file_size:.2f} MB')
+        return compressed_file
+
+    def _encrypt_backup(self, backup_path):
+        password = os.getenv('BACKUP_ENCRYPTION_PASSWORD', '')
+        if not password:
+            raise Exception('BACKUP_ENCRYPTION_PASSWORD is required for encrypted backups')
+        encrypted_path = Path(f"{backup_path}.enc")
+        env = os.environ.copy()
+        env['WOWDASH_BACKUP_PASSWORD'] = password
+        result = subprocess.run(
+            [
+                'openssl', 'enc', '-aes-256-cbc', '-salt', '-pbkdf2',
+                '-in', str(backup_path), '-out', str(encrypted_path),
+                '-pass', 'env:WOWDASH_BACKUP_PASSWORD',
+            ],
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise Exception(f'Backup encryption failed: {result.stderr}')
+        backup_path.unlink()
+        self.stdout.write(f'Encrypted backup: {encrypted_path.name}')
+        return encrypted_path
+
+    def _upload_to_telegram(self, backup_path):
+        import telebot
+
+        token = getattr(settings, 'SUPPORT_BOT_TOKEN', '')
+        channel_id = os.getenv('PLATFORM_BACKUP_CHANNEL_ID', '')
+        if not token or not channel_id:
+            raise Exception('ADMIN_BOT_TOKEN and PLATFORM_BACKUP_CHANNEL_ID are required for backup upload')
+
+        max_part_size = 45 * 1024 * 1024
+        total_size = backup_path.stat().st_size
+        total_parts = max(1, (total_size + max_part_size - 1) // max_part_size)
+        digest = hashlib.sha256()
+        with open(backup_path, 'rb') as backup_source:
+            for chunk in iter(lambda: backup_source.read(1024 * 1024), b''):
+                digest.update(chunk)
+        checksum = digest.hexdigest()
+        bot = telebot.TeleBot(token, parse_mode='HTML', threaded=False)
+        part_paths = []
+        try:
+            with open(backup_path, 'rb') as source:
+                for part_number in range(1, total_parts + 1):
+                    part_path = Path(f"{backup_path}.part{part_number:03d}-of-{total_parts:03d}")
+                    part_path.write_bytes(source.read(max_part_size))
+                    part_paths.append(part_path)
+                    with open(part_path, 'rb') as part_file:
+                        bot.send_document(
+                            channel_id,
+                            part_file,
+                            caption=(
+                                f"🔐 Database backup {backup_path.name}\n"
+                                f"Part {part_number}/{total_parts}\n"
+                                f"SHA-256: <code>{checksum}</code>"
+                            ),
+                        )
+        finally:
+            for part_path in part_paths:
+                part_path.unlink(missing_ok=True)
+        self.stdout.write(f'Uploaded {total_parts} encrypted backup part(s) to Telegram')
 
     def _rotate_backups(self, backup_dir, keep_backups):
         """Remove old backups, keeping only the most recent ones"""
         # Get all backup files
         backup_files = sorted(
-            backup_dir.glob('backup_*.gz'),
+            list(backup_dir.glob('backup_*.gz')) + list(backup_dir.glob('backup_*.gz.enc')),
             key=lambda x: x.stat().st_mtime,
             reverse=True
         )

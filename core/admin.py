@@ -3,7 +3,7 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
-from .models import Region, District, AdditionalInfo, AuditLog, FileArchive
+from .models import ArchiveRun, Region, District, AdditionalInfo, AuditLog, FileArchive
 
 
 @admin.register(Region)
@@ -55,14 +55,17 @@ class AuditLogAdmin(admin.ModelAdmin):
 class FileArchiveAdmin(admin.ModelAdmin):
     list_display = [
         'archive_name', 'center', 'archive_date', 'total_orders',
-        'size_display', 'telegram_link', 'created_by'
+        'size_display', 'verification_status', 'telegram_link', 'created_by'
     ]
-    list_filter = ['center', 'archive_date', 'created_by']
-    search_fields = ['archive_name', 'center__name', 'notes']
+    list_filter = ['center', 'verification_status', 'archive_date', 'created_by']
+    search_fields = ['archive_name', 'center__name', 'sha256', 'telegram_file_id', 'notes']
     readonly_fields = [
         'archive_name', 'archive_path', 'telegram_message_id',
         'telegram_channel_id', 'total_orders', 'total_size_bytes',
-        'archive_date', 'size_display', 'telegram_link', 'orders_list'
+        'archive_date', 'size_display', 'telegram_link', 'orders_list',
+        'sha256', 'telegram_file_id', 'manifest', 'source_file_count',
+        'source_size_bytes', 'uploaded_size_bytes', 'upload_attempts',
+        'verification_status', 'verified_at', 'files_deleted_at', 'last_error',
     ]
     ordering = ['-archive_date']
     date_hierarchy = 'archive_date'
@@ -72,7 +75,15 @@ class FileArchiveAdmin(admin.ModelAdmin):
             'fields': ('center', 'archive_name', 'archive_date', 'created_by')
         }),
         (_('Telegram Details'), {
-            'fields': ('telegram_message_id', 'telegram_channel_id', 'telegram_link')
+            'fields': ('telegram_message_id', 'telegram_file_id', 'telegram_channel_id', 'telegram_link')
+        }),
+        (_('Verification'), {
+            'fields': (
+                'verification_status', 'sha256', 'verified_at',
+                'source_file_count', 'source_size_bytes', 'uploaded_size_bytes',
+                'upload_attempts', 'files_deleted_at', 'last_error', 'manifest',
+            ),
+            'classes': ('collapse',)
         }),
         (_('Statistics'), {
             'fields': ('total_orders', 'total_size_bytes', 'size_display')
@@ -143,3 +154,21 @@ class FileArchiveAdmin(admin.ModelAdmin):
             level='warning'
         )
     trigger_manual_archive.short_description = _("Trigger manual archive")
+
+
+@admin.register(ArchiveRun)
+class ArchiveRunAdmin(admin.ModelAdmin):
+    list_display = (
+        'id', 'center', 'mode', 'status', 'orders_found', 'orders_archived',
+        'deleted_file_count', 'started_at', 'completed_at',
+    )
+    list_filter = ('mode', 'status', 'center', 'started_at')
+    search_fields = ('center__name', 'error')
+    readonly_fields = tuple(field.name for field in ArchiveRun._meta.fields)
+    ordering = ('-started_at',)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

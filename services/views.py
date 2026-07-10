@@ -968,7 +968,7 @@ def expenseAnalytics(request):
     expense_breakdown = list(base_expenses.values(
         'expense_type'
     ).annotate(
-        total=Sum('price'),
+        total=Sum('price_for_original'),
         count=Count('id')
     ).order_by('expense_type'))
     

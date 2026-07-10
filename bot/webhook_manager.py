@@ -8,6 +8,8 @@ pushes updates to our server (no polling overhead).
 Updated for multi-worker support using Django cache instead of in-memory dict.
 """
 import logging
+import json
+import secrets
 import telebot
 from telebot import apihelper
 from django.conf import settings
@@ -15,11 +17,8 @@ from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse, HttpResponse
-from functools import lru_cache
-import ssl
 import requests
 from requests.adapters import HTTPAdapter
-from urllib3.poolmanager import PoolManager
 from urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)
@@ -28,7 +27,7 @@ logger = logging.getLogger(__name__)
 BOT_CACHE_TIMEOUT = 3600
 
 
-class NoSSLAdapter(HTTPAdapter):
+class RetryHTTPAdapter(HTTPAdapter):
     def __init__(self, **kwargs):
         retry = Retry(
             total=5,
@@ -42,25 +41,23 @@ class NoSSLAdapter(HTTPAdapter):
         )
         super().__init__(max_retries=retry, **kwargs)
 
-    def init_poolmanager(self, *args, **kwargs):
-        kwargs["ssl_context"] = ssl._create_unverified_context()
-        return super().init_poolmanager(*args, **kwargs)
-
-
 def get_ssl_session():
-    """Get requests session with retry logic and SSL verification disabled"""
+    """Get a retrying requests session without weakening TLS verification."""
     session = requests.Session()
-    session.mount("https://", NoSSLAdapter())
+    session.mount("https://", RetryHTTPAdapter())
     return session
 
 
 def _create_bot_instance(token):
     """Create a new TeleBot instance with proper configuration"""
     apihelper.SESSION = get_ssl_session()
-    return telebot.TeleBot(token, parse_mode="HTML")
+    return telebot.TeleBot(token, parse_mode="HTML", threaded=False)
 
 
-def get_bot_for_center(center):
+_bot_instances = {}
+
+
+def get_bot_for_center(center, allow_inactive=False):
     """
     Get or create a TeleBot instance for a specific center.
     
@@ -72,11 +69,22 @@ def get_bot_for_center(center):
     
     Args:
         center: TranslationCenter instance with bot_token
+        allow_inactive: Permit administrative operations such as removing or
+            inspecting an existing webhook after the subscription has ended.
         
     Returns:
         TeleBot instance or None if no token configured
     """
+    from bot.access import center_can_run_bot
+
     if not center or not center.bot_token:
+        return None
+
+    if not allow_inactive and not center_can_run_bot(center):
+        logger.info(
+            "Bot access denied for center %s: center or subscription is inactive",
+            getattr(center, "id", None),
+        )
         return None
     
     center_id = center.id
@@ -85,13 +93,20 @@ def get_bot_for_center(center):
     try:
         # Check if token is still valid (cached check)
         cached_token = cache.get(cache_key)
+        instance_key = (center_id, center.bot_token)
+
+        if cached_token == center.bot_token and instance_key in _bot_instances:
+            return _bot_instances[instance_key]
         
         if cached_token == center.bot_token:
             # Token unchanged, create instance
-            return _create_bot_instance(center.bot_token)
+            bot = _create_bot_instance(center.bot_token)
+            _bot_instances[instance_key] = bot
+            return bot
         
         # Token changed or not cached, create new instance and cache token
         bot = _create_bot_instance(center.bot_token)
+        _bot_instances[instance_key] = bot
         cache.set(cache_key, center.bot_token, BOT_CACHE_TIMEOUT)
         
         logger.info(f"Created bot instance for center {center_id}: {center.name}")
@@ -106,6 +121,9 @@ def invalidate_bot_cache(center_id):
     """Remove a bot from cache (call when token changes)"""
     cache_key = f"bot_token_valid:{center_id}"
     cache.delete(cache_key)
+    for instance_key in list(_bot_instances):
+        if instance_key[0] == center_id:
+            _bot_instances.pop(instance_key, None)
     logger.info(f"Invalidated bot cache for center {center_id}")
 
 
@@ -120,10 +138,15 @@ def setup_webhook_for_center(center, base_url=None):
     Returns:
         dict with success status and message
     """
+    from bot.access import center_can_run_bot
+
     if not center.bot_token:
         return {"success": False, "error": "No bot token configured"}
+
+    if not center_can_run_bot(center):
+        return {"success": False, "error": "Center subscription is not active"}
     
-    bot = get_bot_for_center(center)
+    bot = get_bot_for_center(center, allow_inactive=True)
     if not bot:
         return {"success": False, "error": "Failed to create bot instance"}
     
@@ -134,7 +157,7 @@ def setup_webhook_for_center(center, base_url=None):
             return {"success": False, "error": "No base URL configured. Set SITE_URL in settings."}
     
     # Construct webhook URL
-    webhook_url = f"{base_url.rstrip('/')}/bot/webhook/{center.id}/"
+    webhook_url = f"{base_url.rstrip('/')}/bot/webhook/v2/{center.webhook_identifier}/"
     
     try:
         # Remove existing webhook first
@@ -143,10 +166,14 @@ def setup_webhook_for_center(center, base_url=None):
         # Set new webhook
         result = bot.set_webhook(
             url=webhook_url,
-            drop_pending_updates=True  # Don't process old messages
+            secret_token=center.webhook_secret,
+            drop_pending_updates=True,
+            allowed_updates=["message", "callback_query"],
         )
         
         if result:
+            center.bot_delivery_mode = center.BOT_DELIVERY_WEBHOOK
+            center.save(update_fields=["bot_delivery_mode", "updated_at"])
             logger.info(f"Webhook set for center {center.id}: {webhook_url}")
             return {"success": True, "webhook_url": webhook_url}
         else:
@@ -162,13 +189,15 @@ def remove_webhook_for_center(center):
     if not center.bot_token:
         return {"success": False, "error": "No bot token configured"}
     
-    bot = get_bot_for_center(center)
+    bot = get_bot_for_center(center, allow_inactive=True)
     if not bot:
         return {"success": False, "error": "Failed to create bot instance"}
     
     try:
         bot.remove_webhook()
         invalidate_bot_cache(center.id)
+        center.bot_delivery_mode = center.BOT_DELIVERY_POLLING
+        center.save(update_fields=["bot_delivery_mode", "updated_at"])
         logger.info(f"Webhook removed for center {center.id}")
         return {"success": True}
     except Exception as e:
@@ -181,7 +210,7 @@ def get_webhook_info(center):
     if not center.bot_token:
         return {"success": False, "error": "No bot token configured"}
     
-    bot = get_bot_for_center(center)
+    bot = get_bot_for_center(center, allow_inactive=True)
     if not bot:
         return {"success": False, "error": "Failed to create bot instance"}
     
@@ -209,10 +238,10 @@ def setup_all_webhooks(base_url=None):
     Returns:
         dict with results for each center
     """
-    from organizations.models import TranslationCenter
+    from bot.access import active_bot_centers
     
     results = {}
-    centers = TranslationCenter.objects.exclude(bot_token__isnull=True).exclude(bot_token='')
+    centers = active_bot_centers()
     
     for center in centers:
         results[center.id] = {
@@ -226,6 +255,74 @@ def setup_all_webhooks(base_url=None):
 # ============================================================================
 # Webhook View Handler
 # ============================================================================
+
+def _extract_chat_id(update_dict):
+    if update_dict.get("message"):
+        return update_dict["message"].get("chat", {}).get("id")
+    if update_dict.get("callback_query"):
+        callback = update_dict["callback_query"]
+        return callback.get("message", {}).get("chat", {}).get("id") or callback.get("from", {}).get("id")
+    return None
+
+
+def _queue_webhook_update(request, center):
+    from bot.access import center_can_run_bot
+    from bot.models import TelegramUpdateReceipt
+    from bot.tasks import process_telegram_update
+
+    supplied_secret = request.META.get("HTTP_X_TELEGRAM_BOT_API_SECRET_TOKEN", "")
+    if not supplied_secret or not secrets.compare_digest(supplied_secret, center.webhook_secret):
+        logger.warning("Rejected Telegram webhook with invalid secret for center %s", center.pk)
+        return JsonResponse({"ok": False, "error": "Invalid webhook secret"}, status=403)
+
+    if not center_can_run_bot(center):
+        logger.info("Ignoring webhook update for inactive center %s", center.pk)
+        return JsonResponse({"ok": True, "inactive": True}, status=200)
+
+    try:
+        update_dict = json.loads(request.body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return JsonResponse({"ok": False, "error": "Invalid JSON"}, status=400)
+
+    update_id = update_dict.get("update_id")
+    if not isinstance(update_id, int):
+        return JsonResponse({"ok": False, "error": "Missing update_id"}, status=400)
+
+    receipt, created = TelegramUpdateReceipt.objects.get_or_create(
+        center=center,
+        update_id=update_id,
+        defaults={
+            "chat_id": _extract_chat_id(update_dict),
+            "payload": update_dict,
+        },
+    )
+
+    if not created and receipt.status in {
+        TelegramUpdateReceipt.STATUS_QUEUED,
+        TelegramUpdateReceipt.STATUS_PROCESSING,
+        TelegramUpdateReceipt.STATUS_COMPLETED,
+        TelegramUpdateReceipt.STATUS_DEAD,
+    }:
+        return JsonResponse({"ok": True, "duplicate": True}, status=200)
+
+    if not created:
+        receipt.status = TelegramUpdateReceipt.STATUS_QUEUED
+        receipt.chat_id = _extract_chat_id(update_dict)
+        receipt.payload = update_dict
+        receipt.last_error = ""
+        receipt.save(update_fields=["status", "chat_id", "payload", "last_error", "updated_at"])
+
+    try:
+        process_telegram_update.delay(receipt.pk)
+    except Exception as exc:
+        receipt.status = TelegramUpdateReceipt.STATUS_FAILED
+        receipt.last_error = f"Queue unavailable: {exc}"
+        receipt.save(update_fields=["status", "last_error", "updated_at"])
+        logger.exception("Failed to enqueue Telegram update %s", receipt.pk)
+        return JsonResponse({"ok": False, "error": "Queue unavailable"}, status=503)
+
+    return JsonResponse({"ok": True, "queued": True}, status=200)
+
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
@@ -241,6 +338,12 @@ def webhook_handler(request, center_id):
     if request.method == "GET":
         try:
             center = TranslationCenter.objects.get(id=center_id)
+            from bot.access import center_can_run_bot
+            if not center_can_run_bot(center):
+                return HttpResponse(
+                    "<h1>Webhook Inactive</h1><p>Center subscription is not active.</p>",
+                    status=403,
+                )
             return HttpResponse(
                 f"<h1>Webhook Active</h1><p>Center: {center.name}</p>",
                 status=200
@@ -248,69 +351,20 @@ def webhook_handler(request, center_id):
         except TranslationCenter.DoesNotExist:
             return HttpResponse("<h1>Center Not Found</h1>", status=404)
     
-    # POST request - process update
     try:
-        import json
-        
-        # Get center
-        try:
-            center = TranslationCenter.objects.get(id=center_id)
-        except TranslationCenter.DoesNotExist:
-            logger.warning(f"Webhook received for non-existent center: {center_id}")
-            return JsonResponse({"ok": False, "error": "Center not found"}, status=404)
-        
-        if not center.bot_token:
-            logger.warning(f"Webhook received for center without token: {center_id}")
-            return JsonResponse({"ok": False, "error": "No bot token"}, status=400)
-        
-        # Import the global bot with handlers from bot.main
-        try:
-            import bot.main as bot_module
-            bot = bot_module.bot
-            
-            # Update bot token to match this center
-            bot.token = center.bot_token
-        except Exception as e:
-            logger.error(f"Failed to import bot handlers: {e}")
-            return JsonResponse({"ok": False, "error": "Bot handlers unavailable"}, status=500)
-        
-        # Parse update
-        update_data = request.body.decode("utf-8")
-        update_dict = json.loads(update_data)
-        
-        # Ignore messages from bots
-        if "message" in update_dict:
-            if update_dict["message"].get("from", {}).get("is_bot", False):
-                return JsonResponse({"ok": True}, status=200)
-        
-        if "callback_query" in update_dict:
-            if update_dict["callback_query"].get("from", {}).get("is_bot", False):
-                return JsonResponse({"ok": True}, status=200)
-        
-        logger.debug(f"Processing update for center {center_id}: {update_data[:100]}...")
-        
-        # Process the update with the center-specific bot
-        # We need to inject center context into the update processing
-        update = telebot.types.Update.de_json(update_data)
-        
-        # Store center context for handlers to access
-        if hasattr(update, 'message') and update.message:
-            update.message._center = center
-            update.message._center_bot = bot
-        if hasattr(update, 'callback_query') and update.callback_query:
-            update.callback_query._center = center
-            update.callback_query._center_bot = bot
-        
-        # Process the update
-        bot.process_new_updates([update])
-        
-        return JsonResponse({"ok": True}, status=200)
-        
-    except json.JSONDecodeError as e:
-        logger.error(f"Invalid JSON in webhook: {e}")
-        return JsonResponse({"ok": False, "error": "Invalid JSON"}, status=400)
-    except Exception as e:
-        logger.error(f"Error processing webhook for center {center_id}: {e}")
-        import traceback
-        traceback.print_exc()
-        return JsonResponse({"ok": False, "error": str(e)}, status=200)
+        center = TranslationCenter.objects.get(id=center_id)
+    except TranslationCenter.DoesNotExist:
+        return JsonResponse({"ok": False, "error": "Center not found"}, status=404)
+    return _queue_webhook_update(request, center)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def webhook_handler_v2(request, webhook_identifier):
+    from organizations.models import TranslationCenter
+
+    try:
+        center = TranslationCenter.objects.get(webhook_identifier=webhook_identifier)
+    except TranslationCenter.DoesNotExist:
+        return JsonResponse({"ok": False, "error": "Webhook not found"}, status=404)
+    return _queue_webhook_update(request, center)

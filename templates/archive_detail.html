@@ -1,0 +1,10 @@
+{% extends 'layout/layout.html' %}
+{% load i18n %}
+{% block content %}
+<div class="card"><div class="card-body">
+  <h5>{{ archive.archive_name }}</h5>
+  <dl class="row mt-20"><dt class="col-sm-3">{% trans "Verification" %}</dt><dd class="col-sm-9">{{ archive.get_verification_status_display }}</dd><dt class="col-sm-3">SHA-256</dt><dd class="col-sm-9"><code>{{ archive.sha256 }}</code></dd><dt class="col-sm-3">{% trans "Source files" %}</dt><dd class="col-sm-9">{{ archive.source_file_count }} / {{ archive.source_size_bytes|filesizeformat }}</dd><dt class="col-sm-3">{% trans "Local deletion" %}</dt><dd class="col-sm-9">{{ archive.files_deleted_at|default:'—' }}</dd></dl>
+  {% if archive.telegram_file_url %}<a class="btn btn-primary" href="{{ archive.telegram_file_url }}" target="_blank">{% trans "Open Telegram archive" %}</a>{% endif %}
+  <hr><h6>{% trans "Orders" %}</h6><ul>{% for order in orders %}<li><a href="{% url 'orders:orderDetail' order.id %}">#{{ order.get_order_number }}</a> — {{ order.get_customer_display_name }}</li>{% empty %}<li>{% trans "No linked orders" %}</li>{% endfor %}</ul>
+</div></div>
+{% endblock %}

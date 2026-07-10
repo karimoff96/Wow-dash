@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.urls import reverse
-from .models import Order, OrderMedia, Receipt, BulkPayment, PaymentOrderLink, PaymeTransaction
+from .models import (
+    AssignmentRule, BulkPayment, Order, OrderEvent, OrderMedia,
+    PaymentOrderLink, PaymeTransaction, Quote, QuoteLine, Receipt,
+)
 from django.utils.html import format_html
 
 
@@ -140,6 +143,41 @@ class OrderMediaAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request)
+
+
+class QuoteLineInline(admin.TabularInline):
+    model = QuoteLine
+    extra = 0
+
+
+@admin.register(Quote)
+class QuoteAdmin(admin.ModelAdmin):
+    list_display = ('reference', 'version', 'branch', 'bot_user', 'status', 'total', 'valid_until', 'created_at')
+    list_filter = ('status', 'source', 'branch__center', 'branch', 'created_at')
+    search_fields = ('reference', 'customer_name', 'customer_phone', 'bot_user__name')
+    inlines = (QuoteLineInline,)
+    ordering = ('-created_at',)
+
+
+@admin.register(AssignmentRule)
+class AssignmentRuleAdmin(admin.ModelAdmin):
+    list_display = ('branch', 'priority', 'category', 'product', 'language', 'assignee', 'turnaround_hours', 'is_active')
+    list_filter = ('is_active', 'branch__center', 'branch')
+    ordering = ('branch', 'priority', 'pk')
+
+
+@admin.register(OrderEvent)
+class OrderEventAdmin(admin.ModelAdmin):
+    list_display = ('order', 'event_type', 'actor', 'bot_user', 'created_at')
+    list_filter = ('event_type', 'created_at')
+    search_fields = ('order__id', 'order__center_order_number', 'actor__user__username')
+    readonly_fields = ('order', 'event_type', 'actor', 'bot_user', 'data', 'created_at')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Receipt)

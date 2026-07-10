@@ -1,9 +1,12 @@
 from django.urls import path
-from core import views, archive_views
+from core import views, archive_views, diagnostics, health
 
 app_name = 'core'
 
 urlpatterns = [
+    path('health/live/', health.live, name='health_live'),
+    path('health/ready/', health.ready, name='health_ready'),
+    path('diagnostics/onboarding/', diagnostics.onboarding_diagnostics, name='onboarding_diagnostics'),
     path('notifications/', views.get_notifications, name='get_notifications'),
     path('notifications/all/', views.notifications_list, name='notifications_list'),
     path('notifications/<int:notification_id>/read/', views.mark_notification_read, name='mark_notification_read'),

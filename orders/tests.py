@@ -7,9 +7,11 @@ and race condition handling via database transactions.
 from decimal import Decimal
 from concurrent.futures import ThreadPoolExecutor
 import threading
+from unittest import skipUnless
 
 from django.test import TestCase, TransactionTestCase
 from django.contrib.auth.models import User
+from django.db import connection
 
 from orders.models import Order
 from orders.payment_service import PaymentService, PaymentError
@@ -386,6 +388,7 @@ class PaymentServiceTests(PaymentTestMixin, TestCase):
         self.assertEqual(result['remaining'], 75000)  # 105000 - 30000
 
 
+@skipUnless(connection.vendor == "postgresql", "row-lock tests require PostgreSQL")
 class PaymentConcurrencyTests(PaymentTestMixin, TransactionTestCase):
     """
     Tests for race conditions and concurrent payment updates.

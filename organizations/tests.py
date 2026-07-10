@@ -33,7 +33,7 @@ class RoleModelTests(TestCase):
             name='owner',
             display_name='Owner',
             is_system_role=True,
-            can_manage_center=True,
+            can_manage_centers=True,
             can_manage_branches=True,
             can_manage_staff=True,
             can_view_staff=True,
@@ -52,7 +52,7 @@ class RoleModelTests(TestCase):
             name='manager',
             display_name='Manager',
             is_system_role=True,
-            can_manage_center=False,
+            can_manage_centers=False,
             can_manage_branches=False,
             can_manage_staff=False,
             can_view_staff=True,
@@ -100,7 +100,7 @@ class RoleModelTests(TestCase):
     def test_get_default_permissions_for_owner(self):
         """Test default permissions for owner role"""
         defaults = Role.get_default_permissions_for_role('owner')
-        self.assertTrue(defaults.get('can_manage_center'))
+        self.assertTrue(defaults.get('can_manage_centers'))
         self.assertTrue(defaults.get('can_create_orders'))
         self.assertTrue(defaults.get('can_view_staff'))
 
@@ -129,7 +129,7 @@ class OwnerCreationTests(TestCase):
             name='owner',
             display_name='Owner',
             is_system_role=True,
-            can_manage_center=True,
+            can_manage_centers=True,
             can_manage_staff=True,
         )
         
@@ -166,8 +166,8 @@ class OwnerCreationTests(TestCase):
         self.assertFalse(is_valid)
         self.assertIn('superuser', error.lower())
 
-    def test_single_owner_per_center(self):
-        """Test that only one owner can exist per center"""
+    def test_superuser_can_validate_owner_replacement(self):
+        """Superusers may replace an existing center owner."""
         # Create first owner
         owner_user = User.objects.create_user(
             username='owner1',
@@ -182,10 +182,10 @@ class OwnerCreationTests(TestCase):
             branch=self.branch,
         )
         
-        # Try to create second owner - should fail validation
+        # The replacement is allowed; AdminUser.save unlinks the old owner.
         is_valid, error = validate_owner_creation(self.superuser, self.center)
-        self.assertFalse(is_valid)
-        self.assertIn('already has an', error.lower())
+        self.assertTrue(is_valid)
+        self.assertIsNone(error)
 
     def test_owner_cannot_create_another_owner(self):
         """Test that an owner cannot create another owner"""
@@ -211,8 +211,8 @@ class OwnerCreationTests(TestCase):
         self.assertIn('manager', role_names)
         self.assertIn('staff', role_names)
 
-    def test_admin_user_validates_single_owner(self):
-        """Test that AdminUser model validation enforces single owner"""
+    def test_admin_user_replaces_existing_owner(self):
+        """Saving a replacement leaves only one active linked owner."""
         # Create first owner
         owner_user1 = User.objects.create_user(
             username='owner1',
@@ -227,20 +227,24 @@ class OwnerCreationTests(TestCase):
             branch=self.branch,
         )
         
-        # Try to create second owner - should raise ValidationError
+        # Creating a second owner deactivates and unlinks the first.
         owner_user2 = User.objects.create_user(
             username='owner2',
             email='owner2@test.com',
             password='testpass123'
         )
         
-        with self.assertRaises(ValidationError):
-            AdminUser.objects.create(
-                user=owner_user2,
-                role=self.owner_role,
-                center=self.center,
-                branch=self.branch,
-            )
+        replacement = AdminUser.objects.create(
+            user=owner_user2,
+            role=self.owner_role,
+            center=self.center,
+            branch=self.branch,
+        )
+        first = AdminUser.objects.get(user=owner_user1)
+        self.assertFalse(first.is_active)
+        self.assertIsNone(first.center)
+        self.assertTrue(replacement.is_active)
+        self.assertEqual(replacement.center, self.center)
 
 
 class ManagerStaffDetailAccessTests(TestCase):
@@ -597,8 +601,8 @@ class RoleValidationTests(TestCase):
         self.assertFalse(is_valid)
         self.assertIsNotNone(error)
 
-    def test_cannot_assign_second_owner_to_center(self):
-        """Test cannot assign second owner to same center"""
+    def test_superuser_can_replace_owner_for_center(self):
+        """A superuser may replace the current owner."""
         # Create first owner
         owner_user = User.objects.create_user(
             username='owner1',
@@ -612,9 +616,9 @@ class RoleValidationTests(TestCase):
             branch=self.branch,
         )
         
-        # Try to validate second owner assignment
+        # Validation allows replacement; save() unlinks the previous owner.
         is_valid, error = AdminUser.validate_role_assignment(
             self.superuser, self.owner_role, self.center
         )
-        self.assertFalse(is_valid)
-        self.assertIn('already has an owner', error.lower())
+        self.assertTrue(is_valid)
+        self.assertIsNone(error)

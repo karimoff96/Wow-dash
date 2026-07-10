@@ -11,6 +11,9 @@ Multi-tenant SaaS platform for translation agencies with Telegram bot integratio
 # 1. Install dependencies
 pip install -r requirements.txt
 
+# Select explicit local settings
+export DJANGO_SETTINGS_MODULE=WowDash.settings_development
+
 # 2. Run migrations
 python manage.py migrate
 
@@ -36,6 +39,7 @@ See [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 | [docs/SERVER_COMMANDS.md](docs/SERVER_COMMANDS.md) | All server commands reference |
 | [docs/ADMIN_BOT.md](docs/ADMIN_BOT.md) | Admin notification bot guide |
 | [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) | Production deployment |
+| [docs/RELIABILITY_ROLLOUT.md](docs/RELIABILITY_ROLLOUT.md) | Safe migration, webhook, archive, and rollback runbook |
 | [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | End-user documentation |
 | [docs/README_ARCHIVE_CRON.md](docs/README_ARCHIVE_CRON.md) | Archive automation |
 
@@ -49,7 +53,7 @@ See [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 ├─────────────────────────────────────────┤
 │                                         │
 │  Django App (wemard)                    │← Web interface, admin panel
-│  Customer Bots (wowdash-bots)           │← Translation center bots
+│  Telegram webhook worker                │← All translation center bots
 │  Admin Bot (multilang-admin-bot)        │← Notifications bot
 │                                         │
 │  Managed via Supervisor                 │
@@ -73,9 +77,9 @@ See [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Django 5.2.7, Python 3.13
+- **Backend:** Django 5.2.7, Python 3.12
 - **Database:** PostgreSQL
-- **Bots:** python-telegram-bot (telebot)
+- **Bots:** PyTelegramBotAPI (telebot), centralized webhooks
 - **Process Manager:** Supervisor
 - **Web Server:** Nginx + Gunicorn
 
@@ -83,7 +87,7 @@ See [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 
 ## 📱 Bots
 
-### Customer Bots (per translation center)
+### Customer Bots (centralized delivery)
 - Customers place orders via Telegram
 - Automatic price calculation
 - File uploads and downloads
@@ -91,12 +95,15 @@ See [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
 
 **Control:**
 ```bash
-# Development
+# Polling is retained only as a per-center rollback mode
 python manage.py run_bots
 
 # Production
 sudo supervisorctl restart wowdash-bots
 ```
+
+See [docs/RELIABILITY_ROLLOUT.md](docs/RELIABILITY_ROLLOUT.md) before applying
+migrations, enabling webhooks, or allowing archive deletion.
 
 ### Admin Bot (@uzmultilang_bot)
 - Receive contact form submissions

@@ -569,6 +569,65 @@ class NotificationRead(models.Model):
         return f"{self.user} read {self.notification_id}"
 
 
+class ArchiveRun(models.Model):
+    """Auditable execution record for a center archival attempt."""
+
+    MODE_INVENTORY = "inventory"
+    MODE_CANARY = "canary"
+    MODE_LIVE = "live"
+    MODE_CHOICES = (
+        (MODE_INVENTORY, _("Inventory only")),
+        (MODE_CANARY, _("Canary without deletion")),
+        (MODE_LIVE, _("Live archival")),
+    )
+
+    STATUS_RUNNING = "running"
+    STATUS_COMPLETED = "completed"
+    STATUS_PARTIAL = "partial"
+    STATUS_FAILED = "failed"
+    STATUS_CHOICES = (
+        (STATUS_RUNNING, _("Running")),
+        (STATUS_COMPLETED, _("Completed")),
+        (STATUS_PARTIAL, _("Partially completed")),
+        (STATUS_FAILED, _("Failed")),
+    )
+
+    center = models.ForeignKey(
+        "organizations.TranslationCenter",
+        on_delete=models.CASCADE,
+        related_name="archive_runs",
+    )
+    mode = models.CharField(max_length=20, choices=MODE_CHOICES, default=MODE_INVENTORY)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_RUNNING)
+    age_days = models.PositiveIntegerField(default=30)
+    delete_after_verified = models.BooleanField(default=False)
+    orders_found = models.PositiveIntegerField(default=0)
+    orders_archived = models.PositiveIntegerField(default=0)
+    source_file_count = models.PositiveIntegerField(default=0)
+    source_size_bytes = models.BigIntegerField(default=0)
+    deleted_file_count = models.PositiveIntegerField(default=0)
+    error = models.TextField(blank=True)
+    started_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(
+        "auth.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="archive_runs",
+    )
+
+    class Meta:
+        ordering = ["-started_at"]
+        indexes = [
+            models.Index(fields=["center", "-started_at"], name="core_archiv_center__a6f0f3_idx"),
+            models.Index(fields=["status", "-started_at"], name="core_archiv_status_6afe13_idx"),
+        ]
+
+    def __str__(self):
+        return f"Archive run {self.pk} - {self.center} - {self.status}"
+
+
 class FileArchive(models.Model):
     """Model to track archived files uploaded to Telegram"""
     
@@ -577,6 +636,14 @@ class FileArchive(models.Model):
         on_delete=models.CASCADE,
         related_name='file_archives',
         verbose_name=_("Center")
+    )
+
+    run = models.ForeignKey(
+        ArchiveRun,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="archives",
     )
     
     archive_name = models.CharField(
@@ -594,9 +661,42 @@ class FileArchive(models.Model):
     )
     
     telegram_message_id = models.BigIntegerField(
+        null=True,
+        blank=True,
         verbose_name=_("Telegram Message ID"),
         help_text=_("Message ID in Telegram channel where archive is stored")
     )
+
+    telegram_file_id = models.CharField(max_length=255, blank=True)
+
+    sha256 = models.CharField(max_length=64, blank=True, db_index=True)
+    manifest = models.JSONField(default=dict, blank=True)
+    source_file_count = models.PositiveIntegerField(default=0)
+    source_size_bytes = models.BigIntegerField(default=0)
+    uploaded_size_bytes = models.BigIntegerField(default=0)
+    upload_attempts = models.PositiveIntegerField(default=0)
+
+    VERIFICATION_LEGACY = "legacy"
+    VERIFICATION_PENDING = "pending"
+    VERIFICATION_VERIFIED = "verified"
+    VERIFICATION_FAILED = "failed"
+    VERIFICATION_MANUAL = "manual_required"
+    VERIFICATION_CHOICES = (
+        (VERIFICATION_LEGACY, _("Legacy archive")),
+        (VERIFICATION_PENDING, _("Pending verification")),
+        (VERIFICATION_VERIFIED, _("Verified")),
+        (VERIFICATION_FAILED, _("Verification failed")),
+        (VERIFICATION_MANUAL, _("Manual upload required")),
+    )
+    verification_status = models.CharField(
+        max_length=24,
+        choices=VERIFICATION_CHOICES,
+        default=VERIFICATION_LEGACY,
+        db_index=True,
+    )
+    verified_at = models.DateTimeField(null=True, blank=True)
+    files_deleted_at = models.DateTimeField(null=True, blank=True)
+    last_error = models.TextField(blank=True)
     
     telegram_channel_id = models.CharField(
         max_length=100,
@@ -657,8 +757,14 @@ class FileArchive(models.Model):
     @property
     def telegram_file_url(self):
         """Get Telegram file URL (for reference)"""
-        # Note: Actual file download requires bot API call
-        return f"https://t.me/c/{self.telegram_channel_id}/{self.telegram_message_id}"
+        channel_id = str(self.telegram_channel_id or "")
+        if not channel_id or not self.telegram_message_id:
+            return ""
+        if channel_id.startswith("-100"):
+            channel_id = channel_id[4:]
+        else:
+            channel_id = channel_id.lstrip("-")
+        return f"https://t.me/c/{channel_id}/{self.telegram_message_id}"
 
 
 # =============================================================================

@@ -459,6 +459,12 @@ def send_order_notification(order_id):
         results['error'] = "Branch has no center"
         logger.error(results['error'])
         return results
+
+    from bot.access import center_can_run_bot
+    if not center_can_run_bot(center):
+        results['error'] = "Center subscription is not active"
+        logger.info(results['error'])
+        return results
     
     # Check if center has bot token
     bot_token = center.bot_token
@@ -582,7 +588,8 @@ def send_order_status_update(order_id, old_status=None):
         return None
     
     center = branch.center
-    if not center.bot_token:
+    from bot.access import center_can_run_bot
+    if not center_can_run_bot(center):
         return None
     
     # Status emoji and names

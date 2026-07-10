@@ -8,6 +8,8 @@ This service handles automatic archiving of order files and receipts to:
 4. Track archived files in database for easy retrieval
 """
 import os
+import hashlib
+import time
 import zipfile
 import logging
 import json
@@ -17,7 +19,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.utils import timezone
 from django.db import transaction
-from django.db.models import Sum, Count, Q
+from django.db.models import Q
 from bot.notification_service import get_bot_instance
 from WowDash.archive_config import ArchiveConfig
 
@@ -60,10 +62,18 @@ class StorageArchiveService:
             branch__center=center,
             status='completed',
             completed_at__lt=cutoff_date,
-            files__isnull=False  # Has files
+        ).filter(
+            Q(files__isnull=False)
+            | Q(additional_files__isnull=False)
+            | Q(recipt__isnull=False)
+            | Q(receipts__file__isnull=False)
         ).exclude(
             # Exclude orders already archived
             archived_files__isnull=False
+        ).select_related(
+            "branch", "product", "language", "assigned_to__user"
+        ).prefetch_related(
+            "files", "additional_files", "receipts"
         ).distinct()
         
         # If minimum size specified, filter further
@@ -87,18 +97,54 @@ class StorageArchiveService:
         total_size = 0
         
         for order in orders:
-            # Order media files
-            for media in order.files.all():
-                if media.file and os.path.exists(media.file.path):
-                    total_size += os.path.getsize(media.file.path)
-            
-            # Receipt file
-            if order.recipt and os.path.exists(order.recipt.path):
-                total_size += os.path.getsize(order.recipt.path)
+            for _, _, field_file in self._iter_order_files(order):
+                if self._field_file_exists(field_file):
+                    total_size += os.path.getsize(field_file.path)
         
         return total_size
     
-    def create_archive(self, center, orders, archive_name=None, compression_level=None):
+    def _field_file_exists(self, field_file):
+        try:
+            return bool(field_file and field_file.name and os.path.exists(field_file.path))
+        except (NotImplementedError, ValueError, OSError):
+            return False
+
+    def _iter_order_files(self, order):
+        """Yield every distinct local file belonging to an order."""
+        seen = set()
+
+        for kind, related in (
+            ("primary", order.files.all()),
+            ("additional", order.additional_files.all()),
+        ):
+            for index, media in enumerate(related, 1):
+                field_file = media.file
+                identity = (getattr(field_file, "storage", None), field_file.name)
+                if field_file and field_file.name and identity not in seen:
+                    seen.add(identity)
+                    yield kind, index, field_file
+
+        if order.recipt and order.recipt.name:
+            identity = (getattr(order.recipt, "storage", None), order.recipt.name)
+            if identity not in seen:
+                seen.add(identity)
+                yield "legacy_receipt", 1, order.recipt
+
+        for index, receipt in enumerate(order.receipts.all(), 1):
+            field_file = receipt.file
+            identity = (getattr(field_file, "storage", None), field_file.name)
+            if field_file and field_file.name and identity not in seen:
+                seen.add(identity)
+                yield "receipt", index, field_file
+
+    def _sha256_file(self, path):
+        digest = hashlib.sha256()
+        with open(path, "rb") as source:
+            for chunk in iter(lambda: source.read(1024 * 1024), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
+
+    def build_archive(self, center, orders, archive_name=None, compression_level=None):
         """
         Create a ZIP archive of orders organized by branch/order
         
@@ -125,8 +171,7 @@ class StorageArchiveService:
             archive_name: Custom archive name (optional)
             compression_level: ZIP compression level 0-9 (None = use center/global setting)
         
-        Returns:
-            Path to created archive file
+        Returns a path plus a checksum-protected source manifest.
         """
         if not archive_name:
             timestamp = timezone.now().strftime("%Y-%m")
@@ -139,7 +184,16 @@ class StorageArchiveService:
         if compression_level is None:
             compression_level = ArchiveConfig.COMPRESSION_LEVEL
         
-        # Create archive with optimized compression
+        manifest = {
+            "version": 1,
+            "center_id": center.id,
+            "center_name": center.name,
+            "created_at": timezone.now().isoformat(),
+            "orders": [],
+            "source_file_count": 0,
+            "source_size_bytes": 0,
+        }
+
         with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED, compresslevel=compression_level) as zipf:
             # Group orders by branch
             branches_dict = {}
@@ -166,34 +220,62 @@ class StorageArchiveService:
                     order_details = self._get_order_details(order)
                     details_json = json.dumps(order_details, indent=2, ensure_ascii=False, default=str)
                     zipf.writestr(f"{order_folder}/Order_{order_number:05d}_details.json", details_json)
-                    
-                    # Add order media files with order ID prefix
-                    for idx, media in enumerate(order.files.all(), 1):
-                        if media.file and os.path.exists(media.file.path):
-                            file_ext = os.path.splitext(media.file.name)[1]
-                            # Include order ID in filename for easy identification
-                            arcname = f"{order_folder}/Order_{order_number:05d}_file_{idx:03d}{file_ext}"
-                            zipf.write(media.file.path, arcname)
-                    
-                    # Add receipt with order ID prefix if exists
-                    if order.recipt and os.path.exists(order.recipt.path):
-                        receipt_ext = os.path.splitext(order.recipt.name)[1]
-                        arcname = f"{order_folder}/Order_{order_number:05d}_receipt{receipt_ext}"
-                        zipf.write(order.recipt.path, arcname)
+
+                    order_manifest = {
+                        "order_id": order.id,
+                        "order_number": order_number,
+                        "files": [],
+                    }
+                    for kind, index, field_file in self._iter_order_files(order):
+                        if not self._field_file_exists(field_file):
+                            continue
+                        extension = os.path.splitext(field_file.name)[1]
+                        arcname = (
+                            f"{order_folder}/Order_{order_number:05d}_"
+                            f"{kind}_{index:03d}{extension}"
+                        )
+                        size_bytes = os.path.getsize(field_file.path)
+                        checksum = self._sha256_file(field_file.path)
+                        zipf.write(field_file.path, arcname)
+                        order_manifest["files"].append({
+                            "kind": kind,
+                            "source_name": field_file.name,
+                            "archive_name": arcname,
+                            "size_bytes": size_bytes,
+                            "sha256": checksum,
+                        })
+                        manifest["source_file_count"] += 1
+                        manifest["source_size_bytes"] += size_bytes
+                    manifest["orders"].append(order_manifest)
+
+            zipf.writestr(
+                "archive_manifest.json",
+                json.dumps(manifest, indent=2, ensure_ascii=False),
+            )
         
         logger.info(f"Created archive: {archive_path} with {len(orders)} orders")
-        return archive_path
+        return {
+            "path": archive_path,
+            "sha256": self._sha256_file(archive_path),
+            "manifest": manifest,
+            "source_file_count": manifest["source_file_count"],
+            "source_size_bytes": manifest["source_size_bytes"],
+            "archive_size_bytes": os.path.getsize(archive_path),
+        }
+
+    def create_archive(self, center, orders, archive_name=None, compression_level=None):
+        """Backward-compatible path-only wrapper around :meth:`build_archive`."""
+        return self.build_archive(
+            center, orders, archive_name, compression_level
+        )["path"]
 
     def _estimate_order_size(self, order):
         """Estimate total file size for a single order in bytes."""
         order_size = 0
 
-        for media in order.files.all():
-            if media.file and os.path.exists(media.file.path):
-                order_size += os.path.getsize(media.file.path)
-
-        if order.recipt and os.path.exists(order.recipt.path):
-            order_size += os.path.getsize(order.recipt.path)
+        for _, _, field_file in self._iter_order_files(order):
+            if self._field_file_exists(field_file):
+                order_size += os.path.getsize(field_file.path)
 
         return order_size
 
@@ -266,8 +348,7 @@ class StorageArchiveService:
             archive_path: Path to archive file
             caption: Custom caption for the file (optional)
         
-        Returns:
-            Tuple of (success: bool, message_id or error_message)
+        Returns ``(True, metadata)`` only when Telegram confirms the same file size.
         """
         try:
             bot = get_bot_instance(center.bot_token)
@@ -279,12 +360,12 @@ class StorageArchiveService:
                 return False, "No company orders channel configured"
 
             # Pre-flight size check — Telegram bot API hard limit is 50 MB
-            TELEGRAM_BOT_MAX_BYTES = 50 * 1024 * 1024
+            TELEGRAM_BOT_MAX_BYTES = int(ArchiveConfig.MAX_SIZE_MB * 1024 * 1024)
             archive_size = os.path.getsize(archive_path)
             if archive_size > TELEGRAM_BOT_MAX_BYTES:
                 error_msg = (
                     f"Archive too large for Telegram bot API "
-                    f"({archive_size / (1024*1024):.1f} MB > 50 MB limit): "
+                    f"({archive_size / (1024*1024):.1f} MB > {ArchiveConfig.MAX_SIZE_MB} MB limit): "
                     f"{os.path.basename(archive_path)}"
                 )
                 logger.error(error_msg)
@@ -314,15 +395,37 @@ class StorageArchiveService:
                     parse_mode='HTML'
                 )
             
-            logger.info(f"Uploaded archive to Telegram: {archive_path}")
-            return True, msg.message_id
+            document = getattr(msg, "document", None)
+            uploaded_size = getattr(document, "file_size", None)
+            telegram_file_id = getattr(document, "file_id", "")
+            if uploaded_size != archive_size or not telegram_file_id:
+                return False, (
+                    "Telegram upload could not be verified "
+                    f"(local={archive_size}, remote={uploaded_size}, file_id={bool(telegram_file_id)})"
+                )
+
+            logger.info(f"Uploaded and verified archive on Telegram: {archive_path}")
+            return True, {
+                "message_id": msg.message_id,
+                "file_id": telegram_file_id,
+                "file_size": uploaded_size,
+            }
             
         except Exception as e:
             logger.error(f"Failed to upload archive to Telegram: {e}")
             return False, str(e)
     
-    @transaction.atomic
-    def archive_orders(self, center, age_days=30, force=False, max_orders=None, split_size_mb=None):
+    def archive_orders(
+        self,
+        center,
+        age_days=30,
+        force=False,
+        max_orders=None,
+        split_size_mb=None,
+        mode="inventory",
+        created_by=None,
+        order_ids=None,
+    ):
         """
         Main archiving process:
         1. Find eligible orders
@@ -341,8 +444,24 @@ class StorageArchiveService:
         Returns:
             Dict with results
         """
+        from core.models import ArchiveRun, FileArchive
+
+        if mode not in {ArchiveRun.MODE_INVENTORY, ArchiveRun.MODE_CANARY, ArchiveRun.MODE_LIVE}:
+            raise ValueError(f"Unknown archive mode: {mode}")
+
+        delete_after_verified = mode == ArchiveRun.MODE_LIVE and ArchiveConfig.DELETE_LOCAL_FILES
+        run = ArchiveRun.objects.create(
+            center=center,
+            mode=mode,
+            age_days=age_days,
+            delete_after_verified=delete_after_verified,
+            created_by=created_by,
+        )
+
         result = {
             'success': False,
+            'run_id': run.id,
+            'mode': mode,
             'orders_count': 0,
             'archive_size': 0,
             'archive_name': None,
@@ -350,6 +469,17 @@ class StorageArchiveService:
             'error': None,
             'archives_created': []
         }
+
+        if mode != ArchiveRun.MODE_INVENTORY:
+            from bot.access import center_can_archive
+
+            if not center_can_archive(center):
+                result['error'] = "Maintenance archival is disabled or incomplete for this center"
+                run.status = ArchiveRun.STATUS_FAILED
+                run.error = result['error']
+                run.completed_at = timezone.now()
+                run.save(update_fields=["status", "error", "completed_at"])
+                return result
         
         try:
             # Keep local archive records in sync with retention policy.
@@ -357,26 +487,60 @@ class StorageArchiveService:
 
             # Get archivable orders
             orders = self.get_archivable_orders(center, age_days)
+            if order_ids is not None:
+                orders = orders.filter(pk__in=order_ids)
             
-            if not orders.exists():
-                result['error'] = "No orders to archive"
+            orders_list = list(orders)
+            run.orders_found = len(orders_list)
+
+            if not orders_list:
+                run.status = ArchiveRun.STATUS_COMPLETED
+                run.completed_at = timezone.now()
+                run.save(update_fields=["orders_found", "status", "completed_at"])
+                result.update(success=True, error=None)
                 return result
             
             # Check total size
-            total_size = self.calculate_total_size(orders)
+            total_size = self.calculate_total_size(orders_list)
+            total_file_count = sum(
+                1
+                for order in orders_list
+                for _, _, field_file in self._iter_order_files(order)
+                if self._field_file_exists(field_file)
+            )
+            run.source_size_bytes = total_size
+            run.source_file_count = total_file_count
+            run.save(update_fields=["orders_found", "source_size_bytes", "source_file_count"])
             size_mb = total_size / (1024 * 1024)
+
+            if mode == ArchiveRun.MODE_INVENTORY:
+                run.status = ArchiveRun.STATUS_COMPLETED
+                run.completed_at = timezone.now()
+                run.save(update_fields=["status", "completed_at"])
+                result.update(
+                    success=True,
+                    archive_size=total_size,
+                    inventory={
+                        "orders": len(orders_list),
+                        "files": total_file_count,
+                        "size_bytes": total_size,
+                    },
+                )
+                return result
             
             # Check if meets minimum size threshold (from config)
             min_size_mb = ArchiveConfig.MIN_SIZE_MB
             
             if not force and size_mb < min_size_mb:
                 result['error'] = f"Total size ({size_mb:.2f} MB) below threshold ({min_size_mb} MB)"
+                run.status = ArchiveRun.STATUS_COMPLETED
+                run.error = result['error']
+                run.completed_at = timezone.now()
+                run.save(update_fields=["status", "error", "completed_at"])
                 return result
             
             # Determine if we need to split archives
             max_size_mb = split_size_mb or ArchiveConfig.MAX_SIZE_MB
-            orders_list = list(orders)
-            
             # First split by order count if configured.
             if max_orders:
                 initial_batches = [orders_list[i:i + max_orders] for i in range(0, len(orders_list), max_orders)]
@@ -392,69 +556,132 @@ class StorageArchiveService:
                 batches.extend(self._split_orders_by_size(initial_batch, max_size_mb))
             
             total_archived = 0
+            total_deleted = 0
+            had_failure = False
             
             for batch_idx, batch_orders in enumerate(batches):
-                # Create batch archive name
+                # Include the immutable run ID so retries and later runs never
+                # overwrite a retained failed/manual archive with the same part
+                # number.
+                timestamp = timezone.now().strftime("%Y-%m")
+                safe_center_name = self._sanitize_filename(center.name)
+                archive_name = f"Archive_{timestamp}_{safe_center_name}_Run{run.pk}"
                 if len(batches) > 1:
-                    timestamp = timezone.now().strftime("%Y-%m")
-                    safe_center_name = self._sanitize_filename(center.name)
-                    archive_name = f"Archive_{timestamp}_{safe_center_name}_Part{batch_idx + 1}.zip"
-                else:
-                    archive_name = None
+                    archive_name += f"_Part{batch_idx + 1}"
+                archive_name += ".zip"
                 
-                # Create archive
-                archive_path = self.create_archive(center, batch_orders, archive_name)
-                
-                # Check archive size
-                archive_size = os.path.getsize(archive_path)
+                build = self.build_archive(center, batch_orders, archive_name)
+                archive_path = build["path"]
+                archive_size = build["archive_size_bytes"]
                 archive_size_mb = archive_size / (1024 * 1024)
                 
                 # Generate summary caption
-                batch_total_size = self.calculate_total_size(batch_orders)
+                batch_total_size = build["source_size_bytes"]
                 caption = self._generate_archive_caption(center, batch_orders, batch_total_size)
                 if len(batches) > 1:
                     caption += f"\n📦 Part {batch_idx + 1} of {len(batches)}"
                 
-                # Upload to Telegram
-                success, msg_id_or_error = self.upload_to_telegram(center, archive_path, caption)
-                
+                if archive_size > int(ArchiveConfig.MAX_SIZE_MB * 1024 * 1024):
+                    FileArchive.objects.create(
+                        center=center,
+                        run=run,
+                        archive_name=os.path.basename(archive_path),
+                        archive_path=str(archive_path),
+                        telegram_channel_id=center.company_orders_channel_id or "",
+                        total_orders=len(batch_orders),
+                        total_size_bytes=archive_size,
+                        sha256=build["sha256"],
+                        manifest=build["manifest"],
+                        source_file_count=build["source_file_count"],
+                        source_size_bytes=build["source_size_bytes"],
+                        verification_status=FileArchive.VERIFICATION_MANUAL,
+                        last_error="Archive exceeds automatic Telegram upload limit",
+                    )
+                    had_failure = True
+                    result['error'] = "One or more archives require administrator-assisted upload"
+                    continue
+
+                success = False
+                upload_result = None
+                upload_attempts = 0
+                for upload_attempts in range(1, 4):
+                    success, upload_result = self.upload_to_telegram(center, archive_path, caption)
+                    if success:
+                        break
+                    if upload_attempts < 3 and not getattr(settings, "TESTING", False):
+                        time.sleep(2 ** (upload_attempts - 1))
+
                 if not success:
-                    result['error'] = f"Failed to upload part {batch_idx + 1}: {msg_id_or_error}"
-                    # Clean up local archive
-                    if os.path.exists(archive_path):
-                        os.remove(archive_path)
-                    return result
-                
-                # Create FileArchive record
-                from core.models import FileArchive
-                archive = FileArchive.objects.create(
-                    center=center,
-                    archive_name=os.path.basename(archive_path),
-                    archive_path=str(archive_path),
-                    telegram_message_id=msg_id_or_error,
-                    telegram_channel_id=center.company_orders_channel_id,
-                    total_orders=len(batch_orders),
-                    total_size_bytes=batch_total_size,
-                    archive_date=timezone.now()
-                )
-                
-                # Link orders to archive
-                for order in batch_orders:
-                    order.archived_files = archive
-                    order.save(update_fields=['archived_files'])
+                    FileArchive.objects.create(
+                        center=center,
+                        run=run,
+                        archive_name=os.path.basename(archive_path),
+                        archive_path=str(archive_path),
+                        telegram_channel_id=center.company_orders_channel_id or "",
+                        total_orders=len(batch_orders),
+                        total_size_bytes=archive_size,
+                        sha256=build["sha256"],
+                        manifest=build["manifest"],
+                        source_file_count=build["source_file_count"],
+                        source_size_bytes=build["source_size_bytes"],
+                        upload_attempts=upload_attempts,
+                        verification_status=FileArchive.VERIFICATION_FAILED,
+                        last_error=str(upload_result),
+                    )
+                    had_failure = True
+                    result['error'] = f"Failed to upload part {batch_idx + 1}: {upload_result}"
+                    continue
+
+                with transaction.atomic():
+                    archive = FileArchive.objects.create(
+                        center=center,
+                        run=run,
+                        archive_name=os.path.basename(archive_path),
+                        archive_path=str(archive_path),
+                        telegram_message_id=upload_result["message_id"],
+                        telegram_file_id=upload_result["file_id"],
+                        telegram_channel_id=center.company_orders_channel_id,
+                        total_orders=len(batch_orders),
+                        total_size_bytes=archive_size,
+                        sha256=build["sha256"],
+                        manifest=build["manifest"],
+                        source_file_count=build["source_file_count"],
+                        source_size_bytes=build["source_size_bytes"],
+                        uploaded_size_bytes=upload_result["file_size"],
+                        upload_attempts=upload_attempts,
+                        verification_status=FileArchive.VERIFICATION_VERIFIED,
+                        verified_at=timezone.now(),
+                    )
+                    from orders.models import Order
+                    Order.objects.filter(pk__in=[order.pk for order in batch_orders]).update(
+                        archived_files=archive
+                    )
                 
                 total_archived += len(batch_orders)
                 result['archives_created'].append({
                     'name': archive.archive_name,
                     'orders': len(batch_orders),
                     'size_mb': archive_size_mb,
-                    'message_id': msg_id_or_error
+                    'message_id': upload_result["message_id"],
+                    'sha256': build["sha256"],
                 })
                 
-                # Clean up local files for this batch
-                if ArchiveConfig.DELETE_LOCAL_FILES:
-                    deleted_count = self._cleanup_local_files(batch_orders)
-                    logger.info(f"Deleted {deleted_count} local files from batch {batch_idx + 1}")
+                if delete_after_verified:
+                    deleted_count, failed_count = self._cleanup_local_files(batch_orders)
+                    total_deleted += deleted_count
+                    if failed_count == 0:
+                        archive.files_deleted_at = timezone.now()
+                        archive.save(update_fields=["files_deleted_at"])
+                    else:
+                        archive.last_error = f"Failed to delete {failed_count} local source file(s)"
+                        archive.save(update_fields=["last_error"])
+                        had_failure = True
+                    logger.info(
+                        "Deleted %s local files from batch %s (%s failed)",
+                        deleted_count,
+                        batch_idx + 1,
+                        failed_count,
+                    )
                 
                 # Keep or delete local archive file based on retention policy.
                 if os.path.exists(archive_path):
@@ -469,18 +696,30 @@ class StorageArchiveService:
                         )
             
             result.update({
-                'success': True,
+                'success': not had_failure,
                 'orders_count': total_archived,
                 'archive_size': total_size,
                 'archive_name': result['archives_created'][0]['name'] if result['archives_created'] else None,
                 'message_id': result['archives_created'][0]['message_id'] if result['archives_created'] else None
             })
-            
+
+            run.orders_archived = total_archived
+            run.deleted_file_count = total_deleted
+            run.status = ArchiveRun.STATUS_PARTIAL if had_failure else ArchiveRun.STATUS_COMPLETED
+            run.error = result['error'] or ""
+            run.completed_at = timezone.now()
+            run.save(update_fields=[
+                "orders_archived", "deleted_file_count", "status", "error", "completed_at"
+            ])
             logger.info(f"Successfully archived {total_archived} orders in {len(batches)} archive(s) for center {center.name}")
             
         except Exception as e:
             logger.error(f"Error in archive_orders: {e}", exc_info=True)
             result['error'] = str(e)
+            run.status = ArchiveRun.STATUS_FAILED
+            run.error = str(e)
+            run.completed_at = timezone.now()
+            run.save(update_fields=["status", "error", "completed_at"])
         
         return result
     
@@ -495,26 +734,22 @@ class StorageArchiveService:
             Number of files deleted
         """
         deleted_count = 0
-        
+        failed_count = 0
+        deleted_names = set()
+
         for order in orders:
-            # Delete order media files
-            for media in order.files.all():
-                if media.file and os.path.exists(media.file.path):
-                    try:
-                        os.remove(media.file.path)
-                        deleted_count += 1
-                    except Exception as e:
-                        logger.warning(f"Failed to delete file {media.file.path}: {e}")
-            
-            # Delete receipt
-            if order.recipt and os.path.exists(order.recipt.path):
+            for _, _, field_file in self._iter_order_files(order):
+                if not self._field_file_exists(field_file) or field_file.name in deleted_names:
+                    continue
                 try:
-                    os.remove(order.recipt.path)
+                    field_file.storage.delete(field_file.name)
+                    deleted_names.add(field_file.name)
                     deleted_count += 1
                 except Exception as e:
-                    logger.warning(f"Failed to delete receipt {order.recipt.path}: {e}")
-        
-        return deleted_count
+                    failed_count += 1
+                    logger.warning(f"Failed to delete archived source {field_file.name}: {e}")
+
+        return deleted_count, failed_count
     
     def _generate_archive_caption(self, center, orders, total_size):
         """Generate detailed caption for archive upload"""

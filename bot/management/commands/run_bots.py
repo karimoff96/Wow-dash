@@ -18,7 +18,9 @@ import os
 import subprocess
 import psutil
 from django.core.management.base import BaseCommand
+from django.db import close_old_connections
 from organizations.models import TranslationCenter
+from bot.access import active_bot_centers, center_can_run_bot
 from bot.webhook_manager import get_ssl_session
 import telebot
 from telebot import apihelper
@@ -165,17 +167,22 @@ class BotThread(threading.Thread):
         self.center = center
         self.bot = bot_instance  # This is the actual bot object (telebot.TeleBot)
         self.running = True
+        self._stop_event = threading.Event()
         self.stdout = stdout
         self.name = f"Bot-{center.id}-{center.name}"
     
     # Health check interval in seconds (ping Telegram /getMe)
     HEALTH_CHECK_INTERVAL = 300  # 5 minutes
+    SUBSCRIPTION_CHECK_INTERVAL = 30
 
     def run(self):
         """Run the bot with infinity polling and periodic /getMe health checks."""
         logger.info(f"Starting bot for center: {self.center.name} (ID: {self.center.id})")
 
         try:
+            if self.stop_if_subscription_inactive():
+                return
+
             # Remove any existing webhook first
             self.bot.remove_webhook()
             time.sleep(0.5)  # Brief pause to ensure webhook is cleared
@@ -187,6 +194,12 @@ class BotThread(threading.Thread):
                 name=f"Health-{self.center.id}",
             )
             health_thread.start()
+
+            subscription_thread = _threading.Thread(
+                target=self._subscription_watch, daemon=True,
+                name=f"Subscription-{self.center.id}",
+            )
+            subscription_thread.start()
 
             # Start polling with exponential back-off on consecutive errors
             consecutive_errors = 0
@@ -250,8 +263,7 @@ class BotThread(threading.Thread):
         """Periodically call /getMe to verify the bot connection is alive."""
         consecutive_health_failures = 0
         while self.running:
-            time.sleep(self.HEALTH_CHECK_INTERVAL)
-            if not self.running:
+            if self._stop_event.wait(self.HEALTH_CHECK_INTERVAL):
                 break
             try:
                 me = self.bot.get_me()
@@ -276,10 +288,54 @@ class BotThread(threading.Thread):
                         "Health check FAILED for center '%s' (attempt %d): %s — bot may be disconnected!",
                         self.center.name, consecutive_health_failures, exc,
                     )
+
+    def _center_can_keep_running(self):
+        """Read fresh center/subscription state from the database."""
+        close_old_connections()
+        try:
+            center = TranslationCenter.objects.select_related("subscription").get(
+                pk=self.center.pk
+            )
+            return center_can_run_bot(center)
+        except TranslationCenter.DoesNotExist:
+            return False
+        finally:
+            close_old_connections()
+
+    def stop_if_subscription_inactive(self):
+        """Stop polling when the center or its subscription is no longer active."""
+        if self._center_can_keep_running():
+            return False
+
+        logger.warning(
+            "Stopping bot for center '%s' because its center or subscription is inactive",
+            self.center.name,
+        )
+        self.stdout.write(
+            f"\n  Subscription inactive for {self.center.name}; stopping bot.\n"
+        )
+        self.stop()
+        return True
+
+    def _subscription_watch(self):
+        """Continuously bind the polling lifetime to the subscription lifetime."""
+        while self.running:
+            if self._stop_event.wait(self.SUBSCRIPTION_CHECK_INTERVAL):
+                break
+            try:
+                if self.stop_if_subscription_inactive():
+                    break
+            except Exception:
+                # A temporary database issue must not permanently kill the bot.
+                logger.exception(
+                    "Failed to check subscription for center '%s'",
+                    self.center.name,
+                )
     
     def stop(self):
         """Stop the bot polling"""
         self.running = False
+        self._stop_event.set()
         try:
             self.bot.stop_polling()
         except Exception:
@@ -650,31 +706,25 @@ class Command(BaseCommand):
                 runner.shutdown()
             return
         
-        # Get centers with bot tokens
-        
-        # Get centers with bot tokens
+        # Only subscriptions that are active for today's date may run bots.
         if center_id:
-            centers = TranslationCenter.objects.filter(
-                id=center_id,
-                bot_token__isnull=False,
-                is_active=True
-            ).exclude(bot_token='')
+            centers = active_bot_centers(
+                TranslationCenter.objects.filter(id=center_id)
+            ).filter(bot_delivery_mode=TranslationCenter.BOT_DELIVERY_POLLING)
             
             if not centers.exists():
                 self.stderr.write(self.style.ERROR(
-                    f'Center {center_id} not found or has no bot token configured'
+                    f'Center {center_id} not found, has no bot token, or has no active subscription'
                 ))
                 return
         else:
-            centers = TranslationCenter.objects.filter(
-                bot_token__isnull=False,
-                is_active=True
-            ).exclude(bot_token='')
+            centers = active_bot_centers().filter(
+                bot_delivery_mode=TranslationCenter.BOT_DELIVERY_POLLING
+            )
         
         if not centers.exists():
             self.stderr.write(self.style.WARNING(
-                'No centers with bot tokens found. '
-                'Configure a bot token in the admin panel for your Translation Center.'
+                'No centers with bot tokens and active subscriptions found.'
             ))
             return
         

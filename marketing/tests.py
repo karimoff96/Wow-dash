@@ -384,10 +384,16 @@ class MarketingPermissionTest(TestCase):
         self.branch = Branch.objects.filter(center=self.center).first()
         
         # Create owner admin profile
+        self.owner_role = Role.objects.create(
+            name='owner',
+            display_name='Owner',
+            can_manage_financial=True,
+            can_manage_marketing=True,
+        )
         self.owner_admin = AdminUser.objects.create(
             user=self.owner_user,
             center=self.center,
-            is_owner=True
+            role=self.owner_role,
         )
         
         # Create manager
@@ -396,14 +402,14 @@ class MarketingPermissionTest(TestCase):
         )
         self.role = Role.objects.create(
             name='Manager',
-            center=self.center
+            can_manage_marketing=True,
         )
         self.manager_admin = AdminUser.objects.create(
             user=self.manager_user,
             center=self.center,
+            branch=self.branch,
             role=self.role
         )
-        self.manager_admin.branches.add(self.branch)
         
         self.client = Client()
     
@@ -538,10 +544,16 @@ class RecipientCountAPITest(TestCase):
                 is_active=True
             )
         
+        owner_role = Role.objects.create(
+            name='owner',
+            display_name='Owner',
+            can_manage_financial=True,
+            can_manage_marketing=True,
+        )
         self.admin = AdminUser.objects.create(
             user=self.user,
             center=self.center,
-            is_owner=True
+            role=owner_role,
         )
         
         self.client = Client()

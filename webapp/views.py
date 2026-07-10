@@ -13,17 +13,29 @@ bot_token before processing any user-specific data.
 import logging
 import os
 import time
+import json
+from datetime import timedelta
+from urllib.parse import quote as urlquote
 
-from django.http import JsonResponse, HttpResponse
+from django.http import FileResponse, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_GET
 from django.core.files.base import ContentFile
+from django.utils import timezone
 
 from .auth import get_validated_telegram_user
+from organizations.tenant_scope import customer_queryset
 
 logger = logging.getLogger(__name__)
+
+
+def _json_body(request):
+    try:
+        return json.loads(request.body or b"{}")
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return request.POST.dict()
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -49,8 +61,13 @@ def _gtf(obj, field: str, lang: str) -> str:
 def _get_center(center_id):
     """Return TranslationCenter or None."""
     from organizations.models import TranslationCenter
+    from bot.access import center_can_run_bot
     try:
-        return TranslationCenter.objects.get(pk=center_id, is_active=True)
+        center = TranslationCenter.objects.select_related("subscription").get(
+            pk=center_id,
+            is_active=True,
+        )
+        return center if center_can_run_bot(center) else None
     except TranslationCenter.DoesNotExist:
         return None
 
@@ -724,7 +741,7 @@ def api_order_detail(request, order_id: int):
     try:
         order = Order.objects.select_related(
             "product", "product__category", "branch", "language"
-        ).prefetch_related("files").get(pk=order_id, bot_user=bot_user)
+        ).prefetch_related("files", "timeline").get(pk=order_id, bot_user=bot_user)
     except Order.DoesNotExist:
         return _err("Order not found", 404)
 
@@ -777,6 +794,25 @@ def api_order_detail(request, order_id: int):
             "branch_name": order.branch.name if order.branch else "",
             "branch_address": order.branch.address if order.branch else "",
             "files_count": order.files.count(),
+            "files": [
+                {
+                    "id": media.pk,
+                    "name": media.file_name,
+                    "pages": media.pages,
+                }
+                for media in order.files.all()
+            ],
+            "timeline": [
+                {
+                    "type": event.event_type,
+                    "data": event.data,
+                    "created_at": event.created_at.isoformat(),
+                }
+                for event in order.timeline.exclude(
+                    event_type="comment",
+                    actor__isnull=False,
+                )
+            ],
             "has_receipt": bool(order.recipt),
             "can_upload_receipt": is_payment_pending and not payme_enabled,
             "can_pay_with_payme": is_payment_pending and payme_enabled,
@@ -1143,3 +1179,298 @@ def api_pricelist(request):
         "is_agency": is_agency,
         "categories": result,
     })
+
+
+@csrf_exempt
+def api_quote_create(request):
+    """Create a customer quote request with a deterministic price snapshot."""
+    if request.method != "POST":
+        return _err("Method not allowed", 405)
+
+    data = request.POST if request.content_type and request.content_type.startswith("multipart/") else _json_body(request)
+    tg_id, _, center = _auth(data)
+    if tg_id is None:
+        return _err("Invalid or expired initData", 401)
+    if not center.workflow_automation_enabled:
+        return _err("Quote workflow is not enabled for this center", 404)
+
+    from accounts.models import BotUser
+    from orders.models import OrderMedia, Quote, QuoteLine
+    from services.models import Language, Product
+
+    bot_user = BotUser.objects.filter(user_id=tg_id, center=center, is_active=True).select_related("branch").first()
+    if not bot_user or not bot_user.branch:
+        return _err("Registered user with a branch is required", 403)
+
+    product = Product.objects.filter(
+        pk=data.get("product_id"),
+        category__branch=bot_user.branch,
+        is_active=True,
+    ).select_related("category").first()
+    if not product:
+        return _err("Product not found", 404)
+
+    language = None
+    if data.get("language_id"):
+        language = product.category.languages.filter(
+            pk=data.get("language_id"),
+            branch=bot_user.branch,
+        ).first()
+        if language is None:
+            return _err("Language not available for this product", 404)
+    try:
+        pages = max(1, int(data.get("pages", 1)))
+        copies = max(0, int(data.get("copies", 0)))
+    except (TypeError, ValueError):
+        return _err("Invalid page or copy count")
+
+    urgency = data.get("urgency", QuoteLine.URGENCY_NORMAL)
+    if urgency not in {QuoteLine.URGENCY_NORMAL, QuoteLine.URGENCY_EXPRESS}:
+        return _err("Invalid urgency")
+
+    quoted_total = product.get_combined_total_price(
+        language=language,
+        is_agency=bot_user.is_agency,
+        pages=pages,
+        copies=copies,
+    )
+    quote = Quote.objects.create(
+        branch=bot_user.branch,
+        bot_user=bot_user,
+        customer_name=bot_user.display_name,
+        customer_phone=bot_user.phone or "",
+        source=Quote.SOURCE_MINI_APP,
+        status=Quote.STATUS_SUBMITTED,
+        valid_until=timezone.localdate() + timedelta(days=7),
+        notes=(data.get("notes") or "").strip(),
+    )
+    line = QuoteLine.objects.create(
+        quote=quote,
+        product=product,
+        language=language,
+        pages=pages,
+        copies=copies,
+        urgency=urgency,
+        description=(data.get("description") or "").strip(),
+        unit_price=quoted_total / pages,
+        total_price=quoted_total,
+        price_snapshot={
+            "product_id": product.pk,
+            "language_id": language.pk if language else None,
+            "pages": pages,
+            "copies": copies,
+            "is_agency": bot_user.is_agency,
+            "urgency": urgency,
+            "product_first_page": str(product.get_first_page_price(bot_user.is_agency)),
+            "product_other_page": str(product.get_other_page_price(bot_user.is_agency)),
+            "product_copy": str(
+                (product.agency_copy_price_decimal if bot_user.is_agency else product.user_copy_price_decimal)
+                or 0
+            ),
+            "language_first_page": str(
+                (language.agency_page_price if bot_user.is_agency else language.ordinary_page_price)
+                if language else 0
+            ),
+            "language_other_page": str(
+                (language.agency_other_page_price if bot_user.is_agency else language.ordinary_other_page_price)
+                if language else 0
+            ),
+            "language_copy": str(
+                (language.agency_copy_price if bot_user.is_agency else language.ordinary_copy_price)
+                if language else 0
+            ),
+            "total": str(quoted_total),
+            "calculated_at": timezone.now().isoformat(),
+        },
+    )
+    quote.recalculate()
+
+    for uploaded_file in request.FILES.getlist("files[]"):
+        _, extension = os.path.splitext(uploaded_file.name.lower())
+        if extension not in ALLOWED_EXTENSIONS:
+            quote.delete()
+            return _err(f"File type not allowed: {uploaded_file.name}")
+        content = uploaded_file.read()
+        media = OrderMedia(pages=_count_file_pages(content, uploaded_file.name))
+        media.file.save(uploaded_file.name, ContentFile(content), save=True)
+        quote.files.add(media)
+
+    return _ok({
+        "quote": {
+            "id": quote.pk,
+            "reference": str(quote.reference),
+            "version": quote.version,
+            "status": quote.status,
+            "total": float(quote.total),
+            "valid_until": quote.valid_until.isoformat(),
+        }
+    })
+
+
+@csrf_exempt
+def api_my_quotes(request):
+    if request.method != "POST":
+        return _err("Method not allowed", 405)
+    data = _json_body(request)
+    tg_id, _, center = _auth(data)
+    if tg_id is None:
+        return _err("Invalid or expired initData", 401)
+    if not center.workflow_automation_enabled:
+        return _err("Quote workflow is not enabled for this center", 404)
+    from accounts.models import BotUser
+    from orders.models import Quote
+    bot_user = BotUser.objects.filter(user_id=tg_id, center=center).first()
+    if not bot_user:
+        return _err("User not registered", 403)
+    quotes = customer_queryset(
+        Quote.objects.prefetch_related("lines"), center, bot_user
+    ).order_by("-created_at")
+    return _ok({"quotes": [{
+        "id": quote.pk,
+        "reference": str(quote.reference),
+        "version": quote.version,
+        "status": quote.status,
+        "total": float(quote.total),
+        "valid_until": quote.valid_until.isoformat() if quote.valid_until else None,
+        "order_ids": list(quote.orders.values_list("id", flat=True)),
+        "created_at": quote.created_at.isoformat(),
+    } for quote in quotes[:100]]})
+
+
+@csrf_exempt
+def api_accept_quote(request, quote_id):
+    if request.method != "POST":
+        return _err("Method not allowed", 405)
+    data = _json_body(request)
+    tg_id, _, center = _auth(data)
+    if tg_id is None:
+        return _err("Invalid or expired initData", 401)
+    if not center.workflow_automation_enabled:
+        return _err("Quote workflow is not enabled for this center", 404)
+    from accounts.models import BotUser
+    from orders.models import Quote
+    from orders.workflow_service import accept_quote
+    bot_user = BotUser.objects.filter(user_id=tg_id, center=center, is_active=True).first()
+    quote = customer_queryset(Quote.objects.filter(pk=quote_id), center, bot_user).first()
+    if not bot_user or not quote:
+        return _err("Quote not found", 404)
+    try:
+        orders = accept_quote(quote, bot_user)
+    except (ValueError, PermissionError) as exc:
+        return _err(str(exc), 409)
+    return _ok({"quote_id": quote.pk, "order_ids": [order.pk for order in orders]})
+
+
+@csrf_exempt
+def api_reject_quote(request, quote_id):
+    if request.method != "POST":
+        return _err("Method not allowed", 405)
+    data = _json_body(request)
+    tg_id, _, center = _auth(data)
+    if tg_id is None:
+        return _err("Invalid or expired initData", 401)
+    if not center.workflow_automation_enabled:
+        return _err("Quote workflow is not enabled for this center", 404)
+    from accounts.models import BotUser
+    from orders.models import Quote
+    bot_user = BotUser.objects.filter(user_id=tg_id, center=center).first()
+    quote = customer_queryset(Quote.objects.filter(pk=quote_id), center, bot_user).first()
+    if not quote or quote.status not in {Quote.STATUS_SUBMITTED, Quote.STATUS_APPROVED}:
+        return _err("Quote cannot be rejected", 409)
+    quote.status = Quote.STATUS_REJECTED
+    quote.save(update_fields=["status", "updated_at"])
+    return _ok({"quote_id": quote.pk, "status": quote.status})
+
+
+@csrf_exempt
+def api_add_order_comment(request, order_id):
+    """Add a customer-visible comment to the immutable order timeline."""
+    if request.method != "POST":
+        return _err("Method not allowed", 405)
+    data = _json_body(request)
+    tg_id, _, center = _auth(data)
+    if tg_id is None:
+        return _err("Invalid or expired initData", 401)
+    from accounts.models import BotUser
+    from orders.models import Order, OrderEvent
+    bot_user = BotUser.objects.filter(user_id=tg_id, center=center, is_active=True).first()
+    order = customer_queryset(Order.objects.filter(pk=order_id), center, bot_user).first()
+    if not order:
+        return _err("Order not found", 404)
+    body = (data.get("comment") or "").strip()
+    if not body or len(body) > 2000:
+        return _err("Comment must contain 1–2000 characters")
+    event = OrderEvent.objects.create(
+        order=order,
+        event_type=OrderEvent.TYPE_COMMENT,
+        bot_user=bot_user,
+        data={"body": body, "visibility": "customer"},
+    )
+    return _ok({"event_id": event.pk, "created_at": event.created_at.isoformat()})
+
+
+@csrf_exempt
+def api_notification_preferences(request):
+    """Read or update customer notification preferences."""
+    if request.method not in {"GET", "POST"}:
+        return _err("Method not allowed", 405)
+    data = request.GET.dict() if request.method == "GET" else _json_body(request)
+    tg_id, _, center = _auth(data)
+    if tg_id is None:
+        return _err("Invalid or expired initData", 401)
+    from accounts.models import BotUser
+    from marketing.models import UserBroadcastPreference
+    bot_user = BotUser.objects.filter(user_id=tg_id, center=center, is_active=True).first()
+    if not bot_user:
+        return _err("User not registered", 403)
+    preference, _ = UserBroadcastPreference.objects.get_or_create(bot_user=bot_user)
+    fields = ("receive_marketing", "receive_promotions", "receive_updates")
+    if request.method == "POST":
+        update_fields = []
+        for field in fields:
+            if field in data and isinstance(data[field], bool):
+                setattr(preference, field, data[field])
+                update_fields.append(field)
+        if update_fields:
+            preference.save(update_fields=[*update_fields, "updated_at"])
+    return _ok({"preferences": {field: getattr(preference, field) for field in fields}})
+
+
+@csrf_exempt
+def api_secure_media(request, media_id):
+    """Authorize a customer before delegating local file transfer to Nginx."""
+    if request.method != "POST":
+        return _err("Method not allowed", 405)
+    data = _json_body(request)
+    tg_id, _, center = _auth(data)
+    if tg_id is None:
+        return _err("Invalid or expired initData", 401)
+
+    from django.conf import settings
+    from django.db.models import Q
+    from django.core.files.storage import default_storage
+    from accounts.models import BotUser
+    from orders.models import OrderMedia
+
+    bot_user = BotUser.objects.filter(user_id=tg_id, center=center, is_active=True).first()
+    if not bot_user:
+        return _err("User not registered", 403)
+    media = OrderMedia.objects.filter(pk=media_id).filter(
+        Q(order__bot_user=bot_user, order__branch__center=center)
+        | Q(additional_for_orders__bot_user=bot_user, additional_for_orders__branch__center=center)
+        | Q(quotes__bot_user=bot_user, quotes__branch__center=center)
+    ).distinct().first()
+    if not media or not media.file or not default_storage.exists(media.file.name):
+        return _err("File is archived or unavailable", 410)
+
+    if settings.DEBUG:
+        return FileResponse(
+            default_storage.open(media.file.name, "rb"),
+            as_attachment=True,
+            filename=media.file_name,
+        )
+
+    response = HttpResponse(content_type="application/octet-stream")
+    response["Content-Disposition"] = f'attachment; filename="{media.file_name}"'
+    response["X-Accel-Redirect"] = f"/protected-media/{urlquote(media.file.name)}"
+    return response

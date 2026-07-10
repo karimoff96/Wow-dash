@@ -297,7 +297,12 @@ class BotUser(models.Model):
             if not self.agency_token:
                 self.agency_token = uuid.uuid4()
             # Always regenerate the link to ensure it uses the correct bot username
-            self.agency_link = self.get_agency_invite_link()
+            try:
+                self.agency_link = self.get_agency_invite_link()
+            except ValueError:
+                # Surface incomplete configuration in onboarding diagnostics,
+                # without making otherwise valid customer data impossible to save.
+                self.agency_link = None
         super().save(*args, **kwargs)
 
     def get_agency_invite_link(self):

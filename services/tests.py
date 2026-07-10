@@ -43,7 +43,7 @@ class ExpenseModelTestCase(TestCase):
         # Create expenses
         self.expense_b2b = Expense.objects.create(
             name='B2B Expense',
-            price=Decimal('100.00'),
+            price_for_original=Decimal('100.00'),
             expense_type='b2b',
             branch=self.branch,
             description='B2B only expense',
@@ -52,7 +52,7 @@ class ExpenseModelTestCase(TestCase):
         
         self.expense_b2c = Expense.objects.create(
             name='B2C Expense',
-            price=Decimal('50.00'),
+            price_for_original=Decimal('50.00'),
             expense_type='b2c',
             branch=self.branch,
             is_active=True
@@ -60,7 +60,7 @@ class ExpenseModelTestCase(TestCase):
         
         self.expense_both = Expense.objects.create(
             name='Both Expense',
-            price=Decimal('75.00'),
+            price_for_original=Decimal('75.00'),
             expense_type='both',
             branch=self.branch,
             is_active=True
@@ -68,7 +68,7 @@ class ExpenseModelTestCase(TestCase):
         
         self.expense_inactive = Expense.objects.create(
             name='Inactive Expense',
-            price=Decimal('200.00'),
+            price_for_original=Decimal('200.00'),
             expense_type='b2b',
             branch=self.branch,
             is_active=False
@@ -77,14 +77,14 @@ class ExpenseModelTestCase(TestCase):
     def test_expense_creation(self):
         """Test expense is created correctly"""
         self.assertEqual(self.expense_b2b.name, 'B2B Expense')
-        self.assertEqual(self.expense_b2b.price, Decimal('100.00'))
+        self.assertEqual(self.expense_b2b.price_for_original, Decimal('100.00'))
         self.assertEqual(self.expense_b2b.expense_type, 'b2b')
         self.assertEqual(self.expense_b2b.branch, self.branch)
         self.assertTrue(self.expense_b2b.is_active)
     
     def test_expense_str(self):
         """Test expense string representation"""
-        self.assertEqual(str(self.expense_b2b), 'B2B Expense (100.00)')
+        self.assertEqual(str(self.expense_b2b), 'B2B Expense (Original: 100.00, Copy: 0.00)')
     
     def test_expense_center_property(self):
         """Test expense center property"""
@@ -146,7 +146,7 @@ class ExpenseModelTestCase(TestCase):
         # Create expense in branch2
         Expense.objects.create(
             name='Branch2 Expense',
-            price=Decimal('30.00'),
+            price_for_original=Decimal('30.00'),
             expense_type='b2b',
             branch=self.branch2,
             is_active=True
@@ -162,7 +162,7 @@ class ExpenseModelTestCase(TestCase):
         with self.assertRaises(Exception):
             Expense.objects.create(
                 name='B2B Expense',  # Same name as existing
-                price=Decimal('50.00'),
+                price_for_original=Decimal('50.00'),
                 expense_type='b2c',
                 branch=self.branch,  # Same branch
                 is_active=True
@@ -172,7 +172,7 @@ class ExpenseModelTestCase(TestCase):
         """Test same expense name can exist in different branches"""
         expense2 = Expense.objects.create(
             name='B2B Expense',  # Same name
-            price=Decimal('150.00'),
+            price_for_original=Decimal('150.00'),
             expense_type='b2b',
             branch=self.branch2,  # Different branch
             is_active=True
@@ -226,7 +226,7 @@ class ProductExpenseTestCase(TestCase):
         # Create expenses
         self.expense1 = Expense.objects.create(
             name='Paper Cost',
-            price=Decimal('5000.00'),
+            price_for_original=Decimal('5000.00'),
             expense_type='both',
             branch=self.branch,
             is_active=True
@@ -234,7 +234,7 @@ class ProductExpenseTestCase(TestCase):
         
         self.expense2 = Expense.objects.create(
             name='Agency Commission',
-            price=Decimal('3000.00'),
+            price_for_original=Decimal('3000.00'),
             expense_type='b2b',
             branch=self.branch,
             is_active=True
@@ -242,7 +242,7 @@ class ProductExpenseTestCase(TestCase):
         
         self.expense3 = Expense.objects.create(
             name='Delivery Cost',
-            price=Decimal('2000.00'),
+            price_for_original=Decimal('2000.00'),
             expense_type='b2c',
             branch=self.branch,
             is_active=True
@@ -345,12 +345,14 @@ class ExpenseViewsTestCase(TestCase):
             can_create_orders=True,
             can_edit_orders=True,
             can_delete_orders=True,
+            can_manage_expenses=True,
             is_active=True
         )
         
         # Create admin profile
         self.admin_profile = AdminUser.objects.create(
             user=self.owner,
+            center=self.center,
             branch=self.branch,
             role=self.owner_role,
             is_active=True
@@ -359,7 +361,7 @@ class ExpenseViewsTestCase(TestCase):
         # Create expense
         self.expense = Expense.objects.create(
             name='Test Expense',
-            price=Decimal('100.00'),
+            price_for_original=Decimal('100.00'),
             expense_type='both',
             branch=self.branch,
             is_active=True
@@ -394,7 +396,7 @@ class ExpenseViewsTestCase(TestCase):
         self.client.login(username='admin', password='adminpass123')
         response = self.client.post(reverse('addExpense'), {
             'name': 'New Expense',
-            'price': '150.00',
+            'price_for_original': '150.00',
             'expense_type': 'b2b',
             'branch': self.branch.id,
             'is_active': 'on',
@@ -409,7 +411,7 @@ class ExpenseViewsTestCase(TestCase):
             reverse('editExpense', args=[self.expense.id]),
             {
                 'name': 'Updated Expense',
-                'price': '200.00',
+                'price_for_original': '200.00',
                 'expense_type': 'b2c',
                 'branch': self.branch.id,
                 'is_active': 'on',
@@ -418,7 +420,7 @@ class ExpenseViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.expense.refresh_from_db()
         self.assertEqual(self.expense.name, 'Updated Expense')
-        self.assertEqual(self.expense.price, Decimal('200.00'))
+        self.assertEqual(self.expense.price_for_original, Decimal('200.00'))
     
     def test_delete_expense(self):
         """Test deleting expense"""
@@ -474,7 +476,7 @@ class ExpenseAdminTestCase(TestCase):
         
         self.expense = Expense.objects.create(
             name='Admin Test Expense',
-            price=Decimal('100.00'),
+            price_for_original=Decimal('100.00'),
             expense_type='both',
             branch=self.branch,
             is_active=True

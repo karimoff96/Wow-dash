@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q, Count, F
 from django.http import JsonResponse
+from django.http import FileResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -26,6 +27,7 @@ from bot.notification_service import send_order_notification
 from billing.decorators import require_feature, require_active_subscription, check_order_limit
 from django.views.decorators.http import require_GET
 from core.throttling import throttle
+from urllib.parse import quote as urlquote
 
 
 def has_order_permission(request, permission_name, order=None):
@@ -74,6 +76,55 @@ def has_order_permission(request, permission_name, order=None):
                     return False
     
     return True
+
+
+def _protected_file_response(field_file, filename):
+    from django.conf import settings
+    from django.core.files.storage import default_storage
+
+    if not field_file or not default_storage.exists(field_file.name):
+        from django.http import Http404
+        raise Http404("File is unavailable or archived")
+    if settings.DEBUG:
+        return FileResponse(
+            default_storage.open(field_file.name, "rb"),
+            as_attachment=True,
+            filename=filename,
+        )
+    response = HttpResponse(content_type="application/octet-stream")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    response["X-Accel-Redirect"] = f"/protected-media/{urlquote(field_file.name)}"
+    return response
+
+
+@login_required(login_url='admin_login')
+@any_permission_required('can_view_all_orders', 'can_view_own_orders', 'can_manage_orders')
+def secure_order_media(request, media_id):
+    media = get_object_or_404(OrderMedia, pk=media_id)
+    accessible_orders = get_user_orders(request.user)
+    allowed = accessible_orders.filter(Q(files=media) | Q(additional_files=media)).exists()
+    if not allowed:
+        from django.http import Http404
+        raise Http404("File not found")
+    return _protected_file_response(media.file, media.file_name)
+
+
+@login_required(login_url='admin_login')
+@any_permission_required('can_view_all_orders', 'can_view_own_orders', 'can_manage_orders')
+def secure_legacy_receipt(request, order_id):
+    order = get_object_or_404(get_user_orders(request.user), pk=order_id)
+    return _protected_file_response(order.recipt, os.path.basename(order.recipt.name))
+
+
+@login_required(login_url='admin_login')
+@any_permission_required('can_view_all_orders', 'can_view_own_orders', 'can_manage_orders')
+def secure_receipt(request, receipt_id):
+    from orders.models import Receipt
+    receipt = get_object_or_404(
+        Receipt.objects.filter(order__in=get_user_orders(request.user)),
+        pk=receipt_id,
+    )
+    return _protected_file_response(receipt.file, os.path.basename(receipt.file.name))
 
 
 def get_user_order_permissions(request, order=None):
@@ -904,18 +955,9 @@ def orderEdit(request, order_id):
 
 
 def get_allowed_status_transitions(current_status):
-    """Get allowed status transitions from current status"""
-    transitions = {
-        'pending': ['payment_pending', 'cancelled'],
-        'payment_pending': ['payment_received', 'cancelled'],
-        'payment_received': ['payment_confirmed', 'payment_pending'],
-        'payment_confirmed': ['in_progress', 'cancelled'],
-        'in_progress': ['ready', 'cancelled'],
-        'ready': ['completed', 'in_progress'],
-        'completed': [],
-        'cancelled': ['pending'],  # Allow reactivation
-    }
-    return transitions.get(current_status, [])
+    """Compatibility wrapper around the centralized transition policy."""
+    from orders.workflow_service import get_allowed_status_transitions as allowed
+    return allowed(current_status)
 
 
 @login_required(login_url='admin_login')

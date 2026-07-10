@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.http import JsonResponse
+from django.conf import settings
 
 
 def _is_ajax(request):
@@ -21,6 +22,9 @@ def require_active_subscription(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('login')
+
+        if getattr(settings, "DISABLE_SUBSCRIPTION_ENFORCEMENT", False):
+            return view_func(request, *args, **kwargs)
         
         # Superusers always have access
         if request.user.is_superuser:
@@ -55,6 +59,9 @@ def require_feature(feature_code):
         def wrapper(request, *args, **kwargs):
             if not request.user.is_authenticated:
                 return redirect('login')
+
+            if getattr(settings, "DISABLE_SUBSCRIPTION_ENFORCEMENT", False):
+                return view_func(request, *args, **kwargs)
             
             # Superusers always have access
             if request.user.is_superuser:

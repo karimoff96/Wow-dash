@@ -2,7 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+import secrets
+import uuid
 from core.fields import EncryptedCharField
+
+
+def generate_webhook_secret():
+    return secrets.token_urlsafe(32)
 
 
 class TranslationCenter(models.Model):
@@ -50,6 +56,44 @@ class TranslationCenter(models.Model):
         blank=True,
         null=True,
         help_text=_("Telegram Bot username without @ (e.g., 'my_translation_bot')"),
+    )
+    BOT_DELIVERY_POLLING = "polling"
+    BOT_DELIVERY_WEBHOOK = "webhook"
+    BOT_DELIVERY_CHOICES = (
+        (BOT_DELIVERY_POLLING, _("Polling")),
+        (BOT_DELIVERY_WEBHOOK, _("Webhook")),
+    )
+    bot_delivery_mode = models.CharField(
+        _("Bot Delivery Mode"),
+        max_length=20,
+        choices=BOT_DELIVERY_CHOICES,
+        default=BOT_DELIVERY_POLLING,
+    )
+    webhook_identifier = models.UUIDField(
+        _("Webhook Identifier"),
+        default=uuid.uuid4,
+        unique=True,
+        editable=False,
+    )
+    webhook_secret = EncryptedCharField(
+        _("Webhook Secret"),
+        max_length=500,
+        default=generate_webhook_secret,
+        editable=False,
+    )
+    customer_bot_enabled = models.BooleanField(
+        _("Customer Bot Enabled"),
+        default=True,
+    )
+    maintenance_archive_enabled = models.BooleanField(
+        _("Maintenance Archive Enabled"),
+        default=True,
+        help_text=_("Allow silent verified archival even when the subscription has ended."),
+    )
+    workflow_automation_enabled = models.BooleanField(
+        _("Workflow Automation Enabled"),
+        default=False,
+        help_text=_("Enable quote and automatic assignment workflows for this pilot center."),
     )
     company_orders_channel_id = models.CharField(
         _("Company Orders Channel ID"),
@@ -117,8 +161,21 @@ class TranslationCenter(models.Model):
         super().delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        from django.db import transaction
+
         is_new = self.pk is None
-        super().save(*args, **kwargs)
+        with transaction.atomic():
+            super().save(*args, **kwargs)
+
+            # Every center needs a tenant boundary for branch-scoped records. A
+            # previous refactor accidentally left this block after a return in
+            # get_subscription_status(), so some centers had no branch at all.
+            if is_new and not self.branches.exists():
+                Branch.objects.create(
+                    center=self,
+                    name=f"{self.name} - Main Branch",
+                    is_main=True,
+                )
     
     # Billing helper methods
     def get_current_month_orders_count(self):
@@ -176,11 +233,6 @@ class TranslationCenter(models.Model):
             'days_remaining': sub.days_remaining(),
             'end_date': sub.end_date,
         }
-        # Auto-create default branch for new centers
-        if is_new:
-            Branch.objects.create(
-                center=self, name=f"{self.name} - Main Branch", is_main=True
-            )
 
 
 class Branch(models.Model):

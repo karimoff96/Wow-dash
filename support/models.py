@@ -113,6 +113,8 @@ class Ticket(models.Model):
         on_delete=models.CASCADE,
         related_name='tickets',
         verbose_name=_("Center"),
+        null=True,
+        blank=True,
     )
     created_by = models.ForeignKey(
         User,

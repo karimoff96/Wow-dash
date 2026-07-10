@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: wowdash_test
+          POSTGRES_USER: wowdash
+          POSTGRES_PASSWORD: wowdash
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U wowdash -d wowdash_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DJANGO_SETTINGS_MODULE: WowDash.settings_test
+      TEST_USE_POSTGRES: "true"
+      USE_POSTGRES: "true"
+      DB_NAME: wowdash_test
+      DB_USER: wowdash
+      DB_PASSWORD: wowdash
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      REDIS_URL: redis://127.0.0.1:6379/0
+      SENTRY_DSN: ""
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check WowDash accounts billing bot core landing marketing orders organizations services support webapp
+      - run: python manage.py check --deploy --settings=WowDash.settings_production
+        env:
+          SECRET_KEY: ci-production-check-only-64-characters-long-and-never-used-outside-ci
+          FIELD_ENCRYPTION_KEY: f6_I_m1PE0Glfw7KKqYd_CnNmQZBNvlvfOqOhZcfY6U=
+          USE_POSTGRES: "true"
+      - run: python manage.py makemigrations --check --dry-run
+      - run: coverage run manage.py test --verbosity 1
+      # Baseline ratchet for the legacy monolith. Raise this global floor as
+      # the large legacy view and bot modules are split and covered.
+      - run: coverage report --fail-under=28
+      - run: coverage report --include=orders/payment_service.py --fail-under=90
+      - run: coverage report --include=orders/workflow_service.py --fail-under=80
+      - run: coverage report --include=core/storage_service.py --fail-under=90
+      - run: coverage report --include=bot/webhook_manager.py,bot/tasks.py --fail-under=90
+      - run: coverage report --include=organizations/tenant_scope.py --fail-under=90

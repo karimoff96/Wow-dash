@@ -1,0 +1,25 @@
+--- wowdash
++++ wowdash
+@@ -20,11 +20,22 @@
+     location /static/ {
+         alias /home/Wow-dash/staticfiles/;
+         expires 30d;
+         add_header Cache-Control "public, immutable";
+     }
+ 
++    # Django authorizes the request before Nginx transfers customer files.
++    location /protected-media/ {
++        internal;
++        alias /home/Wow-dash/media/;
++    }
++
++    # These paths must never fall through to the public media alias.
++    location ^~ /media/order_media/ { return 404; }
++    location ^~ /media/recipts/ { return 404; }
++    location ^~ /media/receipts/ { return 404; }
++
+     # Media files
+     location /media/ {
+         alias /home/Wow-dash/media/;
+         expires 7d;
+     }

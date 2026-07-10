@@ -6,8 +6,7 @@ via a separate Telegram bot for:
 - Contact form submissions from landing page
 - Subscription renewal requests from customers
 
-Bot: @uzmultilang_bot
-Token: 8014558483:AAFQfx4OXxWHMujEK_AXNHfqHMJxIWHy2HM
+Bot credentials must be supplied through environment variables.
 
 Features:
 - Supports multiple recipients (users, channels, groups)
@@ -26,7 +25,6 @@ Note: Channel/Group IDs are negative numbers (e.g., -1001234567890)
 
 import logging
 import os
-import ssl
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -53,11 +51,6 @@ class _RetrySSLAdapter(HTTPAdapter):
             raise_on_status=False,
         )
         super().__init__(max_retries=retry, **kwargs)
-
-    def init_poolmanager(self, *args, **kwargs):
-        kwargs["ssl_context"] = ssl._create_unverified_context()
-        return super().init_poolmanager(*args, **kwargs)
-
 
 def _make_resilient_session():
     session = requests.Session()

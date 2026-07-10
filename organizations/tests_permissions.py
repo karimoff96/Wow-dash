@@ -204,6 +204,7 @@ class LanguagePermissionTests(PermissionTestCase):
         language_data = {
             'name': 'Test Language',
             'short_name': 'TST',
+            'branch_id': self.branch.id,
             'agency_page_price': 1000,
             'agency_other_page_price': 500,
             'agency_copy_price': 300,
@@ -217,7 +218,6 @@ class LanguagePermissionTests(PermissionTestCase):
         response = self.client.post(
             reverse('createLanguageInline'),
             data=language_data,
-            content_type='application/json'
         )
         self.assertIn(response.status_code, [200, 201])
         print("✓ Full access user can create language")
@@ -227,7 +227,6 @@ class LanguagePermissionTests(PermissionTestCase):
         response = self.client.post(
             reverse('createLanguageInline'),
             data=language_data,
-            content_type='application/json'
         )
         self.assertNotEqual(response.status_code, 200)
         print("✓ View-only user cannot create language")
@@ -237,7 +236,8 @@ class LanguagePermissionTests(PermissionTestCase):
         # Create a language first
         language = Language.objects.create(
             name='Edit Test Language',
-            short_name='ETL'
+            short_name='ETL',
+            branch=self.branch,
         )
         
         # User with full access can edit

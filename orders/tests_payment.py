@@ -11,9 +11,10 @@ Tests cover:
 from decimal import Decimal
 from django.test import TestCase, TransactionTestCase
 from django.contrib.auth.models import User
-from django.db import transaction
+from django.db import connection, transaction
 from concurrent.futures import ThreadPoolExecutor
 import threading
+from unittest import skipUnless
 
 from orders.models import Order, OrderMedia
 from orders.payment_service import PaymentService, PaymentError, record_payment, add_extra_fee
@@ -72,12 +73,16 @@ class PaymentTestBase(TestCase):
         # Create category and product
         cls.category = Category.objects.create(
             name='Translation',
+            branch=cls.branch,
             is_active=True
         )
         cls.product = Product.objects.create(
             name='Standard Translation',
             category=cls.category,
-            price_per_page=10000,
+            ordinary_first_page_price=10000,
+            ordinary_other_page_price=10000,
+            agency_first_page_price=10000,
+            agency_other_page_price=10000,
             is_active=True
         )
     
@@ -422,6 +427,7 @@ class ValidationTest(PaymentTestBase):
             PaymentService.validate_amount('not-a-number')
 
 
+@skipUnless(connection.vendor == "postgresql", "row-lock tests require PostgreSQL")
 class ConcurrencyTest(TransactionTestCase):
     """Test concurrent payment updates are handled safely"""
     
@@ -460,12 +466,16 @@ class ConcurrencyTest(TransactionTestCase):
         )
         self.category = Category.objects.create(
             name='Translation',
+            branch=self.branch,
             is_active=True
         )
         self.product = Product.objects.create(
             name='Standard',
             category=self.category,
-            price_per_page=10000,
+            ordinary_first_page_price=10000,
+            ordinary_other_page_price=10000,
+            agency_first_page_price=10000,
+            agency_other_page_price=10000,
             is_active=True
         )
     

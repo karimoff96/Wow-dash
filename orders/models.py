@@ -1,4 +1,5 @@
 import logging
+import uuid
 from django.db import models
 from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
@@ -6,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from accounts.models import BotUser
 from organizations.models import Branch, AdminUser
-from services.models import Language, Product
+from services.models import Category, Language, Product
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +67,7 @@ class OrderMedia(models.Model):
     
     @property
     def file_url(self):
-        """Get file URL safely, only blocking corrupted Telegram file_id paths"""
+        """Return the authenticated dashboard delivery URL."""
         try:
             if not self.file:
                 return None
@@ -80,9 +81,9 @@ class OrderMedia(models.Model):
                     logger.warning(f"Blocked corrupted file path for OrderMedia {self.id}")
                     return None
             
-            # Return URL for all other paths (let Django/server handle missing files)
-            if hasattr(self.file, 'url'):
-                return self.file.url
+            from django.urls import reverse
+            if self.pk:
+                return reverse("orders:secure_order_media", args=[self.pk])
         except Exception as e:
             logger.error(f"Error getting file URL for OrderMedia {self.id}: {e}")
         return None
@@ -354,6 +355,26 @@ class Order(models.Model):
         verbose_name=_("Archived Files"),
         help_text=_("Reference to archive containing this order's files")
     )
+    quote = models.ForeignKey(
+        'Quote',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='orders',
+        verbose_name=_("Source Quote"),
+    )
+    sla_due_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        db_index=True,
+        verbose_name=_("SLA Due At"),
+    )
+    workflow_priority = models.PositiveSmallIntegerField(
+        default=100,
+        db_index=True,
+        verbose_name=_("Workflow Priority"),
+        help_text=_("Lower values are assigned first."),
+    )
 
     def __str__(self):
         customer_name = self.get_customer_display_name()
@@ -454,6 +475,13 @@ class Order(models.Model):
             'telegram_link': self._get_telegram_archive_link(),
             'has_local_files': self.has_local_files,
         }
+
+    @property
+    def receipt_url(self):
+        if not self.pk or not self.recipt:
+            return None
+        from django.urls import reverse
+        return reverse("orders:secure_legacy_receipt", args=[self.pk])
     
     def _get_telegram_archive_link(self):
         """Generate Telegram link to access archived files"""
@@ -758,6 +786,185 @@ class Order(models.Model):
         verbose_name = _("Order")
         verbose_name_plural = _("Orders")
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(
+                fields=["assigned_to", "status", "deadline"],
+                name="ord_assignee_status_deadline",
+            ),
+            models.Index(
+                fields=["bot_user", "status", "-created_at"],
+                name="ord_customer_status_created",
+            ),
+        ]
+
+
+class Quote(models.Model):
+    STATUS_DRAFT = "draft"
+    STATUS_SUBMITTED = "submitted"
+    STATUS_APPROVED = "approved"
+    STATUS_REJECTED = "rejected"
+    STATUS_EXPIRED = "expired"
+    STATUS_CONVERTED = "converted"
+    STATUS_CHOICES = (
+        (STATUS_DRAFT, _("Draft")),
+        (STATUS_SUBMITTED, _("Submitted")),
+        (STATUS_APPROVED, _("Approved")),
+        (STATUS_REJECTED, _("Rejected")),
+        (STATUS_EXPIRED, _("Expired")),
+        (STATUS_CONVERTED, _("Converted")),
+    )
+    SOURCE_DASHBOARD = "dashboard"
+    SOURCE_BOT = "bot"
+    SOURCE_MINI_APP = "mini_app"
+    SOURCE_CHOICES = (
+        (SOURCE_DASHBOARD, _("Dashboard")),
+        (SOURCE_BOT, _("Telegram Bot")),
+        (SOURCE_MINI_APP, _("Telegram Mini App")),
+    )
+
+    reference = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    version = models.PositiveIntegerField(default=1)
+    supersedes = models.ForeignKey(
+        'self', on_delete=models.SET_NULL, null=True, blank=True, related_name='revisions'
+    )
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='quotes')
+    bot_user = models.ForeignKey(
+        BotUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='quotes'
+    )
+    customer_name = models.CharField(max_length=200, blank=True)
+    customer_phone = models.CharField(max_length=30, blank=True)
+    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default=SOURCE_DASHBOARD)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_DRAFT, db_index=True)
+    currency = models.CharField(max_length=3, default='UZS')
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    discount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    valid_until = models.DateField(null=True, blank=True, db_index=True)
+    notes = models.TextField(blank=True)
+    files = models.ManyToManyField(OrderMedia, blank=True, related_name='quotes')
+    created_by = models.ForeignKey(
+        AdminUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_quotes'
+    )
+    approved_by = models.ForeignKey(
+        AdminUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_quotes'
+    )
+    approved_at = models.DateTimeField(null=True, blank=True)
+    accepted_at = models.DateTimeField(null=True, blank=True)
+    converted_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(fields=['reference', 'version'], name='unique_quote_version')
+        ]
+        indexes = [
+            models.Index(fields=['branch', 'status', '-created_at'], name='orders_quot_branch__950d3b_idx'),
+            models.Index(fields=['bot_user', 'status', '-created_at'], name='orders_quot_bot_use_22fc01_idx'),
+        ]
+
+    def __str__(self):
+        return f"Quote {str(self.reference)[:8]} v{self.version}"
+
+    def recalculate(self, save=True):
+        from django.db.models import Sum
+        subtotal = self.lines.aggregate(value=Sum('total_price'))['value'] or 0
+        self.subtotal = subtotal
+        self.total = max(subtotal - self.discount, 0)
+        if save:
+            self.save(update_fields=['subtotal', 'total', 'updated_at'])
+        return self.total
+
+
+class QuoteLine(models.Model):
+    URGENCY_NORMAL = "normal"
+    URGENCY_EXPRESS = "express"
+    URGENCY_CHOICES = (
+        (URGENCY_NORMAL, _("Normal")),
+        (URGENCY_EXPRESS, _("Express")),
+    )
+
+    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name='lines')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='quote_lines')
+    language = models.ForeignKey(
+        Language, on_delete=models.SET_NULL, null=True, blank=True, related_name='quote_lines'
+    )
+    pages = models.PositiveIntegerField(default=1)
+    copies = models.PositiveIntegerField(default=0)
+    urgency = models.CharField(max_length=20, choices=URGENCY_CHOICES, default=URGENCY_NORMAL)
+    description = models.TextField(blank=True)
+    unit_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    price_snapshot = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        ordering = ['pk']
+
+
+class AssignmentRule(models.Model):
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='assignment_rules')
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, null=True, blank=True, related_name='assignment_rules'
+    )
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, null=True, blank=True, related_name='assignment_rules'
+    )
+    language = models.ForeignKey(
+        Language, on_delete=models.CASCADE, null=True, blank=True, related_name='assignment_rules'
+    )
+    assignee = models.ForeignKey(
+        AdminUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='assignment_rules'
+    )
+    priority = models.PositiveSmallIntegerField(default=100)
+    turnaround_hours = models.PositiveIntegerField(default=48)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['priority', 'pk']
+        indexes = [models.Index(fields=['branch', 'is_active', 'priority'], name='orders_assi_branch__42d85f_idx')]
+
+
+class OrderEvent(models.Model):
+    TYPE_CREATED = 'created'
+    TYPE_STATUS = 'status_changed'
+    TYPE_ASSIGNED = 'assigned'
+    TYPE_PAYMENT = 'payment'
+    TYPE_DEADLINE = 'deadline_changed'
+    TYPE_COMMENT = 'comment'
+    TYPE_DOCUMENT = 'document_delivered'
+    TYPE_QUOTE = 'quote_converted'
+    TYPE_CHOICES = (
+        (TYPE_CREATED, _("Created")),
+        (TYPE_STATUS, _("Status changed")),
+        (TYPE_ASSIGNED, _("Assigned")),
+        (TYPE_PAYMENT, _("Payment")),
+        (TYPE_DEADLINE, _("Deadline changed")),
+        (TYPE_COMMENT, _("Comment")),
+        (TYPE_DOCUMENT, _("Document delivered")),
+        (TYPE_QUOTE, _("Quote converted")),
+    )
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='timeline')
+    event_type = models.CharField(max_length=30, choices=TYPE_CHOICES)
+    actor = models.ForeignKey(
+        AdminUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='order_events'
+    )
+    bot_user = models.ForeignKey(
+        BotUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='order_events'
+    )
+    data = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['created_at', 'pk']
+        indexes = [models.Index(fields=['order', 'created_at'], name='orders_orde_order_i_4c5f76_idx')]
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            raise ValueError("Order events are immutable")
+        return super().save(*args, **kwargs)
 
 
 class Receipt(models.Model):
@@ -893,6 +1100,13 @@ class Receipt(models.Model):
         
         self.save()
         return self
+
+    @property
+    def file_url(self):
+        if not self.pk or not self.file:
+            return None
+        from django.urls import reverse
+        return reverse("orders:secure_receipt", args=[self.pk])
     
     class Meta:
         verbose_name = _("Receipt")
@@ -943,15 +1157,91 @@ def track_status_change(sender, instance, **kwargs):
             instance._old_status = old_instance.status
             instance._old_received = old_instance.received
             instance._old_payment_type = old_instance.payment_type
+            instance._old_assigned_to_id = old_instance.assigned_to_id
+            instance._old_deadline = old_instance.deadline
+            instance._old_sla_due_at = old_instance.sla_due_at
         except Order.DoesNotExist:
             instance._old_status = None
             instance._old_received = None
             instance._old_payment_type = None
+            instance._old_assigned_to_id = None
+            instance._old_deadline = None
+            instance._old_sla_due_at = None
     else:
         instance._old_status = None
         instance._old_received = None
         instance._old_payment_type = None
+        instance._old_assigned_to_id = None
+        instance._old_deadline = None
+        instance._old_sla_due_at = None
         instance._is_new = True
+
+
+@receiver(post_save, sender=Order)
+def record_order_timeline(sender, instance, created, **kwargs):
+    """Capture immutable workflow events regardless of which interface changed an order."""
+    actor = getattr(instance, "_event_actor", None)
+    bot_user = getattr(instance, "_event_bot_user", None)
+    extra = getattr(instance, "_event_extra", {})
+
+    if created:
+        OrderEvent.objects.create(
+            order=instance,
+            event_type=OrderEvent.TYPE_CREATED,
+            actor=actor,
+            bot_user=bot_user or instance.bot_user,
+            data={"status": instance.status, **extra},
+        )
+        return
+
+    old_status = getattr(instance, "_old_status", instance.status)
+    if old_status != instance.status:
+        OrderEvent.objects.create(
+            order=instance,
+            event_type=OrderEvent.TYPE_STATUS,
+            actor=actor,
+            bot_user=bot_user,
+            data={"from": old_status, "to": instance.status, **extra},
+        )
+
+    old_received = getattr(instance, "_old_received", instance.received)
+    old_payment_type = getattr(instance, "_old_payment_type", instance.payment_type)
+    if old_received != instance.received or old_payment_type != instance.payment_type:
+        OrderEvent.objects.create(
+            order=instance,
+            event_type=OrderEvent.TYPE_PAYMENT,
+            actor=actor,
+            bot_user=bot_user,
+            data={
+                "received_from": str(old_received or 0),
+                "received_to": str(instance.received or 0),
+                "payment_type_from": old_payment_type,
+                "payment_type_to": instance.payment_type,
+                **extra,
+            },
+        )
+
+    old_assignee = getattr(instance, "_old_assigned_to_id", instance.assigned_to_id)
+    if old_assignee != instance.assigned_to_id:
+        OrderEvent.objects.create(
+            order=instance,
+            event_type=OrderEvent.TYPE_ASSIGNED,
+            actor=actor,
+            data={"from_id": old_assignee, "to_id": instance.assigned_to_id},
+        )
+
+    old_deadline = getattr(instance, "_old_deadline", instance.deadline)
+    old_sla = getattr(instance, "_old_sla_due_at", instance.sla_due_at)
+    if old_deadline != instance.deadline or old_sla != instance.sla_due_at:
+        OrderEvent.objects.create(
+            order=instance,
+            event_type=OrderEvent.TYPE_DEADLINE,
+            actor=actor,
+            data={
+                "deadline": instance.deadline.isoformat() if instance.deadline else None,
+                "sla_due_at": instance.sla_due_at.isoformat() if instance.sla_due_at else None,
+            },
+        )
 
 
 @receiver(post_save, sender=Order)
@@ -1348,6 +1638,17 @@ class OrderComment(models.Model):
 
     def __str__(self):
         return f"Comment #{self.id} on Order #{self.order_id}"
+
+
+@receiver(post_save, sender=OrderComment)
+def record_order_comment_event(sender, instance, created, **kwargs):
+    if created:
+        OrderEvent.objects.create(
+            order=instance.order,
+            event_type=OrderEvent.TYPE_COMMENT,
+            actor=instance.author,
+            data={"comment_id": instance.pk, "body": instance.body},
+        )
 
 
 class PaymentOrderLink(models.Model):

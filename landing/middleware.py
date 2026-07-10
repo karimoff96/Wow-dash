@@ -1,6 +1,8 @@
 import time
+from ipaddress import ip_address, ip_network
 from typing import Optional
 
+from django.conf import settings
 from django.core.cache import cache
 from django.http import HttpResponse
 from django.utils.deprecation import MiddlewareMixin
@@ -59,11 +61,29 @@ class RateLimitMiddleware(MiddlewareMixin):
             return 1
 
     def _get_client_ip(self, request) -> Optional[str]:
+        remote_addr = request.META.get("REMOTE_ADDR")
         xff = request.META.get("HTTP_X_FORWARDED_FOR")
-        if xff:
-            # Take the left-most IP (original client) and strip spaces
+        if xff and self._is_trusted_proxy(remote_addr):
             return xff.split(",")[0].strip()
-        return request.META.get("REMOTE_ADDR")
+        return remote_addr
+
+    def _is_trusted_proxy(self, remote_addr: Optional[str]) -> bool:
+        """Only honor forwarding headers received from configured proxies."""
+        if not remote_addr:
+            return False
+
+        try:
+            address = ip_address(remote_addr)
+        except ValueError:
+            return False
+
+        for configured_network in getattr(settings, "TRUSTED_PROXY_IPS", []):
+            try:
+                if address in ip_network(configured_network, strict=False):
+                    return True
+            except ValueError:
+                continue
+        return False
 
     def _too_many_requests(self, retry_after: int) -> HttpResponse:
         resp = HttpResponse(

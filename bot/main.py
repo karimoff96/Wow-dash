@@ -28,16 +28,13 @@ load_dotenv()
 # user_data and uploaded_files are now imported from persistent_state.py
 # They use Redis/database-backed storage for multi-worker support
 
-# Disable SSL verification (for development only - not recommended for production)
-import ssl
 from telebot import apihelper
 import requests
 from requests.adapters import HTTPAdapter
-from urllib3.poolmanager import PoolManager
 from urllib3.util.retry import Retry
 
 
-class NoSSLAdapter(HTTPAdapter):
+class RetryHTTPAdapter(HTTPAdapter):
     def __init__(self, **kwargs):
         retry = Retry(
             total=5,
@@ -51,13 +48,9 @@ class NoSSLAdapter(HTTPAdapter):
         )
         super().__init__(max_retries=retry, **kwargs)
 
-    def init_poolmanager(self, *args, **kwargs):
-        kwargs["ssl_context"] = ssl._create_unverified_context()
-        return super().init_poolmanager(*args, **kwargs)
-
-# Create custom session with SSL verification disabled
+# Keep TLS certificate verification enabled while retrying transient failures.
 session = requests.Session()
-session.mount("https://", NoSSLAdapter())
+session.mount("https://", RetryHTTPAdapter())
 apihelper.SESSION = session
 
 # Initialize bot with a PLACEHOLDER token for handler registration only.
@@ -189,6 +182,16 @@ def send_payme_deadline_expired_notification(order):
         user = order.bot_user
         if not user or not user.user_id:
             return
+        from bot.access import center_can_run_bot
+        from bot.webhook_manager import get_bot_for_center
+
+        center = order.branch.center if order.branch_id else user.center
+        if not center_can_run_bot(center):
+            logger.info("Skipped Payme expiry notification for inactive center %s", getattr(center, "pk", None))
+            return
+        center_bot = get_bot_for_center(center)
+        if center_bot is None:
+            return
         language = user.language or "uz"
         order_num = order.get_order_number()
         amount = order.total_price
@@ -224,7 +227,7 @@ def send_payme_deadline_expired_notification(order):
             btn_label = "🛍️ Yangi buyurtma"
         markup.add(types.InlineKeyboardButton(text=btn_label, callback_data="main_menu"))
 
-        bot.send_message(
+        center_bot.send_message(
             chat_id=user.user_id,
             text=text,
             reply_markup=markup,
@@ -277,6 +280,12 @@ def send_order_status_notification(order, old_status, new_status):
         user = order.bot_user
         if not user or not user.user_id:
             logger.warning(f"No user or user_id for order {order.id}")
+            return
+
+        from bot.access import center_can_run_bot
+        _notify_center = order.branch.center if order.branch_id else user.center
+        if not center_can_run_bot(_notify_center):
+            logger.info("Skipped status notification for inactive center %s", getattr(_notify_center, "pk", None))
             return
             
         language = user.language or "uz"
@@ -522,27 +531,12 @@ def send_order_status_notification(order, old_status, new_status):
 
         # Get the correct bot instance for this order's center
         from bot.webhook_manager import get_bot_for_center
-        _notify_center = None
-        if order.branch and order.branch.center:
-            _notify_center = order.branch.center
-        elif user.center:
-            _notify_center = user.center
-
-        if _notify_center:
-            center_bot = get_bot_for_center(_notify_center)
-            if center_bot:
-                center_bot.send_message(
-                    chat_id=user.user_id, text=notification_text, parse_mode="HTML"
-                )
-            else:
-                bot.send_message(
-                    chat_id=user.user_id, text=notification_text, parse_mode="HTML"
-                )
-        else:
-            # No branch center, use global bot
-            bot.send_message(
-                chat_id=user.user_id, text=notification_text, parse_mode="HTML"
-            )
+        center_bot = get_bot_for_center(_notify_center)
+        if center_bot is None:
+            return
+        center_bot.send_message(
+            chat_id=user.user_id, text=notification_text, parse_mode="HTML"
+        )
 
         logger.info(
             f"Sent status notification to user {user.user_id} for order {order.id}: {old_status} → {new_status}"
@@ -576,6 +570,12 @@ def send_payment_received_notification(order, amount_received, total_received):
         user = order.bot_user
         if not user or not user.user_id:
             logger.warning(f"No user or user_id for order {order.id} during payment notification")
+            return
+
+        from bot.access import center_can_run_bot
+        notify_center = order.branch.center if order.branch_id else user.center
+        if not center_can_run_bot(notify_center):
+            logger.info("Skipped payment notification for inactive center %s", getattr(notify_center, "pk", None))
             return
             
         language = user.language or "uz"
@@ -645,20 +645,12 @@ def send_payment_received_notification(order, amount_received, total_received):
         
         # Get the correct bot instance for this order's center
         from bot.webhook_manager import get_bot_for_center
-        if order.branch and order.branch.center:
-            center_bot = get_bot_for_center(order.branch.center)
-            if center_bot:
-                center_bot.send_message(
-                    chat_id=user.user_id, text=notification_text, parse_mode="HTML"
-                )
-            else:
-                bot.send_message(
-                    chat_id=user.user_id, text=notification_text, parse_mode="HTML"
-                )
-        else:
-            bot.send_message(
-                chat_id=user.user_id, text=notification_text, parse_mode="HTML"
-            )
+        center_bot = get_bot_for_center(notify_center)
+        if center_bot is None:
+            return
+        center_bot.send_message(
+            chat_id=user.user_id, text=notification_text, parse_mode="HTML"
+        )
 
         logger.info(
             f"Sent payment notification to user {user.user_id} for order {order.id}: received {amount_received}, total {total_received}"

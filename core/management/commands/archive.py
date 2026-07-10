@@ -47,6 +47,12 @@ class Command(BaseCommand):
             help='Archive files for all active centers'
         )
         parser.add_argument(
+            '--order-id',
+            type=int,
+            action='append',
+            help='Restrict the run to one or more explicit eligible order IDs',
+        )
+        parser.add_argument(
             '--age-days',
             type=int,
             help='Minimum age in days for orders to archive'
@@ -60,6 +66,17 @@ class Command(BaseCommand):
             '--dry-run',
             action='store_true',
             help='Show what would be archived without actually doing it'
+        )
+        parser.add_argument(
+            '--mode',
+            choices=['inventory', 'canary', 'live'],
+            default='inventory',
+            help='inventory=report only, canary=upload without deleting, live=upload then delete verified sources',
+        )
+        parser.add_argument(
+            '--confirm-delete',
+            action='store_true',
+            help='Required with --mode live before local source files may be deleted',
         )
         
         # Configuration options
@@ -132,6 +149,9 @@ class Command(BaseCommand):
         # Use configured age or default from config
         age_days = options['age_days'] if options['age_days'] else ArchiveConfig.MIN_AGE_DAYS
         service = StorageArchiveService()
+        mode = 'inventory' if options['dry_run'] else options['mode']
+        if mode == 'live' and not options['confirm_delete']:
+            raise CommandError('--mode live requires --confirm-delete')
         
         # Get centers to process
         if options['center']:
@@ -140,7 +160,10 @@ class Command(BaseCommand):
             except TranslationCenter.DoesNotExist:
                 raise CommandError(f"Center with ID {options['center']} does not exist")
         elif options['all']:
-            centers = TranslationCenter.objects.filter(is_active=True)
+            centers = TranslationCenter.objects.filter(
+                is_active=True,
+                maintenance_archive_enabled=True,
+            )
         else:
             raise CommandError("Please specify either --center <id> or --all with --run")
         
@@ -160,9 +183,23 @@ class Command(BaseCommand):
             
             # Get archivable orders
             orders = service.get_archivable_orders(center, age_days)
+            if options['order_id']:
+                orders = orders.filter(pk__in=options['order_id'])
             
             if not orders.exists():
                 self.stdout.write(self.style.WARNING(f"  No orders to archive"))
+                # Still call the service so the no-work success is represented
+                # by an auditable ArchiveRun and operational health does not
+                # incorrectly report this center as stale.
+                result = service.archive_orders(
+                    center=center,
+                    age_days=age_days,
+                    force=options['force'],
+                    mode=mode,
+                    order_ids=options['order_id'],
+                )
+                if not result['success']:
+                    self.stdout.write(self.style.ERROR(f"  ✗ Failed: {result['error']}"))
                 continue
             
             # Calculate size
@@ -172,29 +209,29 @@ class Command(BaseCommand):
             self.stdout.write(f"  Orders found: {orders.count()}")
             self.stdout.write(f"  Total size: {size_mb:.2f} MB")
             
-            # Check if center has required configuration
-            if not center.bot_token:
-                self.stdout.write(self.style.ERROR(f"  ✗ No bot token configured - skipping"))
-                continue
-            
-            if not center.company_orders_channel_id:
-                self.stdout.write(self.style.ERROR(f"  ✗ No company orders channel configured - skipping"))
-                continue
-            
-            if options['dry_run']:
-                self.stdout.write(self.style.WARNING(f"  [DRY RUN] Would archive {orders.count()} orders"))
-                continue
+            # Upload modes require the maintenance permission and Telegram
+            # configuration. Inventory remains useful before configuration.
+            if mode != 'inventory':
+                from bot.access import center_can_archive
+                if not center_can_archive(center):
+                    self.stdout.write(self.style.ERROR(
+                        "  ✗ Maintenance archival disabled or Telegram configuration incomplete - skipping"
+                    ))
+                    continue
             
             # Perform archiving
             result = service.archive_orders(
                 center=center,
                 age_days=age_days,
-                force=options['force']
+                force=options['force'],
+                mode=mode,
+                order_ids=options['order_id'],
             )
             
             if result['success']:
+                action = 'Inventoried' if mode == 'inventory' else 'Archived'
                 self.stdout.write(self.style.SUCCESS(
-                    f"  ✓ Successfully archived {result['orders_count']} orders"
+                    f"  ✓ {action} {result['orders_count'] or orders.count()} orders"
                 ))
                 self.stdout.write(f"    Archive: {result['archive_name']}")
                 self.stdout.write(f"    Size: {result['archive_size'] / (1024 * 1024):.2f} MB")

@@ -230,8 +230,8 @@ environment=PATH="/home/wemard/app/venv/bin",DJANGO_SETTINGS_MODULE="WowDash.set
 # Required - comma-separated IDs
 ADMIN_TELEGRAM_ID=123456789,987654321,-1001234567890
 
-# Optional - bot token (already hardcoded)
-ADMIN_BOT_TOKEN=8014558483:AAFQfx4OXxWHMujEK_AXNHfqHMJxIWHy2HM
+# Required - obtain this from BotFather; never commit the real value
+ADMIN_BOT_TOKEN=123456789:replace-with-secret-token
 ```
 
 **Supported formats:**

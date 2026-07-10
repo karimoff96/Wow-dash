@@ -1,0 +1,26 @@
+{% extends 'layout/layout.html' %}
+{% load i18n %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-24">
+  <div><h5 class="mb-1">{% trans "File Archives" %}</h5><p class="text-secondary-light mb-0">{% trans "Verified Telegram archive history" %}</p></div>
+</div>
+<div class="card mb-24"><div class="card-body">
+  <form method="get" class="row g-12">
+    <div class="col-md-3"><input class="form-control" name="q" value="{{ filters.q }}" placeholder="{% trans 'Archive, checksum or order number' %}"></div>
+    <div class="col-md-2"><select class="form-select" name="branch"><option value="">{% trans "All branches" %}</option>{% for branch in branches %}<option value="{{ branch.id }}" {% if filters.branch == branch.id|stringformat:'s' %}selected{% endif %}>{{ branch.name }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><select class="form-select" name="verification"><option value="">{% trans "All states" %}</option>{% for value,label in verification_choices %}<option value="{{ value }}" {% if filters.verification == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><input type="date" class="form-control" name="date_from" value="{{ filters.date_from }}"></div>
+    <div class="col-md-2"><input type="date" class="form-control" name="date_to" value="{{ filters.date_to }}"></div>
+    <div class="col-md-1"><button class="btn btn-primary w-100">{% trans "Filter" %}</button></div>
+  </form>
+</div></div>
+<div class="card"><div class="card-body p-0"><div class="table-responsive"><table class="table mb-0">
+  <thead><tr><th>{% trans "Archive" %}</th><th>{% trans "Date" %}</th><th>{% trans "Orders" %}</th><th>{% trans "Source size" %}</th><th>{% trans "Verification" %}</th><th></th></tr></thead>
+  <tbody>{% for archive in archives %}<tr>
+    <td><a href="{% url 'core:archive_detail' archive.id %}">{{ archive.archive_name }}</a><div class="text-xs text-secondary-light">{{ archive.sha256|truncatechars:20 }}</div></td>
+    <td>{{ archive.archive_date }}</td><td>{{ archive.total_orders }}</td><td>{{ archive.source_size_bytes|filesizeformat }}</td>
+    <td><span class="badge bg-{% if archive.verification_status == 'verified' %}success{% elif archive.verification_status == 'failed' %}danger{% else %}warning{% endif %}">{{ archive.get_verification_status_display }}</span></td>
+    <td>{% if archive.telegram_file_url %}<a class="btn btn-sm btn-outline-primary" href="{{ archive.telegram_file_url }}" target="_blank">Telegram</a>{% endif %}</td>
+  </tr>{% empty %}<tr><td colspan="6" class="text-center py-24">{% trans "No archives found" %}</td></tr>{% endfor %}</tbody>
+</table></div></div></div>
+{% endblock %}

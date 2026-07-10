@@ -13,7 +13,7 @@ import hashlib
 import logging
 from django.db import close_old_connections
 from django.core.management.base import BaseCommand
-from organizations.models import TranslationCenter
+from bot.access import active_bot_centers
 
 logger = logging.getLogger(__name__)
 
@@ -26,16 +26,19 @@ class Command(BaseCommand):
         self.last_token_hash = None
 
     def get_token_hash(self):
-        """Get a hash of all bot tokens to detect changes."""
-        centers = TranslationCenter.objects.filter(
-            is_active=True
-        ).exclude(
-            bot_token__isnull=True
-        ).exclude(
-            bot_token=''
-        ).values_list('id', 'bot_token').order_by('id')
+        """Hash bot tokens plus subscription state to detect lifecycle changes."""
+        from organizations.models import TranslationCenter
+
+        centers = active_bot_centers().filter(
+            bot_delivery_mode=TranslationCenter.BOT_DELIVERY_POLLING
+        ).values_list(
+            'id', 'bot_token', 'subscription__start_date', 'subscription__end_date'
+        ).order_by('id')
         
-        token_string = '|'.join(f"{c[0]}:{c[1]}" for c in centers)
+        token_string = '|'.join(
+            f"{center_id}:{token}:{start_date}:{end_date}"
+            for center_id, token, start_date, end_date in centers
+        )
         return hashlib.md5(token_string.encode()).hexdigest()
 
     def restart_bots(self):
@@ -58,7 +61,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS('🤖 Bot Token Watcher started'))
-        self.stdout.write('Watching for bot token changes every 30 seconds...')
+        self.stdout.write('Watching for bot token and subscription changes every 30 seconds...')
         
         self.last_token_hash = self.get_token_hash()
         self.stdout.write(f'Initial token hash: {self.last_token_hash}')
@@ -78,7 +81,7 @@ class Command(BaseCommand):
                 
                 if current_hash != self.last_token_hash:
                     self.stdout.write(self.style.WARNING(
-                        f'⚡ Bot tokens changed! Old: {self.last_token_hash}, New: {current_hash}'
+                        f'⚡ Bot configuration changed! Old: {self.last_token_hash}, New: {current_hash}'
                     ))
                     self.restart_bots()
                     self.last_token_hash = current_hash

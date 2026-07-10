@@ -44,6 +44,9 @@ class SubscriptionEnforcementMiddleware:
         # Always clear the grace attribute so templates can rely on its presence
         request.subscription_grace = None
 
+        if getattr(settings, "DISABLE_SUBSCRIPTION_ENFORCEMENT", False):
+            return self.get_response(request)
+
         if self._is_exempt(request):
             return self.get_response(request)
 

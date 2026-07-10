@@ -21,8 +21,10 @@ from WowDash import home_views
 from WowDash import reports_views
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from core import health
 
 @login_required
 def test_select2(request):
@@ -54,14 +56,18 @@ def main_domain_index(request):
         return home(request)
 
 
+@user_passes_test(
+    lambda user: user.is_active and user.is_superuser,
+    login_url="admin_login",
+)
 def superuser_admin_panel(request):
     """Superuser admin panel for managing all centers (dev access at /super)."""
-    # TODO: Add superuser permission check
-    # For now, just show the dashboard
     return home_views.index(request)
 
 
 urlpatterns = [
+    path("health/live/", health.live, name="health_live"),
+    path("health/ready/", health.ready, name="health_ready"),
     # Django Admin Panel (accessible on all subdomains at /admin)
     path("admin/", admin.site.urls),
     
@@ -73,8 +79,6 @@ urlpatterns = [
     
     # Landing Page URLs (only work on main domain)
     path("", include("landing.urls")),
-    
-    path("test-select2/", test_select2, name="test_select2"),
     
     # Dashboard (accessible on subdomains)
     path("dashboard/", home_views.index, name="dashboard"),
@@ -160,18 +164,21 @@ urlpatterns = [
 from django.conf import settings
 from django.conf.urls.static import static
 from bot.main import index
-from bot.webhook_manager import webhook_handler
+from bot.webhook_manager import webhook_handler, webhook_handler_v2
 from orders.payme_webhook import payme_webhook_view
 
 # Telegram Web App (Mini App) endpoints
 from webapp import urls as webapp_urls
 urlpatterns += [path("webapp/", include(webapp_urls))]
 
-# Legacy single-bot webhook (for backward compatibility)
-urlpatterns += [path("bot", index, name="bot_webhook")]
+# The unauthenticated template-bot webhook is development-only. Production
+# centers use the secret-protected per-center v1/v2 endpoints below.
+if settings.DEBUG:
+    urlpatterns += [path("bot", index, name="bot_webhook")]
 
 # Multi-tenant webhook - each center has its own endpoint
 urlpatterns += [path("bot/webhook/<int:center_id>/", webhook_handler, name="center_webhook")]
+urlpatterns += [path("bot/webhook/v2/<uuid:webhook_identifier>/", webhook_handler_v2, name="center_webhook_v2")]
 
 # Payme JSON-RPC webhook (must always return HTTP 200)
 urlpatterns += [path("payme/webhook/", payme_webhook_view, name="payme_webhook")]
@@ -180,5 +187,6 @@ from orders.payme_webhook import PaymeWebhookView
 urlpatterns += [path("payme/webhook/<int:center_id>/", PaymeWebhookView.as_view(), name="payme_webhook_center")]
 
 if settings.DEBUG:
+    urlpatterns += [path("test-select2/", test_select2, name="test_select2")]
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

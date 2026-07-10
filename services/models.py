@@ -63,7 +63,7 @@ class Expense(models.Model):
         unique_together = ('branch', 'name')
     
     def __str__(self):
-        return f"{self.name} (Original: {self.price_for_original}, Copy: {self.price_for_copy})"
+        return f"{self.name} (Original: {self.price_for_original:.2f}, Copy: {self.price_for_copy:.2f})"
     
     @property
     def total_price_per_order(self):
@@ -145,15 +145,15 @@ class Expense(models.Model):
         # B2B expenses (b2b + both)
         b2b_total = base_queryset.filter(
             expense_type__in=['b2b', 'both']
-        ).aggregate(total=Sum('price'))['total'] or Decimal('0.00')
+        ).aggregate(total=Sum('price_for_original'))['total'] or Decimal('0.00')
         
         # B2C expenses (b2c + both)
         b2c_total = base_queryset.filter(
             expense_type__in=['b2c', 'both']
-        ).aggregate(total=Sum('price'))['total'] or Decimal('0.00')
+        ).aggregate(total=Sum('price_for_original'))['total'] or Decimal('0.00')
         
         # Total expenses (all types)
-        total = base_queryset.aggregate(total=Sum('price'))['total'] or Decimal('0.00')
+        total = base_queryset.aggregate(total=Sum('price_for_original'))['total'] or Decimal('0.00')
         
         return {
             'b2b_total': b2b_total,

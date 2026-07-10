@@ -1,0 +1,14 @@
+[Unit]
+Description=Encrypted WowDash PostgreSQL backup to private Telegram channel
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=wowdash
+Group=wowdash
+WorkingDirectory=/home/Wow-dash
+Environment=DJANGO_SETTINGS_MODULE=WowDash.settings_production
+EnvironmentFile=/home/Wow-dash/.env
+ExecStart=/home/Wow-dash/venv/bin/python manage.py backup_db --keep 14 --encrypt --upload-telegram
+Nice=10

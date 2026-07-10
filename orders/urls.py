@@ -10,6 +10,7 @@ from .views import (
     record_order_payment, add_order_extra_fee, get_order_payment_info,
     bulk_delete_orders, search_customers, search_categories, search_products,
     edit_order_price, order_invoice_pdf,
+    secure_legacy_receipt, secure_order_media, secure_receipt,
     add_order_comment, delete_order_comment,
         api_payme_transactions,
         api_payme_transaction_detail,
@@ -19,16 +20,27 @@ from .bulk_payment_views import (
     preview_payment_distribution, process_bulk_payment, payment_history, 
     payment_history_full, get_payment_details, get_top_debtors_api
 )
+from . import workflow_views
 
 app_name = 'orders'
 
 urlpatterns = [
+    path("api/workflow/quotes/", workflow_views.quote_list_api, name="quote_list_api"),
+    path("api/workflow/quotes/<int:quote_id>/approve/", workflow_views.approve_quote_api, name="approve_quote_api"),
+    path("api/workflow/quotes/<int:quote_id>/revise/", workflow_views.revise_quote_api, name="revise_quote_api"),
+    path("api/workflow/kanban/", workflow_views.kanban_api, name="workflow_kanban_api"),
+    path("api/workflow/orders/<int:order_id>/auto-assign/", workflow_views.auto_assign_api, name="auto_assign_api"),
+    path("api/workflow/orders/<int:order_id>/timeline/", workflow_views.order_timeline_api, name="order_timeline_api"),
+    path("api/workflow/metrics/", workflow_views.workflow_metrics_api, name="workflow_metrics_api"),
     # Order list and detail
     path("", ordersList, name="ordersList"),
     path("my-orders/", myOrders, name="myOrders"),
     path("create/", orderCreate, name="orderCreate"),
     path("<int:order_id>/", orderDetail, name="orderDetail"),
     path("<int:order_id>/invoice/", order_invoice_pdf, name="order_invoice_pdf"),
+    path("media/<int:media_id>/download/", secure_order_media, name="secure_order_media"),
+    path("receipts/legacy/<int:order_id>/download/", secure_legacy_receipt, name="secure_legacy_receipt"),
+    path("receipts/<int:receipt_id>/download/", secure_receipt, name="secure_receipt"),
     path("<int:order_id>/edit/", orderEdit, name="orderEdit"),
     
     # Order actions

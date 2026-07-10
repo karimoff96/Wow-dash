@@ -1,0 +1,12 @@
+[run]
+source = WowDash,accounts,billing,bot,core,landing,marketing,orders,organizations,services,support,webapp
+
+[report]
+omit =
+    */migrations/*
+    */tests*.py
+    manage.py
+skip_covered = True
+# Legacy-monolith baseline. Critical services have separate higher CI gates.
+# Raise this ratchet as the large view and bot modules are split and covered.
+fail_under = 28
